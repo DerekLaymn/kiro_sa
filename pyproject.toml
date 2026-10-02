@@ -1,0 +1,22 @@
+[project]
+name = "typediff"
+version = "0.1.0"
+description = "Differential-testing adjudicator for mypy vs ty: separates real type-checker bugs from design divergences"
+requires-python = ">=3.10"
+dependencies = []  # stdlib only; the checkers are invoked as subprocesses
+
+[project.optional-dependencies]
+tools = ["mypy", "ty", "pyright", "typing_extensions"]
+
+[project.scripts]
+typediff = "typediff.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["typediff*"]
+
+[tool.setuptools.package-data]
+typediff = ["data/*.json"]

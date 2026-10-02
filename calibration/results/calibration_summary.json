@@ -1,0 +1,81 @@
+{
+ "positives": 151,
+ "positive_outcomes": {
+  "invisible": 51,
+  "kept": 96,
+  "dismissed": 4
+ },
+ "by_tool": {
+  "ty": {
+   "invisible": 17,
+   "kept": 58
+  },
+  "mypy": {
+   "invisible": 34,
+   "kept": 38,
+   "dismissed": 4
+  }
+ },
+ "recall_on_visible": 0.96,
+ "false_dismissals": [
+  {
+   "id": "mypy-7984",
+   "url": "https://github.com/python/mypy/issues/7984",
+   "findings": [
+    [
+     "D1",
+     "dismissed",
+     "kb:LITERAL-WIDENING",
+     "DESIGN_DIVERGENCE"
+    ]
+   ]
+  },
+  {
+   "id": "mypy-6079",
+   "url": "https://github.com/python/mypy/issues/6079",
+   "findings": [
+    [
+     "D1",
+     "dismissed",
+     "kb:JOIN-VS-UNION",
+     "KNOWN_LIMITATION"
+    ]
+   ]
+  },
+  {
+   "id": "mypy-5289",
+   "url": "https://github.com/python/mypy/issues/5289",
+   "findings": [
+    [
+     "D1",
+     "dismissed",
+     "kb:TY-CHECK-NOT-IMPLEMENTED",
+     "KNOWN_LIMITATION"
+    ]
+   ]
+  },
+  {
+   "id": "mypy-4554",
+   "url": "https://github.com/python/mypy/issues/4554",
+   "findings": [
+    [
+     "D1",
+     "dismissed",
+     "kb:TY-CHECK-NOT-IMPLEMENTED",
+     "KNOWN_LIMITATION"
+    ]
+   ]
+  }
+ ],
+ "dismissal_reasons_on_positives": {
+  "kb:TY-REDECLARATION": 2,
+  "kb:TY-CHECK-NOT-IMPLEMENTED": 3,
+  "kb:BOTH-GRADUAL": 1,
+  "kb:LITERAL-WIDENING": 1,
+  "rule:undefined-name": 3,
+  "kb:JOIN-VS-UNION": 1
+ },
+ "negatives": 10,
+ "negatives_closed_automatically": 9,
+ "negatives_left_for_review": []
+}

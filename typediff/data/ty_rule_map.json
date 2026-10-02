@@ -1,0 +1,2184 @@
+{
+ "_source": "https://github.com/astral-sh/ty/blob/main/docs/coming-from-mypy-or-pyright.md (table 'Mapping pyright/mypy rules to ty/Ruff rules')",
+ "_derived_for": "ty 0.0.84 / mypy 2.4 / pyright 1.1.414; regenerate with `typediff fetch-docs --refresh-rule-map`",
+ "rows": [
+  {
+   "ty": [
+    "abstract-and-final-method"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "abstract-method-in-final-class"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "call-abstract-method"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAbstractUsage"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "call-non-callable"
+   ],
+   "mypy": [
+    "operator",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue",
+    "reportOptionalCall"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "call-non-callable"
+   ],
+   "mypy": [
+    "abstract"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAbstractUsage"
+   ],
+   "note": "(abstract class instantiation only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "conflicting-declarations"
+   ],
+   "mypy": [
+    "no-redef"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportRedeclaration"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "conflicting-metaclass"
+   ],
+   "mypy": [
+    "metaclass"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "cyclic-class-definition"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "cyclic-type-alias-definition"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "dataclass-field-order"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "deprecated"
+   ],
+   "mypy": [
+    "deprecated"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportDeprecated"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "disjoint-cast"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidCast"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "division-by-zero"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "duplicate-base"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "duplicate-kw-only"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "dynamic-function-decorator-return"
+   ],
+   "mypy": [
+    "untyped-decorator"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUntypedFunctionDecorator"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "empty-body"
+   ],
+   "mypy": [
+    "empty-body"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportReturnType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "final-on-non-method"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "final-without-value"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "inconsistent-mro"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "index-out-of-bounds"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-argument-type"
+   ],
+   "mypy": [
+    "arg-type",
+    "index",
+    "type-var",
+    "typeddict-item"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportArgumentType",
+    "reportAssignmentType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-assignment"
+   ],
+   "mypy": [
+    "assignment",
+    "list-item",
+    "dict-item"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAssignmentType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-assignment"
+   ],
+   "mypy": [
+    "method-assign"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAttributeAccessIssue"
+   ],
+   "note": "(incompatible method replacements only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-assignment"
+   ],
+   "mypy": [
+    "typeddict-item"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(TypedDict item values)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-assignment"
+   ],
+   "mypy": [
+    "typeddict-readonly-mutated"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportTypedDictNotRequiredAccess"
+   ],
+   "note": "(read-only TypedDict keys)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-attribute-access"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAttributeAccessIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-attribute-override"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompatibleVariableOverride"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-await"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-base"
+   ],
+   "mypy": [
+    "valid-type",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-context-manager"
+   ],
+   "mypy": [
+    "misc",
+    "attr-defined",
+    "union-attr"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues",
+    "reportOptionalContextManager"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-dataclass"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-exception-caught"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-explicit-override"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-frozen-dataclass-subclass"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-generic-class"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(type-variable variance in methods)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-init-type-variable"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidTypeVarUse"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-key"
+   ],
+   "mypy": [
+    "typeddict-item",
+    "typeddict-unknown-key"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues",
+    "reportAssignmentType",
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-key"
+   ],
+   "mypy": [
+    "literal-required"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "(non-literal string TypedDict keys only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-legacy-type-variable"
+   ],
+   "mypy": [
+    "misc",
+    "valid-type"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues",
+    "reportInvalidTypeForm"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-match-pattern"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(class-pattern positional argument count only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-metaclass"
+   ],
+   "mypy": [
+    "metaclass"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-method-override"
+   ],
+   "mypy": [
+    "override"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompatibleMethodOverride"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-module-getattr-call"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-named-tuple"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(field names starting with an underscore only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-newtype"
+   ],
+   "mypy": [
+    "valid-newtype",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues",
+    "reportArgumentType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-overload"
+   ],
+   "mypy": [
+    "no-overload-impl",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportNoOverloadImplementation",
+    "reportInconsistentOverload"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-parameter-default"
+   ],
+   "mypy": [
+    "assignment"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportArgumentType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-protocol"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-raise"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-return-type"
+   ],
+   "mypy": [
+    "return",
+    "return-value"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportReturnType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-arguments"
+   ],
+   "mypy": [
+    "misc",
+    "type-var"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidTypeArguments"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-form"
+   ],
+   "mypy": [
+    "valid-type"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidTypeForm",
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-guard-definition"
+   ],
+   "mypy": [
+    "narrowed-type-not-subtype",
+    "valid-type"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-variable-bound"
+   ],
+   "mypy": [
+    "valid-type",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-variable-constraints"
+   ],
+   "mypy": [
+    "valid-type",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-type-variable-default"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-typed-dict-field"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompatibleVariableOverride"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-typed-dict-header"
+   ],
+   "mypy": [
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(custom metaclasses only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-typed-dict-statement"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "(methods in a TypedDict body only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "invalid-yield"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportReturnType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "isinstance-against-protocol"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportArgumentType",
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "isinstance-against-typed-dict"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportArgumentType",
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "mismatched-type-name"
+   ],
+   "mypy": [
+    "name-match",
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "missing-argument"
+   ],
+   "mypy": [
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "missing-override-decorator"
+   ],
+   "mypy": [
+    "explicit-override"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportImplicitOverride"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "missing-type-argument"
+   ],
+   "mypy": [
+    "type-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingTypeArgument"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "missing-typed-dict-key"
+   ],
+   "mypy": [
+    "typeddict-item"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAssignmentType"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "no-matching-overload"
+   ],
+   "mypy": [
+    "call-overload"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "not-iterable"
+   ],
+   "mypy": [
+    "misc",
+    "attr-defined",
+    "union-attr"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues",
+    "reportOptionalIterable"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "not-subscriptable"
+   ],
+   "mypy": [
+    "index"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIndexIssue",
+    "reportOptionalSubscript"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "override-of-final-method"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompatibleMethodOverride"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "override-of-final-variable"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "parameter-already-assigned"
+   ],
+   "mypy": [
+    "misc",
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "positional-only-parameter-as-kwarg"
+   ],
+   "mypy": [
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "possibly-missing-attribute"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "possibly-unresolved-reference"
+   ],
+   "mypy": [
+    "possibly-undefined"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportPossiblyUnboundVariable"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-cast"
+   ],
+   "mypy": [
+    "redundant-cast"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryCast"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition"
+   ],
+   "mypy": [
+    "truthy-bool"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "(guaranteed truthiness only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition"
+   ],
+   "mypy": [
+    "truthy-function"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryComparison"
+   ],
+   "note": "(function objects only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition"
+   ],
+   "mypy": [
+    "func-returns-value"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "(some boolean tests of `None`-returning calls only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition",
+    "redundant-condition-strict"
+   ],
+   "mypy": [
+    "redundant-expr"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition",
+    "redundant-condition-strict"
+   ],
+   "mypy": [
+    "comparison-overlap"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryComparison",
+    "reportUnnecessaryContains"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition",
+    "redundant-condition-strict"
+   ],
+   "mypy": [
+    "unreachable"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnreachable"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "redundant-condition-strict"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryIsInstance"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "subclass-of-final-class"
+   ],
+   "mypy": [
+    "misc"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "too-many-positional-arguments"
+   ],
+   "mypy": [
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "truthiness-test-of-callable"
+   ],
+   "mypy": [
+    "truthy-function"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryComparison"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "truthiness-test-of-iterable"
+   ],
+   "mypy": [
+    "truthy-iterable",
+    "truthy-bool"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "truthiness-test-of-none-union"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "type-assertion-failure"
+   ],
+   "mypy": [
+    "assert-type"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAssertTypeFailure"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unbound-type-variable"
+   ],
+   "mypy": [
+    "valid-type"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportGeneralTypeIssues"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "undefined-reveal"
+   ],
+   "mypy": [
+    "unimported-reveal"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unknown-argument"
+   ],
+   "mypy": [
+    "call-arg"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallIssue"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unresolved-attribute"
+   ],
+   "mypy": [
+    "attr-defined",
+    "union-attr"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAttributeAccessIssue",
+    "reportFunctionMemberAccess",
+    "reportOptionalMemberAccess"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unresolved-import"
+   ],
+   "mypy": [
+    "import-not-found"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingImports"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unresolved-attribute",
+    "unresolved-import"
+   ],
+   "mypy": [
+    "attr-defined"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAttributeAccessIssue"
+   ],
+   "note": "(stub names not re-exported)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unresolved-reference"
+   ],
+   "mypy": [
+    "name-defined",
+    "used-before-def"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUndefinedVariable",
+    "reportUnboundVariable"
+   ],
+   "note": "[Ruff `F823`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unsound-assignment"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "(variables only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unsound-return-statement"
+   ],
+   "mypy": [
+    "no-any-return"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unsound-yield"
+   ],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unsupported-operator"
+   ],
+   "mypy": [
+    "operator"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportOperatorIssue",
+    "reportOptionalOperand"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unused-awaitable"
+   ],
+   "mypy": [
+    "unused-coroutine",
+    "unused-awaitable"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedCoroutine",
+    "reportUnusedCallResult"
+   ],
+   "note": "(native coroutines only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unused-ignore-comment"
+   ],
+   "mypy": [
+    "unused-ignore"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryTypeIgnoreComment"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "unused-type-ignore-comment"
+   ],
+   "mypy": [
+    "unused-ignore"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnnecessaryTypeIgnoreComment"
+   ],
+   "note": "",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [
+    "blanket-ignore-comment"
+   ],
+   "mypy": [
+    "ignore-without-code"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIgnoreCommentWithoutRule"
+   ],
+   "note": "[Ruff `PGH003`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "type-abstract"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "No direct equivalent planned for passing abstract classes where concrete classes are required",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "safe-super"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAbstractUsage"
+   ],
+   "note": "None yet for calling abstract methods through `super()`",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportAssertAlwaysTrue"
+   ],
+   "note": "[Ruff `F631`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportCallInDefaultInitializer"
+   ],
+   "note": "[Ruff `B006`]<br>[Ruff `B008`] (partial coverage; immutable annotations and calls are excluded)",
+   "ty_issues": [],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportConstantRedefinition"
+   ],
+   "note": "None yet (tracked in [Ruff #10137])",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportDuplicateImport"
+   ],
+   "note": "[Ruff `F811`]<br>[Ruff `I001`] (partial coverage; separate import blocks may be missed)",
+   "ty_issues": [],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportImplicitStringConcatenation"
+   ],
+   "note": "[Ruff `ISC001`]<br>[Ruff `ISC002`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportImportCycles"
+   ],
+   "note": "None yet (tracked in [#3647])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3647"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "mutable-override"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompatibleVariableOverride"
+   ],
+   "note": "None yet for mutable attribute types (tracked in [#2158])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/2158"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportIncompleteStub"
+   ],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInconsistentConstructor"
+   ],
+   "note": "None yet (tracked in [#3651])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3651"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidStringEscapeSequence"
+   ],
+   "note": "[Ruff `W605`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidStubStatement"
+   ],
+   "note": "[Ruff `PYI010`]<br>[Ruff `PYI017`]<br>[Ruff `PYI048`]<br>[Ruff `PYI052`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "type-var"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportInvalidTypeVarUse"
+   ],
+   "note": "None yet for other cases (tracked in [#1017], [#3636], [#3637])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/1017",
+    "https://github.com/astral-sh/ty/issues/3636",
+    "https://github.com/astral-sh/ty/issues/3637"
+   ],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "exhaustive-match"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMatchNotExhaustive"
+   ],
+   "note": "None yet (tracked in [#1060])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/1060"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingModuleSource"
+   ],
+   "note": "None yet (tracked in [#1577])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/1577"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingSuperCall"
+   ],
+   "note": "None yet (tracked in [#3652])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3652"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "import-untyped"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingTypeStubs"
+   ],
+   "note": "None yet (tracked in [#3638])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3638"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "overload-cannot-match",
+    "overload-overlap"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportOverlappingOverload"
+   ],
+   "note": "None yet (tracked in [#103])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/103"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "attr-defined"
+   ],
+   "mypy_flags": [
+    "--no-implicit-reexport"
+   ],
+   "pyright": [
+    "reportPrivateImportUsage",
+    "reportPrivateLocalImportUsage"
+   ],
+   "note": "None yet for non-re-exported names in runtime files (tracked in [#200])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/200"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportPrivateUsage"
+   ],
+   "note": "[Ruff `SLF001`]<br>[Ruff `PLC2701`] (partial coverage; `PLC2701` requires preview)",
+   "ty_issues": [],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportPropertyTypeMismatch"
+   ],
+   "note": "None yet (tracked in [#3633])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3633"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportSelfClsParameterName"
+   ],
+   "note": "[Ruff `N804`]<br>[Ruff `N805`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportTypeCommentUsage"
+   ],
+   "note": "[Ruff `PYI033`] (`.py` files require preview)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportTypedDictNotRequiredAccess"
+   ],
+   "note": "None yet for accessing non-required keys (tracked in [#2810])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/2810"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnhashable"
+   ],
+   "note": "None yet (tracked in [#3781])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3781"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUninitializedInstanceVariable"
+   ],
+   "note": "None yet (tracked in [#2954])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/2954"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnknownArgumentType",
+    "reportUnknownLambdaType",
+    "reportUnknownMemberType"
+   ],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "var-annotated"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnknownVariableType"
+   ],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnsupportedDunderAll"
+   ],
+   "note": "[Ruff `F822`]<br>[Ruff `PLE0604`]<br>[Ruff `PLE0605`]<br>[Ruff `PYI056`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUntypedBaseClass",
+    "reportUntypedClassDecorator"
+   ],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUntypedNamedTuple"
+   ],
+   "note": "[Ruff `PYI024`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedClass",
+    "reportUnusedFunction"
+   ],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedCallResult"
+   ],
+   "note": "None yet for other discarded call results",
+   "ty_issues": [],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedParameter"
+   ],
+   "note": "[Ruff `ARG` rules]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedExcept"
+   ],
+   "note": "[Ruff `B025`] (duplicate exception handlers only; other cases tracked in [#3701])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/3701"
+   ],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedExpression"
+   ],
+   "note": "[Ruff `B015`]<br>[Ruff `B018`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedImport"
+   ],
+   "note": "[Ruff `F401`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportUnusedVariable"
+   ],
+   "note": "[Ruff `F841`] (function-local variables only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [],
+   "mypy_flags": [],
+   "pyright": [
+    "reportWildcardImportFromLibrary"
+   ],
+   "note": "[Ruff `F403`]",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "explicit-any"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportExplicitAny"
+   ],
+   "note": "[Ruff `ANN401`] (function annotations only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "func-returns-value"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "None yet for other uses of `None`-returning calls",
+   "ty_issues": [],
+   "partial": true
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "no-any-unimported"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "None yet",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "no-untyped-call"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "None yet (tracked in [#4381])",
+   "ty_issues": [
+    "https://github.com/astral-sh/ty/issues/4381"
+   ],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "str-format"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "[Ruff `F505`]<br>[Ruff `F507`] (missing names or wrong argument counts only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "str-format"
+   ],
+   "mypy_flags": [],
+   "pyright": [],
+   "note": "[Ruff `F522`]<br>[Ruff `F523`]<br>[Ruff `F524`] (missing or extra arguments only)",
+   "ty_issues": [],
+   "partial": false
+  },
+  {
+   "ty": [],
+   "mypy": [
+    "no-untyped-def"
+   ],
+   "mypy_flags": [],
+   "pyright": [
+    "reportMissingParameterType",
+    "reportUnknownParameterType"
+   ],
+   "note": "[Ruff `ANN` rules]",
+   "ty_issues": [],
+   "partial": false
+  }
+ ]
+}
