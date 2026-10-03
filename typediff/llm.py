@@ -57,7 +57,15 @@ class FileLLM:
 class _HTTP:
     name = "http"
 
-    def _post(self, url: str, headers: dict[str, str], body: dict[str, Any], retries: int = 4) -> dict[str, Any]:
+    _last_call = 0.0
+
+    def _post(self, url: str, headers: dict[str, str], body: dict[str, Any], retries: int = 6) -> dict[str, Any]:
+        # TYPEDIFF_LLM_MIN_INTERVAL: seconds between requests (OpenRouter free tier = 20/min -> use 3.5)
+        gap = float(os.environ.get("TYPEDIFF_LLM_MIN_INTERVAL", "0"))
+        wait = _HTTP._last_call + gap - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        _HTTP._last_call = time.monotonic()
         data = json.dumps(body).encode()
         for attempt in range(retries):
             req = urllib.request.Request(url, data=data, headers={"content-type": "application/json", **headers})
@@ -66,7 +74,12 @@ class _HTTP:
                     return json.loads(resp.read().decode())
             except urllib.error.HTTPError as exc:
                 if exc.code in (429, 500, 502, 503, 529) and attempt < retries - 1:
-                    time.sleep(2 ** attempt * 3)
+                    retry_after = exc.headers.get("Retry-After") if exc.headers else None
+                    try:
+                        delay = float(retry_after) if retry_after else 2 ** attempt * 3
+                    except ValueError:
+                        delay = 2 ** attempt * 3
+                    time.sleep(min(delay, 120))
                     continue
                 raise RuntimeError(f"LLM HTTP {exc.code}: {exc.read().decode(errors='replace')[:500]}") from exc
             except urllib.error.URLError:

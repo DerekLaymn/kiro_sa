@@ -16,8 +16,11 @@ _EMPTY_OK_DECOS = {"overload", "abstractmethod", "abstractproperty"}
 def preflight(source: str, target_python: str = "3.12") -> list[str]:
     """Return blocking problems ('ERROR: ...') and warnings ('WARN: ...')."""
     out: list[str] = []
+    major, minor = (int(x) for x in target_python.split("."))
+    if (major, minor) > sys.version_info[:2]:
+        return [f"ERROR: typediff runs on Python {sys.version_info[0]}.{sys.version_info[1]} but targets {target_python}; "
+                "its parser cannot read newer syntax. Install typediff in a Python >= target venv."]
     try:
-        major, minor = (int(x) for x in target_python.split("."))
         tree = ast.parse(source, feature_version=(major, minor))
     except SyntaxError as exc:
         return [f"ERROR: syntax error for Python {target_python}: {exc.msg} (line {exc.lineno})"]

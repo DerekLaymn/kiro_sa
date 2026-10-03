@@ -43,6 +43,15 @@ def crash_findings(crashes: list[Crash]) -> list[Finding]:
 
 def validity(state: CaseState) -> dict:
     v: dict = {"valid": True, "problems": [], "runtime_usable": True}
+    import sys
+
+    try:
+        target = tuple(int(x) for x in state.target_python.split("."))
+    except ValueError:
+        target = sys.version_info[:2]
+    if state.amap.syntax_error and target > sys.version_info[:2]:
+        raise RuntimeError(f"typediff runs on Python {sys.version_info[0]}.{sys.version_info[1]} but the target is "
+                           f"{state.target_python}: its AST parser cannot read the program. Use a Python >= target venv.")
     if state.amap.syntax_error:
         v["valid"] = False
         v["problems"].append(f"syntax error: {state.amap.syntax_error}")

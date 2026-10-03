@@ -12,7 +12,7 @@ for the taxonomy, algorithm, oracles and prompts.
 ## Install
 
 ```bash
-pip install -e .            # in a venv that also has: pip install mypy ty pyright typing_extensions
+pip install -e .            # Python >= your target version (3.13 recommended); also: pip install ty==0.0.84 mypy==2.4.0 pyright typing_extensions
 typediff fetch-docs         # local typing-spec / mypy / ty / pyright corpus (needed to verify citations)
 typediff kb-selftest        # confirm KB entries still match your installed tool versions
 ```
@@ -49,7 +49,19 @@ typediff judge case.py --mypy-out mypy.out --mypy-err mypy.err \
 typediff run examples/*.py --keep-names        # results in typediff_out/<case>.{json,md} + dataset.jsonl
 ```
 
-**3. Run a campaign** (generate → run → judge → dataset → strategy):
+**3. Fuzz.** See [FUZZING_PLAN.md](FUZZING_PLAN.md) for the 15-day plan. The building blocks are:
+
+```bash
+typediff --python-version 3.13 seeds seeds/                     # judge a seed corpus (recursive; folder = area)
+python scripts/harvest_seeds.py                                 # 4,849 programs from conformance / ty / mypy tests
+typediff --llm ... generate --from-seeds DIR --n 5 --out-dir G  # LLM variants only (no judging)
+typediff triage OUT_DIR                                         # group the review queue into patterns
+```
+
+Known upstream issues go in `typediff/data/known_upstream.json`. Later runs then close matching
+findings as DUPLICATE, or as intended behaviour, with a link.
+
+**Older all-in-one loop** (generate → run → judge → dataset → strategy, one LLM for every role):
 
 ```bash
 TYPEDIFF_LLM=anthropic:<model> typediff loop --iterations 50 [--area narrowing_user]
@@ -115,6 +127,8 @@ typediff/
   generator.py    LLM program generator + preflight lint
   calibration.py  recall measurement on real bug reports + documented differences
   runtime_harness.py   CPython runner (coverage, reveal probes, traceback)
+seeds/            hand-written seed programs per feature area (+ status)
+scripts/harvest_seeds.py   seed harvester for upstream test suites
 calibration/
   negatives/      documented-difference programs (must be closed automatically)
   results/        per-case rows + summary of the last calibration run

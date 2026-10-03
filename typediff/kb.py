@@ -19,8 +19,10 @@ Entries were calibrated against ty 0.0.84 / mypy 2.4.0 (2026-10). Re-validate af
 from __future__ import annotations
 
 import ast
+import json
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable
 
 from .concerns import (
@@ -607,6 +609,62 @@ ENTRIES: list[KBEntry] = [
         (K.ONLY_MYPY, K.ONLY_TY, K.REVEAL_MISMATCH), m_partial_types,
     ),
 ]
+def _open_typeddict_kwargs(s, d) -> bool:
+    """The statement calls a function whose **kwargs is Unpack[TD] with TD a TypedDict that is neither
+    closed=True nor has extra_items= (those are checked strictly and are not covered by ty#4212)."""
+    if not s.amap.tree:
+        return False
+    strict = {n.name for n in ast.walk(s.amap.tree) if isinstance(n, ast.ClassDef)
+              and any(k.arg in ("closed", "extra_items") for k in n.keywords)}
+    open_fns = set()
+    for n in ast.walk(s.amap.tree):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.args.kwarg is not None:
+            ann = n.args.kwarg.annotation
+            if isinstance(ann, ast.Subscript) and getattr(ann.value, "id", getattr(ann.value, "attr", "")) == "Unpack":
+                if getattr(ann.slice, "id", None) not in strict:
+                    open_fns.add(n.name)
+    node = _stmt_node(s, d)
+    if node is None or isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+        return False
+    return any(isinstance(c, ast.Call) and getattr(c.func, "id", getattr(c.func, "attr", None)) in open_fns
+               for c in ast.walk(node))
+
+
+_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs}
+
+
+def _upstream_entries() -> list[KBEntry]:
+    path = Path(__file__).parent / "data" / "known_upstream.json"
+    if not path.exists():
+        return []
+    out = []
+    for e in json.loads(path.read_text()).get("entries", []):
+        kind = K(e["kind"])
+
+        def matcher(s, d, e=e):
+            diags = d.mypy if e["kind"] == "only_mypy" else d.ty if e["kind"] == "only_ty" else d.mypy + d.ty
+            if e["kind"] == "only_ty" and e.get("silent_tool") == "ty":
+                diags = d.pyright  # pyright-only concern that ty (and mypy) miss
+            hit = [x for x in diags if (not e.get("codes") or (x.code or "") in e["codes"])
+                   and re.search(e.get("message", ""), x.message)]
+            if not hit:
+                return False
+            if e.get("statement") and not re.search(e["statement"], d.statement):
+                return False
+            if e.get("source") and not re.search(e["source"], s.source):
+                return False
+            req = _REQUIRES.get(e.get("requires", ""))
+            return req(s, d) if req else True
+
+        out.append(KBEntry(
+            f"UPSTREAM-{e['id']}", f"already reported upstream: {e['note']}", Dismissal(e["dismissal"]), e["url"],
+            f"{e['note']} ({e['url']}). Known issue - do not file again; add new variants as a comment if they "
+            "add information.", (kind,), matcher, auto=True, runtime_override=False,
+        ))
+    return out
+
+
+ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation
 BY_ID = {e.id: e for e in ENTRIES}
 
 

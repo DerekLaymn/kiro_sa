@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -73,29 +74,176 @@ def cmd_run(args) -> int:
     return 0
 
 
+def _seed_header(source: str, key: str) -> str:
+    m = re.search(rf"^#\s*{key}:\s*(.+)$", source, re.M)
+    return m.group(1).strip() if m else ""
+
+
+def _seed_area(path: Path, source: str, default: str) -> str:
+    for cand in (path.parent.name, _seed_header(source, "area").split()[0] if _seed_header(source, "area") else ""):
+        if cand in AREAS:
+            return cand
+    return default
+
+
+def cmd_seeds(args) -> int:
+    """Seed mode: run every seed (recursively); with --mutate K and an LLM, also run K LLM variants of each
+    seed (and of each variant, up to --depth) that produced a non-dismissed finding."""
+    llm = from_env(args.llm)
+    p = _pipeline(args, llm)
+    out = Path(args.out)
+    strategy = Strategy(out / "strategy.json", llm)
+    files = sorted(Path(args.seeds).rglob("*.py"))
+    if args.area:
+        files = [f for f in files if _seed_area(f, f.read_text(), "") == args.area]
+    queue = [(f.read_text(), _seed_area(f, f.read_text(), args.area or "gradual_any"), f"seed {f}", 0) for f in files]
+    can_mutate = args.mutate > 0 and not isinstance(llm.inner, NullLLM)
+    if args.mutate > 0 and not can_mutate:
+        print("note: --mutate needs an LLM (TYPEDIFF_LLM=...); running seeds only", file=sys.stderr)
+    i = 0
+    while queue and i < args.iterations:
+        if args.max_llm_calls and llm.calls >= args.max_llm_calls:
+            print(f"stopping: LLM call budget reached ({llm.calls})")
+            break
+        source, area, origin, depth = queue.pop(0)
+        problems = preflight(source, args.python_version)
+        if blocking(problems):
+            print(f"[{i}] {origin}: preflight rejected: {problems}")
+            i += 1
+            continue
+        report = p.run_source(source)
+        report.notes += [f"area={area}", f"origin={origin}", f"depth={depth}"] + problems
+        before = len(p.dataset._sigs)
+        p.dataset.add_case(report)
+        new_sigs = len(p.dataset._sigs) - before
+        strategy.record(area, report, new_sigs)
+        advice = strategy.rule_decision(area, report)
+        report.strategy = advice
+        strategy.save()
+        _save(report, out, None)
+        live = [f for f in report.findings if f.tier != Tier.DISMISSED]
+        print(f"[{i}] {report.case_id} {area} d={depth} {origin}: "
+              f"{len(report.discrepancies)} disc, live={[(f.discrepancy_id, f.tier.value) for f in live]}")
+        if can_mutate and live and depth < args.depth:
+            brief = (_seed_header(source, "hypothesis") or AREAS[area]) + \
+                " Keep the construct that caused the disagreement; vary everything around it."
+            for k in range(args.mutate):
+                variant, meta = generate(llm, area, brief, advice.mutations, source, advice.avoid_patterns,
+                                         args.python_version)
+                if variant:
+                    queue.append((variant, area, f"{origin} > mut{k}", depth + 1))
+        i += 1
+    print(f"done: {i} programs, {llm.calls} LLM calls, dataset {p.dataset.path}")
+    return 0
+
+
+def cmd_generate(args) -> int:
+    """Generation only: write LLM programs to a directory (no checking/judging). Lets a cheap/free model
+    generate while judging happens later with `typediff seeds DIR` (no LLM, or a stronger one)."""
+    llm = from_env(args.llm)
+    if isinstance(llm.inner, NullLLM):
+        print("generate needs an LLM (TYPEDIFF_LLM=...)", file=sys.stderr)
+        return 2
+    out = Path(args.out_dir)
+    parents: list[tuple[str, str, Path | None]] = []
+    if args.from_seeds:
+        for f in sorted(Path(args.from_seeds).rglob("*.py")):
+            src = f.read_text()
+            parents.append((src, _seed_area(f, src, args.area or "gradual_any"), f))
+    else:
+        parents = [("", args.area or a, None) for a in ([args.area] if args.area else list(AREAS))]
+    written = 0
+    for previous, area, origin in parents:
+        brief = (_seed_header(previous, "hypothesis") if previous else "") or AREAS[area]
+        mutations = [{"operator": op} for op in (args.ops.split(",") if args.ops else [])]
+        for k in range(args.n):
+            if args.max_llm_calls and llm.calls >= args.max_llm_calls:
+                print(f"stopping: LLM call budget reached ({llm.calls})")
+                return 0
+            src, meta = generate(llm, area, brief, mutations, previous, [], args.python_version)
+            if not src:
+                print(f"  failed ({area}): {meta.get('preflight') or meta.get('error')}")
+                continue
+            name = (origin.stem + f"__mut{k}") if origin else f"gen{k}"
+            dest = out / area / f"{name}_{abs(hash(src)) % 10**6:06d}.py"
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            header = f"# area: {area}\n# hypothesis: {meta.get('hypothesis', '').strip()}\n# origin: {origin or 'llm'}\n"
+            dest.write_text(header + src)
+            written += 1
+            print(f"  wrote {dest}")
+    print(f"done: {written} programs, {llm.calls} uncached LLM calls")
+    return 0
+
+
+def cmd_triage(args) -> int:
+    """Group the review queue of a run directory into patterns (kind + silent/reporting tool + codes +
+    message template) so you triage one pattern at a time instead of one finding at a time."""
+    from collections import defaultdict
+
+    from .dataset import message_template
+
+    groups: dict[tuple, list[dict]] = defaultdict(list)
+    for f in sorted(Path(args.run_dir).glob("*.json")):
+        if f.name in ("strategy.json",) or f.name.startswith("calibration"):
+            continue
+        try:
+            r = json.loads(f.read_text())
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        if "findings" not in r:
+            continue
+        ds = {d["id"]: d for d in r["discrepancies"]}
+        origin = next((n.split("=", 1)[1] for n in r.get("notes", []) if n.startswith("origin=")), r["case_id"])
+        for x in r["findings"]:
+            if x["tier"] == "dismissed" and not args.all:
+                continue
+            d = ds.get(x["discrepancy_id"])
+            if d is None:
+                key = ("crash", x.get("signature") or x["reasoning"][:60])
+            else:
+                diags = d["mypy"] or d["ty"]
+                if d["kind"].startswith("reveal"):
+                    key = (d["kind"], d.get("reveal_relation"))
+                else:
+                    key = (d["kind"], tuple(sorted({y.get("code") or "" for y in diags})),
+                           message_template(diags[0]["message"]) if diags else "")
+            bug_ev = any(e["supports"] == "bug" and e["verified"] and e["strength"] == "strong" for e in x["evidence"])
+            groups[key].append({"origin": origin, "case": r["case_id"], "id": x["discrepancy_id"], "tier": x["tier"],
+                                "line": d["anchor"] if d else None, "stmt": d["statement"][:70] if d else "",
+                                "bug_evidence": bug_ev})
+    ranked = sorted(groups.items(), key=lambda kv: (-sum(i["bug_evidence"] for i in kv[1]), -len(kv[1])))
+    for key, items in ranked[: args.top]:
+        nb = sum(i["bug_evidence"] for i in items)
+        print(f"\n## {len(items):>4} findings ({nb} with strong bug evidence)  {' | '.join(map(str, key))}")
+        for i in sorted(items, key=lambda i: not i["bug_evidence"])[: args.examples]:
+            print(f"     {'*' if i['bug_evidence'] else ' '} {i['origin'][-60:]}  {i['id']} L{i['line']}: {i['stmt']}")
+    print(f"\n{sum(len(v) for v in groups.values())} findings in {len(groups)} patterns "
+          f"(* = strong verified bug evidence; triage those patterns first)")
+    return 0
+
+
 def cmd_loop(args) -> int:
     llm = from_env(args.llm)
     p = _pipeline(args, llm)
     out = Path(args.out)
     strategy = Strategy(out / "strategy.json", llm)
-    seeds = sorted(Path(args.seeds).glob("*.py")) if args.seeds else []
-    if not seeds and isinstance(llm.inner, NullLLM):
-        print("loop needs an LLM (TYPEDIFF_LLM=...) or --seeds DIR", file=sys.stderr)
+    if args.seeds:
+        print("use `typediff seeds DIR` for seed mode", file=sys.stderr)
+        return 2
+    if isinstance(llm.inner, NullLLM):
+        print("loop needs an LLM (TYPEDIFF_LLM=...); for seeds without an LLM use `typediff seeds DIR`", file=sys.stderr)
         return 2
     area = args.area or strategy.choose_area()
     brief, mutations, previous, avoid = AREAS[area], [], "", []
     for i in range(args.iterations):
-        if seeds:
-            if i >= len(seeds):
-                break
-            source, meta = seeds[i].read_text(), {"hypothesis": f"seed {seeds[i].name}"}
-            problems = preflight(source, args.python_version)
-        else:
-            source, meta = generate(llm, area, brief, mutations, previous, avoid, args.python_version)
-            problems = meta.get("preflight", [])
-            if source is None:
-                print(f"[{i}] generator failed: {meta}")
-                continue
+        if args.max_llm_calls and llm.calls >= args.max_llm_calls:
+            print(f"stopping: LLM call budget reached ({llm.calls})")
+            break
+        source, meta = generate(llm, area, brief, mutations, previous, avoid, args.python_version)
+        problems = meta.get("preflight", [])
+        if source is None:
+            print(f"[{i}] generator failed: {meta}")
+            continue
         if blocking(problems):
             print(f"[{i}] preflight rejected program: {problems}")
             continue
@@ -230,8 +378,34 @@ def main(argv: list[str] | None = None) -> int:
     lp = sub.add_parser("loop", help="generation/judging campaign")
     lp.add_argument("--iterations", type=int, default=20)
     lp.add_argument("--area", choices=sorted(AREAS))
-    lp.add_argument("--seeds", help="directory of .py programs to use instead of the LLM generator")
+    lp.add_argument("--seeds", help=argparse.SUPPRESS)
+    lp.add_argument("--max-llm-calls", type=int, default=0, help="stop after this many (uncached) LLM calls")
     lp.set_defaults(fn=cmd_loop)
+
+    sd = sub.add_parser("seeds", help="run a seed corpus (recursively), optionally with LLM mutation of hits")
+    sd.add_argument("seeds", help="directory; sub-folders named after feature areas set the area")
+    sd.add_argument("--iterations", type=int, default=100000, help="max programs to run")
+    sd.add_argument("--area", choices=sorted(AREAS), help="only seeds of this area")
+    sd.add_argument("--mutate", type=int, default=0, help="LLM variants per seed that produced a live finding")
+    sd.add_argument("--depth", type=int, default=1, help="max mutation generations")
+    sd.add_argument("--max-llm-calls", type=int, default=0, help="stop after this many (uncached) LLM calls")
+    sd.set_defaults(fn=cmd_seeds)
+
+    tr = sub.add_parser("triage", help="group a run's review queue into patterns")
+    tr.add_argument("run_dir")
+    tr.add_argument("--top", type=int, default=30)
+    tr.add_argument("--examples", type=int, default=3)
+    tr.add_argument("--all", action="store_true", help="include dismissed findings")
+    tr.set_defaults(fn=cmd_triage)
+
+    gn = sub.add_parser("generate", help="LLM generation only: write programs to a directory (judge later)")
+    gn.add_argument("--out-dir", required=True)
+    gn.add_argument("--area", choices=sorted(AREAS), help="default: every area (or the seed's own area)")
+    gn.add_argument("--from-seeds", help="mutate every seed in this directory instead of writing from scratch")
+    gn.add_argument("--n", type=int, default=3, help="programs per area / per seed")
+    gn.add_argument("--ops", default="", help="comma-separated mutation operators, e.g. feature_crossover,runtime_witness")
+    gn.add_argument("--max-llm-calls", type=int, default=0)
+    gn.set_defaults(fn=cmd_generate)
 
     fd = sub.add_parser("fetch-docs", help="download spec/doc corpus for citation verification")
     fd.add_argument("--refresh-rule-map", action="store_true")

@@ -4,3 +4,5 @@ typediff_out/
 llm_inbox/
 .venv/
 calibration/positives.json
+seeds/harvested/
+runs/
