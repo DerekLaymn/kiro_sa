@@ -14,7 +14,8 @@ import re
 
 from .experiments import ExperimentRunner, call_assignability_oracle, default_probe_exprs
 from .inhabit import inhabits
-from .kb import matching_entries, runtime_contradiction
+from .concerns import same_concern
+from .kb import matched_probe, matching_entries, runtime_contradiction
 from .models import (
     Crash, Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Finding, Symptom, Tier, Tool, Verdict,
 )
@@ -29,6 +30,19 @@ _NONDETERMINISTIC = re.compile(r"\b(random|time\.time|datetime\.now|input\(|open
 def crash_findings(crashes: list[Crash]) -> list[Finding]:
     out = []
     for i, c in enumerate(crashes, 1):
+        if c.kind == "abnormal_exit" and c.tool in (Tool.MYPY, Tool.TY):
+            # exit code outside the normal set with no diagnostics: the run is INVALID, not "no errors".
+            # Could be a config/usage problem rather than a checker bug -> human review, never dismissed or confirmed.
+            out.append(Finding(
+                discrepancy_id=f"C{i}", verdict=Verdict.NEEDS_HUMAN, tier=Tier.REVIEW, faulty_tool="unknown",
+                symptom=None, dismissal=None, confidence=0.0, decided_by=f"rule:crash:{c.kind}",
+                reasoning=f"{c.tool.value} exited abnormally ({c.signature}) without diagnostics: the run is invalid, "
+                          "its empty output is NOT evidence of 'no errors'",
+                evidence=[Evidence(EvidenceType.STACKTRACE, "neutral", c.excerpt[-1500:], c.signature, verified=True,
+                                   strength="weak", blame=c.tool.value)],
+                signature=c.signature,
+            ))
+            continue
         out.append(Finding(
             discrepancy_id=f"C{i}", verdict=Verdict.BUG, tier=Tier.CONFIRMED, faulty_tool=c.tool.value,
             symptom=Symptom.CRASH, dismissal=None, confidence=0.99, decided_by=f"rule:crash:{c.kind}",
@@ -125,21 +139,26 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
                                        "statement was never executed under CPython - no runtime oracle for it",
                                        citation=f"line {d.anchor}", verified=True, strength="weak"))
     if d.kind == K.REVEAL_MISMATCH:
-        for p in rt.probes:
-            if state.amap.anchor(p.line) != d.anchor:
+        at_anchor = [p for p in rt.probes if state.amap.anchor(p.line) == d.anchor]
+        for tool, lst in (("mypy", d.mypy), ("ty", d.ty)):
+            if not lst:
                 continue
-            for tool, lst in (("mypy", d.mypy), ("ty", d.ty)):
-                if not lst:
-                    continue
-                t = normalize(lst[0].revealed_type, state.module)
-                verdict = inhabits(p.shape, t, state.nominal_classes)
-                if verdict is False:
+            p = matched_probe(state, d, tool)  # k-th reveal <-> k-th probe, or None when ambiguous
+            if p is None:
+                if at_anchor:
                     d.evidence.append(Evidence(
-                        EvidenceType.RUNTIME, "bug",
-                        f"runtime value {p.shape.get('repr')!r} of type {p.shape.get('type')} does NOT inhabit {tool}'s "
-                        f"revealed type {t.text if t else lst[0].revealed_type}",
-                        citation=f"probe line {p.line}", verified=True, strength="strong", blame=tool))
-            break
+                        EvidenceType.RUNTIME, "neutral",
+                        f"{len(at_anchor)} runtime probe(s) at this statement cannot be paired with {tool}'s reveal_type "
+                        "call unambiguously (several reveals on one statement, loop/repeated call, or nesting): "
+                        "runtime probe values not used", citation=f"line {d.anchor}", verified=True, strength="weak"))
+                continue
+            t = normalize(lst[0].revealed_type, state.module)
+            if inhabits(p.shape, t, state.nominal_classes) is False:
+                d.evidence.append(Evidence(
+                    EvidenceType.RUNTIME, "bug",
+                    f"runtime value {p.shape.get('repr')!r} of type {p.shape.get('type')} does NOT inhabit {tool}'s "
+                    f"revealed type {t.text if t else lst[0].revealed_type}",
+                    citation=f"probe line {p.line}", verified=True, strength="strong", blame=tool))
     if d.kind == K.REVEAL_UNPAIRED and rt.coverage_known:
         line = (d.ty or d.mypy)[0].line
         if line in (rt.executed_lines or []):
@@ -246,8 +265,16 @@ def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: 
         attach_runtime_evidence(state, d)
         attach_pyright_evidence(state, d)
         if d.kind == K.SEVERITY_ONLY:
+            pairs = "; ".join(f"mypy {x.severity.value}[{x.code}] <-> ty {y.severity.value}[{y.code}]"
+                              for x in d.mypy for y in d.ty if same_concern(x, y))
+            ev = Evidence(EvidenceType.HEURISTIC, "not_bug",
+                          f"compared at L{d.anchor}: mypy {[f'{x.severity.value}[{x.code}]' for x in d.mypy]} vs ty "
+                          f"{[f'{x.severity.value}[{x.code}]' for x in d.ty]}; same-concern pairing: {pairs or 'none'}. "
+                          "Both checkers flag the same concern (no unmatched diagnostic on either side); "
+                          "only error-vs-warning differs",
+                          citation=f"rule:severity-only@L{d.anchor}", verified=True, strength="medium")
             decided[d.id] = _finding(d, Verdict.NOT_BUG, Tier.DISMISSED, Dismissal.NOISE, "rule:severity-only",
-                                     "same concern reported by both checkers; only the severity differs", [])
+                                     "same concern reported by both checkers; only the severity differs", [ev])
             continue
         # cheap, deterministic operand probe -> explains most inference-driven ONLY_* discrepancies
         if (auto_probe and state.online and probes_done < max_probes
@@ -290,7 +317,7 @@ def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: 
         for e in sorted(hits, key=lambda h: h.verify is not None):
             if not e.auto:
                 continue
-            if contradiction and e.runtime_override:
+            if contradiction and (e.runtime_override or d.kind in e.runtime_override_kinds):
                 d.evidence.append(Evidence(EvidenceType.RUNTIME, "bug",
                                            f"KB:{e.id} would explain this, but {contradiction}", verified=True,
                                            strength="strong"))

@@ -9,7 +9,7 @@ from typing import Any
 from . import prompts
 from .corpus import Corpus
 from .experiments import ExperimentRunner
-from .kb import BY_ID, kb_prompt_block
+from .kb import BY_ID, kb_prompt_block, runtime_contradiction
 from .llm import complete_json
 from .models import (
     DISMISSAL_EVIDENCE, STRONG_BUG_EVIDENCE, Discrepancy, Dismissal, Evidence, EvidenceType, Finding, Symptom, Tier,
@@ -160,6 +160,18 @@ def make_validator(expected: set[str]):
     return validate
 
 
+def kb_entry_eligible(state: CaseState, d: Discrepancy, entry) -> bool:
+    """A KB citation may back a dismissal only if the entry could have auto-dismissed this discrepancy:
+    not hint-only, not demoted by a CPython contradiction, and (if it needs one) its experiment confirmed."""
+    if not entry.auto:
+        return False
+    if runtime_contradiction(state, d) and (entry.runtime_override or d.kind in entry.runtime_override_kinds):
+        return False
+    if entry.verify is not None:
+        return any(e.type == EvidenceType.EXPERIMENT and e.verified and e.supports == "not_bug" for e in d.evidence)
+    return True
+
+
 # --------------------------------------------------------------------------- adjudicator
 
 
@@ -267,12 +279,19 @@ class Adjudicator:
                     ev.summary = "[UNVERIFIED QUOTE - ignored] " + ev.summary
             elif ev.type == EvidenceType.KB:
                 kid = cit.removeprefix("KB:")
-                ev.verified = kid in BY_ID and kid in d.kb_hits
+                ev.verified = kid in BY_ID and kid in d.kb_hits and kb_entry_eligible(state, d, BY_ID[kid])
                 ev.strength = "medium" if ev.verified else "weak"
             elif ev.type in (EvidenceType.EXPERIMENT, EvidenceType.SELF_CONTRADICTION):
                 cited = {tok.strip(" ,;()") for tok in cit.split()} & exp_ids
-                det = [e for e in d.evidence if e.type == ev.type and e.verified]
-                ev.verified = bool(cited) and (ev.type == EvidenceType.EXPERIMENT or bool(det))
+                det = [e for e in d.evidence if e.type == ev.type and e.verified and e.supports == ev.supports]
+                if ev.type == EvidenceType.EXPERIMENT:
+                    # the cited experiment must exist for THIS discrepancy and really record the claimed direction
+                    ok = any(r.id in cited and r.ok and r.discrepancy_id == d.id and
+                             (r.evidence.supports == ev.supports if r.evidence is not None else ev.supports == "neutral")
+                             for r in ex.results)
+                    ev.verified = bool(cited) and ok
+                else:
+                    ev.verified = bool(cited) and bool(det)
                 ev.strength = "strong" if ev.verified and ev.type == EvidenceType.SELF_CONTRADICTION else (
                     "medium" if ev.verified else "weak")
             elif ev.type == EvidenceType.RUNTIME:
@@ -312,16 +331,22 @@ class Adjudicator:
         opposed = any(n.startswith(("SKEPTIC:WORKING_AS_INTENDED", "SKEPTIC:KNOWN_LIMITATION", "SKEPTIC:INVALID_REPRO",
                                     "SKEPTIC:WRONG_TOOL")) for n in f.review_notes)
         reopened = any(n.startswith("ADVOCATE:REOPEN") for n in f.review_notes)
+        # fail closed: a missing / invalid review pass can never help a finding reach CONFIRMED or DISMISSED
+        skeptic_done = any(n.startswith("SKEPTIC:") and not n.startswith("SKEPTIC:UNAVAILABLE") for n in f.review_notes)
+        advocate_done = any(n.startswith("ADVOCATE:") and not n.startswith("ADVOCATE:UNAVAILABLE") for n in f.review_notes)
+        advocate_needed = f.confidence < self.cfg.advocate_below or any(n.startswith("AUDIT:") for n in f.review_notes)
         if f.verdict == Verdict.BUG:
-            if bug_ev and f.confidence >= self.cfg.confirm_bug and not opposed:
+            if bug_ev and f.confidence >= self.cfg.confirm_bug and not opposed and skeptic_done:
                 f.tier = Tier.CONFIRMED
             elif bug_ev and f.confidence >= self.cfg.candidate_bug and not opposed:
                 f.tier = Tier.CANDIDATE
+                if not skeptic_done:
+                    f.review_notes.append("GATE: skeptic pass unavailable/invalid - capped at CANDIDATE")
             else:
                 f.tier = Tier.REVIEW
                 f.review_notes.append("GATE: BUG verdict lacks verified strong evidence or was contested")
         elif f.verdict == Verdict.NOT_BUG:
-            if dis_ev and f.confidence >= self.cfg.dismiss and not reopened:
+            if dis_ev and f.confidence >= self.cfg.dismiss and not reopened and (advocate_done or not advocate_needed):
                 f.tier = Tier.DISMISSED
             else:
                 f.tier = Tier.REVIEW

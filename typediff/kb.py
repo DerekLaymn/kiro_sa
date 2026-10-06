@@ -52,6 +52,7 @@ class KBEntry:
     matcher: Callable[[CaseState, Discrepancy], bool]
     auto: bool = False
     runtime_override: bool = True
+    runtime_override_kinds: tuple[DiscrepancyKind, ...] = ()  # kinds for which a runtime contradiction demotes the entry anyway
     verify: Callable[[CaseState, Discrepancy, ExperimentRunner], Evidence | None] | None = None
     example: str = ""  # canonical program for kb-selftest
 
@@ -106,14 +107,39 @@ def runtime_contradiction(s: CaseState, d: Discrepancy) -> str | None:
         if d.anchor in frame_anchors:
             return f"CPython raised {rt.exc_type}: {rt.exc_message} in this statement"
     if d.kind == K.REVEAL_MISMATCH:
-        for p in rt.probes:
-            if s.amap.anchor(p.line) != d.anchor:
-                continue
-            for tool in ("mypy", "ty"):
-                t = _rev(d, tool, s)
-                if t is not None and inhabits(p.shape, t, s.nominal_classes) is False:
-                    return f"runtime value {p.shape.get('repr')!r} ({p.shape.get('type')}) is outside {tool}'s type {t.text}"
+        for tool in ("mypy", "ty"):
+            p = matched_probe(s, d, tool)  # None when the pairing is ambiguous -> never blocks a dismissal
+            t = _rev(d, tool, s)
+            if p is not None and t is not None and inhabits(p.shape, t, s.nominal_classes) is False:
+                return f"runtime value {p.shape.get('repr')!r} ({p.shape.get('type')}) is outside {tool}'s type {t.text}"
     return None
+
+
+def matched_probe(s: CaseState, d: Discrepancy, tool: str):
+    """The runtime probe that belongs to this discrepancy's reveal_type call, or None if that is not certain.
+
+    The k-th reveal of ``tool`` in the statement is paired with the k-th runtime probe of the statement. Any
+    doubt (probe count differs from the reveal count because of loops / repeated calls / unexecuted branches,
+    or nested reveal_type calls whose evaluation order differs from their source order) gives None."""
+    mine = (d.mypy if tool == "mypy" else d.ty)
+    if not mine or mine[0].revealed_type is None:
+        return None
+    reveals = sorted((x for x in s.diags.get(Tool(tool), []) if x.revealed_type is not None
+                      and s.amap.anchor(x.line) == d.anchor), key=lambda x: (x.line, x.col or 0))
+    probes = [p for p in s.runtime.probes if s.amap.anchor(p.line) == d.anchor]
+    if not probes or len(probes) != len(reveals):
+        return None
+    node = _stmt_node(s, d)
+    if node is not None:
+        calls = [c for c in ast.walk(node) if isinstance(c, ast.Call)
+                 and getattr(c.func, "id", getattr(c.func, "attr", None)) == "reveal_type"]
+        if any(o is not c and any(i is c for i in ast.walk(o)) for o in calls for c in calls):
+            return None
+    try:
+        k = reveals.index(mine[0])
+    except ValueError:
+        return None
+    return probes[k]
 
 
 def _toggle(tool: Tool, flags: list[str]):
@@ -460,6 +486,8 @@ ENTRIES: list[KBEntry] = [
         "`@Todo` marks a feature ty does not implement yet (dynamic like Any). Check the type-system tracking issue "
         "https://github.com/astral-sh/ty/issues/1889 before reporting; normally logged, not filed.",
         (K.REVEAL_MISMATCH, K.ONLY_MYPY, K.ONLY_TY), m_todo, auto=True, runtime_override=False,
+        # ty is silent-or-@Todo there: if CPython raised a type exception at the statement, mypy would be a false negative
+        runtime_override_kinds=(K.ONLY_TY,),
     ),
     KBEntry(
         "TY-CHECK-NOT-IMPLEMENTED", "mypy-only check that ty does not implement, documented mypy behaviour",

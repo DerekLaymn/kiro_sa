@@ -238,6 +238,13 @@ class ExperimentRunner:
         flags = [str(f) for f in req.get("flags", [])]
         self._validate_flags(tool, flags)
         res = self.s.runners.check(tool, self.s.source, flags)
+        code = res.run.exit_code
+        # a failed toggled run (bad option, exit 2, crash, exit 1 without parseable output) proves nothing:
+        # "no diagnostics" there must never read as "the discrepancy disappeared"
+        if res.crashes or code not in (0, 1) or (code == 1 and not res.diagnostics):
+            why = f"crash {res.crashes[0].signature}" if res.crashes else f"exit code {code}, {len(res.diagnostics)} diagnostics"
+            return ExperimentResult(self._id(), "config_toggle", req, False,
+                                    f"{tool.value} {' '.join(flags)} -> toggled run failed ({why}): inconclusive")
         diags = {k: list(v) for k, v in self.s.diags.items()}
         diags[tool] = res.diagnostics
         persists = self.discrepancy_persists(d, diags)

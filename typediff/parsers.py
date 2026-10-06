@@ -43,9 +43,20 @@ _MYPY_REVEAL = re.compile(r'^Revealed type is "(?P<t>.*)"$')
 _PY_FRAME = re.compile(r'^\s*File "(?P<file>[^"]+)", line (?P<line>\d+), in (?P<func>.+)$')
 
 
-def _mypy_crash(stdout: str, stderr: str, exit_code: int | None) -> list[Crash]:
+# mypy's real crash banner is `<file>: error: INTERNAL ERROR -- ...` (no line number); the bare substring may be
+# user text echoed inside a diagnostic (e.g. a Literal['INTERNAL ERROR'] type)
+_MYPY_INTERNAL = re.compile(r"^[^:\n]+: error: INTERNAL ERROR\b", re.M)
+MYPY_NORMAL_EXIT = (0, 1)  # 2 = usage / fatal error
+TY_NORMAL_EXIT = (0, 1)  # 101 = panic
+
+
+def _mypy_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagnostic] | None = None) -> list[Crash]:
     blob = f"{stdout}\n{stderr}"
-    if "INTERNAL ERROR" not in blob and "Traceback (most recent call last)" not in stderr:
+    if not _MYPY_INTERNAL.search(blob) and "Traceback (most recent call last)" not in stderr:
+        if exit_code is not None and exit_code not in MYPY_NORMAL_EXIT and not diags:
+            # abnormal exit without any diagnostics must not be read as "no errors"
+            return [Crash(Tool.MYPY, "abnormal_exit", f"mypy:exit{exit_code}",
+                          "\n".join(blob.strip().splitlines()[-25:]), exit_code)]
         return []
     frames = [m for m in (_PY_FRAME.match(ln) for ln in blob.splitlines()) if m]
     last = frames[-1] if frames else None
@@ -120,7 +131,7 @@ def parse_mypy(stdout: str, stderr: str = "", exit_code: int | None = None, file
                 raw=line,
             )
         )
-    return diags, _mypy_crash(stdout, stderr, exit_code)
+    return diags, _mypy_crash(stdout, stderr, exit_code, diags)
 
 
 # --------------------------------------------------------------------------- ty
@@ -162,6 +173,10 @@ def _ty_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagn
         or "internal error" in stderr.lower()
     )
     if not hit:
+        if exit_code is not None and exit_code not in TY_NORMAL_EXIT and not diags:
+            # abnormal exit without any diagnostics must not be read as "no errors"
+            lines = [ln for ln in blob.strip().splitlines() if ln.strip()]
+            return [Crash(Tool.TY, "abnormal_exit", f"ty:exit{exit_code}", "\n".join(lines[-25:]), exit_code)]
         return []
     if panic:
         loc = re.sub(r"^.*?(crates/)", r"\1", panic["loc"])  # strip absolute build paths
@@ -275,6 +290,7 @@ def parse_pyright(stdout: str, stderr: str = "", exit_code: int | None = None, f
 
 STRONG_TYPE_EXC = {"TypeError", "AttributeError", "NameError", "UnboundLocalError"}
 WEAK_TYPE_EXC = {"KeyError", "IndexError"}
+_TIMEOUT_MARK = re.compile(r"(?:TIMEOUT after \d+s|TimeoutError: program exceeded \d+s)")
 _UNPACK = re.compile(r"(too many|not enough) values to unpack")
 
 
@@ -327,8 +343,7 @@ def parse_runtime(text: str, filename: str = "") -> RuntimeResult:
             frames=frames,
             stderr=t,
         )
-    low = t.lower()
-    if "timeout" in low or "timed out" in low:
+    if _TIMEOUT_MARK.match(t):  # only real harness/runner markers, not the word "timeout" in program output
         return RuntimeResult(status="timeout", stderr=t)
     return RuntimeResult(status="success", stdout=t)
 
