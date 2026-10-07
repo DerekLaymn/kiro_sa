@@ -1,6 +1,6 @@
 # area: overloads
 # explores: overloads on methods keyed by Literal keyword flags, overloaded classmethods returning Self,
-# calling with a plain bool (no overload matches unless there is a bool fallback)
+# calling with a plain bool (the spec expands bool into Literal[True] | Literal[False] during overload evaluation)
 from typing import Literal, Self, overload, reveal_type
 
 
@@ -30,7 +30,7 @@ class StrictParser(Parser):
 
 
 def with_flag(p: Parser, b: bool) -> None:
-    print(p.parse("3", many=b))  # expect-error: no overload accepts a plain bool
+    print(p.parse("3", many=b))  # spec: bool is expanded to Literal[True] | Literal[False] -> int | list[int] (mypy rejects this)
 
 
 p = StrictParser.create(True)
