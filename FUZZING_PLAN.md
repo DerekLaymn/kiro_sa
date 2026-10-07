@@ -25,15 +25,15 @@ rejected the call, and the self-consistency oracle proved ty contradicts itself.
 
 | Result | Seed | Status |
 |---|---|---|
-| ty false negative: inherited method with a `Self` parameter | `self_param_inherited.py` | **Not reported upstream yet.** File it (draft in chat history) |
-| Same bug in **classmethods** and **`tuple[Self, int]`** | `self_classmethod_param.py` | New variants of the same root cause; add them to that issue |
+| ty accepts a base-class argument for a `Self` parameter of an inherited method | `self_param_inherited.py` | **Reported; intended** (ty solves `Self` as a typevar per call). The wrong displayed signature is ty#4673. Now closed automatically |
+| Same behaviour through **classmethods** and **`tuple[Self, int]`** | `self_classmethod_param.py` | Same design decision; closed automatically |
 | ty silent on mixed constrained-TypeVar arguments (runtime `TypeError`) | `constrained_typevar.py` | Duplicate of open **ty#1090**, now closed automatically |
 | ty accepts unknown keyword through `Unpack[TypedDict]` | `readonly_notrequired.py` | Closed upstream **as intended** (ty#4212; open TypedDicts), now closed automatically |
 | mypy reveals `Weird` / `ViaMeta` where `__new__` / metaclass `__call__` return other types; CPython proves mypy wrong | `new_returns_other.py` | mypy candidate. Probably known; search python/mypy before filing |
 | ty reveals `Divergent` in widening loops; mypy rejects redefinition | `widening_loop.py` | Documented ty behaviour plus mypy design; no bug |
 | Others (match, LSP override, TypedDict reveal display, …) | various | In the review queue |
 
-Of 27 seeds, 16 produced live findings, 1 is a new bug family, and 2 are already known upstream.
+Of 27 seeds, 16 produced live findings. 1 was reported (outcome: intended behaviour plus a display bug, ty#4673), and 2 were already known upstream.
 That is the expected ratio: most disagreements are known or intended, and the pipeline's job is to
 make them cheap to discard.
 
@@ -55,9 +55,9 @@ conformance suite (130), ty's mdtests (3,509) and mypy's test data (1,210). The 
 3. **Feature interactions.** For example `Self` × generics, ParamSpec × methods × decorators,
    TypedDict × `Unpack` × inheritance, overloads × unions × literals, descriptors × subclasses,
    dataclasses × inheritance × `KW_ONLY`.
-4. **Inherited and specialised members.** The `Self` bug sits in the "inherited, not overridden"
-   path. The same path exists for generic-base specialisation, descriptors on subclasses, and
-   classmethods called on subclasses.
+4. **Inherited and specialised members.** Generic-base specialisation, descriptors on subclasses,
+   classmethods called on subclasses. Skip `Self` in parameters: ty deliberately solves it as a
+   per-call typevar (see DESIGN.md §8). Its *display* (`reveal_type` of bound methods) is buggy, ty#4673.
 5. **Crash hunting.** Recursive aliases, self-referential generics, loops that widen types, very
    deep nesting, invalid type forms. Astral already runs a fuzzer (the `fuzzer` label), so crashes
    are less novel, but they are confirmed automatically.
@@ -185,10 +185,13 @@ Rules:
 
 ## 6. Triage checklist (one candidate pattern)
 
-This is what we did for the `Self` bug:
+This is what we did for the `Self` report, plus step 2b, which we skipped and which would have predicted the "intended" answer:
 
 1. **Reproduce with all three checkers and CPython** on the minimal program.
 2. **Which spec rule applies?** Quote it from the typing spec. "mypy does it" isn't a reason.
+   - **2b. Argue the accused tool's side.** If the other checkers were right, what else would have
+     to be rejected? If the answer breaks subtyping or Liskov substitutability (as with `Self`
+     parameters), the behaviour is probably intended. Frame the report as a question or skip it.
 3. **Find the strongest oracle:** a runtime crash, the tool contradicting itself (its own revealed
    type or assignability), or a spec quote. Weak: "pyright agrees".
 4. **Generalise:** 3–5 variants. Note which variants pass (they localise the bug, e.g. "only when

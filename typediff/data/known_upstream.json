@@ -2,9 +2,23 @@
  "_doc": "Already-reported upstream issues. A discrepancy matching an entry is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note.",
  "entries": [
   {
+   "id": "TY-SELF-PARAM-TYPEVAR",
+   "kind": "only_mypy",
+   "codes": [
+    "arg-type"
+   ],
+   "message": "incompatible type",
+   "requires": "self_typed_param_call",
+   "dismissal": "DESIGN_DIVERGENCE",
+   "url": "https://github.com/astral-sh/ty/issues/4673",
+   "note": "intended ty behaviour (maintainer reply to our report): Self in a non-receiver parameter is a typevar bounded by the defining class and is solved per call, so Leaf().add(Node()) solves Self=Node and returns Node. mypy/pyright bind Self to the receiver, which breaks Liskov substitutability. The *displayed* signature `bound method Leaf.add(c: Leaf)` is the actual ty bug, tracked in ty#4673"
+  },
+  {
    "id": "TY-1090",
    "kind": "only_mypy",
-   "codes": ["type-var"],
+   "codes": [
+    "type-var"
+   ],
    "message": "Value of type variable .* cannot be",
    "source": "TypeVar\\([^)]*,[^)]*,|\\[\\w+: \\(",
    "dismissal": "DUPLICATE",
@@ -14,7 +28,9 @@
   {
    "id": "TY-4212",
    "kind": "only_mypy",
-   "codes": ["call-arg"],
+   "codes": [
+    "call-arg"
+   ],
    "message": "Unexpected keyword argument",
    "source": "Unpack\\[",
    "requires": "open_typeddict_kwargs",
@@ -26,7 +42,9 @@
    "id": "TY-2255",
    "kind": "only_ty",
    "silent_tool": "ty",
-   "codes": ["reportIncompatibleMethodOverride"],
+   "codes": [
+    "reportIncompatibleMethodOverride"
+   ],
    "message": "overrides class .* in an incompatible manner",
    "statement": "Self",
    "dismissal": "DUPLICATE",
