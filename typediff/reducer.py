@@ -5,12 +5,13 @@ dedup signature that goes into the dataset."""
 from __future__ import annotations
 
 import ast
+import re
 from typing import Callable
 
 from .anchors import AnchorMap, statement_key
 from .concerns import same_concern
 from .discrepancy import META_CODES
-from .models import Discrepancy, DiscrepancyKind, EvidenceType, Finding, Tool
+from .models import Discrepancy, DiscrepancyKind, EvidenceType, Finding, RuntimeResult, Tool
 from .parsers import classify_exception
 from .runners import Runners
 from .typenorm import normalize, relation
@@ -28,7 +29,7 @@ class Reducer:
 
     # ------------------------------------------------------------------ predicates
     def predicate_for(self, source: str, d: Discrepancy | None, finding: Finding, crash_signature: str | None = None,
-                      crash_tool: Tool | None = None) -> Callable[[str], bool]:
+                      crash_tool: Tool | None = None, runtime: RuntimeResult | None = None) -> Callable[[str], bool]:
         if crash_signature and crash_tool:
             def crash_pred(src: str) -> bool:
                 r = self.runners.check(crash_tool, src)
@@ -43,6 +44,14 @@ class Reducer:
         m_codes = {x.code for x in d.mypy}
         t_codes = {x.code for x in d.ty}
         orig_rel = d.reveal_relation
+        # runtime evidence must survive reduction as the SAME failure: same exception class and message, raised by the
+        # same statement. Otherwise a repro can drop the very attribute that made it crash and still raise "something"
+        # (the ty#4656 example lost `children`/`leaf_only`, or crashed for another reason).
+        orig_exc = None
+        if runtime is not None and runtime.status == "exception" and runtime.exc_line:
+            rst = amap.stmt(runtime.exc_line)
+            if rst is not None and rst.node is not None:
+                orig_exc = (runtime.exc_type, _norm_msg(runtime.exc_message), _safe_key(rst.node))
         # errors elsewhere must not grow: a repro that only works because it is broken elsewhere is useless upstream
         baseline: dict[Tool, set[str]] = {}
         for tool in (Tool.MYPY, Tool.TY):
@@ -97,6 +106,10 @@ class Reducer:
                     rt = self.runners.run_runtime(src)
                     ok = (rt.status == "exception" and classify_exception(rt.exc_type, rt.exc_message) == "strong"
                           and s.anchor in {vm.anchor(ln) for ln, _ in rt.frames})
+                    if ok and orig_exc is not None:
+                        rst = vm.stmt(rt.exc_line) if rt.exc_line else None
+                        ok = (rst is not None and rst.node is not None
+                              and (rt.exc_type, _norm_msg(rt.exc_message), _safe_key(rst.node)) == orig_exc)
                 if ok:
                     return True
             return False
@@ -154,6 +167,10 @@ class Reducer:
         except Exception:  # noqa: BLE001 - a failing candidate is simply "not interesting"
             memo[src] = False
         return memo[src]
+
+
+def _norm_msg(msg: str | None) -> str:
+    return re.sub(r"0x[0-9a-fA-F]+", "0x", msg or "")
 
 
 def _attached(tree: ast.Module, node: ast.AST) -> bool:

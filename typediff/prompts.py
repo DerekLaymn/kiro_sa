@@ -109,6 +109,11 @@ statement; tells you whether each checker considers expr assignable - compare wi
 an argument)
 {"kind":"opt_in_checks"}        (re-run both with their documented opt-in soundness checks, e.g. mypy mutable-override, \
 ty unsound-*; tells you whether a miss is a deliberate default)
+{"kind":"spec_desugar","line":<int>}   (rewrites Self in the defining class's method signatures to a bounded TypeVar \
+and re-runs the tool that stayed silent; an unchanged answer = consistent with the spec's own desugaring. A hint \
+toward SPEC_AMBIGUITY, never a dismissal by itself)
+{"kind":"lsp_probe"}            (only for a Self-typed parameter rejected by mypy: asks whether mypy accepts \
+`def probe(n: Base): n.m(Base())` plus `probe(Sub())`; if yes its rejection is not a one-sided oracle)
 {"kind":"pyright"}
 {"kind":"request_context","query":"<spec or doc topic>"}
 At most 3 experiments per discrepancy per round. Prefer the cheapest one that could flip your verdict. A witness \

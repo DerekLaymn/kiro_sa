@@ -12,10 +12,11 @@ import ast
 import hashlib
 import re
 
-from .experiments import ExperimentRunner, call_assignability_oracle, default_probe_exprs
+from .causes import dependency_constructs
+from .experiments import ExperimentRunner, call_assignability_oracle, default_probe_exprs, self_call_plan
 from .inhabit import inhabits
 from .concerns import same_concern
-from .kb import matched_probe, matching_entries, runtime_contradiction
+from .kb import entry_demotion, matched_probe, matching_entries, runtime_contradiction
 from .models import (
     Crash, Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Finding, Symptom, Tier, Tool, Verdict,
 )
@@ -30,9 +31,10 @@ _NONDETERMINISTIC = re.compile(r"\b(random|time\.time|datetime\.now|input\(|open
 def crash_findings(crashes: list[Crash]) -> list[Finding]:
     out = []
     for i, c in enumerate(crashes, 1):
-        if c.kind == "abnormal_exit" and c.tool in (Tool.MYPY, Tool.TY):
+        if c.kind == "abnormal_exit":
             # exit code outside the normal set with no diagnostics: the run is INVALID, not "no errors".
-            # Could be a config/usage problem rather than a checker bug -> human review, never dismissed or confirmed.
+            # Could be a config/usage problem rather than a checker bug -> human review, never dismissed or confirmed
+            # (same cap for mypy, ty and pyright).
             out.append(Finding(
                 discrepancy_id=f"C{i}", verdict=Verdict.NEEDS_HUMAN, tier=Tier.REVIEW, faulty_tool="unknown",
                 symptom=None, dismissal=None, confidence=0.0, decided_by=f"rule:crash:{c.kind}",
@@ -121,10 +123,15 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
     if strong_exc and d.anchor in frame_anchors:
         blame = {K.ONLY_MYPY: "ty", K.ONLY_TY: "mypy", K.RUNTIME_MISS: "both"}.get(d.kind, "unknown")
         reported = "; ".join(x.short() for x in d.mypy + d.ty) or "nothing"
+        st = state.amap.stmt(rt.exc_line) if rt.exc_line else None
+        causes = dependency_constructs(state.amap.tree, st.node if st else None, state.amap.lines)
+        cause_txt = (f" Constructs in the raising statement's dependency set that could be responsible: {'; '.join(causes)}."
+                     " A reduced repro must keep them." if causes else "")
         d.evidence.append(Evidence(
             EvidenceType.RUNTIME, "bug",
             f"CPython raised {rt.exc_type}: {rt.exc_message} with this statement on the stack "
-            f"(frames {rt.frames}). Checker output here: {reported}. Check the exception is caused by the reported issue.",
+            f"(frames {rt.frames}). Checker output here: {reported}. Check the exception is caused by the reported issue."
+            f"{cause_txt}",
             citation=f"line {rt.exc_line}", verified=True, strength="strong", blame=blame,
         ))
     elif rt.coverage_known:
@@ -302,6 +309,10 @@ def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: 
             ev = call_assignability_oracle(state, d, ex)
             if ev is not None:
                 d.evidence.append(ev)
+        if state.online and d.kind == K.ONLY_MYPY and self_call_plan(state, d) is not None:
+            r = ex.run(d, {"kind": "lsp_probe"})  # narrow: is mypy's own reading Liskov-safe? (hint-level evidence)
+            if r.ok and r.evidence is not None:
+                d.evidence.append(r.evidence)
         if state.online and d.kind == K.RUNTIME_MISS:
             r = ex.run(d, {"kind": "opt_in_checks"})
             if r.ok and r.evidence:
@@ -312,15 +323,13 @@ def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: 
                                                    citation=r.id, verified=True, strength="medium"))
         hits = matching_entries(state, d)
         d.kb_hits = [h.id for h in hits]
-        contradiction = runtime_contradiction(state, d)
         closed = False
         for e in sorted(hits, key=lambda h: h.verify is not None):
             if not e.auto:
                 continue
-            if contradiction and (e.runtime_override or d.kind in e.runtime_override_kinds):
-                d.evidence.append(Evidence(EvidenceType.RUNTIME, "bug",
-                                           f"KB:{e.id} would explain this, but {contradiction}", verified=True,
-                                           strength="strong"))
+            demotion = entry_demotion(state, d, e)
+            if demotion is not None:
+                d.evidence.append(demotion)
                 continue
             extra = [Evidence(EvidenceType.KB, "not_bug", e.title, citation=f"KB:{e.id}", quote="", verified=True,
                               strength="strong" if e.verify is None else "medium")]

@@ -1,40 +1,26 @@
 {
- "_doc": "Already-reported upstream issues. A discrepancy matching an entry is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note.",
+ "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles.",
  "entries": [
-  {
-   "id": "TY-SELF-PARAM-TYPEVAR",
-   "kind": "only_mypy",
-   "codes": [
-    "arg-type"
-   ],
-   "message": "incompatible type",
-   "requires": "self_typed_param_call",
-   "dismissal": "DESIGN_DIVERGENCE",
-   "url": "https://github.com/astral-sh/ty/issues/4673",
-   "note": "intended ty behaviour (maintainer reply to our report): Self in a non-receiver parameter is a typevar bounded by the defining class and is solved per call, so Leaf().add(Node()) solves Self=Node and returns Node. mypy/pyright bind Self to the receiver, which breaks Liskov substitutability. The *displayed* signature `bound method Leaf.add(c: Leaf)` is the actual ty bug, tracked in ty#4673"
-  },
   {
    "id": "TY-1090",
    "kind": "only_mypy",
-   "codes": [
-    "type-var"
-   ],
+   "codes": ["type-var"],
    "message": "Value of type variable .* cannot be",
    "source": "TypeVar\\([^)]*,[^)]*,|\\[\\w+: \\(",
    "dismissal": "DUPLICATE",
+   "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/1090",
    "note": "open ty issue: ty allows passing different types for constrained TypeVar arguments"
   },
   {
    "id": "TY-4212",
    "kind": "only_mypy",
-   "codes": [
-    "call-arg"
-   ],
+   "codes": ["call-arg"],
    "message": "Unexpected keyword argument",
    "source": "Unpack\\[",
    "requires": "open_typeddict_kwargs",
    "dismissal": "DESIGN_DIVERGENCE",
+   "stance": "intended",
    "url": "https://github.com/astral-sh/ty/issues/4212",
    "note": "closed as intended: Unpack[TD] of an *open* TypedDict accepts extra keywords (python/typing#2272); use closed=True for strict checking"
   },
@@ -42,14 +28,40 @@
    "id": "TY-2255",
    "kind": "only_ty",
    "silent_tool": "ty",
-   "codes": [
-    "reportIncompatibleMethodOverride"
-   ],
+   "codes": ["reportIncompatibleMethodOverride"],
    "message": "overrides class .* in an incompatible manner",
    "statement": "Self",
    "dismissal": "DUPLICATE",
+   "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/2255",
    "note": "open ty issue: overriding a method that takes Self as a non-receiver parameter should be a Liskov violation (only pyright reports it)"
+  }
+ ],
+ "prior_stances": [
+  {
+   "id": "TY-4656",
+   "stance": "intended",
+   "url": "https://github.com/astral-sh/ty/issues/4656",
+   "kinds": ["only_mypy", "only_ty", "reveal_mismatch", "concern_mismatch", "runtime_miss"],
+   "tags": ["self"],
+   "note": "closed 'Not planned' (intended): ty treats Self in a method signature as a TypeVar bounded by the defining class and solves it jointly with the receiver, so Leaf().add(Node()) is accepted; mypy/pyright pin Self to the receiver. The spec is ambiguous. A crash through Self-typed state (list[Self], next: Self | None) is a different, genuine unsoundness"
+  },
+  {
+   "id": "TY-4673",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4673",
+   "kinds": ["reveal_mismatch", "only_mypy", "concern_mismatch"],
+   "message": "bound method",
+   "source": "\\bSelf\\b|TypeVar",
+   "note": "open display bug: reveal_type of a bound method prints Self/TypeVar parameters specialised to the receiver (e.g. `Leaf.add(c: Leaf)`), which is not what call checking uses"
+  },
+  {
+   "id": "TY-1172",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/1172",
+   "kinds": ["only_mypy", "reveal_mismatch"],
+   "tags": ["self"],
+   "note": "open (bug label): the earlier design discussion of the same example, including the 'reveal_type contradicts the accepted call' observation. Its body text contains the Node/Leaf add(c: Self) program, so a title search would not find it"
   }
  ]
 }

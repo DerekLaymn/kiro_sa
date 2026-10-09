@@ -11,6 +11,9 @@ metamorphic     pep604 | pep585 | any_substitution rewrite      -> SELF_CONTRADI
 variant         LLM-authored program + stated relation          -> raw outcomes (medium strength)
 witness         append code that should crash at runtime        -> RUNTIME proof of unsoundness
 pyright         tie-breaker run                                 -> CONSENSUS (weak)
+spec_desugar    rewrite Self in a method signature to a bounded TypeVar, re-run the SAME tool
+                                                                -> "consistent with the spec's own desugaring" (hint)
+lsp_probe       def probe(n: Base): n.m(Base()); probe(Sub())   -> is the rejecting tool's reading itself unsound? (hint)
 """
 
 from __future__ import annotations
@@ -21,7 +24,8 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
-from .anchors import AnchorMap
+from . import selfparam
+from .anchors import AnchorMap, statement_key
 from .concerns import family
 from .discrepancy import META_CODES, find_discrepancies, rel_name
 from .inhabit import inhabits
@@ -201,6 +205,7 @@ class ExperimentRunner:
                 "config_toggle": self.config_toggle, "reveal_probe": self.reveal_probe, "metamorphic": self.metamorphic,
                 "variant": self.variant, "witness": self.witness, "pyright": self.pyright,
                 "opt_in_checks": self.opt_in_checks, "assignability": self.assignability,
+                "spec_desugar": self.spec_desugar, "lsp_probe": self.lsp_probe,
             }.get(kind)
             if fn is None:
                 raise ExperimentError(f"unknown/unsupported experiment kind {kind!r}")
@@ -548,6 +553,110 @@ class ExperimentRunner:
                       verified=True, strength="weak")
         return ExperimentResult(self._id(), "pyright", req, True, ev.summary, {"pyright": at, "sides_with": side}, ev)
 
+    def _clean_check(self, tool: Tool, src: str):
+        """(result, failed). A failed run (crash, exit outside {0,1}, exit 1 without diagnostics) proves nothing."""
+        res = self.s.runners.check(tool, src)
+        code = res.run.exit_code
+        failed = bool(res.crashes) or code not in (0, 1) or (code == 1 and not res.diagnostics)
+        return res, failed
+
+    def spec_desugar(self, d: Discrepancy, req: dict[str, Any]) -> ExperimentResult:
+        """Rewrite ``Self`` in the signatures of the defining class to a bounded TypeVar (the typing spec's own
+        desugaring: ``def m(self: T, c: T) -> T`` with ``T = TypeVar('T', bound='Cls')``) and re-run the SAME tool.
+
+        Unchanged answer -> the tool is consistent with the spec's desugaring (supports SPEC_AMBIGUITY, not a clear
+        bug). It is a hint: the evidence is neutral and never dismisses anything by itself. A failed run of either
+        program is INCONCLUSIVE (ok=False, no evidence)."""
+        src0 = self.s.source
+        if "type: ignore" in src0 or "ty: ignore" in src0:
+            raise ExperimentError("spec_desugar: suppression comments would be lost by ast.unparse")
+        plan = self_call_plan(self.s, d)
+        tree = ast.parse(src0)
+        cls = str(req.get("class") or (plan.defining if plan else ""))
+        if not cls:
+            owners = [n for n, c in selfparam.classes_by_name(tree).items()
+                      if any(isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef)) and selfparam.self_in_nonreceiver_params(m)
+                             for m in c.body)]
+            if len(owners) != 1:
+                raise ExperimentError("spec_desugar: cannot tell which class's Self signatures to rewrite (pass 'class')")
+            cls = owners[0]
+        tool = Tool(req["tool"]) if req.get("tool") in ("mypy", "ty") else (Tool.TY if d.kind == DiscrepancyKind.ONLY_MYPY else Tool.MYPY)
+        st = self.s.amap.stmt(int(req.get("line") or d.anchor))
+        if st is None or st.node is None:
+            raise ExperimentError("spec_desugar: no statement at that line")
+        key = statement_key(st.node)
+        rewritten = _desugar_self(tree, cls)
+        ast.fix_missing_locations(tree)
+        variant = ast.unparse(tree) + "\n"
+        baseline = ast.unparse(ast.parse(src0)) + "\n"  # identity round trip: unparse effects cancel out
+        outcome: dict[str, Any] = {"tool": tool.value, "class": cls, "methods_rewritten": rewritten, "variant_source": variant}
+        runs = []
+        for label, src in (("before", baseline), ("after", variant)):
+            res, failed = self._clean_check(tool, src)
+            codes = _problem_codes_at(res.diagnostics, AnchorMap(src), key)
+            if failed or codes is None:
+                why = "toggled run failed" if failed else "the statement was not found in the rewritten program"
+                return ExperimentResult(self._id(), "spec_desugar", req, False,
+                                        f"{tool.value} desugar ({label}): {why}: inconclusive", outcome)
+            runs.append(codes)
+        before, after = runs
+        outcome.update({"before": before, "after": after, "unchanged": before == after})
+        if before == after:
+            summary = (f"{tool.value} gives the same answer ({before or 'no diagnostic'}) at the statement after `Self` in "
+                       f"{cls}'s signatures is rewritten to a bounded TypeVar: consistent with the spec's own desugaring")
+            note = (" (supports SPEC_AMBIGUITY / not a clear bug; a hint, never a dismissal by itself)")
+        else:
+            summary = (f"{tool.value}'s answer CHANGES after the desugaring ({before or 'no diagnostic'} -> "
+                       f"{after or 'no diagnostic'}): it treats `Self` differently from the spec's TypeVar form")
+            note = ""
+        ev = Evidence(EvidenceType.EXPERIMENT, "neutral", summary + note, verified=True, strength="weak")
+        return ExperimentResult(self._id(), "spec_desugar", req, True, summary, outcome, ev)
+
+    def lsp_probe(self, d: Discrepancy, req: dict[str, Any]) -> ExperimentResult:
+        """Is the REJECTING tool's reading of a ``Self``-parameter method call itself unsound under substitutability?
+
+        Synthesises ``def probe(n: Base): n.m(<same args>)`` and ``probe(Sub())`` (never executed) and asks the tool
+        that rejects ``Sub().m(<args>)``. If it accepts both, its reading cannot guard against the very program it
+        rejects, so its rejection must not be used as a one-sided oracle for the other tool's false negative.
+        Applies only to the narrow Self-parameter call pattern; anything else is rejected, not guessed."""
+        plan = self_call_plan(self.s, d)
+        if plan is None:
+            raise ExperimentError("lsp_probe: not a Self-parameter method call rejected by mypy")
+        classes = selfparam.classes_by_name(self.s.amap.tree)
+        for a in [*plan.call.args, *[k.value for k in plan.call.keywords]]:
+            if not selfparam.simple_instance_expr(a, classes):
+                raise ExperimentError("lsp_probe: arguments must be simple `Cls()` constructions")
+        if not selfparam.simple_instance_expr(ast.parse(f"{plan.receiver}()", mode="eval").body, classes):
+            raise ExperimentError(f"lsp_probe: cannot construct {plan.receiver}() without arguments")
+        call = ast.Call(func=ast.Attribute(value=ast.Name("n", ast.Load()), attr=plan.method, ctx=ast.Load()),
+                        args=plan.call.args, keywords=plan.call.keywords)
+        base = self.s.source.rstrip("\n")
+        first = len(base.splitlines())
+        probe = (f"{base}\n\n\ndef _td_lsp_probe(n: {plan.defining}) -> None:\n    {ast.unparse(call)}\n\n"
+                 f"_td_lsp_probe({plan.receiver}())\n")
+        ast.parse(probe)
+        call_line, sub_line = first + 4, first + 6
+        tool = Tool.MYPY  # the tool that rejects (ONLY_MYPY is the only supported shape)
+        res, failed = self._clean_check(tool, probe)
+        if failed:
+            return ExperimentResult(self._id(), "lsp_probe", req, False,
+                                    f"{tool.value} lsp probe run failed: inconclusive", {"probe_source": probe})
+        hits = {ln: [x.short() for x in res.diagnostics if x.line == ln and x.is_problem and (x.code or "") not in META_CODES]
+                for ln in (call_line, sub_line)}
+        accepts = not hits[call_line] and not hits[sub_line]
+        outcome = {"tool": tool.value, "accepts_base_call": not hits[call_line], "accepts_sub_call": not hits[sub_line],
+                   "diagnostics": hits, "probe_source": probe}
+        what = f"`n.{plan.method}(...)` for `n: {plan.defining}` and `_td_lsp_probe({plan.receiver}())`"
+        if accepts:
+            summary = (f"{tool.value} accepts {what}, yet rejects the same call made directly on a {plan.receiver}: its reading "
+                       "is not Liskov-safe, so its rejection is not a one-sided oracle for another checker's false negative")
+            ev = Evidence(EvidenceType.CONSENSUS, "neutral", "[CONSENSUS-downgrade] " + summary, verified=True,
+                          strength="weak")
+        else:
+            summary = f"{tool.value} rejects {what}: ({'; '.join(sum(hits.values(), []))[:200]})"
+            ev = None
+        return ExperimentResult(self._id(), "lsp_probe", req, True, summary, outcome, ev)
+
     def _full_run(self, src: str) -> dict[str, Any]:
         out: dict[str, Any] = {}
         for tool in (Tool.MYPY, Tool.TY):
@@ -578,6 +687,116 @@ def _definitions_only(source: str) -> str:
             keep.append(n)
     tree.body = keep or [ast.Pass()]
     return ast.unparse(tree) + "\n"
+
+
+def self_call_plan(state: "CaseState", d: Discrepancy) -> "selfparam.SelfParamCall | None":
+    """The narrow Self-parameter call pattern behind this discrepancy (mypy rejects, ty silent), or None."""
+    if d.kind != DiscrepancyKind.ONLY_MYPY or not d.mypy:
+        return None
+    st = state.amap.stmt(d.anchor)
+    return selfparam.match_self_param_call(state.amap.tree, d.mypy, st.node if st is not None else None)
+
+
+class _SelfToTypeVar(ast.NodeTransformer):
+    def __init__(self, name: str):
+        self.name = name
+
+    def visit_Name(self, node: ast.Name) -> ast.AST:
+        return ast.copy_location(ast.Name(self.name, node.ctx), node) if node.id == "Self" else node
+
+    def visit_Attribute(self, node: ast.Attribute) -> ast.AST:
+        return ast.copy_location(ast.Name(self.name, ast.Load()), node) if node.attr == "Self" else self.generic_visit(node)
+
+
+def _desugar_self(tree: ast.Module, cls_name: str) -> int:
+    """In place: replace ``Self`` in the signatures of ``cls_name``'s instance methods by a TypeVar bound to the class
+    and annotate the receiver with it (``def m(self: T, c: T) -> T``). Returns the number of methods rewritten."""
+    cls = next((n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == cls_name), None)
+    if cls is None:
+        raise ExperimentError(f"spec_desugar: class {cls_name!r} is not defined at module level")
+    if getattr(cls, "type_params", None) or any(_base_is_generic(b) for b in cls.bases):
+        raise ExperimentError("spec_desugar: generic classes are not supported (the bound would lose its arguments)")
+    tv = f"_TdSelf_{cls_name}"
+    count = 0
+    for fn in cls.body:
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        deco = selfparam.decorator_names(fn)
+        if deco & {"staticmethod", "classmethod"}:
+            continue
+        if "overload" in deco:
+            raise ExperimentError("spec_desugar: overloaded methods are not supported")
+        a = fn.args
+        pos = [*a.posonlyargs, *a.args]
+        anns = [p.annotation for p in [*pos[1:], *a.kwonlyargs, a.vararg, a.kwarg] if p is not None and p.annotation is not None]
+        anns += [fn.returns] if fn.returns is not None else []
+        if not any(selfparam.mentions_self(x) for x in anns):
+            continue
+        if any(isinstance(c, ast.Constant) and isinstance(c.value, str) and "Self" in c.value for x in anns for c in ast.walk(x)):
+            raise ExperimentError("spec_desugar: string annotations containing Self are not supported")
+        if not pos or pos[0].annotation is not None:
+            continue
+        for p in [*pos[1:], *a.kwonlyargs, a.vararg, a.kwarg]:
+            if p is not None and p.annotation is not None:
+                p.annotation = _SelfToTypeVar(tv).visit(p.annotation)
+        if fn.returns is not None:
+            fn.returns = _SelfToTypeVar(tv).visit(fn.returns)
+        pos[0].annotation = ast.Name(tv, ast.Load())
+        count += 1
+    if not count:
+        raise ExperimentError(f"spec_desugar: {cls_name} has no instance method with Self in its signature")
+    decl = ast.Assign(targets=[ast.Name(tv, ast.Store())],
+                      value=ast.Call(ast.Name("_TdTypeVar", ast.Load()), [ast.Constant(tv)],
+                                     [ast.keyword("bound", ast.Constant(cls_name))]))
+    tree.body.insert(tree.body.index(cls), decl)
+    at = 0
+    while at < len(tree.body) and ((isinstance(tree.body[at], ast.ImportFrom) and tree.body[at].module == "__future__")
+                                   or (at == 0 and isinstance(tree.body[0], ast.Expr)
+                                       and isinstance(getattr(tree.body[0], "value", None), ast.Constant))):
+        at += 1
+    tree.body.insert(at, ast.ImportFrom("typing", [ast.alias("TypeVar", "_TdTypeVar")], 0))
+    return count
+
+
+def _base_is_generic(b: ast.expr) -> bool:
+    return isinstance(b, ast.Subscript) or (isinstance(b, ast.Name) and b.id == "Generic") or (
+        isinstance(b, ast.Attribute) and b.attr == "Generic")
+
+
+def _problem_codes_at(diags: list[Diagnostic], amap: AnchorMap, key: str) -> list[str] | None:
+    """Sorted problem codes reported at the statement(s) whose body-independent key is ``key`` (None if absent)."""
+    def safe(n: ast.AST) -> str:
+        try:
+            return statement_key(n)
+        except Exception:  # noqa: BLE001
+            return ""
+
+    anchors = {s.anchor for s in amap.statements if s.node is not None and safe(s.node) == key}
+    if not anchors:
+        return None
+    return sorted((x.code or "?") for x in diags
+                  if x.is_problem and amap.anchor(x.line) in anchors and (x.code or "") not in META_CODES)
+
+
+def reveal_is_display_sensitive(tree: ast.AST | None, callee: ast.expr, sig_text: str) -> bool:
+    """True if ``sig_text`` (a revealed signature of ``callee``) is display text of a callable whose non-receiver
+    parameter types involve ``Self`` or a TypeVar. Checkers specialise those when printing a bound method, so the
+    printout is not proof of what call checking does (ty#4656 / ty#4673)."""
+    tvars = _typevar_names(tree) if tree is not None else set()
+    if re.search(r"\bSelf\b", sig_text) or any(re.search(rf"\b{re.escape(t)}\b", sig_text) for t in tvars):
+        return True
+    name = callee.attr if isinstance(callee, ast.Attribute) else callee.id if isinstance(callee, ast.Name) else None
+    if tree is None or name is None:
+        return False
+    methods = {id(m) for c in ast.walk(tree) if isinstance(c, ast.ClassDef) for m in c.body}
+    for fn in ast.walk(tree):
+        if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)) and fn.name == name:
+            params = selfparam.nonreceiver_params(fn) if id(fn) in methods else [
+                *fn.args.posonlyargs, *fn.args.args, *fn.args.kwonlyargs]
+            if any(p.annotation is not None and (selfparam.mentions_self(p.annotation) or _mentions(p.annotation, tvars))
+                   for p in params):
+                return True
+    return False
 
 
 def _unshift_paths(m: dict[str, set[str]], insert_at: int) -> dict[str, set[str]]:
@@ -739,8 +958,15 @@ def call_assignability_oracle(state: "CaseState", d: Discrepancy, ex: Experiment
     # only a genuine assignability rejection counts (not e.g. an unresolved name in the probe line)
     if not any(re.search(r"\[(assignment|invalid-assignment)\]", r) for r in rejections):
         return None
-    return Evidence(
-        EvidenceType.SELF_CONTRADICTION, "bug",
-        f"{silent.value} reveals `{callee}` as `{norm.text}` (parameter type `{ptype}`), rejects "
-        f"`_td_probe: {ptype} = {ast.unparse(arg)}` ({rejections[0]}), yet accepts the call "
-        f"({probe_id}, {res.id})", citation=res.id, verified=True, strength="strong", blame=silent.value)
+    text = (f"{silent.value} reveals `{callee}` as `{norm.text}` (parameter type `{ptype}`), rejects "
+            f"`_td_probe: {ptype} = {ast.unparse(arg)}` ({rejections[0]}), yet accepts the call "
+            f"({probe_id}, {res.id})")
+    if reveal_is_display_sensitive(state.amap.tree, call.func, norm.text):
+        # a printed bound-method signature is display text; with Self/TypeVar parameters it may be a known display bug
+        # (ty#4673), not a statement about call checking -> WEAK, never enough for CONFIRMED on its own
+        return Evidence(
+            EvidenceType.SELF_CONTRADICTION, "bug",
+            "[reveal-only, demoted to WEAK: the revealed signature involves Self/a TypeVar and may be a display bug] " + text,
+            citation=res.id, verified=True, strength="weak", blame=silent.value)
+    return Evidence(EvidenceType.SELF_CONTRADICTION, "bug", text, citation=res.id, verified=True, strength="strong",
+                    blame=silent.value)

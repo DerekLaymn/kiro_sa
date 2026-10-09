@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from . import prompts
 from .llm import complete_json
-from .models import CaseReport, Finding, Tier, Tool
+from .models import CaseReport, EvidenceType, Finding, Tier, Tool
+from .priors import apply_prior_cap, find_priors, warning_text
 
 _TIER_ORDER = {Tier.CONFIRMED: 0, Tier.CANDIDATE: 1, Tier.REVIEW: 2, Tier.DISMISSED: 3}
 
@@ -70,7 +71,16 @@ def render_summary(r: CaseReport) -> str:
 
 
 def draft_issue(r: CaseReport, f: Finding, llm=None) -> str:
+    """Draft an upstream issue. Before drafting, the prior upstream stance is consulted (known_upstream.json): a near-match
+    caps the finding at REVIEW and the draft starts with the stance, its url and a 'check the body text' warning."""
     d = next((x for x in r.discrepancies if x.id == f.discrepancy_id), None)
+    priors = find_priors(r.source, d)
+    apply_prior_cap(f, priors)
+    body = _draft_body(r, f, d, llm)
+    return (f"> **WARNING - do not file yet.** {warning_text(priors).replace(chr(10), chr(10) + '> ')}\n\n" + body) if priors else body
+
+
+def _draft_body(r: CaseReport, f: Finding, d, llm) -> str:
     tool = f.faulty_tool if f.faulty_tool in ("ty", "mypy") else "ty"
     other = "mypy" if tool == "ty" else "ty"
     src = f.reduced_source or r.source
@@ -82,8 +92,14 @@ def draft_issue(r: CaseReport, f: Finding, llm=None) -> str:
     else:
         tool_out = (f"{tool}: " + ("; ".join(mine) if mine else "no diagnostic at this statement")
                     + f"\n(for comparison, {other}: " + ("; ".join(theirs) if theirs else "no diagnostic") + ")")
+    # a reduced repro that no longer raises must not be presented as a crash: drop the runtime claim and say so
+    runtime_lost = any(n.startswith("REDUCER:RUNTIME-LOST") for n in f.review_notes)
     ev = "\n".join(f"- [{e.type.value}] {e.summary[:400]}" + (f'\n  > "{e.quote}"' if e.quote and e.verified else "")
-                   for e in f.evidence if e.verified and e.supports == "bug" and e.strength == "strong")
+                   for e in f.evidence if e.verified and e.supports == "bug" and e.strength == "strong"
+                   and not (runtime_lost and e.type == EvidenceType.RUNTIME))
+    if runtime_lost:
+        ev += ("\n- (Runtime evidence omitted: the reduced program does NOT reproduce the CPython failure seen in the "
+               "original program; do not describe this repro as a crash.)")
     versions = ", ".join(f"{k} {v}" for k, v in r.tool_versions.items() if v)
     if llm is not None and getattr(llm, "name", "null") != "null":
         obj = complete_json(llm, prompts.REPORTER_SYSTEM.format(tool=tool), prompts.REPORTER_USER.format(

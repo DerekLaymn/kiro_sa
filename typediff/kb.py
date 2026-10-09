@@ -30,10 +30,11 @@ from .concerns import (
     ty_rules_without_mypy_equivalent,
 )
 from .discrepancy import META_CODES
-from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner
+from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner, self_call_plan
 from .inhabit import inhabits
 from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Tool
 from .parsers import classify_exception
+from .selfparam import has_self_typed_state
 from .state import CaseState
 from .typenorm import gradual_diff, is_join_vs_union, is_literal_widening, normalize
 
@@ -54,6 +55,9 @@ class KBEntry:
     runtime_override: bool = True
     runtime_override_kinds: tuple[DiscrepancyKind, ...] = ()  # kinds for which a runtime contradiction demotes the entry anyway
     verify: Callable[[CaseState, Discrepancy, ExperimentRunner], Evidence | None] | None = None
+    # extra demotion beyond the CPython-contradiction switch: returns an explanation when the entry must NOT dismiss
+    # this discrepancy (it then stays in the review queue with the explanation as a neutral note)
+    demote: Callable[[CaseState, Discrepancy], str | None] | None = None
     example: str = ""  # canonical program for kb-selftest
 
     def prompt_text(self) -> str:
@@ -156,7 +160,31 @@ def _toggle(tool: Tool, flags: list[str]):
         return Evidence(EvidenceType.EXPERIMENT, "neutral",
                         f"discrepancy persists with {tool.value} {' '.join(flags)} ({r.id}) - KB explanation does not apply",
                         citation=r.id, verified=True, strength="medium")
+    verify.expects = lambda d: {"kind": "config_toggle", "tool": tool.value, "flags": flags}  # the entry's OWN experiment
     return verify
+
+
+def entry_demotion(s: CaseState, d: Discrepancy, e: KBEntry) -> Evidence | None:
+    """Evidence explaining why ``e`` must not dismiss ``d`` (CPython contradiction or the entry's own demotion), else None."""
+    c = runtime_contradiction(s, d)
+    if c and (e.runtime_override or d.kind in e.runtime_override_kinds):
+        return Evidence(EvidenceType.RUNTIME, "bug", f"KB:{e.id} would explain this, but {c}", verified=True, strength="strong")
+    note = e.demote(s, d) if e.demote is not None else None
+    if note:
+        return Evidence(EvidenceType.RUNTIME, "neutral", f"KB:{e.id} would explain this, but {note}", verified=True,
+                        strength="medium")
+    return None
+
+
+def own_experiment_confirmed(d: Discrepancy, e: KBEntry, ex: ExperimentRunner | None) -> bool:
+    """A verify-required entry may back a dismissal only with the experiment that belongs to ITS toggle: an ok result
+    for this discrepancy, with the request this entry expects, whose outcome says the discrepancy went away."""
+    expects = getattr(e.verify, "expects", None)
+    if expects is None or ex is None:
+        return False
+    want = expects(d)
+    return any(r.ok and r.discrepancy_id == d.id and all(r.request.get(k) == v for k, v in want.items())
+               and (r.outcome.get("persists") is False or r.outcome.get("unchanged") is True) for r in ex.results)
 
 
 # --------------------------------------------------------------------------- matchers
@@ -254,6 +282,16 @@ def v_mypy_optional(s, d, ex):
     return _toggle(Tool.MYPY, flags)(s, d, ex) if flags else None
 
 
+def _mypy_optional_flags(d) -> list[str]:
+    flags: list[str] = []
+    for c in _optional_mypy_codes_for(d):
+        flags += MYPY_CODE_ENABLERS.get(c, ["--enable-error-code", c])
+    return flags
+
+
+v_mypy_optional.expects = lambda d: {"kind": "config_toggle", "tool": "mypy", "flags": _mypy_optional_flags(d)}
+
+
 def m_ty_only_rule(s, d):
     only = ty_rules_without_mypy_equivalent()
     return any((x.code or "") in only for x in d.ty)
@@ -271,6 +309,44 @@ def _explicit_any_in_source(s) -> bool:
     return bool(s.amap.tree) and any(
         (isinstance(n, ast.Name) and n.id == "Any") or (isinstance(n, ast.Attribute) and n.attr == "Any")
         for n in ast.walk(s.amap.tree))
+
+
+def m_self_upper_bound(s, d):
+    """Narrow, ALL required (see selfparam.match_self_param_call): a method has Self in a non-receiver parameter; mypy's
+    arg-type rejection names a strict subclass as the expected type, no override in between; the rejected argument is
+    the defining class or a supertype of the receiver; ty is silent."""
+    return d.kind == K.ONLY_MYPY and self_call_plan(s, d) is not None
+
+
+def demote_self_state_crash(s, d) -> str | None:
+    """Self-typed attribute + a CPython type-related exception: the case where ty IS unsound (not 'intended')."""
+    rt = s.runtime
+    if has_self_typed_state(s.amap.tree) and rt.status == "exception" and classify_exception(rt.exc_type, rt.exc_message) == "strong":
+        return (f"CPython raised {rt.exc_type}: {rt.exc_message} and the program keeps state in a Self-typed attribute "
+                "(the PEP 673 `LinkedList.next: Self | None` / `list[Self]` pattern). ty specialises such attributes to the "
+                "receiver while it solves a Self parameter jointly, so a base instance accepted by the call can end up in a "
+                "slot ty believes holds the subclass. That unsoundness is NOT covered by the 'intended' verdict of ty#4656 "
+                "(see ty#2255, discuss.python.org 86338): human review")
+    return None
+
+
+def v_self_desugar(s, d, ex):
+    """Auto-dismissal only if re-running ty on the spec's own TypeVar desugaring gives the SAME answer."""
+    if not s.online:
+        return None
+    r = ex.run(d, {"kind": "spec_desugar", "line": d.anchor})
+    if not r.ok:
+        return None  # inconclusive (failed run / unsupported shape) -> never a verdict
+    if r.outcome.get("unchanged"):
+        return Evidence(EvidenceType.EXPERIMENT, "not_bug",
+                        f"{r.outcome['tool']}'s answer is unchanged after the Self -> bounded-TypeVar desugaring ({r.id}): "
+                        "consistent with the spec's own desugaring", citation=r.id, verified=True, strength="medium")
+    return Evidence(EvidenceType.EXPERIMENT, "neutral",
+                    f"the answer changes under the desugaring ({r.id}) - KB explanation does not apply", citation=r.id,
+                    verified=True, strength="medium")
+
+
+v_self_desugar.expects = lambda d: {"kind": "spec_desugar", "line": d.anchor}
 
 
 def m_both_gradual(s, d):
@@ -312,9 +388,10 @@ def m_precision_runtime_consistent(s, d):
         return False
     if _chain_tags(s, d) & _SPEC_NARROWING:
         return False  # narrowing results are (partly) specified -> let the adjudicator look
-    precise = _rev(d, "ty" if d.reveal_relation == "ty_more_precise" else "mypy", s)
-    probes = [p for p in s.runtime.probes if s.amap.anchor(p.line) == d.anchor]
-    return bool(probes) and all(inhabits(p.shape, precise, s.nominal_classes) is True for p in probes)
+    tool = "ty" if d.reveal_relation == "ty_more_precise" else "mypy"
+    precise = _rev(d, tool, s)
+    p = matched_probe(s, d, tool)  # the probe of THIS reveal_type call; None when the pairing is ambiguous -> adjudicate
+    return p is not None and inhabits(p.shape, precise, s.nominal_classes) is True
 
 
 def m_mypy_skips_unreachable(s, d):
@@ -636,6 +713,26 @@ ENTRIES: list[KBEntry] = [
         "types'); the scope and timing of this inference differ between checkers.",
         (K.ONLY_MYPY, K.ONLY_TY, K.REVEAL_MISMATCH), m_partial_types,
     ),
+    KBEntry(
+        "TY-SELF-UPPER-BOUND", "ty solves Self in a method signature as a TypeVar bounded by the defining class",
+        Dismissal.DESIGN_DIVERGENCE, "https://github.com/astral-sh/ty/issues/4656",
+        "ty treats `Self` in a method signature as a TypeVar whose upper bound is the defining class and solves it "
+        "jointly with the receiver (the typing spec's own desugaring `def m(self: T, c: T) -> T`). So an inherited, "
+        "non-overridden `Leaf().add(Node())` with `def add(self, c: Self)` is accepted with `Self = Node`; mypy and pyright "
+        "pin `Self` to the receiver (`Leaf`) and reject it. The spec is ambiguous here: ty#4656 (closed as intended; the "
+        "reveal_type display of the bound method is the real bug, ty#4673), ty#1172 (the earlier design discussion), "
+        "ty#2255 (the missing Liskov check on overrides that take `Self`), discuss.python.org 'Unsoundness of "
+        "contravariant Self type' (86338). Fires only when ALL hold: Self sits in a non-receiver parameter, mypy's "
+        "rejection names a strict subclass as the expected type with no override in between, the rejected argument is "
+        "the defining class or a supertype of the receiver, and ty is silent. It dismisses ONLY after a deterministic "
+        "desugar probe shows ty answers the same on the spec's TypeVar form. NOT covered: a crash that goes through "
+        "Self-typed state (`LinkedList.next: Self | None`, `list[Self]`) - ty is genuinely unsound there, so the entry "
+        "steps aside and the case goes to review.",
+        (K.ONLY_MYPY,), m_self_upper_bound, auto=True, runtime_override=True, verify=v_self_desugar,
+        demote=demote_self_state_crash,
+        example="from typing import Self\n\n\nclass Node:\n    def add(self, c: Self) -> Self:\n        return self\n\n\n"
+                "class Leaf(Node):\n    pass\n\n\nx = Leaf()\nx.add(Node())\n",
+    ),
 ]
 def _open_typeddict_kwargs(s, d) -> bool:
     """The statement calls a function whose **kwargs is Unpack[TD] with TD a TypedDict that is neither
@@ -658,23 +755,7 @@ def _open_typeddict_kwargs(s, d) -> bool:
                for c in ast.walk(node))
 
 
-def _self_typed_param_call(s, d) -> bool:
-    """The statement calls a method that has a non-receiver parameter annotated with Self (incl. list[Self] ...)."""
-    if not s.amap.tree:
-        return False
-    methods = set()
-    for n in ast.walk(s.amap.tree):
-        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            params = [*n.args.posonlyargs, *n.args.args, *n.args.kwonlyargs][1:]
-            if any(p.annotation is not None and any(isinstance(x, ast.Name) and x.id == "Self"
-                                                    for x in ast.walk(p.annotation)) for p in params):
-                methods.add(n.name)
-    node = _stmt_node(s, d)
-    return node is not None and any(
-        isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute) and c.func.attr in methods for c in ast.walk(node))
-
-
-_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs, "self_typed_param_call": _self_typed_param_call}
+_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs}
 
 
 def _upstream_entries() -> list[KBEntry]:
@@ -738,5 +819,5 @@ def tracking_issue_for(d: Discrepancy) -> list[str]:
     return out
 
 
-__all__ = ["ENTRIES", "BY_ID", "KBEntry", "matching_entries", "kb_prompt_block", "runtime_contradiction",
-           "tracking_issue_for", "rule_rows", "META_CODES"]
+__all__ = ["ENTRIES", "BY_ID", "KBEntry", "matching_entries", "kb_prompt_block", "runtime_contradiction", "matched_probe",
+           "entry_demotion", "own_experiment_confirmed", "tracking_issue_for", "rule_rows", "META_CODES"]

@@ -9,7 +9,7 @@ from typing import Any
 from . import prompts
 from .corpus import Corpus
 from .experiments import ExperimentRunner
-from .kb import BY_ID, kb_prompt_block, runtime_contradiction
+from .kb import BY_ID, entry_demotion, kb_prompt_block, own_experiment_confirmed
 from .llm import complete_json
 from .models import (
     DISMISSAL_EVIDENCE, STRONG_BUG_EVIDENCE, Discrepancy, Dismissal, Evidence, EvidenceType, Finding, Symptom, Tier,
@@ -160,15 +160,16 @@ def make_validator(expected: set[str]):
     return validate
 
 
-def kb_entry_eligible(state: CaseState, d: Discrepancy, entry) -> bool:
+def kb_entry_eligible(state: CaseState, d: Discrepancy, entry, ex: ExperimentRunner | None = None) -> bool:
     """A KB citation may back a dismissal only if the entry could have auto-dismissed this discrepancy:
-    not hint-only, not demoted by a CPython contradiction, and (if it needs one) its experiment confirmed."""
+    not hint-only, not demoted (CPython contradiction or the entry's own demotion), and (if it needs one) ITS OWN
+    experiment confirmed - an unrelated verified experiment on the same discrepancy does not count."""
     if not entry.auto:
         return False
-    if runtime_contradiction(state, d) and (entry.runtime_override or d.kind in entry.runtime_override_kinds):
+    if entry_demotion(state, d, entry) is not None:
         return False
     if entry.verify is not None:
-        return any(e.type == EvidenceType.EXPERIMENT and e.verified and e.supports == "not_bug" for e in d.evidence)
+        return own_experiment_confirmed(d, entry, ex)
     return True
 
 
@@ -279,11 +280,12 @@ class Adjudicator:
                     ev.summary = "[UNVERIFIED QUOTE - ignored] " + ev.summary
             elif ev.type == EvidenceType.KB:
                 kid = cit.removeprefix("KB:")
-                ev.verified = kid in BY_ID and kid in d.kb_hits and kb_entry_eligible(state, d, BY_ID[kid])
+                ev.verified = kid in BY_ID and kid in d.kb_hits and kb_entry_eligible(state, d, BY_ID[kid], ex)
                 ev.strength = "medium" if ev.verified else "weak"
             elif ev.type in (EvidenceType.EXPERIMENT, EvidenceType.SELF_CONTRADICTION):
                 cited = {tok.strip(" ,;()") for tok in cit.split()} & exp_ids
                 det = [e for e in d.evidence if e.type == ev.type and e.verified and e.supports == ev.supports]
+                det_strong = [e for e in det if e.strength != "weak"]  # a demoted (weak) item can back a citation only as weak
                 if ev.type == EvidenceType.EXPERIMENT:
                     # the cited experiment must exist for THIS discrepancy and really record the claimed direction
                     ok = any(r.id in cited and r.ok and r.discrepancy_id == d.id and
@@ -292,8 +294,10 @@ class Adjudicator:
                     ev.verified = bool(cited) and ok
                 else:
                     ev.verified = bool(cited) and bool(det)
-                ev.strength = "strong" if ev.verified and ev.type == EvidenceType.SELF_CONTRADICTION else (
-                    "medium" if ev.verified else "weak")
+                if ev.type == EvidenceType.SELF_CONTRADICTION:
+                    ev.strength = "strong" if ev.verified and det_strong else "weak"
+                else:
+                    ev.strength = "medium" if ev.verified else "weak"
             elif ev.type == EvidenceType.RUNTIME:
                 ev.verified = any(h.supports == ev.supports for h in harness_runtime)
                 ev.strength = "strong" if ev.verified else "weak"
@@ -326,7 +330,9 @@ class Adjudicator:
 
     def gate(self, f: Finding) -> Finding:
         """Asymmetric gate: cheap to send to a human, expensive to auto-dismiss, more expensive to auto-report."""
-        bug_ev = [e for e in f.evidence if e.supports == "bug" and e.verified and e.type in STRONG_BUG_EVIDENCE]
+        # weak items (e.g. a SELF_CONTRADICTION that is only a printed reveal) are context, never the basis of a bug tier
+        bug_ev = [e for e in f.evidence if e.supports == "bug" and e.verified and e.type in STRONG_BUG_EVIDENCE
+                  and e.strength != "weak"]
         dis_ev = [e for e in f.evidence if e.supports == "not_bug" and e.verified and e.type in DISMISSAL_EVIDENCE]
         opposed = any(n.startswith(("SKEPTIC:WORKING_AS_INTENDED", "SKEPTIC:KNOWN_LIMITATION", "SKEPTIC:INVALID_REPRO",
                                     "SKEPTIC:WRONG_TOOL")) for n in f.review_notes)

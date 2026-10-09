@@ -147,8 +147,10 @@ ADJUDICATE(src, mypy_out, ty_out, runtime, [pyright]):
         NOT_BUG & verified dismissal evidence & conf ≥ .85 & advocate upholds → DISMISSED
         otherwise → REVIEW (human queue, ranked by priority)
 
-  for CONFIRMED/CANDIDATE: signature → DUPLICATE?  else reduce (ddmin over AST statement lists,
-      keeping the discrepancy, the runtime class, and no new errors elsewhere) → issue draft
+  for CONFIRMED/CANDIDATE: prior upstream stance? (near-match → cap at REVIEW, attach stance + url)
+      signature → DUPLICATE?  else reduce (ddmin over AST statement lists, keeping the discrepancy,
+      the runtime exception class + message + raising statement, and no new errors elsewhere)
+      → issue draft (drops the crash claim if the reduced repro no longer crashes)
   STRATEGIZE(area stats, findings) → CONTINUE | MUTATE | PIVOT | ABANDON | REPAIR_GENERATOR
 ```
 
@@ -160,11 +162,13 @@ ADJUDICATE(src, mypy_out, ty_out, runtime, [pyright]):
 | exception with the statement on the stack | FALSE_NEGATIVE (silent tool), validates the reporting tool | strong (but check the cause, Any paths) |
 | runtime value ∉ revealed type (`inhabit.py`) | INCORRECT_INFERENCE | strong, only definite `False` is used |
 | coverage: executed line has no reveal in tool X | checker treats reachable code as unreachable | medium |
-| **call/assignability self-consistency** | tool reveals `f: (c: Leaf) -> …`, rejects `_: Leaf = Node()`, accepts `f(Node())` | strong, the tool contradicts itself |
+| **call/assignability self-consistency** | tool reveals `f: (c: X) -> …`, rejects `_: X = value`, accepts `f(value)` | strong for a declared signature (assignment vs call). **Weak** when the revealed signature is a bound method / callable whose parameters involve `Self` or a TypeVar: a printed reveal is display text and may be a known display bug (ty#4673). Strong needs call-vs-call (or assignment-vs-call on the same declared signature), not a printout. A weak item never counts toward a bug tier in the gate |
 | metamorphic `pep604` / `pep585` (vs. an unparsed baseline) | spelling-dependent behaviour | strong |
 | gradual guarantee (`any_substitution`) | new errors after replacing a type with `Any` | strong |
 | config toggle (strict-equality, strict-generic-narrowing, optional mypy codes) | confirms a KB "design" explanation | strong for dismissal |
 | opt-in soundness rerun (mypy `mutable-override`…, ty `unsound-*`…) | tells a *deliberate default* apart from *no mode catches it* | medium |
+| `spec_desugar`: rewrite `Self` in a class's method signatures to `T = TypeVar('T', bound='Cls')` (`def m(self: T, c: T) -> T`) and re-run the *same* tool | "is this tool consistent with the spec's own desugaring?" Unchanged answer → supports SPEC_AMBIGUITY, not a clear bug. A failed run of either program is INCONCLUSIVE | weak, neutral: a hint, never a dismissal on its own |
+| `lsp_probe`: `def probe(n: Base): n.m(Base())` plus `probe(Sub())`, run on the tool that rejects `Sub().m(Base())` | if that tool accepts both, its reading is itself unsound, so its rejection must not serve as a one-sided oracle for another tool's false negative (CONSENSUS-downgrade note) | weak hint, narrow (Self-parameter calls only) |
 | witness (LLM-written appended code that must crash) | turns a spec argument into a runtime proof | strong |
 | pyright | consensus | weak |
 
@@ -190,6 +194,7 @@ examples after you upgrade.
 | MYPY-SKIPS-UNREACHABLE | mypy is silent in code CPython never ran | yes |
 | ENV-IMPORT, SUPPRESSION-SEMANTICS | environment / documented ignore semantics | yes |
 | INFERENCE-DOWNSTREAM | the probe shows an unannotated operand inferred differently. Covers an error from the *more precise* side; a mypy false positive caused by its join is not covered | yes |
+| TY-SELF-UPPER-BOUND | ty solves `Self` in a method signature as a TypeVar bounded by the defining class (ty#4656 intended, ty#4673 display bug, ty#1172, ty#2255, discuss.python.org 86338). The matcher is narrow and ALL of these must hold: `Self` inside a non-receiver parameter; mypy's rejection names a strict subclass as the expected type with no override in between; the rejected argument is the defining class or a supertype of the receiver; ty is silent | only if the `spec_desugar` probe shows ty answers the same on the TypeVar form. A CPython type exception in a program with `Self`-typed state (`list[Self]`, `next: Self \| None`) demotes it to review with a note: ty is genuinely unsound there |
 | TY-CHECK-PARTIAL, TY-ONLY-CHECK, REACHABILITY-VS-COVERAGE, GRADUAL-OPERAND, ERROR-CASCADE, STUB-SKEW, PARTIAL-TYPES, SUPPRESSION-LINE | leads for the LLM | hint only |
 
 Two deterministic rules sit next to the KB:
@@ -199,7 +204,25 @@ Two deterministic rules sit next to the KB:
   (incomplete repro → INVALID_TEST).
 
 `runtime_override=True` is what keeps the KB from swallowing a real soundness bug that looks like
-a known divergence. Every narrowing of a KB entry above came from the calibration run (§7).
+a known divergence. An entry may also carry its own demotion (`demote=`), as TY-SELF-UPPER-BOUND does
+for `Self`-typed state. Every narrowing of a KB entry above came from the calibration run (§7).
+
+A KB citation (by the LLM) of a verify-required entry counts only if the experiment that belongs to
+THAT entry's own toggle ran for this discrepancy and removed it. Another entry's toggle, or any other
+verified experiment, does not count.
+
+**Prior upstream stance.** Before any CONFIRMED/CANDIDATE finding is reported or an issue is drafted,
+`priors.py` consults `data/known_upstream.json` (`stance`: open / intended / not_planned /
+duplicate-of, plus url). A near-match by signature OR by feature tags caps the finding at REVIEW and
+the draft starts with the stance, the url and a "check the body text on the tracker" warning. It only
+ever lowers a tier and has no network access. Searching the tracker and discuss.python.org stays a
+manual step (FUZZING_PLAN.md §6): title searches miss duplicates whose example sits in the body.
+
+**Runtime evidence and reduction.** When a CPython exception is attached as evidence, the note lists
+the constructs in the raising statement's dependency set that could be responsible (`causes.py`). The
+reducer's predicate keeps the same exception class, the same message and the same raising statement.
+If a reduced repro still no longer reproduces the failure, the finding gets a `REDUCER:RUNTIME-LOST`
+note and the issue draft drops the crash claim.
 
 ---
 
@@ -268,60 +291,59 @@ and size limits.
 
 ---
 
-## 8. Worked example (real, ty 0.0.84)
+## 8. Worked example: the case that taught these rules (real, ty 0.0.84)
 
-`examples/self_param_unsound.py`: ty reveals `x.add` as `bound method Leaf.add(c: Leaf) -> Leaf`
-but accepts `x.add(Node())`. mypy and pyright reject it, and CPython later raises
-`AttributeError`. With no LLM at all, the deterministic stage attaches:
-
-- `SELF_CONTRADICTION/strong`: ty rejects `_td_probe: Leaf = Node()` but accepts the call.
-- `RUNTIME/strong` on the downstream statement (RUNTIME_MISS).
-- `CONSENSUS/weak`: pyright sides with mypy.
-
-With an LLM judge this passes the gate as CONFIRMED. The reducer shrinks it in 32 checker runs
-(about 20 s). Below is the reducer output with an unused import and blank lines removed:
+`examples/self_param_unsound.py` is **not** a confirmed ty bug. We reported it as one (ty#4656) and
+the maintainers closed it as intended. It stays in the repo because it shows how a plausible-looking
+finding goes wrong, and which rules now stop that.
 
 ```python
 from typing import Self
 
 class Node:
-    def add(self, c: Self) -> Self:
-        return self
+    def add(self, c: Self) -> Self: ...      # the real example also stores c in `children: list[Self]`
 
-class Leaf(Node):
-    pass
+class Leaf(Node): ...
 
 x = Leaf()
-x.add(Node())
+x.add(Node())     # ty accepts, mypy and pyright reject
 ```
 
-**Outcome upstream (the lesson matters more than the bug).** The ty maintainers closed the report
-as **intended behaviour**:
+**The maintainers' verdict.** ty treats `Self` in a method signature as a TypeVar bounded by the
+defining class and solves it jointly with the receiver (the typing spec's own desugaring), so
+`Self = Node` here. mypy and pyright pin `Self` to the receiver. The typing spec does not settle it.
+Pinning makes any non-final class with a `Self` parameter break Liskov substitutability, which is why
+ty chose its reading (ty#1172 is the earlier discussion, ty#2255 tracks the missing override check).
+The only real bug found was the *printed* signature `bound method Leaf.add(c: Leaf)` (ty#4673).
 
-- The typing spec treats `Self` as a type variable whose upper bound is the defining class. ty
-  solves it per call, so `Leaf().add(Node())` solves `Self = Node` and returns `Node`.
-- mypy and pyright bind `Self` to the receiver instead. That makes `Self`-typed parameters break
-  Liskov substitutability: `use_node(leaf)` can still call `node.add(Node())`.
-- What *was* a bug is the **displayed** signature `bound method Leaf.add(c: Leaf)`. That display
-  is now tracked as [ty#4673](https://github.com/astral-sh/ty/issues/4673). The self-consistency
-  oracle had been reading exactly that display.
+**What typediff did on the way (and why that was wrong).**
+- `SELF_CONTRADICTION/strong` came from that printed signature: a display bug, not a call-checking fact.
+- `CONSENSUS/weak` (pyright sides with mypy) cannot separate "ty is wrong" from "they share a reading".
+- The downstream `AttributeError` needs the `list[Self]` attribute, which is a different thing.
+  The reduced repro had dropped `children` and `leaf_only`, so it no longer crashed at all.
+- The tracker search looked at titles; ty#1172 had the same program in its body.
 
-What changed in typediff:
-- The case is recorded in `known_upstream.json` (`UPSTREAM-TY-SELF-PARAM-TYPEVAR`), so
-  `Self`-parameter call disagreements are now closed as DESIGN_DIVERGENCE with the link.
+**What the pipeline does now** (each rule is narrow and only moves things toward human review):
 
-Lessons for the pipeline:
-1. **"mypy and pyright agree" is not evidence of a spec rule.** Two checkers can share an
-   interpretation the spec leaves open. That is why CONSENSUS is weak.
-2. **A self-contradiction is only as good as the probe.** A reveal of a *bound method* shows a
-   display, not necessarily the signature used for call checking. The oracle found a real
-   inconsistency, but the bug was in the display (DIAGNOSTIC_DEFECT/INCORRECT_INFERENCE), not in
-   call checking (FALSE_NEGATIVE).
-3. **Look for the counter-example before filing.** Ask "if the other checker is right, what else
-   must be rejected?" The maintainer's `use_node(leaf)` argument is the counter-hypothesis the
-   skeptic role is meant to find.
-4. **The downstream runtime crash came from a mutable `list[Self]` attribute.** That is unsound
-   under any interpretation once a `Leaf` is upcast to `Node`. So it didn't actually incriminate ty.
+| lesson | rule |
+|---|---|
+| a printed reveal is not a call-checking fact | `SELF_CONTRADICTION` is demoted to weak when the revealed bound method / callable has `Self` or a TypeVar parameter; weak items never reach CANDIDATE/CONFIRMED |
+| the spec may define the behaviour by desugaring | `spec_desugar` experiment; unchanged answer → hint toward SPEC_AMBIGUITY |
+| the other tool's reading may itself be unsound | `lsp_probe` experiment; both calls accepted → CONSENSUS-downgrade note |
+| it may already be discussed | prior-stance check in `known_upstream.json` caps at REVIEW and attaches the url |
+| a crash has a cause | runtime evidence lists responsible constructs; reduction must keep the same failure or say so |
+| the specific pattern | KB entry `TY-SELF-UPPER-BOUND`, dismisses only after the desugar probe, steps aside when `Self`-typed state crashes |
+
+**Result on the example today** (`typediff run examples/self_param_unsound.py`, no LLM): D1
+(`x.add(Node())`) and D2 (the downstream `AttributeError`) both land in REVIEW. D1 carries the KB hint
+`TY-SELF-UPPER-BOUND`, demoted because CPython raised an exception in a program with `Self`-typed
+state, a weak `SELF_CONTRADICTION`, and the `lsp_probe` note that mypy accepts the substitutable form.
+D2 carries the strong runtime evidence naming `children` and `leaf_only`. With an LLM judge, neither
+passes the gate as CONFIRMED, and a draft would start with the ty#4656 / ty#1172 prior-stance warning.
+`TY-SELF-UPPER-BOUND`'s own canonical example (no `Self`-typed state, no crash) is dismissed by the
+KB entry after the desugar probe. What remains genuinely unsound is `Self`-typed state combined with a
+jointly solved `Self` parameter; the maintainer has already called ty's attribute specialisation
+unsound in the discuss.python.org thread, and the missing override check is tracked in ty#2255.
 
 ## 9. Limitations
 

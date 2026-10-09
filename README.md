@@ -104,7 +104,7 @@ repro. `dataset.jsonl` holds one record per finding, with a dedup signature.
 |---|---|
 | `examples/known_divergences.py` | 6 discrepancies, all closed deterministically: 5 by KB entries (redeclaration, `Callable.__name__`, join vs union, literal widening, assignment narrowing) and 1 as an error cascade of the first |
 | `examples/needs_experiments.py` | `==`-narrowing dismissed only after the `strict-equality-semantics` toggle confirms it. A mutable-override `AttributeError` that both checkers miss goes to review with opt-in-check evidence |
-| `examples/self_param_unsound.py` | Reported upstream. The call is **intended** ty behaviour (`Self` is solved as a typevar per call); the wrong *displayed* signature is a real bug, ty#4673. Now closed automatically via `known_upstream.json`; see DESIGN.md §8 for the lessons |
+| `examples/self_param_unsound.py` | The case that taught the `Self` rules: reported as a ty false negative (ty#4656), closed by the maintainers as **intended** (display bug: ty#4673). Both discrepancies land in REVIEW: weak `SELF_CONTRADICTION` only, KB hint `TY-SELF-UPPER-BOUND` demoted because a `Self`-typed attribute crashes at runtime, prior-stance warning on any draft. See DESIGN.md §8 |
 
 ## Layout
 
@@ -118,7 +118,10 @@ typediff/
   discrepancy.py  per-statement diff
   rules.py        deterministic stage (runtime evidence, probes, KB, cascades)
   kb.py           knowledge base of documented divergences (matchers + verify experiments)
-  experiments.py  config toggles, probes, metamorphic, witness, assignability oracle, opt-in rerun
+  selfparam.py    AST helpers for the narrow `Self`-parameter pattern (KB matcher, desugar, LSP probe)
+  experiments.py  config toggles, probes, metamorphic, witness, assignability oracle, opt-in rerun, spec_desugar, lsp_probe
+  priors.py       prior upstream stance (known_upstream.json): caps a would-be report at REVIEW
+  causes.py       constructs a runtime failure may depend on (evidence notes, reduction check)
   adjudicator.py  LLM loop, citation verification, skeptic/advocate, asymmetric gate
   prompts.py      all LLM prompts
   corpus.py       doc corpus, BM25 retrieval, verbatim-quote verification

@@ -12,6 +12,7 @@ Stage order (see DESIGN.md §3):
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import os
 import re
@@ -19,14 +20,16 @@ import time
 from dataclasses import dataclass, field
 
 from .adjudicator import Adjudicator, GateConfig
+from .causes import dependency_constructs
 from .corpus import Corpus
 from .dataset import Dataset, signature
 from .discrepancy import find_discrepancies
 from .experiments import ExperimentRunner
 from .llm import CachedLLM, from_env
 from .models import CaseReport, Crash, Dismissal, RuntimeResult, Tier, Tool, Verdict
-from .parsers import parse_mypy, parse_pyright, parse_runtime, parse_ty
-from .reducer import Reducer
+from .parsers import classify_exception, parse_mypy, parse_pyright, parse_runtime, parse_ty
+from .priors import apply_prior_cap, find_priors
+from .reducer import Reducer, _norm_msg
 from .rules import crash_findings, deterministic_stage, validity
 from .runners import FILENAME, Runners, ToolConfig
 from .state import CaseState
@@ -137,6 +140,10 @@ class Pipeline:
                 d = by_id.get(f.discrepancy_id)
                 sig = signature(f, d)
                 f.signature = sig
+                # before anything is reported: has the tracker already taken a stance on something like this?
+                # (known_upstream.json; a near-match by signature or feature tags caps the finding at REVIEW)
+                if apply_prior_cap(f, find_priors(state.source, d)):
+                    continue
                 dup = self.dataset.duplicate_of(sig) if self.dataset else None
                 if dup:
                     f.tier, f.dismissal = Tier.DISMISSED, Dismissal.DUPLICATE
@@ -160,15 +167,35 @@ class Pipeline:
                 return red.reduce(state.source, pred)
             if d is None:
                 return None
-            pred = red.predicate_for(state.source, d, f)
+            pred = red.predicate_for(state.source, d, f, runtime=state.runtime)
             st = state.amap.stmt(d.anchor)
             from .anchors import statement_key
 
             key = statement_key(st.node) if st and st.node is not None else None
-            return red.reduce(state.source, pred, key)
+            reduced = red.reduce(state.source, pred, key)
+            self._check_runtime_kept(state, f, reduced)
+            return reduced
         except Exception as exc:  # noqa: BLE001 - reduction is best effort
             state.notes.append(f"reduction failed: {exc}")
             return None
+
+    def _check_runtime_kept(self, state: CaseState, f, reduced: str) -> None:
+        """Say so when the reduced repro no longer raises what the original program raised. Runtime evidence then
+        applies to the original program only, and the issue draft must not claim a crash for the reduced one."""
+        rt = state.runtime
+        if rt.status != "exception" or classify_exception(rt.exc_type, rt.exc_message) != "strong" or reduced == state.source:
+            return
+        new = state.runners.run_runtime(reduced)
+        if new.status == "exception" and (new.exc_type, _norm_msg(new.exc_message)) == (rt.exc_type, _norm_msg(rt.exc_message)):
+            return
+        st = state.amap.stmt(rt.exc_line) if rt.exc_line else None
+        deps = dependency_constructs(state.amap.tree, st.node if st else None, state.amap.lines)
+        kept = ast.unparse(ast.parse(reduced)) if reduced.strip() else ""
+        lost = [x for x in deps if (m := re.search(r"`(\w+)", x)) and m.group(1) not in kept]
+        f.review_notes.append(
+            f"REDUCER:RUNTIME-LOST: the reduced repro does NOT raise {rt.exc_type}: {rt.exc_message} (it ends with "
+            f"{new.status}{' ' + str(new.exc_type) if new.exc_type else ''}); the runtime evidence belongs to the original "
+            "program only" + (f"; dependency constructs no longer present: {'; '.join(lost)}" if lost else ""))
 
 
 def _case_id(source: str) -> str:

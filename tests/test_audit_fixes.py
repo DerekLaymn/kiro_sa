@@ -244,8 +244,12 @@ def test_kb_auto_entry_verifies_but_verify_required_entry_needs_its_experiment()
     raw = [{"type": "KB", "supports": "not_bug", "citation": "KB:TY-STRICT-EQUALITY"}]
     assert not _verify(_disc(kb=["TY-STRICT-EQUALITY"]), raw)[0].verified
     done = Evidence(EvidenceType.EXPERIMENT, "not_bug", "toggle", citation="E1", verified=True)
-    assert _verify(_disc(kb=["TY-STRICT-EQUALITY"], evidence=[done]), raw)[0].verified
-    assert not _verify(_disc(kb=[]), raw)[0].verified  # id did not match this discrepancy
+    mine = ExperimentResult("E1", "config_toggle", {"kind": "config_toggle", "tool": "ty",
+                                                    "flags": ["--config", "analysis.strict-equality-semantics=true"]},
+                            True, "gone", {"persists": False}, done, "D1")
+    # the experiment must be the one that belongs to THIS entry's toggle (see tests/test_phase3.py for the negative cases)
+    assert _verify(_disc(kb=["TY-STRICT-EQUALITY"], evidence=[done]), raw, [mine])[0].verified
+    assert not _verify(_disc(kb=[]), raw, [mine])[0].verified  # id did not match this discrepancy
 
 
 def test_experiment_evidence_must_support_claimed_direction():

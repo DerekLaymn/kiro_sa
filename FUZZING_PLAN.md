@@ -16,24 +16,29 @@ Assumptions:
 
 ## 1. What we already know (day 0)
 
-**How the first bug was found.** It wasn't random fuzzing. A hand-written seed probed a feature
-ty claims to support (`Self` in a parameter). The pipeline flagged ty as silent where mypy
-rejected the call, and the self-consistency oracle proved ty contradicts itself. Lesson:
-**targeted seeds plus variants beat random programs.** Everything below builds on that.
+**How the first report was found, and what it taught us.** It wasn't random fuzzing. A hand-written
+seed probed a feature ty claims to support (`Self` in a parameter). The pipeline flagged ty as
+silent where mypy rejected the call, and a self-consistency oracle seemed to show ty contradicting
+itself. We reported it (ty#4656); the maintainers closed it as **intended**: ty solves `Self` in a
+signature as a TypeVar bounded by the defining class, mypy/pyright pin it to the receiver, the spec
+is ambiguous, and the contradiction was a display bug (ty#4673). Lessons: **targeted seeds plus
+variants still beat random programs**, but a printed signature is not proof, "mypy and pyright
+agree" is not a spec rule, and the tracker must be searched by body text before filing
+(DESIGN.md §8).
 
 **First pass over the 27 hand-written seeds** (`seeds/`, no LLM, about 1 minute):
 
 | Result | Seed | Status |
 |---|---|---|
-| ty accepts a base-class argument for a `Self` parameter of an inherited method | `self_param_inherited.py` | **Reported; intended** (ty solves `Self` as a typevar per call). The wrong displayed signature is ty#4673. Now closed automatically |
-| Same behaviour through **classmethods** and **`tuple[Self, int]`** | `self_classmethod_param.py` | Same design decision; closed automatically |
+| inherited method with a `Self` parameter: ty accepts, mypy/pyright reject | `self_param_inherited.py` | Reported (ty#4656); **intended** behaviour, display bug ty#4673. Lands in review / KB `TY-SELF-UPPER-BOUND` |
+| Same question through **classmethods** and **`tuple[Self, int]`** | `self_classmethod_param.py` | Same design decision; not a bug |
 | ty silent on mixed constrained-TypeVar arguments (runtime `TypeError`) | `constrained_typevar.py` | Duplicate of open **ty#1090**, now closed automatically |
 | ty accepts unknown keyword through `Unpack[TypedDict]` | `readonly_notrequired.py` | Closed upstream **as intended** (ty#4212; open TypedDicts), now closed automatically |
 | mypy reveals `Weird` / `ViaMeta` where `__new__` / metaclass `__call__` return other types; CPython proves mypy wrong | `new_returns_other.py` | mypy candidate. Probably known; search python/mypy before filing |
 | ty reveals `Divergent` in widening loops; mypy rejects redefinition | `widening_loop.py` | Documented ty behaviour plus mypy design; no bug |
 | Others (match, LSP override, TypedDict reveal display, …) | various | In the review queue |
 
-Of 27 seeds, 16 produced live findings. 1 was reported (outcome: intended behaviour plus a display bug, ty#4673), and 2 were already known upstream.
+Of 27 seeds, 16 produced live findings, 1 was reported (outcome: intended), and 2 are already known upstream.
 That is the expected ratio: most disagreements are known or intended, and the pipeline's job is to
 make them cheap to discard.
 
@@ -56,8 +61,8 @@ conformance suite (130), ty's mdtests (3,509) and mypy's test data (1,210). The 
    TypedDict × `Unpack` × inheritance, overloads × unions × literals, descriptors × subclasses,
    dataclasses × inheritance × `KW_ONLY`.
 4. **Inherited and specialised members.** Generic-base specialisation, descriptors on subclasses,
-   classmethods called on subclasses. Skip `Self` in parameters: ty deliberately solves it as a
-   per-call typevar (see DESIGN.md §8). Its *display* (`reveal_type` of bound methods) is buggy, ty#4673.
+   classmethods called on subclasses. Skip `Self` in non-receiver parameters: ty deliberately solves
+   it as a per-call TypeVar (DESIGN.md §8). A crash through `Self`-typed state is the exception.
 5. **Crash hunting.** Recursive aliases, self-referential generics, loops that widen types, very
    deep nesting, invalid type forms. Astral already runs a fuzzer (the `fuzzer` label), so crashes
    are less novel, but they are confirmed automatically.
@@ -74,7 +79,7 @@ What **not** to chase:
 
 | Phase | Days | Input | LLM | Output |
 |---|---|---|---|---|
-| P0 Setup | 1 | — | — | Pinned tools, docs corpus, KB self-test, `Self` issue filed |
+| P0 Setup | 1 | — | — | Pinned tools, docs corpus, KB self-test, priors checked |
 | P1 Hand seeds + harvest | 1–3 | `seeds/`, `seeds/harvested/` (4,849) | none | Review queue grouped by pattern; KB/upstream entries for recurring noise; crashes |
 | P2 LLM mutation of hits | 3–10 | Seeds/harvested programs with live findings | free model (generate) | 5–20 variants per hit, judged deterministically |
 | P3 LLM generation from briefs | 4–10 | Feature areas from §2 | free model (generate) | New programs in under-covered areas |
@@ -86,7 +91,7 @@ What **not** to chase:
 
 - **Day 1:**
   - Setup (§4).
-  - File the `Self` issue and add it to `typediff/data/known_upstream.json` so it stops resurfacing.
+  - Check `typediff/data/known_upstream.json` (priors and known issues) so nothing resurfaces.
   - `typediff seeds seeds/`.
   - `python scripts/harvest_seeds.py`.
 - **Days 2–3 (P1):**
@@ -185,19 +190,23 @@ Rules:
 
 ## 6. Triage checklist (one candidate pattern)
 
-This is what we did for the `Self` report, plus step 2b, which we skipped and which would have predicted the "intended" answer:
+This is the checklist the `Self` report (ty#4656) should have gone through:
 
 1. **Reproduce with all three checkers and CPython** on the minimal program.
 2. **Which spec rule applies?** Quote it from the typing spec. "mypy does it" isn't a reason.
-   - **2b. Argue the accused tool's side.** If the other checkers were right, what else would have
-     to be rejected? If the answer breaks subtyping or Liskov substitutability (as with `Self`
-     parameters), the behaviour is probably intended. Frame the report as a question or skip it.
+   - **2b. Argue the accused tool's side.** If the other checkers were right, what else would have to
+     be rejected? If the answer breaks subtyping or Liskov substitutability (as with `Self`
+     parameters), the behaviour is probably intended. Run the desugar and LSP probes
+     (`spec_desugar`, `lsp_probe`) and frame the report as a question, or skip it.
 3. **Find the strongest oracle:** a runtime crash, the tool contradicting itself (its own revealed
    type or assignability), or a spec quote. Weak: "pyright agrees".
 4. **Generalise:** 3–5 variants. Note which variants pass (they localise the bug, e.g. "only when
    inherited").
-5. **Check for duplicates:**
-   - astral-sh/ty issues, open and closed (closed ones may be *intended*, like #4212).
+5. **Check for duplicates (manual; the pipeline never calls the network):**
+   - Search the BODY text, not only titles: ty#1172 held the `Self` example in its body.
+   - discuss.python.org and python/typing discussions for spec questions.
+   - Read `known_upstream.json`; a prior-stance warning in a draft means a near-match exists.
+   - astral-sh/ty issues, open and closed (closed ones may be *intended*, like #4212 and #4656).
    - astral-sh/ruff pull requests (ty's code lives there).
    - For mypy: python/mypy issues.
 6. **Playground:** play.ty.dev (it may be newer than 0.0.84) or mypy-play.net. If it no longer

@@ -1,8 +1,9 @@
-# Reported to ty. Outcome: INTENDED. ty treats `Self` in a non-receiver parameter as a typevar bounded by
-# Node and solves it per call, so x.add(Node()) is OK and returns Node (mypy/pyright bind Self to Leaf).
-# The real ty bug is the displayed signature `bound method Leaf.add(c: Leaf) -> Leaf`: ty#4673.
-# The later AttributeError comes from the mutable `list[Self]` attribute, which is unsound under any
-# interpretation once a Leaf is used as a Node.
+# The case that TAUGHT typediff its Self rules (reported as ty#4656; the maintainers' verdict: INTENDED).
+# ty treats `Self` in a non-receiver parameter as a TypeVar bounded by Node and solves it jointly with the
+# receiver, so x.add(Node()) is accepted (Self = Node); mypy and pyright pin Self to Leaf and reject it.
+# The typing spec is ambiguous. The printed `bound method Leaf.add(c: Leaf)` is a display bug (ty#4673).
+# The AttributeError needs the Self-typed `children` attribute (PEP 673's LinkedList.next pattern): there ty
+# IS unsound (ty#2255). Expected typediff result: REVIEW only, weak SELF_CONTRADICTION, KB hint demoted.
 from typing import Self, reveal_type
 
 
