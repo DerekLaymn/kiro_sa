@@ -658,7 +658,23 @@ def _open_typeddict_kwargs(s, d) -> bool:
                for c in ast.walk(node))
 
 
-_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs}
+def _self_typed_param_call(s, d) -> bool:
+    """The statement calls a method that has a non-receiver parameter annotated with Self (incl. list[Self] ...)."""
+    if not s.amap.tree:
+        return False
+    methods = set()
+    for n in ast.walk(s.amap.tree):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            params = [*n.args.posonlyargs, *n.args.args, *n.args.kwonlyargs][1:]
+            if any(p.annotation is not None and any(isinstance(x, ast.Name) and x.id == "Self"
+                                                    for x in ast.walk(p.annotation)) for p in params):
+                methods.add(n.name)
+    node = _stmt_node(s, d)
+    return node is not None and any(
+        isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute) and c.func.attr in methods for c in ast.walk(node))
+
+
+_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs, "self_typed_param_call": _self_typed_param_call}
 
 
 def _upstream_entries() -> list[KBEntry]:

@@ -295,7 +295,33 @@ x = Leaf()
 x.add(Node())
 ```
 
-A quick search of the ty tracker found no obvious duplicate. Check again before you file it.
+**Outcome upstream (the lesson matters more than the bug).** The ty maintainers closed the report
+as **intended behaviour**:
+
+- The typing spec treats `Self` as a type variable whose upper bound is the defining class. ty
+  solves it per call, so `Leaf().add(Node())` solves `Self = Node` and returns `Node`.
+- mypy and pyright bind `Self` to the receiver instead. That makes `Self`-typed parameters break
+  Liskov substitutability: `use_node(leaf)` can still call `node.add(Node())`.
+- What *was* a bug is the **displayed** signature `bound method Leaf.add(c: Leaf)`. That display
+  is now tracked as [ty#4673](https://github.com/astral-sh/ty/issues/4673). The self-consistency
+  oracle had been reading exactly that display.
+
+What changed in typediff:
+- The case is recorded in `known_upstream.json` (`UPSTREAM-TY-SELF-PARAM-TYPEVAR`), so
+  `Self`-parameter call disagreements are now closed as DESIGN_DIVERGENCE with the link.
+
+Lessons for the pipeline:
+1. **"mypy and pyright agree" is not evidence of a spec rule.** Two checkers can share an
+   interpretation the spec leaves open. That is why CONSENSUS is weak.
+2. **A self-contradiction is only as good as the probe.** A reveal of a *bound method* shows a
+   display, not necessarily the signature used for call checking. The oracle found a real
+   inconsistency, but the bug was in the display (DIAGNOSTIC_DEFECT/INCORRECT_INFERENCE), not in
+   call checking (FALSE_NEGATIVE).
+3. **Look for the counter-example before filing.** Ask "if the other checker is right, what else
+   must be rejected?" The maintainer's `use_node(leaf)` argument is the counter-hypothesis the
+   skeptic role is meant to find.
+4. **The downstream runtime crash came from a mutable `list[Self]` attribute.** That is unsound
+   under any interpretation once a `Leaf` is upcast to `Node`. So it didn't actually incriminate ty.
 
 ## 9. Limitations
 

@@ -208,15 +208,31 @@ def cmd_triage(args) -> int:
                     key = (d["kind"], tuple(sorted({y.get("code") or "" for y in diags})),
                            message_template(diags[0]["message"]) if diags else "")
             bug_ev = any(e["supports"] == "bug" and e["verified"] and e["strength"] == "strong" for e in x["evidence"])
+            def show(lst):
+                return "; ".join(f"reveal {y['revealed_type']}" if y.get("revealed_type") is not None
+                                 else f"[{y.get('code')}] {y['message']}" for y in lst) or "(nothing)"
             groups[key].append({"origin": origin, "case": r["case_id"], "id": x["discrepancy_id"], "tier": x["tier"],
                                 "line": d["anchor"] if d else None, "stmt": d["statement"][:70] if d else "",
-                                "bug_evidence": bug_ev})
+                                "bug_evidence": bug_ev, "mypy": show(d["mypy"]) if d else "", "ty": show(d["ty"]) if d else "",
+                                "kb": d.get("kb_hits", []) if d else [], "decided_by": x["decided_by"],
+                                "report": str(f.with_suffix(".md")),
+                                "evidence": [f"[{e['type']}/{e['strength']}, supports {e['supports']}] {e['summary']}"
+                                             for e in x["evidence"] if e["verified"] and e["supports"] != "neutral"
+                                             or e["strength"] == "strong"]})
     ranked = sorted(groups.items(), key=lambda kv: (-sum(i["bug_evidence"] for i in kv[1]), -len(kv[1])))
     for key, items in ranked[: args.top]:
         nb = sum(i["bug_evidence"] for i in items)
         print(f"\n## {len(items):>4} findings ({nb} with strong bug evidence)  {' | '.join(map(str, key))}")
         for i in sorted(items, key=lambda i: not i["bug_evidence"])[: args.examples]:
             print(f"     {'*' if i['bug_evidence'] else ' '} {i['origin'][-60:]}  {i['id']} L{i['line']}: {i['stmt']}")
+            if args.details:
+                print(f"         mypy: {i['mypy'][:200]}")
+                print(f"         ty:   {i['ty'][:200]}")
+                if i["kb"]:
+                    print(f"         KB hints: {', '.join(i['kb'])}   decided by: {i['decided_by']}")
+                for e in i["evidence"][:4]:
+                    print(f"         {e[:220]}")
+                print(f"         full report: {i['report']}")
     print(f"\n{sum(len(v) for v in groups.values())} findings in {len(groups)} patterns "
           f"(* = strong verified bug evidence; triage those patterns first)")
     return 0
@@ -396,6 +412,7 @@ def main(argv: list[str] | None = None) -> int:
     tr.add_argument("--top", type=int, default=30)
     tr.add_argument("--examples", type=int, default=3)
     tr.add_argument("--all", action="store_true", help="include dismissed findings")
+    tr.add_argument("--details", action="store_true", help="show both tools' messages, evidence and the report path")
     tr.set_defaults(fn=cmd_triage)
 
     gn = sub.add_parser("generate", help="LLM generation only: write programs to a directory (judge later)")

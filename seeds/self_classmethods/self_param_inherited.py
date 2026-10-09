@@ -1,7 +1,9 @@
 # area: self_classmethods
-# status: REFERENCE BUG (ty 0.0.84 false negative, found by typediff) - keep as a regression seed
+# status: REPORTED -> INTENDED in ty: Self in a parameter is a typevar bounded by Node and solved per call
+#         (Self=Node here). The displayed signature `bound method Leaf.add(c: Leaf)` is the real bug: ty#4673
 # hypothesis: `Self` in a parameter of an inherited (not overridden) method must bind to the subclass.
-# spec: PEP 673 - `Self` is bound to the type of the receiver; Leaf().add expects a Leaf.
+# spec: typing spec - `Self` behaves like a TypeVar bounded by the enclosing class. mypy/pyright bind it to the
+# receiver (Leaf); ty solves it from all arguments (Node). Both readings exist; ty's preserves Liskov substitutability.
 from typing import Self, reveal_type
 
 

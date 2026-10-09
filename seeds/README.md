@@ -23,9 +23,9 @@ python scripts/harvest_seeds.py                                         # + 4,84
 
 | seed | result |
 |---|---|
-| `self_classmethods/self_param_inherited.py` | **ty false negative, not yet reported**: `Self` parameter of an inherited method |
-| `self_classmethods/self_classmethod_param.py` | Same bug through a classmethod and `tuple[Self, int]` |
-| `self_classmethods/self_runtime_witness.py` | Same bug plus a runtime `AttributeError` witness |
+| `self_classmethods/self_param_inherited.py` | Reported. **Intended** ty behaviour (`Self` solved per call as a typevar bounded by the defining class); the displayed signature is wrong, ty#4673. Closed automatically now |
+| `self_classmethods/self_classmethod_param.py` | Same design decision through a classmethod and `tuple[Self, int]` |
+| `self_classmethods/self_runtime_witness.py` | Shows ty is sound here: `Self` solves to `Shape`, so ty flags `c.radius()` |
 | `generics_variance/constrained_typevar.py` | Known upstream: ty#1090 (open) |
 | `typeddict/readonly_notrequired.py` | `Unpack` extra keyword: ty#4212 (closed, intended for open TypedDicts) |
 | `constructors_metaclasses/new_returns_other.py` | mypy reveals the class where `__new__`/metaclass return another type (CPython disagrees). Candidate, probably known |

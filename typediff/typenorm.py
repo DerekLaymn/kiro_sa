@@ -191,6 +191,7 @@ def _pre(raw: str, module: str) -> tuple[str, set[str]]:
     if re.search(r"\w\?", t):  # mypy marks inferred/unsolved types with '?', e.g. A[T?]
         flags.add("mypy_inferred")
         t = re.sub(r"(\w)\?", r"\1", t)
+    t = _strip_fallback(t)  # mypy NamedTuple display: tuple[int, int, fallback=Pair[int]] -> Pair[int]
     # mypy ad-hoc intersections: <subclass of "A" and "B">
     t = re.sub(
         r'<subclass of ((?:"[^"]+"(?:,| and)?\s*)+)>',
@@ -212,6 +213,26 @@ def _pre(raw: str, module: str) -> tuple[str, set[str]]:
     return t, flags
 
 
+def _strip_fallback(t: str) -> str:
+    """Replace mypy's ``tuple[..., fallback=X]`` (NamedTuple display) by ``X``."""
+    while "fallback=" in t:
+        i = t.index("fallback=")
+        start = t.rfind("tuple[", 0, i)
+        j, depth = i + len("fallback="), 0
+        while j < len(t):
+            if t[j] == "[":
+                depth += 1
+            elif t[j] == "]":
+                if depth == 0:
+                    break
+                depth -= 1
+            j += 1
+        if start < 0 or j >= len(t):
+            break
+        t = t[:start] + t[i + len("fallback="):j] + t[j + 1:]
+    return t
+
+
 def _canon_signature(t: str) -> str:
     """Cosmetic canonicalisation of callable displays so that e.g. mypy ``def (url: str, *, timeout: float =) -> bytes``
     and ty ``(url: str, *, timeout: float = ...) -> bytes`` compare equal. Still opaque (never structurally compared)."""
@@ -229,6 +250,9 @@ def _canon(node: TNode) -> TNode:
     if node.kind == "name":
         bare = node.name.rsplit(".", 1)[-1] if "." in node.name and node.name != "..." else node.name
         name = _ALIASES.get(bare, bare)  # module qualifiers differ by tool (_asyncio.Task vs Task)
+        if name == "Literal":  # keep enum members qualified: Literal[Color.RED] must not become Literal[RED]
+            lits = [TNode("literal", name=_lit_text(a)) for a in node.args]
+            return lits[0] if len(lits) == 1 else _canon(TNode("union", args=lits))
         args = [_canon(a) for a in node.args]
         if name == "Optional" and len(args) == 1:
             return _canon(TNode("union", args=[args[0], TNode("name", name="None")]))

@@ -1,6 +1,8 @@
-# Hypothesis: when `Self` appears in a *parameter* of a method, binding through a subclass instance
-# must specialise it (x.add expects Leaf). ty 0.0.84 reveals `bound method Leaf.add(c: Leaf) -> Leaf`
-# yet accepts x.add(Node()); mypy and pyright reject it, and CPython fails later.
+# Reported to ty. Outcome: INTENDED. ty treats `Self` in a non-receiver parameter as a typevar bounded by
+# Node and solves it per call, so x.add(Node()) is OK and returns Node (mypy/pyright bind Self to Leaf).
+# The real ty bug is the displayed signature `bound method Leaf.add(c: Leaf) -> Leaf`: ty#4673.
+# The later AttributeError comes from the mutable `list[Self]` attribute, which is unsound under any
+# interpretation once a Leaf is used as a Node.
 from typing import Self, reveal_type
 
 
