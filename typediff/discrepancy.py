@@ -34,6 +34,24 @@ def _problems(diags: list[Diagnostic], anchor: int) -> list[Diagnostic]:
     return [d for d in diags if d.is_problem and d.anchor == anchor and (d.code or "") not in META_CODES]
 
 
+def _runtime_miss_suppressed(amap: AnchorMap, inner: int, runtime: RuntimeResult, all_diags: list[Diagnostic]) -> bool:
+    """True if the blamed statement is a compound header whose full span holds a checker diagnostic,
+    or the blamed line carries an explicit ignore comment."""
+    blamed = runtime.frames[-1][0] if runtime.frames else (runtime.exc_line or inner)
+    for ln in {blamed, inner}:
+        if 0 < ln <= len(amap.lines):
+            low = amap.lines[ln - 1].lower()
+            if "# type: ignore" in low or "# pyright: ignore" in low:
+                return True
+    st = amap.stmt(inner)
+    node = st.node if st else None
+    if node is not None and isinstance(getattr(node, "body", None), list):
+        lo, hi = st.anchor, getattr(node, "end_lineno", None) or st.end
+        if any(d.is_problem and lo <= d.line <= hi and (d.code or "") not in META_CODES for d in all_diags):
+            return True
+    return False
+
+
 def find_discrepancies(
     diags: dict[Tool, list[Diagnostic]], amap: AnchorMap, runtime: RuntimeResult, module: str = "case"
 ) -> list[Discrepancy]:
@@ -117,7 +135,8 @@ def find_discrepancies(
         flagged = {d.anchor for d in mypy + ty if d.is_problem}
         if frame_anchors and not (frame_anchors & flagged):
             inner = amap.anchor(runtime.frames[-1][0]) if runtime.frames else amap.anchor(runtime.exc_line or 1)
-            new(DiscrepancyKind.RUNTIME_MISS, inner, [], [])
+            if not _runtime_miss_suppressed(amap, inner, runtime, mypy + ty + pyright):
+                new(DiscrepancyKind.RUNTIME_MISS, inner, [], [])
 
     for d in out:
         d.priority = _priority(d)
