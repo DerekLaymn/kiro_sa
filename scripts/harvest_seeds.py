@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import re
 import subprocess
 import sys
@@ -53,7 +54,23 @@ def guess_area(name: str) -> str:
     return "gradual_any"
 
 
-def clone(src: str) -> Path:
+def tool_versions() -> dict[str, str | None]:
+    from importlib import metadata
+
+    out: dict[str, str | None] = {}
+    for pkg in ("mypy", "ty"):
+        try:
+            out[pkg] = metadata.version(pkg)
+        except metadata.PackageNotFoundError:
+            out[pkg] = None
+    return out
+
+
+def _git(dest: Path, *a: str, check: bool = False) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", str(dest), *a], check=check, capture_output=True, text=True)
+
+
+def clone(src: str, tags: tuple[str, ...] = ()) -> Path:
     url, sub = REPOS[src]
     dest = CACHE / src
     if not (dest / ".git").exists():
@@ -62,6 +79,10 @@ def clone(src: str) -> Path:
         subprocess.run(["git", "-C", str(dest), "sparse-checkout", "set", sub], check=True)
     else:
         subprocess.run(["git", "-C", str(dest), "pull", "-q", "--depth=1"], check=False)
+    for tag in tags:  # prefer the tag matching the installed tool; else stay on HEAD
+        if _git(dest, "fetch", "-q", "--depth=1", "origin", "tag", tag).returncode == 0 and \
+                _git(dest, "checkout", "-q", tag).returncode == 0:
+            break
     return dest / sub
 
 
@@ -124,8 +145,17 @@ def main() -> None:
     version = tuple(int(x) for x in args.python_version.split("."))
     out = Path(args.out)
     funcs = {"conformance": harvest_conformance, "ty": harvest_ty, "mypy": harvest_mypy}
+    vers = tool_versions()
+    prov: dict = {"tool_versions": vers, "repos": {}}
+    tag_for = {"mypy": (f"v{vers['mypy']}",) if vers["mypy"] else (), "ty": (vers["ty"],) if vers["ty"] else ()}
     for src in args.sources.split(","):
-        root = clone(src)
+        root = clone(src, tag_for.get(src, ()))
+        repo = CACHE / src
+        prov["repos"][src] = {
+            "url": REPOS[src][0],
+            "sha": _git(repo, "rev-parse", "HEAD").stdout.strip(),
+            "tag": _git(repo, "describe", "--tags", "--exact-match").stdout.strip() or None,
+        }
         kept = seen = 0
         for name, code, origin in funcs[src](root):
             seen += 1
@@ -140,6 +170,8 @@ def main() -> None:
             if args.limit and kept >= args.limit:
                 break
         print(f"{src}: kept {kept} of {seen} programs -> {out}")
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "PROVENANCE.json").write_text(json.dumps(prov, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
