@@ -373,6 +373,148 @@ def m_join_union(s, d):
     return bool(t and m and is_join_vs_union(m, t, _typevars(s)))
 
 
+def _class_defs(s) -> dict[str, ast.ClassDef]:
+    return {n.name: n for n in ast.walk(s.amap.tree) if isinstance(n, ast.ClassDef)} if s.amap.tree else {}
+
+
+def _ancestors(name: str, classes: dict[str, ast.ClassDef]) -> set[str]:
+    out, todo = {name}, [name]
+    while todo:
+        c = classes.get(todo.pop())
+        for b in (c.bases if c else []):
+            if isinstance(b, ast.Name) and b.id not in out:
+                out.add(b.id)
+                todo.append(b.id)
+    return out
+
+
+def _new_return_name(c: ast.ClassDef) -> str | None:
+    for f in c.body:
+        if isinstance(f, ast.FunctionDef) and f.name == "__new__" and f.returns is not None:
+            r = f.returns
+            return r.value if isinstance(r, ast.Constant) and isinstance(r.value, str) else getattr(r, "id", None)
+    return None
+
+
+def m_callable_join_union(s, d):
+    """mypy `def () -> X` vs ty `<class A> | <class B>` and pyright `type[A] | type[B]` (same classes), where every
+    member is X, derives from X, or has a source `__new__` returning X or a subclass of X."""
+    if not (d.mypy and d.ty and d.pyright):
+        return False
+    from .typenorm import callable_join_vs_union, members_of_union_text
+
+    base = callable_join_vs_union(d.mypy[0].revealed_type, d.ty[0].revealed_type, d.pyright[0].revealed_type)
+    if base is None:
+        return False
+    base = base.rsplit(".", 1)[-1]
+    classes = _class_defs(s)
+    if base not in classes:
+        return False
+    for m in members_of_union_text(d.ty[0].revealed_type):
+        m = m.rsplit(".", 1)[-1]
+        if m not in classes:
+            return False
+        ret = _new_return_name(classes[m])
+        if base not in _ancestors(m, classes) and not (ret and base in _ancestors(ret, classes)):
+            return False
+    return True
+
+
+def demote_exception_at_statement(s, d) -> str | None:
+    rt = s.runtime
+    if rt.status == "exception" and classify_exception(rt.exc_type, rt.exc_message) == "strong" \
+            and d.anchor in {s.amap.anchor(ln) for ln, _ in rt.frames}:
+        return f"CPython raised {rt.exc_type}: {rt.exc_message} in this statement"
+    return None
+
+
+_NEW_RETURN = re.compile(r'Incompatible return type for "__new__" \(returns ".*", but must return a subtype of "(?P<cls>[\w.]+)"\)')
+
+
+def m_new_returns_non_subtype(s, d):
+    """mypy rejects `__new__` returning an unrelated type (python/mypy#15182) and reveals the class itself; ty and pyright
+    reveal the returned type, equal to each other, and CPython's probe value inhabits it."""
+    if not (d.mypy and d.ty and d.pyright):
+        return False
+    m, t, p = _rev(d, "mypy", s), _rev(d, "ty", s), (normalize(d.pyright[0].revealed_type, s.module)
+                                                       if d.pyright[0].revealed_type is not None else None)
+    if not (m and t and p) or t.text != p.text or t.text == m.text:
+        return False
+    hits = [_NEW_RETURN.search(x.message) for x in s.diags.get(Tool.MYPY, []) if x.code == "misc"]
+    if not any(h and h["cls"].rsplit(".", 1)[-1] == m.text.rsplit(".", 1)[-1] for h in hits):
+        return False
+    pr = matched_probe(s, d, "ty")
+    return pr is not None and inhabits(pr.shape, t, s.nominal_classes) is True
+
+
+def _scope_bindings(scope: ast.AST, name: str):
+    """(bare annotation lines, other binding lines) of ``name`` directly in ``scope`` (nested scopes skipped)."""
+    bare, other = [], []
+    todo = list(ast.iter_child_nodes(scope))
+    if isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        a = scope.args
+        if any(p.arg == name for p in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg] if p is not None):
+            other.append(0)
+    while todo:
+        n = todo.pop()
+        if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name) and n.target.id == name:
+            (bare if n.value is None else other).append(n.lineno)
+            todo.extend(c for c in ast.iter_child_nodes(n) if c is not n.target)
+            continue
+        elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if n.name == name:
+                other.append(n.lineno)
+            continue  # nested scope
+        elif isinstance(n, ast.Lambda):
+            continue
+        elif isinstance(n, ast.Name) and n.id == name and isinstance(n.ctx, (ast.Store, ast.Del)):
+            other.append(n.lineno)
+        elif isinstance(n, (ast.Import, ast.ImportFrom)):
+            if any((a.asname or a.name.split(".")[0]) == name for a in n.names):
+                other.append(n.lineno)
+        elif isinstance(n, (ast.Global, ast.Nonlocal)) and name in n.names:
+            other.append(n.lineno)
+        elif isinstance(n, ast.ExceptHandler) and n.name == name:
+            other.append(n.lineno)
+        elif isinstance(n, (ast.MatchAs, ast.MatchStar)) and getattr(n, "name", None) == name:
+            other.append(n.lineno)
+        todo.extend(ast.iter_child_nodes(n))
+    return bare, other
+
+
+_TY_UNDEF = re.compile(r"Name `(?P<n>\w+)` used when not defined")
+
+
+def m_annotation_only_read(s, d):
+    """ty and pyright both say the name is unbound, mypy is silent, and the AST shows the name is only ever declared
+    (bare `x: T`, no value) in its module/function scope - never assigned, imported, defined or passed in."""
+    if not (d.ty and d.pyright and not d.mypy and s.amap.tree is not None):
+        return False
+    if not all(x.code == "unresolved-reference" for x in d.ty):
+        return False
+    names = {m["n"] for x in d.ty if (m := _TY_UNDEF.search(x.message))}
+    if len(names) != 1 or not any("unbound" in x.message or "not defined" in x.message for x in d.pyright):
+        return False
+    name = next(iter(names))
+    chain = s.amap.enclosing_nodes(d.anchor)
+    scope = next((n for n in reversed(chain[:-1]) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))),
+                 s.amap.tree)
+    if isinstance(scope, ast.ClassDef):
+        return False
+    bare, other = _scope_bindings(scope, name)
+    return bool(bare) and not other and min(bare) < d.ty[0].line
+
+
+_TODO_SHOULD_ERROR = re.compile(r"#\s*TODO\b.*should\s+(?:\w+\s+)?error", re.I)
+
+
+def m_mdtest_todo(s, d):
+    """A `# TODO: should error ...` comment within the 3 lines above the flagged statement."""
+    lo = d.anchor
+    window = s.amap.lines[max(0, lo - 4):lo - 1]
+    return any(_TODO_SHOULD_ERROR.search(x) for x in window)
+
+
 def _typevars(s) -> set[str]:
     from .experiments import _typevar_names
 
@@ -789,6 +931,51 @@ def _upstream_entries() -> list[KBEntry]:
     return out
 
 
+ENTRIES.extend([
+    KBEntry(
+        "ANNOTATION-ONLY-READ", "mypy has no definite-assignment check for annotation-only variables",
+        Dismissal.DESIGN_DIVERGENCE, "https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-name-is-not-used-before-definition-used-before-def",
+        "A bare `x: int` (no value) followed by a read: ty [unresolved-reference] and pyright (unbound) agree with CPython "
+        "(NameError); mypy does not track definite assignment of declared-only names (reproduced on mypy 2.4.0 even with "
+        "possibly-undefined and used-before-def enabled). Fires only when the AST shows the name is only ever declared "
+        "(never assigned, imported, defined or a parameter) in its module/function scope and ty and pyright agree. "
+        "Forward references and truly undefined names are NOT covered. ty is correct here; the gap is mypy's.",
+        (K.ONLY_TY,), m_annotation_only_read, auto=True, runtime_override=False,
+        example="x: int\nprint(x)\n",
+    ),
+    KBEntry(
+        "MYPY-15182-NEW-RETURNS", "mypy rejects __new__ returning an unrelated type; ty and pyright follow the returned type",
+        Dismissal.DUPLICATE, "https://github.com/python/mypy/issues/15182",
+        "mypy reports `Incompatible return type for \"__new__\" (returns X, but must return a subtype of C)` [misc] and "
+        "reveals C(); ty and pyright reveal X (equal to each other) and CPython's value inhabits X. Tracked upstream as "
+        "python/mypy#15182 (closed 2026-05-27); whether the fix is in mypy 2.4.0 is UNVERIFIED. mypy-side deviation, not a ty bug.",
+        (K.REVEAL_MISMATCH,), m_new_returns_non_subtype, auto=True, runtime_override=False,
+        example="class R:\n    def __new__(cls) -> int:\n        return 42\n\n    def __init__(self, x: str) -> None: ...\n\n\n"
+                "reveal_type(R())\n",
+    ),
+    KBEntry(
+        "JOIN-VS-UNION-CALLABLE", "mypy joins constructor callables where ty and pyright keep the union",
+        Dismissal.DESIGN_DIVERGENCE, "https://github.com/python/mypy/issues?q=is%3Aopen+label%3Atopic-join-v-union",
+        "mypy reveals `def () -> X` for a join of classes whose constructors return X; ty (`<class A> | <class B>`) and "
+        "pyright (`type[A] | type[B]`) agree on the union of the same classes, which is assignable to mypy's join. The spec "
+        "does not define joins. Requires X to be a class in the source that every member derives from or constructs.",
+        (K.REVEAL_MISMATCH,), m_callable_join_union, auto=True, runtime_override=False,
+        demote=demote_exception_at_statement,
+        example="class Base2: ...\nclass Base: ...\nclass Foo(Base): ...\n\n\nclass A(Base2):\n    def __new__(cls) -> Foo: ...  # type: ignore\n\n\n"
+                "class B(Base2):\n    def __new__(cls) -> Base: ...  # type: ignore\n\n\nfrom typing import TypeVar\n\nT = TypeVar('T')\n\n\n"
+                "def join(x: T, y: T) -> T: ...\n\n\nreveal_type(join(A, Foo))\n",
+    ),
+    KBEntry(
+        "MDTEST-TODO", "the source itself documents a missing diagnostic with `# TODO: should error`",
+        Dismissal.KNOWN_LIMITATION, "https://github.com/astral-sh/ty/blob/main/crates/ty_python_semantic/resources/mdtest/call/functools_partial.md",
+        "A `# TODO: should error` comment within 3 lines above the statement: the harvested ty mdtest records this as a known "
+        "missing diagnostic (here: functools.partial over merged constructor signatures). Logged, not filed.",
+        (K.RUNTIME_MISS, K.ONLY_MYPY), m_mdtest_todo, auto=True, runtime_override=False,
+        example="from functools import partial\n\n\nclass MyClass:\n    def __new__(cls, x: int) -> 'MyClass':\n"
+                "        return super().__new__(cls)\n\n    def __init__(self) -> None: ...\n\n\np = partial(MyClass, 1)\n"
+                "# TODO: should error: [missing-argument] once constructor signatures are merged.\np()\n",
+    ),
+])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation
 BY_ID = {e.id: e for e in ENTRIES}
 
