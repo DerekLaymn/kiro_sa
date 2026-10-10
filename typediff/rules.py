@@ -114,13 +114,64 @@ def _finding(d: Discrepancy, verdict: Verdict, tier: Tier, dismissal: Dismissal 
                    evidence=list(d.evidence) + evidence)
 
 
+_REPORTED_UNDEF = (
+    re.compile(r'Name "([\w.]+)" is not defined'),            # mypy name-defined
+    re.compile(r"Name `([\w.]+)` used when not defined"),      # ty unresolved-reference
+    re.compile(r'"([\w.]+)" is (?:unbound|not defined)'),      # pyright reportUnboundVariable / undefined variable
+)
+_EXC_NAME = re.compile(r"'([\w.]+)'")
+
+
+def _reported_undefined(state: CaseState, d: Discrepancy) -> set[str]:
+    """Names some tool reports as undefined/unbound on this statement."""
+    diags = list(d.mypy) + list(d.ty) + [x for x in state.diags.get(Tool.PYRIGHT, []) if x.anchor == d.anchor]
+    return {m.group(1) for x in diags for rx in _REPORTED_UNDEF if (m := rx.search(x.message))}
+
+
+def _stub_callee(state: CaseState, line: int | None) -> str | None:
+    """Name of a same-file def called at `line` whose body is only pass/.../docstring yet is annotated to return a value."""
+    tree = state.amap.tree
+    if tree is None or not line:
+        return None
+    defs = {n.name: n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    for c in ast.walk(tree):
+        if not isinstance(c, ast.Call) or not (c.lineno <= line <= (c.end_lineno or c.lineno)):
+            continue
+        f = c.func
+        fd = defs.get(f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else "")
+        if fd is None or fd.returns is None:
+            continue
+        r = fd.returns
+        if (isinstance(r, ast.Constant) and r.value is None) or (isinstance(r, (ast.Name, ast.Attribute)) and
+                                                                   getattr(r, "id", getattr(r, "attr", "")) in ("NoReturn", "Never")):
+            continue
+        if all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
+                                           and (s.value.value is Ellipsis or isinstance(s.value.value, str)))
+               for s in fd.body):
+            return fd.name
+    return None
+
+
 def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
     rt = state.runtime
     if rt.status in ("not_run", "harness_error"):
         return
     frame_anchors = {state.amap.anchor(ln) for ln, _ in rt.frames}
     strong_exc = rt.status == "exception" and classify_exception(rt.exc_type, rt.exc_message) == "strong"
-    if strong_exc and d.anchor in frame_anchors:
+    if strong_exc and d.anchor in frame_anchors and rt.exc_type in ("NameError", "UnboundLocalError") and any(
+            n in _reported_undefined(state, d) for n in _EXC_NAME.findall(rt.exc_message or "")):
+        d.evidence.append(Evidence(
+            EvidenceType.RUNTIME, "neutral",
+            f"runtime {rt.exc_type} confirms the reporting tool's own diagnostic ({rt.exc_message}); it says nothing "
+            "about the silent tool", citation=f"line {rt.exc_line}", verified=True, strength="weak"))
+    elif strong_exc and rt.exc_type == "TypeError" and "NoneType" in (rt.exc_message or "") and d.anchor in frame_anchors \
+            and (stub := _stub_callee(state, rt.exc_line)):
+        d.evidence.append(Evidence(
+            EvidenceType.RUNTIME, "neutral",
+            f"CPython raised {rt.exc_type}: {rt.exc_message}, but it comes from calling stub-bodied `{stub}` "
+            "(body is only pass/.../docstring), which returns None at runtime: test scaffolding, not a type error",
+            citation=f"line {rt.exc_line}", verified=True, strength="weak"))
+    elif strong_exc and d.anchor in frame_anchors:
         blame = {K.ONLY_MYPY: "ty", K.ONLY_TY: "mypy", K.RUNTIME_MISS: "both"}.get(d.kind, "unknown")
         reported = "; ".join(x.short() for x in d.mypy + d.ty) or "nothing"
         st = state.amap.stmt(rt.exc_line) if rt.exc_line else None
@@ -161,6 +212,14 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
                 continue
             t = normalize(lst[0].revealed_type, state.module)
             if inhabits(p.shape, t, state.nominal_classes) is False:
+                stub = _stub_callee(state, p.line) if p.shape.get("type") == "builtins.NoneType" else None
+                if stub:
+                    d.evidence.append(Evidence(
+                        EvidenceType.RUNTIME, "neutral",
+                        f"runtime value None comes from stub-bodied `{stub}` (body is only pass/.../docstring, return "
+                        f"annotation is not None): probe says nothing about {tool}'s revealed type",
+                        citation=f"probe line {p.line}", verified=True, strength="weak"))
+                    continue
                 d.evidence.append(Evidence(
                     EvidenceType.RUNTIME, "bug",
                     f"runtime value {p.shape.get('repr')!r} of type {p.shape.get('type')} does NOT inhabit {tool}'s "
