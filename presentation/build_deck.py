@@ -255,7 +255,7 @@ def conn(slide, a, ai, b, bi, kind=MSO_CONNECTOR.STRAIGHT, color=NAVY, dash=Fals
 
 def slide_arch(prs):
     s = blank(prs)
-    title(s, "Architecture: from programs to filed bugs", 4)
+    title(s, "Pipeline: from programs to filed bugs", 4)
     W, GAP, X0 = 2.2, 0.45, 0.42
     cx = [X0 + i * (W + GAP) for i in range(5)]
     # row A
@@ -314,9 +314,96 @@ def slide_arch(prs):
              "If it is, the LLM only generates new variants that feed back into the inputs, and we verify against the spec, CPython and the trackers before filing upstream.")
 
 
+def slide_plan(prs):
+    s = blank(prs)
+    title(s, "Plan: six stages", 5)
+    stages = [
+        ("Setup", "Pinned tools: ty 0.0.84, mypy 2.4.0, pyright. Docs corpus, knowledge-base self-test.", "Done"),
+        ("Seed run and triage", "Hand-written seeds + 4,849 harvested programs. Group findings into patterns, teach the KB what is noise.", "In progress"),
+        ("LLM mutation", "Variants of promising hits (feature crossovers), judged deterministically.", "Upcoming"),
+        ("LLM generation + crash hunting", "New programs in under-covered areas: ParamSpec, TypedDict, overloads, recursive aliases.", "Upcoming"),
+        ("Judging and filing", "Spec rule, CPython oracle, duplicate search, minimal repro. One issue per root cause.", "Upcoming"),
+        ("Write-up", "Results tables, discrepancy dataset, filed issues.", "Upcoming"),
+    ]
+    n, gap = 6, 0.12
+    x0 = 0.45
+    w = (SW - 2 * x0 - (n - 1) * gap) / n
+    for i, (head, body, st) in enumerate(stages):
+        x = x0 + i * (w + gap)
+        ch = rect(s, x, 1.6, w, 1.0, fill=ACCENT if st == "Done" else (WHITE if st == "In progress" else LIGHT),
+                  line=ACCENT if st != "Upcoming" else None,
+                  shape=MSO_SHAPE.PENTAGON if i == 0 else MSO_SHAPE.CHEVRON, lw=2.0)
+        ch.adjustments[0] = 0.18
+        col = WHITE if st == "Done" else NAVY
+        fill_tf(ch.text_frame, [(f"{i + 1}", {"size": 24, "bold": True})], color=col,
+                align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, inset=0.02)
+        text(s, x, 2.75, w, 0.85, head, size=16, bold=True, color=NAVY, anchor=MSO_ANCHOR.TOP)
+        text(s, x, 3.6, w, 1.9, body, size=14, color=NAVY)
+        chip = rect(s, x + 0.05, 5.5, w - 0.3, 0.42,
+                    fill=ACCENT if st == "Done" else (WHITE if st == "In progress" else LIGHT),
+                    line=ACCENT if st == "In progress" else None, shape=MSO_SHAPE.ROUNDED_RECTANGLE, lw=2.0)
+        chip.adjustments[0] = 0.5
+        fill_tf(chip.text_frame, st, size=14, bold=True,
+                color=WHITE if st == "Done" else (ACCENT if st == "In progress" else GREY),
+                align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, inset=0.02)
+    rect(s, 0.5, 6.15, SW - 1.0, 0.7, fill=LIGHT)
+    rect(s, 0.5, 6.15, 0.08, 0.7, fill=ACCENT)
+    pr = ["Free LLMs generate, never judge", "Judge patterns, not individual findings", "Search trackers before filing"]
+    pw = (SW - 1.0 - 0.3) / 3
+    for i, t in enumerate(pr):
+        text(s, 0.7 + i * pw, 6.15, pw - 0.1, 0.7, t, size=16, bold=True, color=ACCENT,
+             anchor=MSO_ANCHOR.MIDDLE, align=PP_ALIGN.CENTER)
+    notes(s, "This is our plan as six stages. Setup is done: tools are pinned, the docs corpus is in and the knowledge base passes its self-test. "
+             "We are now in stage two, running the hand-written and harvested seeds and triaging the findings into patterns. "
+             "Next the LLM mutates promising hits, then generates new programs for under-covered areas and hunts crashes, and every result is judged deterministically. "
+             "Then we judge and file: spec rule, CPython as oracle, duplicate search and a minimal repro, one issue per root cause. "
+             "The last stage is the write-up. Three principles run through it: free LLMs generate but never judge, we judge patterns rather than single findings, and we search trackers before filing. "
+             "The LLM budget is about 20 dollars in total.")
+
+
+def slide_updates(prs):
+    s = blank(prs)
+    title(s, "Updates: what is done so far", 6)
+    items = [
+        ("Pipeline built end to end: ", "runs mypy, ty, pyright and CPython, normalises output, detects disagreements, auto-dismisses known ones with a knowledge base, groups the rest into patterns."),
+        ("First probe: ", "a hand-written Self seed led to our first report (ty#4656). Closed as intended; a related display bug is ty#4673. Lesson: argue the accused tool's side before filing."),
+        ("Corpus: ", "27 hand-written seeds plus 4,849 harvested programs (typing conformance suite, ty mdtests, mypy tests)."),
+        ("First full run: ", "7,480 findings in 618 patterns, all deterministic, no LLM."),
+        ("Triage of top 5 patterns: ", "all harness noise or design differences, no new bug yet. It showed our 'strong bug evidence' flag was misleading."),
+        ("Pipeline fixes: ", "NameError no longer blames the silent tool, stub-function None ignored, runtime-miss anchored on full statement, 4 scoped KB entries, harvest provenance, 1,423 other-version mdtest snippets skipped. 81 tests pass."),
+        ("In progress: ", "re-run on the fixed pipeline."),
+    ]
+    tb = s.shapes.add_textbox(Inches(MARGIN), Inches(1.45), Inches(8.2), Inches(5.4))
+    tf = tb.text_frame
+    tf.word_wrap = True
+    for i, (lead, body) in enumerate(items):
+        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        if i:
+            p.space_before = Pt(9)
+        for t, b, c in (("\u25AA  ", True, ACCENT), (lead, True, NAVY), (body, False, NAVY)):
+            r = p.add_run(); r.text = t
+            r.font.name, r.font.size, r.font.bold = FONT, Pt(17), b
+            r.font.color.rgb = c
+    # funnel
+    fx, fw = 9.3, 3.35
+    stages = [("7,480", "findings", 1.0), ("618", "patterns", 0.8), ("5", "top patterns triaged", 0.62), ("0", "confirmed bugs yet", 0.46)]
+    y = 1.75
+    for i, (num, lab, f) in enumerate(stages):
+        w = fw * f
+        b = rect(s, fx + (fw - w) / 2, y, w, 1.0, fill=ACCENT if i < 3 else NAVY)
+        fill_tf(b.text_frame, [(num, {"size": 24, "bold": True}), (lab, {"size": 14})], color=WHITE,
+                align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, inset=0.03)
+        y += 1.2
+    notes(s, "Here is what is done so far. The pipeline works end to end: it runs mypy, ty, pyright and CPython, compares them, filters known differences with a knowledge base and groups the rest into patterns. "
+             "Our first probe, a hand-written Self seed, became ty issue 4656. The maintainers closed it as intended behaviour, and a related display bug is ty 4673, so we learned to argue the other tool's side before filing. "
+             "The corpus is 27 hand-written seeds plus 4,849 harvested programs. The first full run gave 7,480 findings in 618 patterns, with no LLM involved. "
+             "We triaged the top five patterns and all were harness noise or design differences, so no confirmed bug yet. That exposed a misleading evidence flag, and we fixed it along with several other pipeline issues, and 81 tests pass. "
+             "A re-run on the fixed pipeline is in progress, so we have no results from it to show today.")
+
+
 def slide_outcomes(prs):
     s = blank(prs)
-    title(s, "Expected outcomes", 5)
+    title(s, "Expected outcomes", 7)
     pts = [
         ("New, confirmed bugs", "Reportable bugs in ty (and mypy): minimal repros filed upstream "
                                 "with spec references, checked against the trackers for duplicates."),
@@ -334,21 +421,13 @@ def slide_outcomes(prs):
         text(s, MARGIN + 1.1, y, 3.3, 1.0, h, size=24, bold=True, anchor=MSO_ANCHOR.MIDDLE)
         text(s, MARGIN + 4.5, y, SW - 2 * MARGIN - 4.5, 1.0, b, size=18, anchor=MSO_ANCHOR.MIDDLE)
         y += 1.3
-    rect(s, MARGIN + 0.05, 5.7, SW - 2 * MARGIN - 0.05, 0.9, fill=LIGHT)
-    rect(s, MARGIN + 0.05, 5.7, 0.08, 0.9, fill=ACCENT)
-    text(s, MARGIN + 0.3, 5.7, SW - 2 * MARGIN - 0.5, 0.9,
-         [("Status so far: ", {"bold": True, "color": ACCENT}),],
-         size=18, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, MARGIN + 2.2, 5.7, SW - 2 * MARGIN - 2.4, 0.9,
-         "pipeline built, first corpus of 4,849 programs run, triage and fixes in progress",
-         size=18, anchor=MSO_ANCHOR.MIDDLE)
     notes(s, "We expect three things. First, new confirmed bugs in ty and possibly mypy, each with a minimal repro and a spec reference, checked against the trackers so we do not file duplicates. "
              "Second, a documented dataset of disagreements, labelled as real bug, intended, known or noise, with evidence. "
              "Third, a reusable pipeline that cheaply discards known differences so humans only look at real candidates, with measured funnel numbers. "
-             "We are not promising a specific number of bugs. So far the pipeline is built, the first corpus has been run, and triage is in progress.")
+             "We are not promising a specific number of bugs. The status of all this is on the updates slide.")
 
 
-SLIDES = [slide_title, slide_problem, slide_motivation, slide_arch, slide_outcomes]
+SLIDES = [slide_title, slide_problem, slide_motivation, slide_arch, slide_plan, slide_updates, slide_outcomes]
 
 
 def main():
