@@ -6,3 +6,4 @@ llm_inbox/
 calibration/positives.json
 seeds/harvested/
 runs/
+.worktrees/
