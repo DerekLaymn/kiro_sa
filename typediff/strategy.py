@@ -56,6 +56,7 @@ AVOID_FOR_KB = {
 }
 CRASH_OPS = ["recursion_deepening", "invalid_type_form", "feature_crossover"]
 DEPTH_OPS = ["feature_crossover", "generic_nesting", "narrowing_construct_swap", "runtime_witness"]
+GRADUAL_OPS = ["type_erasure", "type_overwriting", "gradual_injection"]
 
 
 class Strategy:
