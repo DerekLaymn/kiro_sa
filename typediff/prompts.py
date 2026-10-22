@@ -266,13 +266,16 @@ Mutation operators (name them exactly; give concrete instructions):
   variance_flip, bound_constraint_swap, generic_nesting, union_widen, literal_injection, gradual_injection,
   narrowing_construct_swap, annotation_spelling_swap, scope_relocation, protocol_vs_abc, qualifier_toggle,
   overload_reorder, recursion_deepening, invalid_type_form, python_version_flip, feature_crossover,
-  runtime_witness, inheritance_diamond, descriptor_property, decorator_wrapping, async_generator_wrap
+  runtime_witness, inheritance_diamond, descriptor_property, decorator_wrapping, async_generator_wrap,
+  type_erasure, type_overwriting
 Rules of thumb:
 - Known divergences (KB ids) are not progress: add their trigger pattern to avoid_patterns.
 - Crash hunting: recursion_deepening, invalid_type_form, feature_crossover on constructs that need fix-point \
 iteration (recursive aliases/protocols, self-referential generics, loops that widen types).
 - Soundness hunting: every function must be CALLED with concrete values so CPython can refute a checker; prefer \
 runtime_witness and narrowing_construct_swap.
+- Gradual typing bugs: type_erasure (remove annotations to test inference), type_overwriting (change declared type \
+to expose false positives/negatives), gradual_injection (add Any to test propagation).
 - Prefer feature interactions (e.g. ParamSpec x Protocol x overload) over single features once single-feature \
 areas are saturated.
 
