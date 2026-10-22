@@ -1,11 +1,17 @@
 """Harvest seed programs from upstream test suites (Phase 1 of FUZZING_PLAN.md).
 
-    python scripts/harvest_seeds.py [--out seeds/harvested] [--sources conformance,ty,mypy]
+    python scripts/harvest_seeds.py [--out seeds/harvested] [--sources conformance,ty,mypy,pyright,typeshed]
 
 Sources (shallow, sparse git clones into ~/.cache/typediff/upstream):
   conformance  python/typing  conformance/tests/*.py        spec-backed; errors marked with `# E`
   ty           astral-sh/ruff crates/ty_python_semantic/resources/mdtest/**/*.md  (```py blocks)
   mypy         python/mypy    test-data/unit/check-*.test    ([case ...] blocks)
+  pyright      microsoft/pyright  packages/pyright-internal/src/tests/samples/*.py
+               (~1,400 standalone programs; expected errors are described in comments such as
+               "# This should generate an error"; files that import sibling sample modules are skipped)
+  typeshed     python/typeshed  stdlib/@tests/test_cases/**/*.py
+               (written to agree under mypy AND pyright, checked with assert_type; a disagreement from
+               ty is therefore interesting)
 
 Each output file gets a `# area:` header guessed from its name, so `typediff seeds` can bucket results.
 Programs that cannot work standalone are skipped: multi-file tests, ty_extensions, non-stdlib imports,
@@ -27,6 +33,8 @@ REPOS = {
     "conformance": ("https://github.com/python/typing.git", "conformance/tests"),
     "ty": ("https://github.com/astral-sh/ruff.git", "crates/ty_python_semantic/resources/mdtest"),
     "mypy": ("https://github.com/python/mypy.git", "test-data/unit"),
+    "pyright": ("https://github.com/microsoft/pyright.git", "packages/pyright-internal/src/tests/samples"),
+    "typeshed": ("https://github.com/python/typeshed.git", "stdlib/@tests/test_cases"),
 }
 AREA_HINTS = [
     ("self", "self_classmethods"), ("paramspec", "paramspec_concatenate"), ("concatenate", "paramspec_concatenate"),
@@ -70,7 +78,8 @@ def usable(code: str, version: tuple[int, int]) -> bool:
         tree = ast.parse(code, feature_version=version)
     except SyntaxError:
         return False
-    if not tree.body or "ty_extensions" in code or "reveal_type" not in code and "# E" not in code and "error" not in code:
+    has_oracle = any(k in code for k in ("reveal_type", "assert_type", "# E", "error"))
+    if not tree.body or "ty_extensions" in code or not has_oracle:
         return False
     for n in ast.walk(tree):
         if isinstance(n, ast.Import) and any(a.name.split(".")[0] not in STD for a in n.names):
@@ -85,6 +94,18 @@ def harvest_conformance(root: Path):
         if f.name.startswith("_"):
             continue
         yield f"conformance__{f.stem}", f.read_text(encoding="utf-8"), f"python/typing conformance/tests/{f.name}"
+
+
+def harvest_pyright(root: Path):
+    for f in sorted(root.glob("*.py")):
+        yield f"pyright__{f.stem}", f.read_text(encoding="utf-8"), f"microsoft/pyright tests/samples/{f.name}"
+
+
+def harvest_typeshed(root: Path):
+    for f in sorted(root.rglob("*.py")):
+        rel = f.relative_to(root).with_suffix("")
+        yield f"typeshed__{str(rel).replace('/', '__')}", f.read_text(encoding="utf-8"), \
+            f"python/typeshed stdlib/@tests/test_cases/{rel}.py"
 
 
 _MD_BLOCK = re.compile(r"(?P<head>[^\n]*)\n```(?:py|python)\n(?P<code>.*?)```", re.S)
@@ -117,13 +138,14 @@ def harvest_mypy(root: Path):
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default="seeds/harvested")
-    ap.add_argument("--sources", default="conformance,ty,mypy")
+    ap.add_argument("--sources", default="conformance,ty,mypy,pyright,typeshed")
     ap.add_argument("--python-version", default="3.13")
     ap.add_argument("--limit", type=int, default=0, help="max programs per source (0 = all)")
     args = ap.parse_args()
     version = tuple(int(x) for x in args.python_version.split("."))
     out = Path(args.out)
-    funcs = {"conformance": harvest_conformance, "ty": harvest_ty, "mypy": harvest_mypy}
+    funcs = {"conformance": harvest_conformance, "ty": harvest_ty, "mypy": harvest_mypy,
+             "pyright": harvest_pyright, "typeshed": harvest_typeshed}
     for src in args.sources.split(","):
         root = clone(src)
         kept = seen = 0
