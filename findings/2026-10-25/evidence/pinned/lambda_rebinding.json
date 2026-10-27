@@ -1,0 +1,246 @@
+{
+ "case_id": "lambda_rebinding",
+ "source": "from collections.abc import Callable\n\n\ndef build(value: int | None) -> Callable[[], int]:\n    if value is None:\n        value = 0\n    callback = lambda: value + 1\n    value = None\n    return callback\n\n\nprint(build(1)())\n",
+ "target_python": "3.13",
+ "tool_versions": {
+  "mypy": "mypy 2.4.0 (compiled: yes)",
+  "ty": "ty 0.0.84",
+  "pyright": "pyright 1.1.414",
+  "runtime": "3.13.16"
+ },
+ "flags": {
+  "mypy": [
+   "--python-version",
+   "3.13",
+   "--check-untyped-defs",
+   "--show-column-numbers",
+   "--show-error-codes",
+   "--show-error-end",
+   "--no-error-summary",
+   "--no-color-output",
+   "--hide-error-context",
+   "--no-incremental",
+   "--cache-dir",
+   "/tmp/typediff-wkod8cmm/.mypy_cache"
+  ],
+  "ty": [
+   "--python-version",
+   "3.13",
+   "--output-format",
+   "concise",
+   "--no-progress",
+   "--color",
+   "never"
+  ],
+  "pyright": [
+   "--pythonversion",
+   "3.13",
+   "--outputjson"
+  ]
+ },
+ "diagnostics": {
+  "mypy": [],
+  "ty": [
+   {
+    "tool": "ty",
+    "line": 7,
+    "col": 24,
+    "severity": "error",
+    "code": "unsupported-operator",
+    "message": "Operator `+` is not supported between objects of type `int | None` and `Literal[1]`",
+    "end_line": null,
+    "end_col": null,
+    "revealed_type": null,
+    "anchor": 7,
+    "raw": "case.py:7:24: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`"
+   }
+  ],
+  "pyright": [
+   {
+    "tool": "pyright",
+    "line": 7,
+    "col": 24,
+    "severity": "error",
+    "code": "reportOptionalOperand",
+    "message": "Operator \"+\" not supported for \"None\"",
+    "end_line": 7,
+    "end_col": 29,
+    "revealed_type": null,
+    "anchor": 7,
+    "raw": "{\"file\": \"/tmp/typediff-1wctp8_m/case.py\", \"severity\": \"error\", \"message\": \"Operator \\\"+\\\" not supported for \\\"None\\\"\", \"range\": {\"start\": {\"line\": 6, \"character\": 23}, \"end\": {\"line\": 6, \"character\": 28}}, \"rule\": \"reportOptionalOperand\"}"
+   }
+  ]
+ },
+ "runtime": {
+  "status": "exception",
+  "exc_type": "TypeError",
+  "exc_message": "unsupported operand type(s) for +: 'NoneType' and 'int'",
+  "exc_line": 7,
+  "frames": [
+   [
+    12,
+    "<module>"
+   ],
+   [
+    7,
+    "<lambda>"
+   ]
+  ],
+  "executed_lines": [
+   1,
+   4,
+   5,
+   7,
+   8,
+   9,
+   12
+  ],
+  "probes": [],
+  "stdout": "",
+  "stderr": "",
+  "python_version": "3.13.16"
+ },
+ "crashes": [],
+ "discrepancies": [
+  {
+   "id": "D1",
+   "kind": "only_ty",
+   "anchor": 7,
+   "anchor_end": 7,
+   "statement": "callback = lambda: value + 1",
+   "scope": "build",
+   "mypy": [],
+   "ty": [
+    {
+     "tool": "ty",
+     "line": 7,
+     "col": 24,
+     "severity": "error",
+     "code": "unsupported-operator",
+     "message": "Operator `+` is not supported between objects of type `int | None` and `Literal[1]`",
+     "end_line": null,
+     "end_col": null,
+     "revealed_type": null,
+     "anchor": 7,
+     "raw": "case.py:7:24: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`"
+    }
+   ],
+   "pyright": [
+    {
+     "tool": "pyright",
+     "line": 7,
+     "col": 24,
+     "severity": "error",
+     "code": "reportOptionalOperand",
+     "message": "Operator \"+\" not supported for \"None\"",
+     "end_line": 7,
+     "end_col": 29,
+     "revealed_type": null,
+     "anchor": 7,
+     "raw": "{\"file\": \"/tmp/typediff-1wctp8_m/case.py\", \"severity\": \"error\", \"message\": \"Operator \\\"+\\\" not supported for \\\"None\\\"\", \"range\": {\"start\": {\"line\": 6, \"character\": 23}, \"end\": {\"line\": 6, \"character\": 28}}, \"rule\": \"reportOptionalOperand\"}"
+    }
+   ],
+   "reveal_relation": null,
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised TypeError: unsupported operand type(s) for +: 'NoneType' and 'int' with this statement on the stack (frames [(12, '<module>'), (7, '<lambda>')]). Checker output here: L7:24 error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`. Check the exception is caused by the reported issue. Constructs in the raising statement's dependency set that could be responsible: binding of `value` (L8: `value = None`); binding of `value` (L6: `value = 0`). A reduced repro must keep them.",
+     "citation": "line 7",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "mypy"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    },
+    {
+     "type": "EXPERIMENT",
+     "supports": "neutral",
+     "summary": "E1 operand types: value: mypy=int ty=int pyright=int runtime=builtins.int [equal]",
+     "citation": "E1",
+     "quote": "",
+     "verified": true,
+     "strength": "medium",
+     "blame": null
+    }
+   ],
+   "kb_hits": [
+    "PARTIAL-TYPES"
+   ],
+   "features": [
+    "callable",
+    "is_narrow",
+    "lambda"
+   ],
+   "priority": 0.6
+  }
+ ],
+ "findings": [
+  {
+   "discrepancy_id": "D1",
+   "verdict": "NEEDS_HUMAN",
+   "tier": "review",
+   "faulty_tool": "unknown",
+   "symptom": null,
+   "dismissal": null,
+   "confidence": 0.0,
+   "decided_by": "gate",
+   "reasoning": "no LLM configured (TYPEDIFF_LLM=null): needs a human",
+   "correct_behavior": "",
+   "counter_hypothesis": "",
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised TypeError: unsupported operand type(s) for +: 'NoneType' and 'int' with this statement on the stack (frames [(12, '<module>'), (7, '<lambda>')]). Checker output here: L7:24 error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`. Check the exception is caused by the reported issue. Constructs in the raising statement's dependency set that could be responsible: binding of `value` (L8: `value = None`); binding of `value` (L6: `value = 0`). A reduced repro must keep them.",
+     "citation": "line 7",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "mypy"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    },
+    {
+     "type": "EXPERIMENT",
+     "supports": "neutral",
+     "summary": "E1 operand types: value: mypy=int ty=int pyright=int runtime=builtins.int [equal]",
+     "citation": "E1",
+     "quote": "",
+     "verified": true,
+     "strength": "medium",
+     "blame": null
+    }
+   ],
+   "experiments": [],
+   "review_notes": [],
+   "reduced_source": null,
+   "signature": null
+  }
+ ],
+ "validity": {
+  "valid": true,
+  "problems": [],
+  "runtime_usable": true
+ },
+ "strategy": null,
+ "llm_calls": 0,
+ "notes": []
+}

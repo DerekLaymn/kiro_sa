@@ -1,0 +1,214 @@
+{
+ "case_id": "repro",
+ "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+ "target_python": "3.13",
+ "tool_versions": {
+  "mypy": "mypy 2.4.0 (compiled: yes)",
+  "ty": "ty 0.0.91",
+  "pyright": "pyright 1.1.414",
+  "runtime": "3.13.16"
+ },
+ "flags": {
+  "mypy": [
+   "--python-version",
+   "3.13",
+   "--check-untyped-defs",
+   "--show-column-numbers",
+   "--show-error-codes",
+   "--show-error-end",
+   "--no-error-summary",
+   "--no-color-output",
+   "--hide-error-context",
+   "--no-incremental",
+   "--cache-dir",
+   "/tmp/typediff-ktpge28i/.mypy_cache"
+  ],
+  "ty": [
+   "--python-version",
+   "3.13",
+   "--output-format",
+   "concise",
+   "--no-progress",
+   "--color",
+   "never"
+  ],
+  "pyright": [
+   "--pythonversion",
+   "3.13",
+   "--outputjson"
+  ]
+ },
+ "diagnostics": {
+  "mypy": [
+   {
+    "tool": "mypy",
+    "line": 6,
+    "col": 15,
+    "severity": "error",
+    "code": "union-attr",
+    "message": "Item \"str\" of \"int | str\" has no attribute \"bit_length\"",
+    "end_line": 6,
+    "end_col": 30,
+    "revealed_type": null,
+    "anchor": 6,
+    "raw": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]"
+   }
+  ],
+  "ty": [],
+  "pyright": []
+ },
+ "runtime": {
+  "status": "exception",
+  "exc_type": "AttributeError",
+  "exc_message": "'str' object has no attribute 'bit_length'",
+  "exc_line": 6,
+  "frames": [
+   [
+    9,
+    "<module>"
+   ],
+   [
+    6,
+    "run"
+   ]
+  ],
+  "executed_lines": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   9
+  ],
+  "probes": [],
+  "stdout": "",
+  "stderr": "",
+  "python_version": "3.13.16"
+ },
+ "crashes": [],
+ "discrepancies": [
+  {
+   "id": "D1",
+   "kind": "only_mypy",
+   "anchor": 6,
+   "anchor_end": 6,
+   "statement": "print(value.bit_length())",
+   "scope": "run",
+   "mypy": [
+    {
+     "tool": "mypy",
+     "line": 6,
+     "col": 15,
+     "severity": "error",
+     "code": "union-attr",
+     "message": "Item \"str\" of \"int | str\" has no attribute \"bit_length\"",
+     "end_line": 6,
+     "end_col": 30,
+     "revealed_type": null,
+     "anchor": 6,
+     "raw": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]"
+    }
+   ],
+   "ty": [],
+   "pyright": [],
+   "reveal_relation": null,
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised AttributeError: 'str' object has no attribute 'bit_length' with this statement on the stack (frames [(9, '<module>'), (6, 'run')]). Checker output here: L6:15 error[union-attr] Item \"str\" of \"int | str\" has no attribute \"bit_length\". Check the exception is caused by the reported issue. Constructs in the raising statement's dependency set that could be responsible: binding of `value` (L2: `value: int | str = 1`). A reduced repro must keep them.",
+     "citation": "line 6",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "ty"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    },
+    {
+     "type": "EXPERIMENT",
+     "supports": "neutral",
+     "summary": "E1 operand types: value.bit_length: mypy=(def () -> int) | Any ty=bound method Literal[1].bit_length() -> int pyright=() -> int runtime=None [uncomparable]; value: mypy=int | str ty=Literal[1] pyright=Literal[1] runtime=None [ty_more_precise]",
+     "citation": "E1",
+     "quote": "",
+     "verified": true,
+     "strength": "medium",
+     "blame": null
+    }
+   ],
+   "kb_hits": [
+    "GRADUAL-OPERAND"
+   ],
+   "features": [],
+   "priority": 0.6
+  }
+ ],
+ "findings": [
+  {
+   "discrepancy_id": "D1",
+   "verdict": "NEEDS_HUMAN",
+   "tier": "review",
+   "faulty_tool": "unknown",
+   "symptom": null,
+   "dismissal": null,
+   "confidence": 0.0,
+   "decided_by": "gate",
+   "reasoning": "no LLM configured (TYPEDIFF_LLM=null): needs a human",
+   "correct_behavior": "",
+   "counter_hypothesis": "",
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised AttributeError: 'str' object has no attribute 'bit_length' with this statement on the stack (frames [(9, '<module>'), (6, 'run')]). Checker output here: L6:15 error[union-attr] Item \"str\" of \"int | str\" has no attribute \"bit_length\". Check the exception is caused by the reported issue. Constructs in the raising statement's dependency set that could be responsible: binding of `value` (L2: `value: int | str = 1`). A reduced repro must keep them.",
+     "citation": "line 6",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "ty"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    },
+    {
+     "type": "EXPERIMENT",
+     "supports": "neutral",
+     "summary": "E1 operand types: value.bit_length: mypy=(def () -> int) | Any ty=bound method Literal[1].bit_length() -> int pyright=() -> int runtime=None [uncomparable]; value: mypy=int | str ty=Literal[1] pyright=Literal[1] runtime=None [ty_more_precise]",
+     "citation": "E1",
+     "quote": "",
+     "verified": true,
+     "strength": "medium",
+     "blame": null
+    }
+   ],
+   "experiments": [],
+   "review_notes": [],
+   "reduced_source": null,
+   "signature": null
+  }
+ ],
+ "validity": {
+  "valid": true,
+  "problems": [],
+  "runtime_usable": true
+ },
+ "strategy": null,
+ "llm_calls": 0,
+ "notes": []
+}

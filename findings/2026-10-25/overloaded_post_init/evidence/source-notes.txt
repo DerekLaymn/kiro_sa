@@ -1,0 +1,51 @@
+https://raw.githubusercontent.com/python/mypy/master/mypy/checker.py
+Downloaded before the offline-only request on 2026-10-25
+1418:         # TODO: the following logic should move to the dataclasses plugin
+1419:         #  https://github.com/python/mypy/issues/15515
+1420:         if name == "__post_init__":
+1421:             if dataclasses_plugin.is_processed_dataclass(defn.info):
+1422:                 dataclasses_plugin.check_post_init(self, defn, defn.info)
+1423: 
+1424:     def check_func_def_override(self, defn: FuncDef, new_type: FunctionLike) -> None:
+1425:         assert defn.original_def is not None
+1426:         if isinstance(defn.original_def, FuncDef):
+1427:             # Function definition overrides function definition.
+
+https://raw.githubusercontent.com/python/mypy/master/mypy/plugins/dataclasses.py
+Downloaded before the offline-only request on 2026-10-25
+1124: 
+1125: 
+1126: def check_post_init(api: TypeChecker, defn: FuncItem, info: TypeInfo) -> None:
+1127:     if defn.type is None:
+1128:         return
+1129:     assert isinstance(defn.type, FunctionLike)
+1130: 
+1131:     ideal_sig_method = info.get_method(_INTERNAL_POST_INIT_SYM_NAME)
+1132:     assert ideal_sig_method is not None and ideal_sig_method.type is not None
+1133:     ideal_sig = ideal_sig_method.type
+1134:     assert isinstance(ideal_sig, ProperType)  # we set it ourselves
+1135:     assert isinstance(ideal_sig, CallableType)
+1136:     ideal_sig = ideal_sig.copy_modified(name="__post_init__")
+1137: 
+1138:     api.check_override(
+1139:         override=defn.type,
+1140:         original=ideal_sig,
+1141:         name="__post_init__",
+1142:         name_in_super="__post_init__",
+1143:         supertype="dataclass",
+1144:         original_class_or_static=False,
+1145:         override_class_or_static=False,
+1146:         node=defn,
+1147:     )
+
+https://raw.githubusercontent.com/python/typing/main/docs/spec/callables.rst
+Downloaded before the offline-only request on 2026-10-25
+800: ^^^^^^^^^
+801: 
+802: If a callable ``B`` is overloaded with two or more signatures, it is
+803: :term:`assignable` to callable ``A`` if *at least one* of the overloaded
+804: signatures in ``B`` is assignable to ``A``::
+805: 
+806:     class Overloaded(Protocol):
+807:         @overload
+

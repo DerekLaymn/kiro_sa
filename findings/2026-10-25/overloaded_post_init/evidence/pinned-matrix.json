@@ -1,0 +1,754 @@
+{
+  "versions": {
+    "mypy": "mypy 2.4.0 (compiled: yes)",
+    "ty": "ty 0.0.84",
+    "pyright": "pyright 1.1.414",
+    "runtime": "3.13.16"
+  },
+  "cases": [
+    {
+      "name": "extra_arity",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: int, extra: str) -> None: ...\n    def __post_init__(self, value: int, extra: str = \"\") -> None:\n        print(value)\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-87oog2fo/.mypy_cache"
+          ],
+          "stdout": "case.py:12:5:12:64: error: Signature of \"__post_init__\" incompatible with supertype \"dataclass\"  [override]\ncase.py:12:5:12:64: note:      Superclass:\ncase.py:12:5:12:64: note:          def __post_init__(self: Record, value: int) -> None\ncase.py:12:5:12:64: note:      Subclass:\ncase.py:12:5:12:64: note:          def __post_init__(self: Record, value: int, extra: str) -> None\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952155345\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.143\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:5:12:64: error: Signature of \"__post_init__\" incompatible with supertype \"dataclass\"  [override]\ncase.py:12:5:12:64: note:      Superclass:\ncase.py:12:5:12:64: note:          def __post_init__(self: Record, value: int) -> None\ncase.py:12:5:12:64: note:      Subclass:\ncase.py:12:5:12:64: note:          def __post_init__(self: Record, value: int, extra: str) -> None\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "original",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-ujxvuouk/.mypy_cache"
+          ],
+          "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952158879\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.148\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "reverse_overload_order",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-0p2krsoj/.mypy_cache"
+          ],
+          "stdout": "case.py:10:29:10:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952160019\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.142\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:10:29:10:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "union_only",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-adjbiwtt/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952161178\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.142\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "integer_only",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    def __post_init__(self, value: int) -> None:\n        print(value)\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-j5_a0kwl/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952162356\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.147\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "manual_string_call",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\nRecord(1).__post_init__(\"manual\")\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-e_z34nuh/.mypy_cache"
+          ],
+          "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952163532\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.151\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n1\nmanual\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "ordinary_override",
+      "source": "from typing import overload\nclass Base:\n    def hook(self, value: int) -> None:\n        print(value)\nclass Record(Base):\n    @overload\n    def hook(self, value: int) -> None: ...\n    @overload\n    def hook(self, value: str) -> None: ...\n    def hook(self, value: int | str) -> None:\n        print(value)\nRecord().hook(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-8ky95aps/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952164679\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.135\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "bound_callable_assignment",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\nfrom collections.abc import Callable\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\ncallback: Callable[[int], None] = Record(1).__post_init__\ncallback(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-re31sa0q/.mypy_cache"
+          ],
+          "stdout": "case.py:13:29:13:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952165831\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.152\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:13:29:13:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n1\n1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "keyword_only_constructor",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass(kw_only=True)\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(value=1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-c9g9k7u2/.mypy_cache"
+          ],
+          "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952167041\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.157\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "defaulted_initvar",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int] = 1\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord()\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-6vmrdz5h/.mypy_cache"
+          ],
+          "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952168206\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.152\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "bad_hook_no_integer_overload",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: bytes) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: bytes | str) -> None:\n        print(value.upper())\n\n\nRecord(1)\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-rwcbzp3g/.mypy_cache"
+          ],
+          "stdout": "case.py:10:29:10:40: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:13:29:13:46: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:13:9: error[invalid-dataclass] Invalid `__post_init__` signature for dataclass `Record`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952169293\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.136\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:10:29:10:40: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:13:29:13:46: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/tmpvyjy98lh/case.py\", line 17, in <module>\n    Record(1)\n    ~~~~~~^^^\n  File \"<string>\", line 3, in __init__\n  File \"/tmp/tmpvyjy98lh/case.py\", line 14, in __post_init__\n    print(value.upper())\n          ^^^^^^^^^^^\nAttributeError: 'int' object has no attribute 'upper'\n"
+      }
+    },
+    {
+      "name": "bad_constructor_argument",
+      "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(\"bad\")\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-24_s_3kd/.mypy_cache"
+          ],
+          "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:17:8:17:12: error: Argument 1 to \"Record\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:17:8: error[invalid-argument-type] Argument is incorrect: Expected `int`, found `Literal[\"bad\"]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crashes": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792952170371\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-xd40jdms/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"Literal['bad']\\\" cannot be assigned to parameter \\\"value\\\" of type \\\"int\\\" in function \\\"__init__\\\"\\n\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 16,\n                    \"character\": 7\n                },\n                \"end\": {\n                    \"line\": 16,\n                    \"character\": 12\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.14\n    }\n}\n\n",
+          "stderr": "",
+          "crashes": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]\ncase.py:17:8:17:12: error: Argument 1 to \"Record\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "bad\n",
+        "stderr": ""
+      }
+    }
+  ]
+}

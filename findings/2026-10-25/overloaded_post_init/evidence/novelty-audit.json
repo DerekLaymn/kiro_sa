@@ -1,0 +1,311 @@
+{
+  "date": "2026-10-25",
+  "result": "No matching report found; candidate new mypy false positive",
+  "public_downloads_before_offline_request": true,
+  "validation_after_request": "Local checker execution and saved-source inspection only",
+  "targeted_corpus": {
+    "path": "runs/novelty2/mypy-postinit-issues/issues.jsonl",
+    "count": 28,
+    "scope": "All returned issues and PRs mentioning __post_init__ in title or body; not the whole mypy repository",
+    "comments_exhaustive": false
+  },
+  "searches": [
+    {
+      "query": "repo:python/mypy is:issue \"__post_init__\" \"staticmethod\"",
+      "total_count": 1,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/python/mypy/issues/5872",
+          "title": "classmethod's in generic protocols with self-types",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "query": "repo:python/mypy is:issue \"__post_init__\" \"InitVar\" \"inherit\"",
+      "total_count": 1,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/python/mypy/issues/8207",
+          "title": "dataclass inheritance: deeply nested InitVar overrides crash mypy",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ruff is:pr \"__post_init__\" \"signature\"",
+      "total_count": 7,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/28343",
+          "title": "[ty] Apply Liskov assignability check to `@override`d `__init__`/`__new__`",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/26623",
+          "title": "[ty] Fix reflected binary dispatch for runtime classes",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/25111",
+          "title": "[ty] Introduce opt-in `missing-override-decorator` rule.",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/22730",
+          "title": "[ty] Validate signatures of dataclass `__post_init__` methods",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/21551",
+          "title": "[ty] Infer typevar specializations for `Callable` types",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/19527",
+          "title": "[ty] Support `dataclasses.InitVar`",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/astral-sh/ruff/pull/9706",
+          "title": "[`pylint`] Add `__mro_entries__` to known dunder methods (`PLW3201`)",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "query": "repo:python/mypy \"__post_init__\" in:title,body",
+      "total_count": 28,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/python/mypy/issues/17564",
+          "title": "Incorrect __post_init__ order when KW_ONLY used",
+          "state": "open"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/14285",
+          "title": "Fixes no error thrown for Final fields declared with init=False and not assigned inside __init__",
+          "state": "open"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/15515",
+          "title": "Consider adding new plugin API for checking implicit definitions",
+          "state": "open"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/16613",
+          "title": "Mypy does not detect automatic init generation for fieldless dataclass inheriting from abstract base",
+          "state": "open"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/20382",
+          "title": "feat: error for Final fields with init=False (#13119)",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/12046",
+          "title": "Error on instance property and init-only variable with the same name in a dataclass",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/19443",
+          "title": "[1.16 regression] Crashes on a combination of dataclass inheritance, InitVar, and properties.",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/19257",
+          "title": "Missing line number error report",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/16293",
+          "title": "Incorrect explicit-override error when overriding dataclass `__post_init__`",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/16816",
+          "title": "mypy warns of redefinition of `InitVar`",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/16371",
+          "title": "Crash when defining `__post_init__` outside the base-level of a class",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/16080",
+          "title": "Fix __post_init__() internal error",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/16057",
+          "title": "__post_init__() causes INTERNAL ERROR",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/15498",
+          "title": "Support correct `__post_init__` signatures for dataclasses",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/15503",
+          "title": "Support better `__post_init__` method signature for `dataclasses`",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/9254",
+          "title": "Overriding __post_init__ in child dataclass leads to type error",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/15423",
+          "title": "dataclass initvar with the same name as attribute gives error",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/5872",
+          "title": "classmethod's in generic protocols with self-types",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/12877",
+          "title": "Assigning to an attribute with the same name as a dataclass `InitVar` raises `has no attribute` on 0.960",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/15004",
+          "title": "AssertionError: Internal error: too many class plugin hook passes",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/13726",
+          "title": "Mypy doesn't recognize dataclass attributes defined in __post_init__",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/13000",
+          "title": "Redefine dataclass variables with more concrete types in __post_init__ not recognised",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/8209",
+          "title": "multiple init=False dataclasses with an __init__ that has a different signature crashes mypy",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/8015",
+          "title": "Overriding __init__ in dataclass crashes mypy",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/8207",
+          "title": "dataclass inheritance: deeply nested InitVar overrides crash mypy",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/8022",
+          "title": "Overriding __init__ to not take an InitVar argument crashes mypy",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/7106",
+          "title": "Can't initialize frozen dataclass properties in __init__",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/issues/5384",
+          "title": "Dataclass inheritance appears to be handled incorrectly",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "query": "repo:python/mypy \"InitVar\" \"overload\"",
+      "total_count": 3,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/python/mypy/issues/9773",
+          "title": "TypeForm[T]: Spelling for regular types (int, str) & special forms (Union[int, str], Literal['foo'], etc)",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/14849",
+          "title": "Add signature for dataclasses.replace",
+          "state": "closed"
+        },
+        {
+          "url": "https://github.com/python/mypy/pull/10712",
+          "title": "Add support for conditionally defined overloads",
+          "state": "closed"
+        }
+      ]
+    },
+    {
+      "query": "repo:python/mypy is:pr \"post_init\" \"overload\"",
+      "total_count": 1,
+      "incomplete_results": false,
+      "items": [
+        {
+          "url": "https://github.com/python/mypy/pull/16715",
+          "title": "Support name mangling",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "query": "repo:python/mypy is:issue \"post-init\" \"overload\"",
+      "total_count": 0,
+      "incomplete_results": false,
+      "items": []
+    },
+    {
+      "query": "repo:python/mypy is:issue \"post_init\" \"false positive\"",
+      "total_count": 0,
+      "incomplete_results": false,
+      "items": []
+    },
+    {
+      "query": "repo:python/mypy is:issue \"__post_init__\" \"overload\"",
+      "total_count": 0,
+      "incomplete_results": false,
+      "items": []
+    },
+    {
+      "query": "repo:python/mypy is:issue \"post_init\" \"overloaded\"",
+      "total_count": 0,
+      "incomplete_results": false,
+      "items": []
+    }
+  ],
+  "related_work": [
+    {
+      "url": "https://github.com/python/mypy/pull/15503",
+      "assessment": "Introduced general hook validation. Does not describe compatible overloaded hooks being rejected."
+    },
+    {
+      "url": "https://github.com/python/mypy/issues/15498",
+      "assessment": "Missing signature validation; opposite behavior."
+    },
+    {
+      "url": "https://github.com/python/mypy/issues/9254",
+      "assessment": "Inheritance changes implicit hook signature; this reproducer has no inheritance."
+    },
+    {
+      "url": "https://github.com/python/mypy/issues/19443",
+      "assessment": "Crash involving inherited InitVar and property accessors, not overloaded post-init declarations."
+    }
+  ],
+  "source_files": {
+    "mypy-checker.py": "d88471bcbf6b02215d7588c7672d5046d068c190f208215f8b0997ef24e530c3",
+    "mypy-dataclasses.py": "6c83de06b1dbf5d3d6b4769375d7aafbef372aa03a524f982be6805efb41a403",
+    "callables.rst": "9c6b89edebc2325c92b7e4df10e04fb24029b91b50efc3e24acc12e0253e9aef",
+    "dataclasses.html": "ce5dbf3fd26cd7e9dd0461d64887841e18799d25fbd74a8f072496748e539688"
+  },
+  "master_binary_tested": false,
+  "issue_filed": false
+}

@@ -755,7 +755,52 @@ def _open_typeddict_kwargs(s, d) -> bool:
                for c in ast.walk(node))
 
 
-_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs}
+def _rebound_inferred_lambda(s, d) -> bool:
+    """Narrow mypy#9658 match: inferred lambda captures an optional parameter,
+    narrowed by an earlier None check and then explicitly rebound to None.
+    Other closure patterns must still be investigated independently.
+    """
+    node = _stmt_node(s, d)
+    if not isinstance(node, ast.Assign) or not isinstance(node.value, ast.Lambda) or not s.amap.tree:
+        return False
+    body = node.value.body
+    if not (isinstance(body, ast.BinOp) and isinstance(body.op, ast.Add)
+            and isinstance(body.left, ast.Name) and isinstance(body.right, ast.Constant)
+            and isinstance(body.right.value, int)):
+        return False
+    captured = {body.left.id}
+    captured -= {a.arg for a in node.value.args.posonlyargs + node.value.args.args + node.value.args.kwonlyargs}
+    for fn in ast.walk(s.amap.tree):
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)) or node not in fn.body:
+            continue
+        index = fn.body.index(node)
+        for arg in fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs:
+            if arg.arg not in captured or arg.annotation is None:
+                continue
+            ann = arg.annotation
+            optional = any(isinstance(n, ast.Constant) and n.value is None for n in ast.walk(ann)) or (
+                isinstance(ann, ast.Subscript) and getattr(ann.value, "id", "") == "Optional")
+            if not optional:
+                continue
+            rebound = any(isinstance(st, ast.Assign) and isinstance(st.value, ast.Constant) and st.value.value is None
+                          and any(isinstance(t, ast.Name) and t.id == arg.arg for t in st.targets)
+                          for st in fn.body[index + 1:])
+            narrowed = any(isinstance(st, ast.If) and isinstance(st.test, ast.Compare)
+                           and isinstance(st.test.left, ast.Name) and st.test.left.id == arg.arg
+                           and len(st.test.ops) == 1 and isinstance(st.test.ops[0], ast.Is)
+                           and isinstance(st.test.comparators[0], ast.Constant) and st.test.comparators[0].value is None
+                           and any(isinstance(assign, ast.Assign) and isinstance(assign.value, ast.Constant)
+                                   and assign.value.value is not None
+                                   and any(isinstance(t, ast.Name) and t.id == arg.arg for t in assign.targets)
+                                   for assign in st.body)
+                           for st in fn.body[:index])
+            if rebound and narrowed:
+                return True
+    return False
+
+
+_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs,
+             "rebound_inferred_lambda": _rebound_inferred_lambda}
 
 
 def _upstream_entries() -> list[KBEntry]:

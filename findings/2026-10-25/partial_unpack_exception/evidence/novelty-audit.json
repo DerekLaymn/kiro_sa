@@ -1,0 +1,432 @@
+{
+  "date": "2026-10-25",
+  "novelty": "No matching filed issue found; candidate new bug, not guaranteed unique",
+  "public_corpus": {
+    "path": "runs/novelty/public-github/issues.jsonl",
+    "issues": 3871,
+    "complete": false,
+    "includes_comments": false,
+    "sha256": "04ab2308afe309ace776f88a07142e4c223efb446b1152553d8108e025a966f3",
+    "interruption": "Public unauthenticated GitHub API rate limit; cursor preserved in state.json"
+  },
+  "offline_exact_search": {
+    "regex": "nested unpacking|partial unpack|partially assigned",
+    "matches": 0
+  },
+  "targeted_public_api_searches": [
+    {
+      "query": "repo:astral-sh/ty \"nested unpacking\"",
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned": []
+    },
+    {
+      "query": "repo:astral-sh/ty \"partial assignment\"",
+      "total_count": 2,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 4746,
+          "url": "https://github.com/astral-sh/ty/issues/4746",
+          "title": "Protocol methods with `self` annotated as the protocol reject valid implementations (regression in 0.0.65)"
+        },
+        {
+          "number": 4565,
+          "url": "https://github.com/astral-sh/ty/issues/4565",
+          "title": "`ty check` hangs on a loop rebinding a variable through `functools.partial` of itself (regression in 0.0.80)"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ty \"unpack\" \"except\" in:title,body",
+      "total_count": 7,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 2871,
+          "url": "https://github.com/astral-sh/ty/issues/2871",
+          "title": "loop headers + overloads create cycles that resolve to `Unknown`"
+        },
+        {
+          "number": 4612,
+          "url": "https://github.com/astral-sh/ty/issues/4612",
+          "title": "Cycle-iteration panics involving cyclic lambda inference"
+        },
+        {
+          "number": 1889,
+          "url": "https://github.com/astral-sh/ty/issues/1889",
+          "title": "Type system feature overview"
+        },
+        {
+          "number": 3260,
+          "url": "https://github.com/astral-sh/ty/issues/3260",
+          "title": "[unresolved-import]: `torch`, `einops` in VS Code, but not CLI, unless `--python ...`"
+        },
+        {
+          "number": 1332,
+          "url": "https://github.com/astral-sh/ty/issues/1332",
+          "title": "Issues with kwarg splats inside dictionary literals"
+        },
+        {
+          "number": 1099,
+          "url": "https://github.com/astral-sh/ty/issues/1099",
+          "title": "ty Cannot handle ** operator (dictionary unpacking) when the dictionary comes from the user."
+        },
+        {
+          "number": 400,
+          "url": "https://github.com/astral-sh/ty/issues/400",
+          "title": "Bug: Type Checker Error: \"no-matching-overload\" for dataclasses.asdict with keyword argument unpacking"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ty \"unpacking\" \"exception\" in:title,body",
+      "total_count": 3,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 2871,
+          "url": "https://github.com/astral-sh/ty/issues/2871",
+          "title": "loop headers + overloads create cycles that resolve to `Unknown`"
+        },
+        {
+          "number": 1889,
+          "url": "https://github.com/astral-sh/ty/issues/1889",
+          "title": "Type system feature overview"
+        },
+        {
+          "number": 400,
+          "url": "https://github.com/astral-sh/ty/issues/400",
+          "title": "Bug: Type Checker Error: \"no-matching-overload\" for dataclasses.asdict with keyword argument unpacking"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ty \"assignment\" \"except\" in:title",
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned": []
+    },
+    {
+      "query": "repo:astral-sh/ty \"handler\" \"type\" in:title",
+      "total_count": 1,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 4293,
+          "url": "https://github.com/astral-sh/ty/issues/4293",
+          "title": "Regression: assignment in exception handler ignores explicitly annotated variable type"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ruff is:pr \"unpacking\" \"exception\" in:title,body",
+      "total_count": 7,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 27899,
+          "url": "https://github.com/astral-sh/ruff/pull/27899",
+          "title": "[ty] Experiment with strict open TypedDict unpacking"
+        },
+        {
+          "number": 29681,
+          "url": "https://github.com/astral-sh/ruff/pull/29681",
+          "title": "[ty] Respect declared dictionary value types when narrowing keys"
+        },
+        {
+          "number": 28041,
+          "url": "https://github.com/astral-sh/ruff/pull/28041",
+          "title": "[ty] Improve diagnostic spans for unpacked variable assignments"
+        },
+        {
+          "number": 23308,
+          "url": "https://github.com/astral-sh/ruff/pull/23308",
+          "title": "Update dependency ruff to v0.15.1"
+        },
+        {
+          "number": 19856,
+          "url": "https://github.com/astral-sh/ruff/pull/19856",
+          "title": "Update dependency ruff to v0.12.8"
+        },
+        {
+          "number": 17128,
+          "url": "https://github.com/astral-sh/ruff/pull/17128",
+          "title": "mdtest.py: do a full mdtest run immediately when the script is executed"
+        },
+        {
+          "number": 13832,
+          "url": "https://github.com/astral-sh/ruff/pull/13832",
+          "title": "Speed up mdtests"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ruff is:pr \"unpack\" \"handler\" in:title,body",
+      "total_count": 2,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 25868,
+          "url": "https://github.com/astral-sh/ruff/pull/25868",
+          "title": "[ty] Infer TypeVarTuple specializations with the legacy solver"
+        },
+        {
+          "number": 23308,
+          "url": "https://github.com/astral-sh/ruff/pull/23308",
+          "title": "Update dependency ruff to v0.15.1"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ruff is:pr \"partial assignment\"",
+      "total_count": 42,
+      "incomplete_results": false,
+      "returned": [
+        {
+          "number": 27221,
+          "url": "https://github.com/astral-sh/ruff/pull/27221",
+          "title": "[ty] Model try exception flow with checkpoints"
+        },
+        {
+          "number": 14002,
+          "url": "https://github.com/astral-sh/ruff/pull/14002",
+          "title": "Add failing tests for augmented assignments with partial binding"
+        },
+        {
+          "number": 24585,
+          "url": "https://github.com/astral-sh/ruff/pull/24585",
+          "title": "[ty] Merge constructor signatures for `functools.partial`"
+        },
+        {
+          "number": 27329,
+          "url": "https://github.com/astral-sh/ruff/pull/27329",
+          "title": "[ty] Allow compatible function reassignment"
+        },
+        {
+          "number": 29396,
+          "url": "https://github.com/astral-sh/ruff/pull/29396",
+          "title": "[ty] Preserve bound receivers for strict signature checks"
+        },
+        {
+          "number": 26696,
+          "url": "https://github.com/astral-sh/ruff/pull/26696",
+          "title": "[ty] Exempt ParamSpec callables from the dunder descriptor heuristic"
+        },
+        {
+          "number": 26253,
+          "url": "https://github.com/astral-sh/ruff/pull/26253",
+          "title": "[ty] Preserve regular kind for callable instances"
+        },
+        {
+          "number": 29228,
+          "url": "https://github.com/astral-sh/ruff/pull/29228",
+          "title": "[ty] Represent protocol applications as recursive type constructors"
+        },
+        {
+          "number": 23110,
+          "url": "https://github.com/astral-sh/ruff/pull/23110",
+          "title": "[ty] Add support for `functools.partial`"
+        },
+        {
+          "number": 26916,
+          "url": "https://github.com/astral-sh/ruff/pull/26916",
+          "title": "[ty] Quantify receiver TypeVars over their binding domains"
+        },
+        {
+          "number": 26364,
+          "url": "https://github.com/astral-sh/ruff/pull/26364",
+          "title": "[ty] View ecosystem changes for exact types"
+        },
+        {
+          "number": 27410,
+          "url": "https://github.com/astral-sh/ruff/pull/27410",
+          "title": "[ty] Fix file-order-dependent implicit attribute assignments"
+        },
+        {
+          "number": 26118,
+          "url": "https://github.com/astral-sh/ruff/pull/26118",
+          "title": "[ty] Avoid simplifying unions with type variables"
+        },
+        {
+          "number": 24582,
+          "url": "https://github.com/astral-sh/ruff/pull/24582",
+          "title": "[ty] Model `functools.partial` call results"
+        },
+        {
+          "number": 25332,
+          "url": "https://github.com/astral-sh/ruff/pull/25332",
+          "title": "[ty] Fix subtyping/assignability for `@property` protocol members"
+        },
+        {
+          "number": 27325,
+          "url": "https://github.com/astral-sh/ruff/pull/27325",
+          "title": "[ty] Treat imports as bindings instead of declarations"
+        },
+        {
+          "number": 24583,
+          "url": "https://github.com/astral-sh/ruff/pull/24583",
+          "title": "[ty] Preserve generic `functools.partial` signatures"
+        },
+        {
+          "number": 26255,
+          "url": "https://github.com/astral-sh/ruff/pull/26255",
+          "title": "[ty] Fix typealias token classification inconsistency"
+        },
+        {
+          "number": 22456,
+          "url": "https://github.com/astral-sh/ruff/pull/22456",
+          "title": "[ty] Rework how `Literal` elements are stored in the `UnionBuilder`"
+        },
+        {
+          "number": 22238,
+          "url": "https://github.com/astral-sh/ruff/pull/22238",
+          "title": "[ty] support implicit recursive union type aliases"
+        },
+        {
+          "number": 25461,
+          "url": "https://github.com/astral-sh/ruff/pull/25461",
+          "title": "Add missing primer projects to good.txt"
+        },
+        {
+          "number": 25040,
+          "url": "https://github.com/astral-sh/ruff/pull/25040",
+          "title": "[ty] Benchmark fast-path"
+        },
+        {
+          "number": 25034,
+          "url": "https://github.com/astral-sh/ruff/pull/25034",
+          "title": "[ty] Benchmark an assignability fast path"
+        },
+        {
+          "number": 24518,
+          "url": "https://github.com/astral-sh/ruff/pull/24518",
+          "title": "[ty] Allow partially stringified `type[\u2026]` annotations"
+        },
+        {
+          "number": 24796,
+          "url": "https://github.com/astral-sh/ruff/pull/24796",
+          "title": "[ty] Fix `Intersection <-> Protocol` assignability"
+        },
+        {
+          "number": 22553,
+          "url": "https://github.com/astral-sh/ruff/pull/22553",
+          "title": "[ty] Use the top materialization of classes for `if type(x) is y` narrowing"
+        },
+        {
+          "number": 17590,
+          "url": "https://github.com/astral-sh/ruff/pull/17590",
+          "title": "[red-knot] Assignability of class instances to Callable"
+        },
+        {
+          "number": 21476,
+          "url": "https://github.com/astral-sh/ruff/pull/21476",
+          "title": "[ty] Better invalid-assignment diagnostics"
+        },
+        {
+          "number": 21158,
+          "url": "https://github.com/astral-sh/ruff/pull/21158",
+          "title": "[ty] Fix false positive for Final attribute assignment in __init__"
+        },
+        {
+          "number": 23264,
+          "url": "https://github.com/astral-sh/ruff/pull/23264",
+          "title": "[ty] Fix bug passing overloaded callable to generic function"
+        },
+        {
+          "number": 21267,
+          "url": "https://github.com/astral-sh/ruff/pull/21267",
+          "title": "[ty] Avoid expression reinference for diagnostics"
+        },
+        {
+          "number": 21238,
+          "url": "https://github.com/astral-sh/ruff/pull/21238",
+          "title": "[ty] `dict` is not assignable to `TypedDict`"
+        },
+        {
+          "number": 19555,
+          "url": "https://github.com/astral-sh/ruff/pull/19555",
+          "title": "[ty] Add workflow to comment conformance tests diff"
+        },
+        {
+          "number": 21930,
+          "url": "https://github.com/astral-sh/ruff/pull/21930",
+          "title": "[ty] Subtyping for bidirectional inference"
+        },
+        {
+          "number": 22633,
+          "url": "https://github.com/astral-sh/ruff/pull/22633",
+          "title": "[ty] Infer lambda expressions with `Callable` type context"
+        },
+        {
+          "number": 18847,
+          "url": "https://github.com/astral-sh/ruff/pull/18847",
+          "title": "[ty] Improve protocol member type checking and relation handling"
+        },
+        {
+          "number": 20591,
+          "url": "https://github.com/astral-sh/ruff/pull/20591",
+          "title": "[ty] Use `Top` materializations for `TypeIs` special form"
+        },
+        {
+          "number": 21650,
+          "url": "https://github.com/astral-sh/ruff/pull/21650",
+          "title": "[ty] Support `type[T]` with type variables"
+        },
+        {
+          "number": 21553,
+          "url": "https://github.com/astral-sh/ruff/pull/21553",
+          "title": "[ty] Generic types aliases (implicit and PEP 613)"
+        },
+        {
+          "number": 21641,
+          "url": "https://github.com/astral-sh/ruff/pull/21641",
+          "title": "[ty] Generic implicit types aliases (take 3)"
+        },
+        {
+          "number": 19354,
+          "url": "https://github.com/astral-sh/ruff/pull/19354",
+          "title": "[ty] Reduce false positives for `TypedDict` types"
+        },
+        {
+          "number": 18398,
+          "url": "https://github.com/astral-sh/ruff/pull/18398",
+          "title": "[ty] Generic class callable return ty param infererence"
+        }
+      ]
+    },
+    {
+      "query": "repo:astral-sh/ty \"control flow\" \"exception\" in:title",
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned": []
+    }
+  ],
+  "related_items_read": [
+    {
+      "url": "https://github.com/astral-sh/ruff/pull/27471",
+      "assessment": "Merged general exception-checkpoint implementation; does not report this missed nested-target state."
+    },
+    {
+      "url": "https://github.com/astral-sh/ruff/pull/27221",
+      "assessment": "Earlier closed draft, continued in #27471."
+    },
+    {
+      "url": "https://github.com/astral-sh/ty/issues/233",
+      "assessment": "Finally-suite control flow; not this reproducer."
+    },
+    {
+      "url": "https://github.com/astral-sh/ty/issues/4293",
+      "assessment": "Declared dictionary type in handler assignment; different behavior."
+    },
+    {
+      "url": "https://github.com/astral-sh/ty/issues/3580",
+      "assessment": "Interprocedural NoReturn inference; different behavior."
+    }
+  ],
+  "source_snapshot": {
+    "builder": "runs/novelty/source/builder.rs",
+    "mdtest": "runs/novelty/source/control_flow.md",
+    "main_compiled": false
+  }
+}

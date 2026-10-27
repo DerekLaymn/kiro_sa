@@ -1,0 +1,104 @@
+https://raw.githubusercontent.com/astral-sh/ruff/main/crates/ty_python_core/src/builder.rs
+Downloaded 2026-10-25; SHA256 9cd8a31041346c83030bd7105dd251acb89aa5e909845e3015e1f9791c11ed97
+3295:     ///
+3296:     /// This method handles assignments that can contain unpacking like assignment statements,
+3297:     /// for statements, etc.
+3298:     fn add_unpackable_assignment(
+3299:         &mut self,
+3300:         unpackable: &Unpackable<'ast>,
+3301:         target: &'ast ast::Expr,
+3302:         value: Expression<'db>,
+3303:     ) {
+3304:         self.record_exception_checkpoint_if(matches!(
+3305:             target,
+3306:             ast::Expr::List(_) | ast::Expr::Tuple(_)
+3307:         ));
+3308: 
+3309:         let current_assignment = match target {
+3310:             ast::Expr::List(_) | ast::Expr::Tuple(_) => {
+3311:                 if matches!(unpackable, Unpackable::Comprehension { .. }) {
+3312:                     debug_assert_eq!(
+3313:                         self.scopes[self.current_scope()].node().scope_kind(),
+3314:                         ScopeKind::Comprehension
+3315:                     );
+3316:                 }
+3317:                 // The first iterator of the comprehension is evaluated in the outer scope, while all subsequent
+3318:                 // nodes are evaluated in the inner scope.
+3319:                 // SAFETY: The current scope is the comprehension, and the comprehension scope must have a parent scope.
+3320:                 let value_file_scope =
+3321:                     if let Unpackable::Comprehension { first: true, .. } = unpackable {
+3322:                         self.scope_stack
+3323:                             .iter()
+3324:                             .rev()
+3325:                             .nth(1)
+3326:                             .expect("The comprehension scope must have a parent scope")
+3327:                             .file_scope_id
+3328:                     } else {
+3329:                         self.current_scope()
+3330:                     };
+3331:                 let unpack = Unpack::new(
+3332:                     self.db,
+3333:                     self.file,
+3334:                     value_file_scope,
+3335:                     self.current_scope(),
+3336:                     // Note `target` belongs to the `self.module` tree
+3337:                     AstNodeRef::new(self.module, target),
+3338:                     UnpackValue::new(unpackable.kind(), value),
+3339:                 );
+3340:                 self.unpacks_by_target.insert(target.into(), unpack);
+3341:                 Some(unpackable.as_current_assignment(Some(unpack)))
+3342:             }
+3343:             ast::Expr::Name(_)
+3344:             | ast::Expr::Starred(_)
+3345:             | ast::Expr::Attribute(_)
+3346:             | ast::Expr::Subscript(_) => Some(unpackable.as_current_assignment(None)),
+3347:             _ => None,
+3348:         };
+3349: 
+3350:         if let Some(current_assignment) = current_assignment {
+3351:             self.push_assignment(current_assignment);
+3352:         }
+3353: 
+3354:         self.visit_expr(target);
+3355: 
+3356:         if current_assignment.is_some() {
+3357:             // Only need to pop in the case where we pushed something
+3358:             self.pop_assignment();
+3359:         }
+3360:     }
+3361: 
+3362:     pub(super) fn build(mut self) -> SemanticIndex<'db> {
+3363:         self.visit_body(self.module.suite());
+3364: 
+3365:         // Pop the root scope
+3366:         self.pop_scope();
+3367:         self.sweep_nonlocal_lazy_snapshots();
+3368:         assert!(self.scope_stack.is_empty());
+3369: 
+3370:         assert_eq!(&self.current_assignments, &[]);
+
+https://raw.githubusercontent.com/astral-sh/ruff/main/crates/ty_python_semantic/resources/mdtest/exception/control_flow.md
+Downloaded 2026-10-25; SHA256 be7228db6c6120e567c026576c5a9da845a363f46674fa1984701391e6540162
+776: ## Unpacking can raise
+777: 
+778: Unpacking can fail before the assignments following it run:
+779: 
+780: ```py
+781: from collections.abc import Iterable
+782: 
+783: def unpacking(values: Iterable[int]) -> None:
+784:     state = 0
+785:     try:
+786:         first, second = values
+787:         state = 1
+788:     except:
+789:         reveal_type(state)  # revealed: Literal[0]
+790: ```
+791: 
+792: ## Awaiting and yielding can raise
+793: 
+794: Awaiting can raise when a coroutine resumes:
+795: 
+796: ```py
+797: from collections.abc import Awaitable, Iterable
+

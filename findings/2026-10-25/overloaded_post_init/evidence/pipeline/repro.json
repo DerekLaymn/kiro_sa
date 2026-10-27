@@ -1,0 +1,191 @@
+{
+ "case_id": "repro",
+ "source": "from dataclasses import InitVar, dataclass\nfrom typing import overload\n\n\n@dataclass\nclass Record:\n    value: InitVar[int]\n\n    @overload\n    def __post_init__(self, value: int) -> None: ...\n    @overload\n    def __post_init__(self, value: str) -> None: ...\n    def __post_init__(self, value: int | str) -> None:\n        print(value)\n\n\nRecord(1)\n",
+ "target_python": "3.13",
+ "tool_versions": {
+  "mypy": "mypy 2.4.0 (compiled: yes)",
+  "ty": "ty 0.0.91",
+  "pyright": "pyright 1.1.414",
+  "runtime": "3.13.16"
+ },
+ "flags": {
+  "mypy": [
+   "--python-version",
+   "3.13",
+   "--check-untyped-defs",
+   "--show-column-numbers",
+   "--show-error-codes",
+   "--show-error-end",
+   "--no-error-summary",
+   "--no-color-output",
+   "--hide-error-context",
+   "--no-incremental",
+   "--cache-dir",
+   "/tmp/typediff-jpa2ncuw/.mypy_cache"
+  ],
+  "ty": [
+   "--python-version",
+   "3.13",
+   "--output-format",
+   "concise",
+   "--no-progress",
+   "--color",
+   "never"
+  ],
+  "pyright": [
+   "--pythonversion",
+   "3.13",
+   "--outputjson"
+  ]
+ },
+ "diagnostics": {
+  "mypy": [
+   {
+    "tool": "mypy",
+    "line": 12,
+    "col": 29,
+    "severity": "error",
+    "code": "override",
+    "message": "Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"",
+    "end_line": 12,
+    "end_col": 38,
+    "revealed_type": null,
+    "anchor": 12,
+    "raw": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]"
+   }
+  ],
+  "ty": [],
+  "pyright": []
+ },
+ "runtime": {
+  "status": "success",
+  "exc_type": null,
+  "exc_message": null,
+  "exc_line": null,
+  "frames": [],
+  "executed_lines": [
+   1,
+   2,
+   5,
+   6,
+   7,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   17
+  ],
+  "probes": [],
+  "stdout": "1\n",
+  "stderr": "",
+  "python_version": "3.13.16"
+ },
+ "crashes": [],
+ "discrepancies": [
+  {
+   "id": "D1",
+   "kind": "only_mypy",
+   "anchor": 12,
+   "anchor_end": 12,
+   "statement": "def __post_init__(self, value: str) -> None: ...",
+   "scope": "Record.__post_init__",
+   "mypy": [
+    {
+     "tool": "mypy",
+     "line": 12,
+     "col": 29,
+     "severity": "error",
+     "code": "override",
+     "message": "Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"",
+     "end_line": 12,
+     "end_col": 38,
+     "revealed_type": null,
+     "anchor": 12,
+     "raw": "case.py:12:29:12:38: error: Argument 2 of \"__post_init__\" is incompatible with supertype \"dataclass\"; supertype defines the argument type as \"int\"  [override]"
+    }
+   ],
+   "ty": [],
+   "pyright": [],
+   "reveal_relation": null,
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "neutral",
+     "summary": "statement executed under CPython without a type-related exception (does NOT prove a rejection spurious)",
+     "citation": "line 12",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": null
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    }
+   ],
+   "kb_hits": [],
+   "features": [
+    "decorator",
+    "overload"
+   ],
+   "priority": 0.6
+  }
+ ],
+ "findings": [
+  {
+   "discrepancy_id": "D1",
+   "verdict": "NEEDS_HUMAN",
+   "tier": "review",
+   "faulty_tool": "unknown",
+   "symptom": null,
+   "dismissal": null,
+   "confidence": 0.0,
+   "decided_by": "gate",
+   "reasoning": "no LLM configured (TYPEDIFF_LLM=null): needs a human",
+   "correct_behavior": "",
+   "counter_hypothesis": "",
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "neutral",
+     "summary": "statement executed under CPython without a type-related exception (does NOT prove a rejection spurious)",
+     "citation": "line 12",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": null
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like ty at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "mypy"
+    }
+   ],
+   "experiments": [],
+   "review_notes": [],
+   "reduced_source": null,
+   "signature": null
+  }
+ ],
+ "validity": {
+  "valid": true,
+  "problems": [],
+  "runtime_usable": true
+ },
+ "strategy": null,
+ "llm_calls": 0,
+ "notes": []
+}
