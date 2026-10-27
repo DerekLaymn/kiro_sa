@@ -1,0 +1,46 @@
+{
+  "verdict": "APPROVED",
+  "confirmed_bugs": [
+    {
+      "file": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/bug-01-narrowing-mypy-stale-index-narrowing.py",
+      "faulty_tool": "mypy",
+      "symptom": "FALSE_NEGATIVE: narrowing of xs[0] survives the assignment xs[0] = None (reveals int, ty/pyright say None); mypy misses a runtime TypeError. KNOWN upstream: python/mypy#20969 (open).",
+      "confidence": 0.95
+    },
+    {
+      "file": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/bug-02-enums-ty-flag-or-literal-union.py",
+      "faulty_tool": "ty",
+      "symptom": "INCORRECT_INFERENCE: F.R | F.W on an enum.Flag is typed Literal[F.R, F.W] (assert_type(v, F) fails in ty, passes in mypy/pyright); the runtime value <F.R|W: 3> is neither member. KNOWN upstream: ty#3765 (closed, 'enum.Flag not supported yet'), ty#876 (open). Stronger witness: reviewer-min/bug-02-ty-flag-or-assert-type.py.",
+      "confidence": 0.9
+    },
+    {
+      "file": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/bug-06-enums-mypy-flag-is-narrowing-else-unreachable.py",
+      "faulty_tool": "mypy",
+      "symptom": "FALSE_NEGATIVE: mypy expands enum.Flag into a union of its members in 'is' narrowing, treats the else branch as unreachable and misses a runtime TypeError that ty and pyright report. Reviewer-found, no second judge. Same root cause as open python/mypy#21937.",
+      "confidence": 0.85
+    },
+    {
+      "file": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/bug-03-generics-mypy-callable-attr-contravariant.py",
+      "faulty_tool": "mypy",
+      "symptom": "FALSE_NEGATIVE: PEP 695 variance inference treats a mutable Callable[[T], None] attribute as contravariant (Handler[float] accepted as Handler[int]); runtime AttributeError. ty and pyright report invariance. No upstream issue found.",
+      "confidence": 0.8
+    },
+    {
+      "file": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/bug-05-typeddict-ty-generic-typeddict-typevar-unknown.py",
+      "faulty_tool": "ty",
+      "symptom": "FALSE_NEGATIVE: TypeVar is never solved from a generic TypedDict argument (first(a) with a: Resp[int] is Unknown), so 'y: str = first(a)' is accepted and crashes at runtime; mypy and pyright report it. Reproduces on ty 0.0.84, 0.0.89 and 0.0.92. No exact upstream issue found (nearest: ty#4803, different path). Stronger witness: reviewer-min/bug-05-ty-generic-typeddict-crash-witness.py.",
+      "confidence": 0.75
+    }
+  ],
+  "findings": [
+    "Non-blocking. Duplicate search in candidates.md/judge-1/judge-2 missed exact matches (confirmed): bug-01 is python/mypy#20969 and bug-04 is python/mypy#19889; bug-02 is tracked in ty#3765/#876. Correct the notes and add MYPY-20969, MYPY-19889, MYPY-21937 and TY-3765/TY-876 to typediff/data/known_upstream.json.",
+    "Non-blocking. bug-02 oracle is reveal_type display text (confirmed); judge-1's 'else is unreachable in ty' consequence is not ty-only because mypy does it too. Use reviewer-min/bug-02-ty-flag-or-assert-type.py as the reproducer.",
+    "Non-blocking. bug-05 reproducer is not minimal and has no runtime witness (confirmed): drop the second parameter and the go() wrapper, add the crash. reviewer-min/bug-05-ty-generic-typeddict-crash-witness.py does this.",
+    "Non-blocking. bug-06 was found by the reviewer and never judged (confirmed): have a judge confirm it and record it in candidates.md; the generator should cover declared-type 'is' exhaustion on enum.Flag.",
+    "Non-blocking. bug-04 (mypy InitVar default class access) is not confirmed (likely): known duplicate mypy#19889 and pyright rejects it with a deliberate 'init-only field' message, so it is a design divergence. Keep it out of the confirmed list; comment on mypy#19889 rather than filing.",
+    "Non-blocking. Novel bugs bug-03 and bug-05 need a pre-filing check (possible): re-run on play.ty.dev (main) and mypy-play (master) and search discuss.python.org, which this review did not do (UNVERIFIED-DUPLICATE-CHECK for that venue).",
+    "Non-blocking. Pyright pin differs from the docs (confirmed): venv has 1.1.400, DESIGN.md says 1.1.414. Re-run tie-break results on 1.1.414 before citing them in a write-up.",
+    "Non-blocking. Empty untracked file '-l' in the repo root (confirmed); delete it before committing."
+  ],
+  "reviewDoc": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/findings/2026-10-27-llm-run/REPORT.md"
+}
