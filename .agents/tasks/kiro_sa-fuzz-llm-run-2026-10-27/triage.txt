@@ -1,0 +1,338 @@
+
+##   45 findings (7 with strong bug evidence)  reveal_mismatch | different
+     * tructors_metaclasses/genC_metaclass_call_returns_other_02.py  D4 L15: reveal_type(v)
+         mypy: reveal case.K
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value '42' of type builtins.int does NOT inhabit mypy's revealed type K
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194745-8c4c34d5.md
+     * tructors_metaclasses/genC_metaclass_call_returns_other_02.py  D5 L18: reveal_type(w)
+         mypy: reveal case.K
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value '42' of type builtins.int does NOT inhabit mypy's revealed type K
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194745-8c4c34d5.md
+     * gen/constructors_metaclasses/genC_new_returns_subclass_08.py  D2 L18: reveal_type(k)
+         mypy: reveal case.K
+         ty:   reveal Other
+         [RUNTIME/strong, supports bug] runtime value '<__main__.Other object at 0x7ffa29eba120>' of type __main__.Other does NOT inhabit mypy's revealed type K
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194749-43a57668.md
+
+##    5 findings (2 with strong bug evidence)  reveal_mismatch | ty_more_precise
+     * un-2026-10-27/gen/enums_literals/genA_enum_value_types_02.py  D2 L31: reveal_type(F.R | F.W)
+         mypy: reveal case.F
+         ty:   reveal Literal[F.R, F.W]
+         KB hints: LITERAL-WIDENING   decided by: gate
+         [RUNTIME/strong, supports bug] runtime value '<F.R|W: 3>' of type __main__.F does NOT inhabit ty's revealed type Literal[F.R] | Literal[F.W]
+         [RUNTIME/strong, supports bug] KB:LITERAL-WIDENING would explain this, but runtime value '<F.R|W: 3>' (__main__.F) is outside ty's type Literal[F.R] | Literal[F.W]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194814-c8a4b97b.md
+     * lm-run-2026-10-27/gen/typeddict/genA_readonly_override_03.py  D1 L28: reveal_type(s["name"])
+         mypy: reveal str
+         ty:   reveal Literal["n"]
+         KB hints: LITERAL-WIDENING   decided by: gate
+         [RUNTIME/strong, supports bug] runtime value "'x'" of type builtins.str does NOT inhabit ty's revealed type Literal["n"]
+         [RUNTIME/strong, supports bug] KB:LITERAL-WIDENING would explain this, but runtime value "'x'" (builtins.str) is outside ty's type Literal["n"]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194942-40b2a3a0.md
+       27/gen/async_generators/genD_async_comprehension_await_03.py  D1 L20: reveal_type(c)
+         mypy: reveal typing.AsyncGenerator[int, None]
+         ty:   reveal AsyncGeneratorType[int, None]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194720-06f0236c.md
+
+##    1 findings (1 with strong bug evidence)  only_mypy | ('return-value',) | incompatible return value type (got _, expected _)
+     * -27/gen/typevartuple_unpack/genB_tvt_two_tuples_concat_06.py  D1 L5: return (*a, *b)
+         mypy: [return-value] Incompatible return value type (got "tuple[object, ...]", expected "tuple[*A]")
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `a`: runtime type builtins.tuple is outside mypy's inferred type tuple[*A]
+         [RUNTIME/strong, supports bug] operand `a`: runtime type builtins.tuple is outside ty's inferred type tuple[*A@cat]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194951-e477e717.md
+
+##   39 findings (0 with strong bug evidence)  reveal_mismatch | uncomparable
+       26-10-27/gen/async_generators/genD_asynccontextmanager_04.py  D1 L21: reveal_type(res)
+         mypy: reveal def (name: str) -> contextlib._AsyncGeneratorContextManager[list[str], None]
+         ty:   reveal (name: str) -> _AsyncGeneratorContextManager[list[str], None]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194727-95d9d021.md
+       7/gen/async_generators/genD_coroutine_vs_gen_decorator_06.py  D2 L17: reveal_type(leaf)
+         mypy: reveal def (x: int) -> typing.Coroutine[Any, Any, str]
+         ty:   reveal def leaf(x: int) -> CoroutineType[Any, Any, str]
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194728-25a34e92.md
+       -llm-run-2026-10-27/gen/callables/genB_cb_bound_method_07.py  D1 L14: reveal_type(a)
+         mypy: reveal def (int) -> str
+         ty:   reveal bound method C.m(n: int) -> str
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194731-8c7c5337.md
+
+##   20 findings (0 with strong bug evidence)  reveal_mismatch | gradual
+       26-10-27/gen/async_generators/genD_yield_from_iterable_05.py  D2 L18: reveal_type(r)
+         mypy: reveal None
+         ty:   reveal Unknown
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194730-f261f6b1.md
+       26-10-27/gen/async_generators/genD_yield_from_iterable_05.py  D3 L25: reveal_type(x)
+         mypy: reveal str
+         ty:   reveal Unknown
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194730-f261f6b1.md
+       gen/constructors_metaclasses/genC_init_subclass_kwargs_04.py  D4 L27: reveal_type(A.weight)
+         mypy: reveal Any
+         ty:   reveal int
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194742-d8850f11.md
+
+##    6 findings (0 with strong bug evidence)  only_ty | ('unused-type-ignore-comment',) | unused blanket _ directive
+       gen/constructors_metaclasses/genC_new_returns_subclass_08.py  D1 L10: def __new__(cls) -> Other:  # type: ignore
+         mypy: (nothing)
+         ty:   [unused-type-ignore-comment] Unused blanket `type: ignore` directive
+         KB hints: MYPY-OPTIONAL-CHECK, SUPPRESSION-LINE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194749-43a57668.md
+       -10-27/gen/descriptors_properties/genC_cached_property_02.py  D1 L26: value = "overridden"  # type: ignore
+         mypy: (nothing)
+         ty:   [unused-type-ignore-comment] Unused blanket `type: ignore` directive
+         KB hints: MYPY-OPTIONAL-CHECK, SUPPRESSION-LINE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194759-b7be913f.md
+       gen/descriptors_properties/genC_property_override_attr_06.py  D2 L19: def v(self) -> int:  # type: ignore
+         mypy: (nothing)
+         ty:   [unused-type-ignore-comment] Unused blanket `type: ignore` directive
+         KB hints: MYPY-OPTIONAL-CHECK, SUPPRESSION-LINE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194804-07bd650d.md
+
+##    4 findings (0 with strong bug evidence)  only_mypy | ('attr-defined',) | _ has no attribute _
+       gen/constructors_metaclasses/genC_init_subclass_kwargs_04.py  D1 L10: cls.weight = weight
+         mypy: [attr-defined] "type[Plugin]" has no attribute "weight"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194742-d8850f11.md
+       gen/constructors_metaclasses/genC_init_subclass_kwargs_04.py  D2 L27: reveal_type(A.weight)
+         mypy: [attr-defined] "type[A]" has no attribute "weight"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194742-d8850f11.md
+       gen/constructors_metaclasses/genC_init_subclass_kwargs_04.py  D3 L28: print(A.weight, B.weight, sorted(Plugin.registry))
+         mypy: [attr-defined] "type[A]" has no attribute "weight"; [attr-defined] "type[B]" has no attribute "weight"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194742-d8850f11.md
+
+##    4 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to function _ is incorrect: expected _, found _
+       n/generics_variance/genB_pep695_callable_attr_variance_04.py  D1 L16: use(hf)  # attribute is mutable -> invariant: error expected
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `use` is incorrect: Expected `Handler[int]`, found `Handler[float]`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194819-b0b61389.md
+       10-27/gen/protocols/genC_proto_method_vs_callable_attr_07.py  D1 L27: print(run(ViaAttr()))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `run` is incorrect: Expected `Op`, found `ViaAttr`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194919-d2272171.md
+       10-27/gen/protocols/genC_proto_method_vs_callable_attr_07.py  D2 L30: print(run(ViaClassAttr()))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `run` is incorrect: Expected `Op`, found `ViaClassAttr`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194919-d2272171.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ has incompatible type _; expected _
+       -2026-10-27/gen/match_statement/genD_assert_never_enum_03.py  D1 L36: assert_never(x)
+         mypy: [arg-type] Argument 1 to "assert_never" has incompatible type "Literal[True]"; expected "Never"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194838-9ebd498c.md
+       7/gen_rerun/typevartuple_unpack/genB_tvt_callable_args_05.py  D1 L17: call_with(add, 1, "x")  # error (never executed)
+         mypy: [arg-type] Argument 1 to "call_with" has incompatible type "Callable[[int, int], int]"; expected "Callable[[int, str], int]"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202502-24d3a7be.md
+       7/gen_rerun/typevartuple_unpack/genB_tvt_callable_args_05.py  D2 L18: call_with(add, 1)  # error (never executed)
+         mypy: [arg-type] Argument 1 to "call_with" has incompatible type "Callable[[int, int], int]"; expected "Callable[[int], int]"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202502-24d3a7be.md
+
+##    3 findings (0 with strong bug evidence)  reveal_mismatch | mypy_more_precise
+       27/gen/narrowing_builtin/genD_isinstance_generic_alias_08.py  D1 L7: reveal_type(x)
+         mypy: reveal typing.Mapping[str, int]
+         ty:   reveal (int & Mapping[Unknown, Unknown]) | (Sequence[int] & Mapping[Unknown, Unknown]) | Mapping[str, int]
+         KB hints: TY-GRADUAL-GENERIC-NARROWING   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194850-2f3fc472.md
+       2026-10-27/gen/protocols/genC_proto_runtime_isinstance_05.py  D1 L25: reveal_type(x)
+         mypy: reveal case.Box
+         ty:   reveal Box | (NoGrow & Sized2) | (int & Sized2)
+         KB hints: TY-GRADUAL-GENERIC-NARROWING   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194925-f8dee053.md
+       uzz-llm-run-2026-10-27/gen/typeddict/genA_in_narrowing_02.py  D5 L24: reveal_type(v["z"])
+         mypy: reveal Any | int
+         ty:   reveal object
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194939-2dd30a87.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('invalid-return-type',) | return type does not match returned value: expected _, found _
+       6-10-27/gen/callables/genB_cb_callable_in_union_narrow_10.py  D1 L8: return x()
+         mypy: (nothing)
+         ty:   [invalid-return-type] Return type does not match returned value: expected `int`, found `object`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194732-d141e520.md
+       n-2026-10-27/gen/narrowing_builtin/genD_callable_union_02.py  D1 L22: return v()
+         mypy: (nothing)
+         ty:   [invalid-return-type] Return type does not match returned value: expected `str`, found `object`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194847-1a61f79a.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('misc',) | cannot infer value of type parameter _ of _
+       -run-2026-10-27/gen/dataclasses/genA_generic_dataclass_05.py  D1 L26: bad = Box(1, ["x"])
+         mypy: [misc] Cannot infer value of type parameter "T" of "Box"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194753-8a725af4.md
+       llm-run-2026-10-27/gen/overloads/genD_generic_overload_04.py  D1 L32: reveal_type(get({"a": 1}, "a", "s"))
+         mypy: [misc] Cannot infer value of type parameter "T" of "get"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194903-63b651c4.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('overload-cannot-match',) | overloaded function signature n will never be matched: signature n's parameter type(s) are the same or broader
+       6-10-27/gen/overloads/genD_overlap_incompatible_return_05.py  D1 L7: def f(x: bool) -> str: ...
+         mypy: [overload-cannot-match] Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194906-7fff55c3.md
+       6-10-27/gen/overloads/genD_overlap_incompatible_return_05.py  D2 L15: def g(x: str) -> str: ...
+         mypy: [overload-cannot-match] Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194906-7fff55c3.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('overload-overlap',) | overloaded function signatures n and n overlap with incompatible return types
+       un-2026-10-27/gen/overloads/genD_union_literal_overlap_03.py  D1 L5: def m(x: Literal["a"]) -> int: ...
+         mypy: [overload-overlap] Overloaded function signatures 1 and 3 overlap with incompatible return types
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194909-9d395167.md
+       un-2026-10-27/gen/overloads/genD_union_literal_overlap_03.py  D2 L7: def m(x: Literal["b", "c"]) -> bytes: ...
+         mypy: [overload-overlap] Overloaded function signatures 2 and 3 overlap with incompatible return types
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194909-9d395167.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('typeddict-item',) | typeddict _ has no key _
+       fuzz-llm-run-2026-10-27/gen/typeddict/genA_extra_items_04.py  D3 L13: reveal_type(m["rating"])
+         mypy: [typeddict-item] TypedDict "Movie" has no key "rating"
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194936-b05cf679.md
+       uzz-llm-run-2026-10-27/gen/typeddict/genA_in_narrowing_02.py  D1 L24: reveal_type(v["z"])
+         mypy: [typeddict-item] TypedDict "A" has no key "z"
+         ty:   (nothing)
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194939-2dd30a87.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ of _ has incompatible type _; expected _
+       run/paramspec_concatenate/genB_paramspec_class_generic_07.py  D1 L27: t.run_twice("bad")  # error (never executed)
+         mypy: [arg-type] Argument 1 to "run_twice" of "Task" has incompatible type "str"; expected "int"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202457-24242682.md
+       /paramspec_concatenate/genB_paramspec_method_decorator_04.py  D1 L27: a.add("x")  # error (never executed)
+         mypy: [arg-type] Argument 1 to "add" of "Acc" has incompatible type "str"; expected "int"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202500-cbaf33bb.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('unused-coroutine',) | value of type _ must be used
+       7/gen/async_generators/genD_coroutine_vs_gen_decorator_06.py  D1 L18: reveal_type(leaf(1))
+         mypy: [unused-coroutine] Value of type "Coroutine[Any, Any, str]" must be used
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194728-25a34e92.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('func-returns-value',) | function does not return a value (it only ever returns none)
+       26-10-27/gen/async_generators/genD_yield_from_iterable_05.py  D1 L17: r = yield from [1, 2]
+         mypy: [func-returns-value] Function does not return a value (it only ever returns None)
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194730-f261f6b1.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('call-arg',) | missing positional argument _ in call to _
+       tructors_metaclasses/genC_metaclass_call_returns_other_02.py  D1 L14: v = K()
+         mypy: [call-arg] Missing positional argument "x" in call to "K"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194745-8c4c34d5.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('operator',) | unsupported operand types for + (_ and _)
+       tructors_metaclasses/genC_metaclass_call_returns_other_02.py  D2 L16: print(v + 1)
+         mypy: [operator] Unsupported operand types for + ("K" and "int")
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194745-8c4c34d5.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('call-arg',) | too many arguments for _
+       tructors_metaclasses/genC_metaclass_call_returns_other_02.py  D3 L17: w = K("a", "b", z=1)
+         mypy: [call-arg] Too many arguments for "K"; [call-arg] Unexpected keyword argument "z" for "K"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194745-8c4c34d5.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('redundant-condition',) | object of type _ is always truthy
+       un-2026-10-27/gen/enums_literals/genA_enum_bool_truthy_07.py  D1 L21: if b:
+         mypy: (nothing)
+         ty:   [redundant-condition] Object of type `Bit` is always truthy
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194807-208af9db.md
+
+##    1 findings (0 with strong bug evidence)  concern_mismatch | ('arg-type',) | argument n to _ has incompatible type _; expected _
+       0-27/gen/generics_variance/genB_typevar_default_pep696_09.py  D1 L15: r: Pair[str] = Pair("a", "b")  # error: V is int
+         mypy: [arg-type] Argument 2 to "Pair" has incompatible type "str"; expected "int"
+         ty:   [invalid-assignment] Object of type `Pair[str, str]` is not assignable to `Pair[str, int]`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194825-360b5d1e.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('invalid-method-override',) | invalid override of method _: definition is incompatible with _
+       6-10-27/gen/inheritance_mro/genC_override_param_rename_02.py  D1 L10: def f(self, y: int) -> int:  # LSP violation for keyword calls
+         mypy: (nothing)
+         ty:   [invalid-method-override] Invalid override of method `f`: Definition is incompatible with `Base.f`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194834-bb07d747.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('misc',) | ambiguous slice of a variadic tuple
+       un-2026-10-27/gen/tuples_unpacking/genA_slice_variadic_04.py  D1 L7: reveal_type(t[:2])
+         mypy: [misc] Ambiguous slice of a variadic tuple
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194929-2db6c3e6.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('misc',) | variadic tuple unpacking requires a star target
+       6-10-27/gen/tuples_unpacking/genA_star_unpack_variadic_02.py  D1 L8: x, y, w = t
+         mypy: [misc] Variadic tuple unpacking requires a star target
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194931-6bad5d38.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('call-arg',) | unexpected keyword argument _ for _ of _
+       fuzz-llm-run-2026-10-27/gen/typeddict/genA_extra_items_04.py  D1 L6: class Movie(TypedDict, extra_items=int):
+         mypy: [call-arg] Unexpected keyword argument "extra_items" for "__init_subclass__" of "TypedDict"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194936-b05cf679.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('typeddict-unknown-key',) | extra key _ for typeddict _
+       fuzz-llm-run-2026-10-27/gen/typeddict/genA_extra_items_04.py  D2 L11: m: Movie = {"name": "x", "rating": 5}
+         mypy: [typeddict-unknown-key] Extra key "rating" for TypedDict "Movie"
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194936-b05cf679.md
+
+##    1 findings (0 with strong bug evidence)  concern_mismatch | ('typeddict-unknown-key',) | extra key _ for typeddict _
+       fuzz-llm-run-2026-10-27/gen/typeddict/genA_extra_items_04.py  D4 L14: bad: Movie = {"name": "y", "rating": "no"}
+         mypy: [typeddict-unknown-key] Extra key "rating" for TypedDict "Movie"
+         ty:   [invalid-argument-type] Invalid argument to key "rating" with declared type `int` on TypedDict `Movie`: value of type `Literal["no"]`
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-194936-b05cf679.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('misc',) | invalid self argument _ to attribute function _ with type _
+       6-10-27/gen_rerun/callables/genB_cb_self_attr_callable_12.py  D1 L20: reveal_type(h.cls_attr)
+         mypy: [misc] Invalid self argument "H" to attribute function "cls_attr" with type "Callable[[int], int]"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202447-6a63fa0a.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('call-arg', 'misc') | invalid self argument _ to attribute function _ with type _
+       6-10-27/gen_rerun/callables/genB_cb_self_attr_callable_12.py  D2 L24: print(h.cls_attr(1))
+         mypy: [misc] Invalid self argument "H" to attribute function "cls_attr" with type "Callable[[int], int]"; [call-arg] Too many arguments
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202447-6a63fa0a.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('type-var',) | value of type variable _ of _ cannot be _
+       en_rerun/generics_variance/genB_bound_self_referential_05.py  D1 L18: mx(object(), object())  # error: bound violation (never executed)
+         mypy: [type-var] Value of type variable "T" of "mx" cannot be "object"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202452-8a6304e4.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('arg-type', 'call-arg') | too many positional arguments for _
+       run/paramspec_concatenate/genB_concat_decorator_inject_01.py  D1 L25: greet(Ctx(), "x")  # error (never executed)
+         mypy: [call-arg] Too many positional arguments for "greet"; [arg-type] Argument 1 to "greet" has incompatible type "Ctx"; expected "str"; [arg-type] Argument 2 to "greet" has incompatible type "str"; expect
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202453-2f7c80a4.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('arg-type', 'call-arg') | missing positional argument _ in call to _
+       n_rerun/paramspec_concatenate/genB_paramspec_add_param_03.py  D1 L21: area(3)  # error: flag missing / bool expected (never executed)
+         mypy: [call-arg] Missing positional argument "w" in call to "area"; [arg-type] Argument 1 to "area" has incompatible type "int"; expected "bool"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202455-7ace9a83.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('call-arg',) | too many positional arguments for _
+       /paramspec_concatenate/genB_paramspec_kwonly_remainder_10.py  D1 L21: fn("k")  # error: keyword-only (never executed)
+         mypy: [call-arg] Too many positional arguments for "fn"
+         ty:   (nothing)
+         full report: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/typediff_out/20261027-202459-0415729d.md
+
+161 findings in 35 patterns (* = strong verified bug evidence; triage those patterns first)

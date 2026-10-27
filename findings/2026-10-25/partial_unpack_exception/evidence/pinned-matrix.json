@@ -1,0 +1,907 @@
+{
+  "versions": {
+    "mypy": "mypy 2.4.0 (compiled: yes)",
+    "ty": "ty 0.0.84",
+    "pyright": "pyright 1.1.414",
+    "runtime": "3.13.16"
+  },
+  "cases": [
+    {
+      "name": "nested_tuple",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-k8o27fbt/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950321956\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.167\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-jisbvoie/case.py\", line 4, in run\n    value, (a, b) = \"bad\", items\n           ^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-jisbvoie/case.py\", line 9, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-jisbvoie/case.py\", line 6, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "nested_list",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        [value, [a, b]] = [\"bad\", items]\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-5cn6vkwn/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950325916\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.155\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-vuwiz82t/case.py\", line 4, in run\n    [value, [a, b]] = [\"bad\", items]\n            ^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-vuwiz82t/case.py\", line 9, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-vuwiz82t/case.py\", line 6, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "nested_second_success",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1, 2))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-cllvyq31/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950327212\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.15\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "nested_fail_before_rebind",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        (a, b), value = items, \"bad\"\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-e1p6ivp9/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950328382\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.136\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "1\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "separate_assignments",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value = \"bad\"\n        a, b = items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-5nqmyruo/.mypy_cache"
+          ],
+          "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:7:15: error[unresolved-attribute] Object of type `Literal[\"bad\"]` has no attribute `bit_length`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950329637\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.157\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15: error[unresolved-attribute] Object of type `Literal[\"bad\"]` has no attribute `bit_length`\nFound 1 diagnostic\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-0xj3fd79/case.py\", line 5, in run\n    a, b = items\n    ^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-0xj3fd79/case.py\", line 10, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-0xj3fd79/case.py\", line 7, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "none_instead_of_str",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | None = 1\n    try:\n        value, (a, b) = None, items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-6qnwhkbb/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"None\" of \"int | None\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950330933\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.139\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"None\" of \"int | None\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-971dvio0/case.py\", line 4, in run\n    value, (a, b) = None, items\n           ^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-971dvio0/case.py\", line 9, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-971dvio0/case.py\", line 6, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "object_annotation",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: object = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-uyy9fcb6/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: \"object\" has no attribute \"bit_length\"  [attr-defined]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950332103\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.144\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: \"object\" has no attribute \"bit_length\"  [attr-defined]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-3af7j2z1/case.py\", line 4, in run\n    value, (a, b) = \"bad\", items\n           ^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-3af7j2z1/case.py\", line 9, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-3af7j2z1/case.py\", line 6, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "nested_three_targets",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b, c) = \"bad\", items\n    except ValueError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-ij6havi2/.mypy_cache"
+          ],
+          "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950333260\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.132\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:15:6:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-tfjrmckg/case.py\", line 4, in run\n    value, (a, b, c) = \"bad\", items\n           ^^^^^^^^^\nValueError: not enough values to unpack (expected 3, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-tfjrmckg/case.py\", line 9, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-tfjrmckg/case.py\", line 6, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "flat_subscript_failure",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    target: list[int] = []\n    try:\n        value, target[0] = \"bad\", 2\n    except IndexError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-8yf80ykr/.mypy_cache"
+          ],
+          "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:7:15: error[unresolved-attribute] Attribute `bit_length` is not defined on `Literal[\"bad\"]` in union `Literal[1, \"bad\"]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950334562\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.147\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15: error[unresolved-attribute] Attribute `bit_length` is not defined on `Literal[\"bad\"]` in union `Literal[1, \"bad\"]`\nFound 1 diagnostic\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-ll4kztl7/case.py\", line 5, in run\n    value, target[0] = \"bad\", 2\n           ~~~~~~^^^\nIndexError: list assignment index out of range\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-ll4kztl7/case.py\", line 10, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-ll4kztl7/case.py\", line 7, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "chained_subscript_failure",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    target: list[str] = []\n    try:\n        value = target[0] = \"bad\"\n    except IndexError:\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-xz7k5hyi/.mypy_cache"
+          ],
+          "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:7:15: error[unresolved-attribute] Object of type `Literal[\"bad\"]` has no attribute `bit_length`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950335898\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.145\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15:7:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 1,
+        "stdout": "case.py:7:15: error[unresolved-attribute] Object of type `Literal[\"bad\"]` has no attribute `bit_length`\nFound 1 diagnostic\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-77r92zw1/case.py\", line 5, in run\n    value = target[0] = \"bad\"\n            ~~~~~~^^^\nIndexError: list assignment index out of range\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-77r92zw1/case.py\", line 10, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-77r92zw1/case.py\", line 7, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "return_type",
+      "source": "def run(items: tuple[int, ...]) -> int:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        return value\n\n\n    return 0\n\nprint(run((1,)).bit_length())\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-pyyi9b78/.mypy_cache"
+          ],
+          "stdout": "case.py:6:16:6:20: error: Incompatible return value type (got \"int | str\", expected \"int\")  [return-value]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950337097\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.153\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:6:16:6:20: error: Incompatible return value type (got \"int | str\", expected \"int\")  [return-value]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-unpack-du25r32z/case.py\", line 11, in <module>\n    print(run((1,)).bit_length())\n          ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    },
+    {
+      "name": "nested_guarded",
+      "source": "def run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        if isinstance(value, int):\n            print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-7bdh_7m4/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950338530\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.183\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 1,
+        "stdout": "case.py:6:12: error[redundant-condition-strict] Condition `isinstance(value, int)` is always true\nFound 1 diagnostic\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "reveal_witness",
+      "source": "from typing import reveal_type\n\ndef run(items: tuple[int, ...]) -> None:\n    value: int | str = 1\n    try:\n        value, (a, b) = \"bad\", items\n    except ValueError:\n        reveal_type(value)\n        print(value.bit_length())\n\n\nrun((1,))\n",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-jwjjvdh4/.mypy_cache"
+          ],
+          "stdout": "case.py:8:21:8:25: note: Revealed type is \"int | str\"\ncase.py:9:15:9:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:8:21: info[revealed-type] Revealed type: `Literal[1]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792950339898\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-pev9q9ip/case.py\",\n            \"severity\": \"information\",\n            \"message\": \"Type of \\\"value\\\" is \\\"Literal[1]\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 7,\n                    \"character\": 20\n                },\n                \"end\": {\n                    \"line\": 7,\n                    \"character\": 25\n                }\n            }\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 1,\n        \"timeInSec\": 0.145\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:8:21:8:25: note: Revealed type is \"int | str\"\ncase.py:9:15:9:30: error: Item \"str\" of \"int | str\" has no attribute \"bit_length\"  [union-attr]\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "ty_all_rules": {
+        "exit_code": 0,
+        "stdout": "case.py:8:21: info[revealed-type] Revealed type: `Literal[1]`\nFound 1 diagnostic\n",
+        "stderr": "",
+        "crash_kinds": []
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Runtime type is 'str'\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-a1zgis30/case.py\", line 6, in run\n    value, (a, b) = \"bad\", items\n           ^^^^^^\nValueError: not enough values to unpack (expected 2, got 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/tmp/typediff-unpack-a1zgis30/case.py\", line 12, in <module>\n    run((1,))\n    ~~~^^^^^^\n  File \"/tmp/typediff-unpack-a1zgis30/case.py\", line 9, in run\n    print(value.bit_length())\n          ^^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'bit_length'\n"
+      }
+    }
+  ]
+}

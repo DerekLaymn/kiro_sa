@@ -1,0 +1,742 @@
+{
+  "versions": {
+    "mypy": "mypy 2.4.0 (compiled: yes)",
+    "ty": "ty 0.0.91",
+    "pyright": "pyright 1.1.414",
+    "runtime": "3.13.16"
+  },
+  "cases": [
+    {
+      "name": "variadic_bad_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-go_y5x_h/.mypy_cache"
+          ],
+          "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947223263\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-n9c96_ph/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"tuple[Literal['bad']]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\u00a0\u00a0Type \\\"*tuple[Literal['bad']]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\\\"*tuple[Literal['bad']]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Tuple entry 1 is incorrect type\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 6\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 30\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.133\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-bj2ysmyh/case.py\", line 12, in <module>\n    print(invoke(increment, \"bad\"))\n          ~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/tmp/typediff-direct-bj2ysmyh/case.py\", line 5, in invoke\n    return fn(*args)\n  File \"/tmp/typediff-direct-bj2ysmyh/case.py\", line 9, in increment\n    return value + 1\n           ~~~~~~^~~\nTypeError: can only concatenate str (not \"int\") to str\n"
+      }
+    },
+    {
+      "name": "variadic_good_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-5vb1bfog/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947224438\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.157\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "2\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "variadic_extra_argument",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-cc3o7ko3/.mypy_cache"
+          ],
+          "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[int, int], int]\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947225572\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-kqyp6o4b/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"tuple[Literal[1], Literal[2]]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\u00a0\u00a0Type \\\"*tuple[Literal[1], Literal[2]]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\\\"*tuple[Literal[1], Literal[2]]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Tuple size mismatch; expected 1 but received 2\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 6\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 29\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.144\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[int, int], int]\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-uw9czttg/case.py\", line 12, in <module>\n    print(invoke(increment, 1, 2))\n          ~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/tmp/typediff-direct-uw9czttg/case.py\", line 5, in invoke\n    return fn(*args)\nTypeError: increment() takes 1 positional argument but 2 were given\n"
+      }
+    },
+    {
+      "name": "variadic_missing_argument",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-j1zymh19/.mypy_cache"
+          ],
+          "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[], int]\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947226677\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-sx7ksaqp/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"tuple[()]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\u00a0\u00a0Type \\\"*tuple[()]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\\\"*tuple[()]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Tuple size mismatch; expected 1 but received 0\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 6\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 23\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.124\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[], int]\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-k0wpwnph/case.py\", line 12, in <module>\n    print(invoke(increment))\n          ~~~~~~^^^^^^^^^^^\n  File \"/tmp/typediff-direct-k0wpwnph/case.py\", line 5, in invoke\n    return fn(*args)\nTypeError: increment() missing 1 required positional argument: 'value'\n"
+      }
+    },
+    {
+      "name": "direct_bad_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-nran7v1m/.mypy_cache"
+          ],
+          "stdout": "case.py:12:17:12:21: error: Argument 1 to \"increment\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:12:17: error[invalid-argument-type] Argument to function `increment` is incorrect: Expected `int`, found `Literal[\"bad\"]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947227737\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-w0jta4uo/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"Literal['bad']\\\" cannot be assigned to parameter \\\"value\\\" of type \\\"int\\\" in function \\\"increment\\\"\\n\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 16\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 21\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.123\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:17:12:21: error: Argument 1 to \"increment\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-wwzq3kxz/case.py\", line 12, in <module>\n    print(increment(\"bad\"))\n          ~~~~~~~~~^^^^^^^\n  File \"/tmp/typediff-direct-wwzq3kxz/case.py\", line 9, in increment\n    return value + 1\n           ~~~~~~^~~\nTypeError: can only concatenate str (not \"int\") to str\n"
+      }
+    },
+    {
+      "name": "paramspec_bad_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-lbmlhjj_/.mypy_cache"
+          ],
+          "stdout": "case.py:12:25:12:29: error: Argument 2 to \"invoke\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:12:25: error[invalid-argument-type] Argument to function `invoke` is incorrect: Expected `int`, found `Literal[\"bad\"]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947228770\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-ippgk4t5/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"Literal['bad']\\\" cannot be assigned to parameter \\\"value\\\" of type \\\"int\\\"\\n\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 24\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 29\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.124\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:25:12:29: error: Argument 2 to \"invoke\" has incompatible type \"str\"; expected \"int\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-agrrwbh0/case.py\", line 12, in <module>\n    print(invoke(increment, \"bad\"))\n          ~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/tmp/typediff-direct-agrrwbh0/case.py\", line 5, in invoke\n    return fn(*args, **kwargs)\n  File \"/tmp/typediff-direct-agrrwbh0/case.py\", line 9, in increment\n    return value + 1\n           ~~~~~~^~~\nTypeError: can only concatenate str (not \"int\") to str\n"
+      }
+    },
+    {
+      "name": "tuple_bad_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-4_pv5et_/.mypy_cache"
+          ],
+          "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:12:14: error[invalid-argument-type] Argument to function `invoke` is incorrect: Expected `(int | Literal[\"bad\"], /) -> int`, found `def increment(value: int) -> int`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947229824\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-hh5xiayh/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"tuple[Literal['bad']]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"tuple[*Ts@invoke]\\\" in function \\\"invoke\\\"\\n\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 11,\n                    \"character\": 25\n                },\n                \"end\": {\n                    \"line\": 11,\n                    \"character\": 30\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.135\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-o5pcung7/case.py\", line 12, in <module>\n    print(invoke(increment, (\"bad\",)))\n          ~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/typediff-direct-o5pcung7/case.py\", line 5, in invoke\n    return fn(*args)\n  File \"/tmp/typediff-direct-o5pcung7/case.py\", line 9, in increment\n    return value + 1\n           ~~~~~~^~~\nTypeError: can only concatenate str (not \"int\") to str\n"
+      }
+    },
+    {
+      "name": "legacy_variadic_bad_type",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-wonii4rn/.mypy_cache"
+          ],
+          "stdout": "case.py:15:14:15:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947230997\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-kyj8fhxu/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Argument of type \\\"tuple[Literal['bad']]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\u00a0\u00a0Type \\\"*tuple[Literal['bad']]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\\\"*tuple[Literal['bad']]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0Tuple entry 1 is incorrect type\\n\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 14,\n                    \"character\": 6\n                },\n                \"end\": {\n                    \"line\": 14,\n                    \"character\": 30\n                }\n            },\n            \"rule\": \"reportArgumentType\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.142\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:15:14:15:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-5197xpi1/case.py\", line 15, in <module>\n    print(invoke(increment, \"bad\"))\n          ~~~~~~^^^^^^^^^^^^^^^^^^\n  File \"/tmp/typediff-direct-5197xpi1/case.py\", line 8, in invoke\n    return fn(*args)\n  File \"/tmp/typediff-direct-5197xpi1/case.py\", line 12, in increment\n    return value + 1\n           ~~~~~~^~~\nTypeError: can only concatenate str (not \"int\") to str\n"
+      }
+    },
+    {
+      "name": "lambda_rebinding",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-7tvopiev/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:7:24: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947232127\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-oidgxk1u/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Operator \\\"+\\\" not supported for \\\"None\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 6,\n                    \"character\": 23\n                },\n                \"end\": {\n                    \"line\": 6,\n                    \"character\": 28\n                }\n            },\n            \"rule\": \"reportOptionalOperand\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.141\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-l4rvgxcn/case.py\", line 12, in <module>\n    print(build(1)())\n          ~~~~~~~~^^\n  File \"/tmp/typediff-direct-l4rvgxcn/case.py\", line 7, in <lambda>\n    callback = lambda: value + 1\n                       ~~~~~~^~~\nTypeError: unsupported operand type(s) for +: 'NoneType' and 'int'\n"
+      }
+    },
+    {
+      "name": "lambda_annotated",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-44ya9tsb/.mypy_cache"
+          ],
+          "stdout": "case.py:7:43:7:43: error: Unsupported operand types for + (\"None\" and \"int\")  [operator]\ncase.py:7:43:7:43: note: Left operand is of type \"int | None\"\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:7:43: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947233202\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-ypw56zpq/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Operator \\\"+\\\" not supported for \\\"None\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 6,\n                    \"character\": 42\n                },\n                \"end\": {\n                    \"line\": 6,\n                    \"character\": 47\n                }\n            },\n            \"rule\": \"reportOptionalOperand\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.124\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:7:43:7:43: error: Unsupported operand types for + (\"None\" and \"int\")  [operator]\ncase.py:7:43:7:43: note: Left operand is of type \"int | None\"\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-qycu0zna/case.py\", line 12, in <module>\n    print(build(1)())\n          ~~~~~~~~^^\n  File \"/tmp/typediff-direct-qycu0zna/case.py\", line 7, in <lambda>\n    callback: Callable[[], int] = lambda: value + 1\n                                          ~~~~~~^~~\nTypeError: unsupported operand type(s) for +: 'NoneType' and 'int'\n"
+      }
+    },
+    {
+      "name": "lambda_no_rebinding",
+      "tools": {
+        "mypy": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-563drt3d/.mypy_cache"
+          ],
+          "stdout": "",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 0,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "All checks passed!\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 0,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947234236\",\n    \"generalDiagnostics\": [],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 0,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.123\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 0,
+        "stdout": "2\n",
+        "stderr": ""
+      }
+    },
+    {
+      "name": "nested_def_rebinding",
+      "tools": {
+        "mypy": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--check-untyped-defs",
+            "--show-column-numbers",
+            "--show-error-codes",
+            "--show-error-end",
+            "--no-error-summary",
+            "--no-color-output",
+            "--hide-error-context",
+            "--no-incremental",
+            "--cache-dir",
+            "/tmp/typediff-al88tdd_/.mypy_cache"
+          ],
+          "stdout": "case.py:8:16:8:16: error: Unsupported operand types for + (\"None\" and \"int\")  [operator]\ncase.py:8:16:8:16: note: Left operand is of type \"int | None\"\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "ty": {
+          "exit_code": 1,
+          "flags": [
+            "--python-version",
+            "3.13",
+            "--output-format",
+            "concise",
+            "--no-progress",
+            "--color",
+            "never"
+          ],
+          "stdout": "case.py:8:16: error[unsupported-operator] Operator `+` is not supported between objects of type `int | None` and `Literal[1]`\nFound 1 diagnostic\n",
+          "stderr": "",
+          "crash_kinds": []
+        },
+        "pyright": {
+          "exit_code": 1,
+          "flags": [
+            "--pythonversion",
+            "3.13",
+            "--outputjson"
+          ],
+          "stdout": "{\n    \"version\": \"1.1.414\",\n    \"time\": \"1792947235279\",\n    \"generalDiagnostics\": [\n        {\n            \"file\": \"/tmp/typediff-oajobgix/case.py\",\n            \"severity\": \"error\",\n            \"message\": \"Operator \\\"+\\\" not supported for \\\"None\\\"\",\n            \"range\": {\n                \"start\": {\n                    \"line\": 7,\n                    \"character\": 15\n                },\n                \"end\": {\n                    \"line\": 7,\n                    \"character\": 20\n                }\n            },\n            \"rule\": \"reportOptionalOperand\"\n        }\n    ],\n    \"summary\": {\n        \"filesAnalyzed\": 1,\n        \"errorCount\": 1,\n        \"warningCount\": 0,\n        \"informationCount\": 0,\n        \"timeInSec\": 0.137\n    }\n}\n\n",
+          "stderr": "",
+          "crash_kinds": []
+        }
+      },
+      "mypy_strict": {
+        "exit_code": 1,
+        "stdout": "case.py:8:16:8:16: error: Unsupported operand types for + (\"None\" and \"int\")  [operator]\ncase.py:8:16:8:16: note: Left operand is of type \"int | None\"\n",
+        "stderr": ""
+      },
+      "runtime": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Traceback (most recent call last):\n  File \"/tmp/typediff-direct-pv9lrrae/case.py\", line 13, in <module>\n    print(build(1)())\n          ~~~~~~~~^^\n  File \"/tmp/typediff-direct-pv9lrrae/case.py\", line 8, in callback\n    return value + 1\n           ~~~~~~^~~\nTypeError: unsupported operand type(s) for +: 'NoneType' and 'int'\n"
+      }
+    }
+  ]
+}

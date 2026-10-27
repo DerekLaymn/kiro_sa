@@ -1,0 +1,223 @@
+{
+ "case_id": "variadic_callback",
+ "source": "from collections.abc import Callable\n\n\ndef invoke[*Ts, R](fn: Callable[[*Ts], R], *args: *Ts) -> R:\n    return fn(*args)\n\n\ndef increment(value: int) -> int:\n    return value + 1\n\n\nprint(invoke(increment, \"bad\"))\n",
+ "target_python": "3.13",
+ "tool_versions": {
+  "mypy": "mypy 2.4.0 (compiled: yes)",
+  "ty": "ty 0.0.84",
+  "pyright": "pyright 1.1.414",
+  "runtime": "3.13.16"
+ },
+ "flags": {
+  "mypy": [
+   "--python-version",
+   "3.13",
+   "--check-untyped-defs",
+   "--show-column-numbers",
+   "--show-error-codes",
+   "--show-error-end",
+   "--no-error-summary",
+   "--no-color-output",
+   "--hide-error-context",
+   "--no-incremental",
+   "--cache-dir",
+   "/tmp/typediff-c2plhpy6/.mypy_cache"
+  ],
+  "ty": [
+   "--python-version",
+   "3.13",
+   "--output-format",
+   "concise",
+   "--no-progress",
+   "--color",
+   "never"
+  ],
+  "pyright": [
+   "--pythonversion",
+   "3.13",
+   "--outputjson"
+  ]
+ },
+ "diagnostics": {
+  "mypy": [
+   {
+    "tool": "mypy",
+    "line": 12,
+    "col": 14,
+    "severity": "error",
+    "code": "arg-type",
+    "message": "Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"",
+    "end_line": 12,
+    "end_col": 22,
+    "revealed_type": null,
+    "anchor": 12,
+    "raw": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]"
+   }
+  ],
+  "ty": [],
+  "pyright": [
+   {
+    "tool": "pyright",
+    "line": 12,
+    "col": 7,
+    "severity": "error",
+    "code": "reportArgumentType",
+    "message": "Argument of type \"tuple[Literal['bad']]\" cannot be assigned to parameter \"args\" of type \"Ts@invoke\" in function \"invoke\"",
+    "end_line": 12,
+    "end_col": 31,
+    "revealed_type": null,
+    "anchor": 12,
+    "raw": "{\"file\": \"/tmp/typediff-wrb2g52s/case.py\", \"severity\": \"error\", \"message\": \"Argument of type \\\"tuple[Literal['bad']]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\\u00a0\\u00a0Type \\\"*tuple[Literal['bad']]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\\u00a0\\u00a0\\u00a0\\u00a0\\\"*tuple[Literal['bad']]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0Tuple entry 1 is incorrect type\\n\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\", \"range\": {\"start\": {\"line\": 11, \"character\": 6}, \"end\": {\"line\": 11, \"character\": 30}}, \"rule\": \"reportArgumentType\"}"
+   }
+  ]
+ },
+ "runtime": {
+  "status": "exception",
+  "exc_type": "TypeError",
+  "exc_message": "can only concatenate str (not \"int\") to str",
+  "exc_line": 9,
+  "frames": [
+   [
+    12,
+    "<module>"
+   ],
+   [
+    5,
+    "invoke"
+   ],
+   [
+    9,
+    "increment"
+   ]
+  ],
+  "executed_lines": [
+   1,
+   4,
+   5,
+   8,
+   9,
+   12
+  ],
+  "probes": [],
+  "stdout": "",
+  "stderr": "",
+  "python_version": "3.13.16"
+ },
+ "crashes": [],
+ "discrepancies": [
+  {
+   "id": "D1",
+   "kind": "only_mypy",
+   "anchor": 12,
+   "anchor_end": 12,
+   "statement": "print(invoke(increment, \"bad\"))",
+   "scope": "<module>",
+   "mypy": [
+    {
+     "tool": "mypy",
+     "line": 12,
+     "col": 14,
+     "severity": "error",
+     "code": "arg-type",
+     "message": "Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"",
+     "end_line": 12,
+     "end_col": 22,
+     "revealed_type": null,
+     "anchor": 12,
+     "raw": "case.py:12:14:12:22: error: Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\"  [arg-type]"
+    }
+   ],
+   "ty": [],
+   "pyright": [
+    {
+     "tool": "pyright",
+     "line": 12,
+     "col": 7,
+     "severity": "error",
+     "code": "reportArgumentType",
+     "message": "Argument of type \"tuple[Literal['bad']]\" cannot be assigned to parameter \"args\" of type \"Ts@invoke\" in function \"invoke\"",
+     "end_line": 12,
+     "end_col": 31,
+     "revealed_type": null,
+     "anchor": 12,
+     "raw": "{\"file\": \"/tmp/typediff-wrb2g52s/case.py\", \"severity\": \"error\", \"message\": \"Argument of type \\\"tuple[Literal['bad']]\\\" cannot be assigned to parameter \\\"args\\\" of type \\\"Ts@invoke\\\" in function \\\"invoke\\\"\\n\\u00a0\\u00a0Type \\\"*tuple[Literal['bad']]\\\" is not assignable to type \\\"*tuple[int]\\\"\\n\\u00a0\\u00a0\\u00a0\\u00a0\\\"*tuple[Literal['bad']]\\\" is not assignable to \\\"*tuple[int]\\\"\\n\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0Tuple entry 1 is incorrect type\\n\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\u00a0\\\"Literal['bad']\\\" is not assignable to \\\"int\\\"\", \"range\": {\"start\": {\"line\": 11, \"character\": 6}, \"end\": {\"line\": 11, \"character\": 30}}, \"rule\": \"reportArgumentType\"}"
+    }
+   ],
+   "reveal_relation": null,
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised TypeError: can only concatenate str (not \"int\") to str with this statement on the stack (frames [(12, '<module>'), (5, 'invoke'), (9, 'increment')]). Checker output here: L12:14 error[arg-type] Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\". Check the exception is caused by the reported issue.",
+     "citation": "line 9",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "ty"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like mypy at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "ty"
+    }
+   ],
+   "kb_hits": [],
+   "features": [],
+   "priority": 0.6
+  }
+ ],
+ "findings": [
+  {
+   "discrepancy_id": "D1",
+   "verdict": "NEEDS_HUMAN",
+   "tier": "review",
+   "faulty_tool": "unknown",
+   "symptom": null,
+   "dismissal": null,
+   "confidence": 0.0,
+   "decided_by": "gate",
+   "reasoning": "no LLM configured (TYPEDIFF_LLM=null): needs a human",
+   "correct_behavior": "",
+   "counter_hypothesis": "",
+   "evidence": [
+    {
+     "type": "RUNTIME",
+     "supports": "bug",
+     "summary": "CPython raised TypeError: can only concatenate str (not \"int\") to str with this statement on the stack (frames [(12, '<module>'), (5, 'invoke'), (9, 'increment')]). Checker output here: L12:14 error[arg-type] Argument 1 to \"invoke\" has incompatible type \"Callable[[int], int]\"; expected \"Callable[[str], int]\". Check the exception is caused by the reported issue.",
+     "citation": "line 9",
+     "quote": "",
+     "verified": true,
+     "strength": "strong",
+     "blame": "ty"
+    },
+    {
+     "type": "CONSENSUS",
+     "supports": "neutral",
+     "summary": "pyright behaves like mypy at this statement (weak evidence)",
+     "citation": "",
+     "quote": "",
+     "verified": true,
+     "strength": "weak",
+     "blame": "ty"
+    }
+   ],
+   "experiments": [],
+   "review_notes": [],
+   "reduced_source": null,
+   "signature": null
+  }
+ ],
+ "validity": {
+  "valid": true,
+  "problems": [],
+  "runtime_usable": true
+ },
+ "strategy": null,
+ "llm_calls": 0,
+ "notes": []
+}
