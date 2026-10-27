@@ -1,0 +1,10 @@
+43
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/generics_variance/genB_bound_self_referential_05.py', "TypeError: '<' not supported between instances of 'object' and 'object'")
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/paramspec_concatenate/genB_concat_decorator_inject_01.py', 'TypeError: greet() takes 2 positional arguments but 3 were given')
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/paramspec_concatenate/genB_paramspec_add_param_03.py', "TypeError: area() missing 1 required positional argument: 'w'")
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/paramspec_concatenate/genB_paramspec_method_decorator_04.py', "TypeError: unsupported operand type(s) for +=: 'int' and 'str'")
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/paramspec_concatenate/genB_paramspec_class_generic_07.py', "TypeError: can't multiply sequence by non-int of type 'str'")
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/paramspec_concatenate/genB_paramspec_kwonly_remainder_10.py', 'TypeError: fn() takes 1 positional argument but 2 were given')
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/typevartuple_unpack/genB_tvt_callable_args_05.py', "TypeError: unsupported operand type(s) for +: 'int' and 'str'")
+BAD ('/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.agents/tasks/kiro_sa-fuzz-llm-run-2026-10-27/gen/callables/genB_cb_self_attr_callable_12.py', 'TypeError: plain() takes 1 positional argument but 2 were given')
+35 Counter({'callables': 11, 'generics_variance': 10, 'typevartuple_unpack': 9, 'paramspec_concatenate': 5})
