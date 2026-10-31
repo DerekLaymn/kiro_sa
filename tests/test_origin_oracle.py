@@ -88,3 +88,12 @@ def test_cpython_contradiction_demotes_the_dismissal():
     # origin ty matches `int`, mypy Unknown is less precise -> matches, but the runtime value (a str) is outside ty's int
     assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
     assert entry_demotion(st, d, BY_ID["ORIGIN-ORACLE-REVEAL"]) is not None
+
+
+def test_spec_defined_narrowing_is_not_dismissed():
+    src = "def f(x: object):\n    if isinstance(x, int):\n        reveal_type(x)  # revealed: int\n"
+    st, d = case(src, "Any", "int", "gradual", line=3)
+    assert "ORIGIN-ORACLE-REVEAL" not in ids(st, d)
+    src_plain = "def f(x: object):\n    if True:\n        reveal_type(x)  # revealed: int\n"
+    st, d = case(src_plain, "Any", "int", "gradual", line=3)
+    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)

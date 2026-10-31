@@ -959,6 +959,8 @@ def m_origin_oracle_reveal(s, d):
     st = _origin_status(s, d)
     if st is None or not st["match"][st["origin"]] or st["match"]["mypy" if st["origin"] == "ty" else "ty"]:
         return False
+    if _chain_tags(s, d) & _SPEC_NARROWING:
+        return False  # narrowing results are (partly) specified: a more/less precise answer there needs a judge
     other = "mypy" if st["origin"] == "ty" else "ty"
     other_text = (d.mypy if other == "mypy" else d.ty)[0].revealed_type
     if d.reveal_relation == "gradual":
