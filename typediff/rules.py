@@ -134,22 +134,46 @@ def _stub_callee(state: CaseState, line: int | None) -> str | None:
     if tree is None or not line:
         return None
     defs = {n.name: n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
-    for c in ast.walk(tree):
-        if not isinstance(c, ast.Call) or not (c.lineno <= line <= (c.end_lineno or c.lineno)):
-            continue
-        f = c.func
-        fd = defs.get(f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else "")
+
+    def stubbed(fd) -> bool:
         if fd is None or fd.returns is None:
-            continue
+            return False
         r = fd.returns
         if (isinstance(r, ast.Constant) and r.value is None) or (isinstance(r, (ast.Name, ast.Attribute)) and
                                                                    getattr(r, "id", getattr(r, "attr", "")) in ("NoReturn", "Never")):
+            return False
+        return all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
+                                               and (s.value.value is Ellipsis or isinstance(s.value.value, str)))
+                   for s in fd.body)
+
+    for c in ast.walk(tree):
+        if not (hasattr(c, "lineno") and c.lineno <= line <= (getattr(c, "end_lineno", None) or c.lineno)):
             continue
-        if all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
-                                           and (s.value.value is Ellipsis or isinstance(s.value.value, str)))
-               for s in fd.body):
-            return fd.name
+        if isinstance(c, ast.Call):
+            f = c.func
+            fd = defs.get(f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else "")
+            if stubbed(fd):
+                return fd.name
+        else:  # operators and subscripts dispatch to dunder methods: `A() + B()` calls a stub-bodied __add__ / __radd__
+            names = _DUNDERS.get(type(c)) or (_DUNDERS.get(type(getattr(c, "op", None))) if hasattr(c, "op") else None)
+            if names:
+                for fd in (n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                           and n.name in names):
+                    if stubbed(fd):
+                        return fd.name
     return None
+
+
+_DUNDERS: dict[type, tuple[str, ...]] = {
+    ast.Subscript: ("__getitem__",),
+    ast.Compare: ("__eq__", "__ne__", "__lt__", "__le__", "__gt__", "__ge__", "__contains__"),
+    ast.Add: ("__add__", "__radd__"), ast.Sub: ("__sub__", "__rsub__"), ast.Mult: ("__mul__", "__rmul__"),
+    ast.Div: ("__truediv__", "__rtruediv__"), ast.FloorDiv: ("__floordiv__", "__rfloordiv__"),
+    ast.Mod: ("__mod__", "__rmod__"), ast.Pow: ("__pow__", "__rpow__"), ast.MatMult: ("__matmul__", "__rmatmul__"),
+    ast.BitAnd: ("__and__", "__rand__"), ast.BitOr: ("__or__", "__ror__"), ast.BitXor: ("__xor__", "__rxor__"),
+    ast.LShift: ("__lshift__", "__rlshift__"), ast.RShift: ("__rshift__", "__rrshift__"),
+    ast.USub: ("__neg__",), ast.UAdd: ("__pos__",), ast.Invert: ("__invert__",),
+}
 
 
 def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:

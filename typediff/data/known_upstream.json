@@ -48,6 +48,19 @@
    "stance": "open",
    "url": "https://github.com/python/mypy/issues/9658",
    "note": "Known mypy false negative: an inferred lambda retains narrowing of a captured optional parameter even after explicit reassignment to None; narrow AST matcher only. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-948",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["unresolved-reference"],
+   "message": "Name `\\w+` used when not defined",
+   "requires": "unquoted_forward_ref",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "example": "class A:\n    def f(self, other: A) -> None: ...\n",
+   "url": "https://github.com/python/mypy/issues/948",
+   "note": "open mypy feature request (labels feature, topic-quoted-annotations; read 2026-10): mypy does not report a missing string-literal escape for a forward reference in an annotation, which raises NameError at runtime when annotations are evaluated eagerly (Python < 3.14 without `from __future__ import annotations`); the duplicate python/mypy#3088 was closed in its favour. Narrow AST matcher: unquoted name inside an annotation of the same statement, naming a class of the file defined later or enclosing the statement, no future import, ty and pyright agree it is undefined. Many harvested mypy .test files rely on this leniency."
   }
  ],
  "prior_stances": [

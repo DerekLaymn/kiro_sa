@@ -941,8 +941,92 @@ def _rebound_inferred_lambda(s, d) -> bool:
     return False
 
 
+def _origin_status(s: CaseState, d: Discrepancy):
+    from . import origin
+
+    if d.kind != K.REVEAL_MISMATCH:
+        return None
+    return origin.status(s.source, s.module, d.mypy, d.ty)
+
+
+def m_origin_oracle_reveal(s, d):
+    """Narrow: the program carries its origin suite's expectation for this exact reveal; the ORIGIN tool matches it, the
+    other tool does not, and the other tool's answer is only LESS precise (more Any/Unknown parts than the blessed
+    answer; or, for a precision relation, the blessed answer is the more precise one). Never a different/uncomparable
+    type, never an accept/reject difference."""
+    from . import origin
+
+    st = _origin_status(s, d)
+    if st is None or not st["match"][st["origin"]] or st["match"]["mypy" if st["origin"] == "ty" else "ty"]:
+        return False
+    other = "mypy" if st["origin"] == "ty" else "ty"
+    other_text = (d.mypy if other == "mypy" else d.ty)[0].revealed_type
+    if d.reveal_relation == "gradual":
+        return origin.other_is_less_precise(st["expected"], other_text, s.module)
+    return d.reveal_relation == ("ty_more_precise" if st["origin"] == "ty" else "mypy_more_precise")
+
+
+def m_origin_oracle_note(s, d):
+    st = _origin_status(s, d)
+    return bool(st and st["match"][st["origin"]] and not st["match"]["mypy" if st["origin"] == "ty" else "ty"])
+
+
+def m_origin_mismatch(s, d):
+    st = _origin_status(s, d)
+    return bool(st and not st["match"][st["origin"]])
+
+
+def _annotation_roots(node: ast.AST) -> list[ast.AST]:
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        a = node.args
+        return [x.annotation for x in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg]
+                if x is not None and x.annotation is not None] + ([node.returns] if node.returns is not None else [])
+    if isinstance(node, ast.AnnAssign):
+        return [node.annotation]
+    return []
+
+
+_TY_UNDEF_NAME = re.compile(r"Name `(\w+)` used when not defined")
+
+
+def _unquoted_forward_ref(s, d) -> bool:
+    """python/mypy#948: mypy does not require string-literal escapes for forward references. Narrow: no
+    `from __future__ import annotations` in the program; every name ty reports undefined at this statement is an
+    UNQUOTED name inside an annotation of this very statement and names a class of this file that is defined later or
+    whose body encloses the statement; pyright (when it ran) reports the same name undefined."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    # one-line `def f(x: B) -> None: ...` anchors on its body: use every def / annotated assignment starting on this line
+    headers = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.AnnAssign))
+               and d.anchor <= n.lineno <= d.anchor_end]
+    if not headers:
+        return False
+    node = headers[0]
+    if any(isinstance(n, ast.ImportFrom) and n.module == "__future__" and any(a.name == "annotations" for a in n.names)
+           for n in ast.walk(tree)):
+        return False
+    names = {m.group(1) for x in d.ty if (m := _TY_UNDEF_NAME.search(x.message))}
+    if not names or len(names) != len(d.ty):
+        return False
+    unquoted = {n.id for h in headers for r in _annotation_roots(h) for n in ast.walk(r) if isinstance(n, ast.Name)}
+    classes = {n.name: n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)}
+    line = getattr(node, "lineno", d.anchor)
+    for name in names:
+        c = classes.get(name)
+        if name not in unquoted or c is None or not (c.lineno > line or c.lineno <= line <= (c.end_lineno or c.lineno)):
+            return False
+    if s.pyright_ran:
+        pr = {m.group(1) for x in s.diags.get(Tool.PYRIGHT, []) if s.amap.anchor(x.line) == d.anchor
+              for m in [re.search(r'"(\w+)" is (?:not defined|unbound)', x.message)] if m}
+        if not names <= pr:
+            return False
+    return True
+
+
 _REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs,
-             "rebound_inferred_lambda": _rebound_inferred_lambda}
+             "rebound_inferred_lambda": _rebound_inferred_lambda,
+             "unquoted_forward_ref": _unquoted_forward_ref}
 
 
 def _upstream_entries() -> list[KBEntry]:
@@ -971,7 +1055,7 @@ def _upstream_entries() -> list[KBEntry]:
         out.append(KBEntry(
             f"UPSTREAM-{e['id']}", f"already reported upstream: {e['note']}", Dismissal(e["dismissal"]), e["url"],
             f"{e['note']} ({e['url']}). Known issue - do not file again; add new variants as a comment if they "
-            "add information.", (kind,), matcher, auto=True, runtime_override=False,
+            "add information.", (kind,), matcher, auto=True, runtime_override=False, example=e.get("example", ""),
         ))
     return out
 
@@ -1019,6 +1103,55 @@ ENTRIES.extend([
         example="from functools import partial\n\n\nclass MyClass:\n    def __new__(cls, x: int) -> 'MyClass':\n"
                 "        return super().__new__(cls)\n\n    def __init__(self) -> None: ...\n\n\np = partial(MyClass, 1)\n"
                 "# TODO: should error: [missing-argument] once constructor signatures are merged.\np()\n",
+    ),
+])
+def m_suite_allow_empty_bodies(s, d):
+    """The program came from mypy's own test-suite (header `# origin: python/mypy`, which mypy's runner runs with
+    allow_empty_bodies=True) and every mypy diagnostic here is [empty-body]; ty is silent."""
+    return (d.kind == K.ONLY_MYPY and bool(d.mypy) and all(x.code == "empty-body" for x in d.mypy)
+            and bool(re.search(r"^#\s*origin:\s*python/mypy\b", s.source, re.M)))
+
+
+ENTRIES.extend([
+    KBEntry(
+        "MYPY-SUITE-ALLOW-EMPTY-BODIES", "mypy's own test runner allows empty bodies; our default mypy run does not",
+        Dismissal.CONFIG_ARTIFACT, "https://github.com/python/mypy/blob/v2.4.0/mypy/test/testcheck.py#L166",
+        "mypy's check-*.test runner sets `options.allow_empty_bodies = not testcase.name.endswith(\"_no_empty\")` "
+        "(mypy v2.4.0, mypy/test/testcheck.py line 166), so harvested mypy test programs written with `pass` bodies "
+        "and non-None return types are clean under the suite's config. mypy documents [empty-body] as an error outside "
+        "stubs/protocols/abstract methods (error_code_list.html, 'Check that functions don't have empty bodies outside "
+        "stubs'). Fires only for a program whose header says `# origin: python/mypy`, only when every mypy diagnostic is "
+        "[empty-body], and only after re-running mypy with --allow-empty-bodies makes the discrepancy disappear.",
+        (K.ONLY_MYPY,), m_suite_allow_empty_bodies, auto=True, runtime_override=False,
+        verify=_toggle(Tool.MYPY, ["--allow-empty-bodies"]),
+        example="# origin: python/mypy check-classes.test [case testExample]\ndef f(x):\n    # type: (int) -> str\n    pass\n",
+    ),
+    KBEntry(
+        "ORIGIN-ORACLE-REVEAL", "the origin suite blessed this reveal; the other tool is only less precise",
+        Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/concepts.html#the-any-type",
+        "The harvested program keeps its origin suite's own expectation comment (`# N: Revealed type is ...` for mypy, "
+        "`# revealed: ...` for ty) for this very reveal_type call. The origin tool reproduces it; the other tool reveals "
+        "a less precise answer (more Any/Unknown parts, or a supertype of the blessed type). A gradual or coarser answer "
+        "is still sound (spec: Any is compatible with every type), so this is imprecision, not unsoundness. Demoted when "
+        "CPython's value falls outside either tool's type. Only reveal-text differences: never accept/reject or "
+        "different/uncomparable types.",
+        (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=True, runtime_override=True,
+        example="lambda *args: reveal_type(args)  # revealed: tuple[Unknown, ...]\n",
+    ),
+    KBEntry(
+        "ORIGIN-ORACLE-NOTE", "HINT: the origin tool reproduces its suite's expectation, the other tool differs",
+        Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/concepts.html",
+        "The origin tool matches the expectation comment on this line and the other tool does not. Use it to explain "
+        "and sort the queue; it does not say the other tool is wrong.",
+        (K.REVEAL_MISMATCH,), m_origin_oracle_note,
+    ),
+    KBEntry(
+        "ORIGIN-MISMATCH", "HINT: the origin tool does NOT reproduce its own suite's expectation (version skew / harvest)",
+        Dismissal.INVALID_TEST, "https://typing.python.org/en/latest/spec/concepts.html",
+        "The expectation comment on this line came from a suite that belongs to one of the two tools, and that tool's "
+        "installed version does not reproduce it: the installed version differs from the suite's, the mdtest python-version "
+        "was not honoured, or the harvest broke the program. A pipeline/harvest issue, not evidence of a tool bug.",
+        (K.REVEAL_MISMATCH,), m_origin_mismatch,
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation

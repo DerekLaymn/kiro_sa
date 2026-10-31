@@ -1,0 +1,90 @@
+"""Origin oracle: expectation comments of the harvested suite vs each tool's reveal (kb-loop round 1)."""
+
+from __future__ import annotations
+
+from typediff.kb import BY_ID, entry_demotion, matching_entries
+from typediff.models import Diagnostic, Discrepancy, DiscrepancyKind as K, RuntimeProbe, RuntimeResult, Severity, Tool
+from typediff.origin import expectations
+from typediff.state import CaseState
+
+
+def rv(tool, line, text):
+    return Diagnostic(tool, line, 1, Severity.NOTE, "revealed-type", "Revealed type", revealed_type=text)
+
+
+def case(src, mypy_rev, ty_rev, relation, runtime=None, line=1):
+    m, t = rv(Tool.MYPY, line, mypy_rev), rv(Tool.TY, line, ty_rev)
+    st = CaseState("t", src, "3.13", {Tool.MYPY: [m], Tool.TY: [t], Tool.PYRIGHT: []},
+                   runtime or RuntimeResult(status="success"), [], {}, {})
+    d = Discrepancy("D1", K.REVEAL_MISMATCH, line, line, "s", "", mypy=[m], ty=[t], reveal_relation=relation)
+    return st, d
+
+
+def ids(st, d):
+    return {e.id for e in matching_entries(st, d)}
+
+
+TY_SRC = "reveal_type(f())  # revealed: tuple[Unknown, ...]\n"
+MYPY_SRC = 'reveal_type(f())  # N: Revealed type is "builtins.int"\n'
+
+
+def test_expectation_parsing():
+    assert expectations(TY_SRC)[1] == ("ty", ("tuple[Unknown, ...]",))
+    assert expectations(MYPY_SRC)[1] == ("mypy", ("builtins.int",))
+    assert expectations("x = 1  # a comment\n") == {}
+
+
+def test_ty_origin_matches_mypy_is_less_precise_dismisses():
+    st, d = case(TY_SRC, "Any", "tuple[Unknown, ...]", "gradual")
+    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+
+
+def test_mypy_origin_matches_ty_unknown_dismisses():
+    st, d = case(MYPY_SRC, "int", "Unknown", "gradual")
+    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+
+
+def test_precision_relation_when_origin_is_the_precise_one():
+    st, d = case("reveal_type(f())  # revealed: Literal[1]\n", "int", "Literal[1]", "ty_more_precise")
+    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+
+
+# ---------------------------------------------------------------- negatives (near misses that must NOT be dismissed)
+
+
+def test_other_tool_more_precise_is_not_dismissed():
+    # ty's blessed answer is the gradual one; mypy is MORE precise -> mypy's answer might expose a ty gap
+    st, d = case("reveal_type(f())  # revealed: Unknown | Literal[1]\n", "Literal[1]", "Unknown | Literal[1]", "gradual")
+    assert "ORIGIN-ORACLE-REVEAL" not in ids(st, d)
+
+
+def test_different_types_not_dismissed():
+    st, d = case("reveal_type(f())  # revealed: str\n", "int", "str", "different")
+    assert "ORIGIN-ORACLE-REVEAL" not in ids(st, d)
+    assert "ORIGIN-ORACLE-NOTE" in ids(st, d)  # explained, not dismissed
+
+
+def test_origin_not_matching_its_own_expectation_is_flagged_not_dismissed():
+    st, d = case("reveal_type(f())  # revealed: str\n", "Any", "None | Unknown", "gradual")
+    got = ids(st, d)
+    assert "ORIGIN-MISMATCH" in got and "ORIGIN-ORACLE-REVEAL" not in got
+    assert BY_ID["ORIGIN-MISMATCH"].auto is False
+
+
+def test_precision_when_origin_is_the_coarse_one_not_dismissed():
+    st, d = case("reveal_type(f())  # revealed: int\n", "Literal[1]", "int", "mypy_more_precise")
+    assert "ORIGIN-ORACLE-REVEAL" not in ids(st, d)
+
+
+def test_no_expectation_comment_not_matched():
+    st, d = case("reveal_type(f())\n", "Any", "tuple[Unknown, ...]", "gradual")
+    assert not ({"ORIGIN-ORACLE-REVEAL", "ORIGIN-ORACLE-NOTE", "ORIGIN-MISMATCH"} & ids(st, d))
+
+
+def test_cpython_contradiction_demotes_the_dismissal():
+    probe = RuntimeProbe(1, {"type": "builtins.str", "mro": ["builtins.str", "builtins.object"], "repr": "'x'"})
+    rt = RuntimeResult(status="success", probes=[probe], executed_lines=[1])
+    st, d = case("reveal_type(f())  # revealed: int\n", "Unknown", "int", "gradual", runtime=rt)
+    # origin ty matches `int`, mypy Unknown is less precise -> matches, but the runtime value (a str) is outside ty's int
+    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+    assert entry_demotion(st, d, BY_ID["ORIGIN-ORACLE-REVEAL"]) is not None

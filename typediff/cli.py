@@ -182,6 +182,10 @@ def cmd_triage(args) -> int:
 
     from .dataset import message_template
 
+    def _paths(p):
+        return {x for x in Path(p).read_text().split("\n") if x} if p else None
+
+    only, exclude = _paths(args.only), _paths(args.exclude)
     groups: dict[tuple, list[dict]] = defaultdict(list)
     for f in sorted(Path(args.run_dir).glob("*.json")):
         if f.name in ("strategy.json",) or f.name.startswith("calibration"):
@@ -194,6 +198,10 @@ def cmd_triage(args) -> int:
             continue
         ds = {d["id"]: d for d in r["discrepancies"]}
         origin = next((n.split("=", 1)[1] for n in r.get("notes", []) if n.startswith("origin=")), r["case_id"])
+        if only is not None and origin.removeprefix("seed ") not in only:
+            continue
+        if exclude and origin.removeprefix("seed ") in exclude:
+            continue
         for x in r["findings"]:
             if x["tier"] == "dismissed" and not args.all:
                 continue
@@ -413,6 +421,8 @@ def main(argv: list[str] | None = None) -> int:
     tr.add_argument("--examples", type=int, default=3)
     tr.add_argument("--all", action="store_true", help="include dismissed findings")
     tr.add_argument("--details", action="store_true", help="show both tools' messages, evidence and the report path")
+    tr.add_argument("--only", help="file with seed paths (one per line): triage only these")
+    tr.add_argument("--exclude", help="file with seed paths: skip these (e.g. the hold-out set)")
     tr.set_defaults(fn=cmd_triage)
 
     gn = sub.add_parser("generate", help="LLM generation only: write programs to a directory (judge later)")

@@ -80,8 +80,10 @@ def _check(shape: dict, node: TNode, nominal: set[str], exact_float: bool = Fals
     if name == "complex":
         return bool(mro & {"complex", "float", "int"})
     if name == "type" and node.args:
-        if _short(shape.get("type", "")).rsplit(".", 1)[-1] in ("_GenericAlias", "GenericAlias"):
-            return None  # C[int] at runtime is an alias object that inhabits type[C[int]]
+        kind = _short(shape.get("type", "")).rsplit(".", 1)[-1]
+        if kind.endswith(("Alias", "UnionType", "_SpecialForm", "_SpecialGenericAlias")) or kind in ("_GenericAlias", "GenericAlias"):
+            # C[int], typing.Hashable, typing.Mapping ... are alias/special-form objects at runtime that stand for a class
+            return None
         if not shape.get("is_class"):
             return False
         inner = node.args[0]
@@ -112,6 +114,8 @@ def _check_args(shape: dict, base: str, args: list[TNode], nominal: set[str]) ->
         items = shape.get("items")
         if items is None:
             return None
+        if any(a.kind == "name" and (a.name.startswith("*") or a.name in ("Unpack", "TypeVarTuple")) for a in args):
+            return None  # variadic tuple[X, *tuple[Y, ...], Z]: positional matching below does not apply
         if len(args) == 2 and args[1].kind == "name" and args[1].name == "...":
             return _all(items, args[0], nominal, complete=shape.get("len", 0) <= len(items))
         if shape.get("len") is not None and shape["len"] != len(args):

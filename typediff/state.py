@@ -51,6 +51,17 @@ class CaseState:
                     args = [*n.args.posonlyargs, *n.args.args, *n.args.kwonlyargs, n.args.vararg, n.args.kwarg]
                     if n.returns is None and all(a is None or a.annotation is None for a in args):
                         self.unannotated_functions.add(n.name)
+        if tree:  # a subclass of a Protocol/TypedDict/NamedTuple class of this file is not nominal either
+            structural = {"Protocol", "TypedDict", "NamedTuple"}
+            classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
+            changed = True
+            while changed:
+                changed = False
+                for n in classes:
+                    if n.name in self.nominal_classes and {getattr(b, "id", getattr(b, "attr", "")) for b in n.bases} & (
+                            structural | (set(self.defined_callables) - self.nominal_classes)):
+                        self.nominal_classes.discard(n.name)
+                        changed = True
         self.builtin_names = set(dir(builtins)) | {"reveal_type", "assert_type"}
 
     @property
