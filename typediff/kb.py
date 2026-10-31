@@ -1008,6 +1008,10 @@ def _unquoted_forward_ref(s, d) -> bool:
     if any(isinstance(n, ast.ImportFrom) and n.module == "__future__" and any(a.name == "annotations" for a in n.names)
            for n in ast.walk(tree)):
         return False
+    if not re.search(r"^#\s*origin:\s*python/mypy\b", s.source, re.M):
+        # only for programs harvested from mypy's own (never executed) test-suite. A bug-report repro that has this
+        # shape may hide a real bug behind the forward reference (calibration: python/mypy#7935), so it stays in review
+        return False
     names = {m.group(1) for x in d.ty if (m := _TY_UNDEF_NAME.search(x.message))}
     if not names or len(names) != len(d.ty):
         return False
@@ -1138,7 +1142,7 @@ ENTRIES.extend([
         "CPython's value falls outside either tool's type. Only reveal-text differences: never accept/reject or "
         "different/uncomparable types.",
         (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=True, runtime_override=True,
-        example="lambda *args: reveal_type(args)  # revealed: tuple[Unknown, ...]\n",
+        example="# origin: ruff mdtest expression/lambda.md block 10\nlambda *args: reveal_type(args)  # revealed: tuple[Unknown, ...]\n",
     ),
     KBEntry(
         "ORIGIN-ORACLE-NOTE", "HINT: the origin tool reproduces its suite's expectation, the other tool differs",

@@ -12,7 +12,9 @@ def rv(tool, line, text):
     return Diagnostic(tool, line, 1, Severity.NOTE, "revealed-type", "Revealed type", revealed_type=text)
 
 
-def case(src, mypy_rev, ty_rev, relation, runtime=None, line=1):
+def case(src, mypy_rev, ty_rev, relation, runtime=None, line=1, header=True):
+    if header:
+        src, line = ("# origin: ruff mdtest x.md block 0\n" if "# revealed:" in src else "# origin: python/mypy c.test [case t]\n") + src, line + 1
     m, t = rv(Tool.MYPY, line, mypy_rev), rv(Tool.TY, line, ty_rev)
     st = CaseState("t", src, "3.13", {Tool.MYPY: [m], Tool.TY: [t], Tool.PYRIGHT: []},
                    runtime or RuntimeResult(status="success"), [], {}, {})
@@ -82,8 +84,8 @@ def test_no_expectation_comment_not_matched():
 
 
 def test_cpython_contradiction_demotes_the_dismissal():
-    probe = RuntimeProbe(1, {"type": "builtins.str", "mro": ["builtins.str", "builtins.object"], "repr": "'x'"})
-    rt = RuntimeResult(status="success", probes=[probe], executed_lines=[1])
+    probe = RuntimeProbe(2, {"type": "builtins.str", "mro": ["builtins.str", "builtins.object"], "repr": "'x'"})
+    rt = RuntimeResult(status="success", probes=[probe], executed_lines=[2])
     st, d = case("reveal_type(f())  # revealed: int\n", "Unknown", "int", "gradual", runtime=rt)
     # origin ty matches `int`, mypy Unknown is less precise -> matches, but the runtime value (a str) is outside ty's int
     assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
@@ -97,3 +99,9 @@ def test_spec_defined_narrowing_is_not_dismissed():
     src_plain = "def f(x: object):\n    if True:\n        reveal_type(x)  # revealed: int\n"
     st, d = case(src_plain, "Any", "int", "gradual", line=3)
     assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+
+
+def test_bug_report_comment_without_suite_header_is_not_an_expectation():
+    # calibration: ty#4841's `# revealed: None` is the reporter's observation of ty's (wrong) output
+    st, d = case("reveal_type(f())  # revealed: tuple[Unknown, ...]\n", "Any", "tuple[Unknown, ...]", "gradual", header=False)
+    assert not ({"ORIGIN-ORACLE-REVEAL", "ORIGIN-ORACLE-NOTE", "ORIGIN-MISMATCH"} & ids(st, d))

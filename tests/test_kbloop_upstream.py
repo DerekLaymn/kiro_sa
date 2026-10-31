@@ -11,7 +11,12 @@ def dg(tool, line, code, msg):
     return Diagnostic(tool, line, 1, Severity.ERROR, code, msg)
 
 
-def case(src, line, name="A", pyright=True, ty_name=None):
+HEADER = "# origin: python/mypy check-classes.test [case testX]\n"
+
+
+def case(src, line, name="A", pyright=True, ty_name=None, header=True):
+    if header:
+        src, line = HEADER + src, line + 1
     t = dg(Tool.TY, line, "unresolved-reference", f"Name `{ty_name or name}` used when not defined")
     p = [dg(Tool.PYRIGHT, line, "reportUndefinedVariable", f'"{name}" is not defined')] if pyright else []
     st = CaseState("t", src, "3.13", {Tool.MYPY: [], Tool.TY: [t], Tool.PYRIGHT: p}, RuntimeResult(status="success"),
@@ -63,3 +68,8 @@ def test_other_undefined_name_in_same_statement_not_matched():
     extra = dg(Tool.TY, 2, "unresolved-reference", "Name `Nope` used when not defined")
     d.ty.append(extra)
     assert not hit(st, d)
+
+
+def test_bug_report_repro_without_mypy_suite_header_stays_in_review():
+    # calibration: python/mypy#7935 has this shape but its real bug is elsewhere
+    assert not hit(*case("class A:\n    def f(self, o: A) -> None: ...\n", 2, header=False))

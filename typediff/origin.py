@@ -22,6 +22,8 @@ from functools import lru_cache
 
 from .typenorm import GRADUAL_NAMES, NormType, normalize
 
+# the harvester stamps every program with its suite; only then is the comment a suite expectation
+_SUITE_HEADER = {"mypy": r"^#\s*origin:\s*python/mypy\b", "ty": r"^#\s*origin:\s*ruff mdtest\b"}
 _MYPY = re.compile(r'Revealed type is "(.*?)"(?=\s*(?:#|$))')
 _MYPY_SQ = re.compile(r"Revealed type is '(.*?)'(?=\s*(?:#|$))")
 _TY = re.compile(r"#\s*revealed:\s*(.+?)\s*$")
@@ -66,6 +68,8 @@ def status(source: str, module: str, mypy_reveals: list, ty_reveals: list) -> di
     if exp is None or len(exp[1]) != 1:
         return None
     origin, (expected,) = exp[0], exp[1]
+    if not re.search(_SUITE_HEADER[origin], source, re.M):
+        return None  # a `# revealed:` comment in someone's bug report is the reporter's observation, not a blessed expectation
     return {"origin": origin, "expected": expected,
             "match": {"mypy": same_reveal(m.revealed_type, expected, module), "ty": same_reveal(t.revealed_type, expected, module)}}
 
