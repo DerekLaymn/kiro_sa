@@ -1,5 +1,24 @@
 # kb-loop handoff (newest entry on top)
 
+## Entry 2: Round 1, after calibration + narrowing (all code committed except scripts/kbloop_calib_subset.py, committed with this entry)
+
+### State
+- Commits on kb-loop (not pushed): c324ac6 handoff+replay, 42e5b45 spec-narrowing exclusion, then "suite-header requirement for origin oracle and MYPY-948". pytest 22 targeted tests pass after narrowing; full suite was 118 passed before the last narrowing (re-run before finishing); kb-selftest: all PASS.
+- Round-1 baseline (runs/round1/out): live 9908 (tuning 7939, hold-out 1969).
+- First re-adjudication (runs/round2/out, before narrowing): live 8694 (tuning 6953, hold-out 1741) = -12.3% / -12.4% / -11.6%. ORIGIN-ORACLE-REVEAL dismissed 1025, UPSTREAM-MYPY-948 184, SUITE-ALLOW-EMPTY-BODIES 11. Replay equals a full checker re-run on a random 100 (100/100 identical).
+- Final re-adjudication with narrowed entries: runs/round2b/out (6044 reports written; the verify-sample line in /tmp/kbloop/replay2.log was still pending). Numbers: run `python scripts/kbloop_stats.py runs/round2b/out --json runs/round2b/stats.json`.
+
+### Calibration (positives were fetched: 211 cases; baseline file had 166 rows)
+- First pass (typediff_out/calibration/calibration_rows.jsonl) showed NEW dismissals of known real bugs caused by this round: ty#4841 (ORIGIN-ORACLE-REVEAL treated the reporter's own `# revealed:` comment as suite expectation) and mypy#7935 (UPSTREAM-MYPY-948 hid the real bug behind a forward-reference artefact).
+- Fix (committed): both entries now require the harvester header (`# origin: ruff mdtest` / `# origin: python/mypy`). Tests added. NOT YET CONFIRMED by re-run.
+- Other newly dismissed positives, from entries that predate this round, not yet checked against baseline code: ty#4872 (rule:undefined-name), ty#4835 (BOTH-GRADUAL), ty#4817 and ty#4713 (MYPY-OPTIONAL-CHECK), ty#4786 (LITERAL-WIDENING). ty#1172 and ty#1090 were "kept" in the old baseline but are dismissed by the old TY-SELF-UPPER-BOUND / UPSTREAM-TY-1090 entries (which exist because of those very issues).
+- Baseline-code check: baseline source extracted to /tmp/kbloop/basesrc (git archive 0f1d39b typediff). Run: `cd .worktrees/kb-loop; PYTHONPATH=/tmp/kbloop/basesrc python /tmp/kbloop/basesrc/kbloop_calib_subset.py /tmp/kbloop/calbase ty-4872 ty-4835 ty-4817 ty-4786 ty-4713` (verify with `python -c "import typediff;print(typediff.__file__)"` under that PYTHONPATH that the baseline package is loaded).
+
+### Next steps
+1. Confirm replay2 finished (`tail /tmp/kbloop/replay2.log`), run stats for round2b.
+2. `python scripts/kbloop_calib_subset.py /tmp/kbloop/calnew ty-4841 mypy-7935 ty-4872 ty-4835 ty-4817 ty-4786 ty-4713` (current code) and the baseline-code run above; both need to not newly dismiss ty-4841/mypy-7935.
+3. Write docs/kb-loop-log.md round-1 section and docs/kb-loop-candidates.md (candidate bugs, ranked round-2 list), run full pytest + kb-selftest, commit, send_message success saying round 1 is complete.
+
 ## Entry 1: Round 1, mid-way (after commit "feat: origin oracle, MYPY-948 and suite-empty-bodies KB entries ...")
 
 ### 1. DONE so far
