@@ -75,3 +75,110 @@ Issues:
   `seeds/harvested/PROVENANCE.json`. The mypy source is pinned to tag v2.4.0 regardless. ty (ruff mdtest) is not pinned to
   a tag, so it may differ from ty 0.0.84's own test suite.
 - Round 1 should sample from the 6060 harvested programs plus the hand seeds in `seeds/` (about 1.5 s per program).
+
+## Round 1 (full corpus, 2026-10-31)
+
+Commands (venv `/tmp/kbloop/venv`, CPython 3.13.15, `TYPEDIFF_LLM=null`, ty 0.0.84, mypy 2.4.0, pyright 1.1.414):
+
+```
+python scripts/kbloop_split.py seeds docs/kb-loop-split              # fixed-seed stratified 20% hold-out
+python scripts/kbloop_run.py runs/round1/out seeds --jobs 14 ...     # whole corpus, resumable, 4010 s
+typediff triage runs/round1/out --top 40 --details --exclude docs/kb-loop-split/holdout.txt
+python scripts/kbloop_patterns.py runs/round1/out                    # volume-ranked pattern table (tuning set)
+python scripts/kbloop_replay.py runs/round1/out runs/round2/out --rerun-runtime --verify-sample 100
+python scripts/kbloop_replay.py runs/round2/out runs/round2b/out --verify-sample 100   # after narrowing (see calibration)
+python scripts/kbloop_stats.py runs/round2b/out
+```
+
+Corpus: all 6089 programs were run (29 hand + 6060 harvested; no sampling). 6044 ran, 45 rejected by preflight (non-stdlib import
+or nondeterminism), 0 timeouts, 0 errors. Hold-out: 1218 programs (1207 ran), tuning: 4871 (4837 ran). KB entries were written only
+from tuning-set samples; hold-out numbers below were never used to tune.
+
+Speed-up: `scripts/kbloop_replay.py` re-adjudicates from the saved reports (parsed tool output, runtime result, flags, versions) instead of
+re-running the checkers, with live checker runs only for experiment toggles. A random 100 programs gave identical tier/dismissal/decided_by
+for replay and a full checker re-run (100/100; round2 pass). Replaying 6044 reports takes about 15-25 minutes (mostly live toggles) instead of 67.
+
+### Queue before and after
+
+| set | programs | live before | live after | change | dismissed before | dismissed after |
+|---|---|---|---|---|---|---|
+| all | 6044 | 9908 | 8934 | -9.8% | 3213 | 4189 |
+| tuning | 4837 | 7939 | 7140 | -10.1% | 2537 | 3335 |
+| hold-out | 1207 | 1969 | 1794 | -8.9% | 676 | 854 |
+
+Tuning and hold-out shrink by about the same amount (10.1% vs 8.9%), so there is no sign of overfitting. Before narrowing for calibration the
+first pass gave 8694 live (-12.3%); the 240 findings that came back to review are the ones the suite-header requirement removed.
+
+Dismissals added by this round, all set: ORIGIN-ORACLE-REVEAL 798 (tuning 655, hold-out 143), UPSTREAM-MYPY-948 163 (135 / 28),
+MYPY-SUITE-ALLOW-EMPTY-BODIES 11 (5 / 6). Categories after (all): DESIGN_DIVERGENCE 2760 (was 1960), DUPLICATE 179 (16),
+CONFIG_ARTIFACT 58 (47), SPEC_AMBIGUITY 759, INVALID_TEST 245, KNOWN_LIMITATION 142, NOISE 46. Tool crashes: 25 (unchanged).
+
+### Top live patterns on the tuning set before the round (volume rank)
+
+| # | n | kind | key | n with expectation comment | n CPython raised |
+|---|---|---|---|---|---|
+| 1 | 1085 | reveal_mismatch | gradual | 1053 | 82 |
+| 2 | 806 | reveal_mismatch | different | 787 | 14 |
+| 3 | 569 | reveal_mismatch | uncomparable | 507 | 6 |
+| 4 | 391 | only_mypy | assignment: incompatible types in assignment | 116 | 1 |
+| 5 | 320 | only_ty | unresolved-reference: name used when not defined | 58 | 47 |
+| 6 | 238 | reveal_mismatch | ty_more_precise | 232 | 0 |
+| 7 | 230 | only_mypy | assert-type: expression is of type X, not Y | 1 | 2 |
+| 8 | 185 | only_ty | type-assertion-failure | 0 | 0 |
+| 9 | 141 | only_mypy | arg-type | 43 | 5 |
+| 10 | 124 | concern_mismatch | assignment | 78 | 10 |
+| 11 | 108 | only_mypy | valid-type: variable is not valid as a type | 10 | 0 |
+| 12 | 105 | only_ty | invalid-assignment | 23 | 0 |
+| 13 | 104 | only_mypy | no-redef | 18 | 1 |
+| 14 | 101 | only_ty | invalid-argument-type | 9 | 0 |
+| 15 | 89 | reveal_mismatch | mypy_more_precise | 88 | 2 |
+| 16 | 72 | only_mypy | attr-defined | 40 | 10 |
+| 17 | 69 | only_ty | invalid-return-type | 1 | 0 |
+| 18 | 64 | concern_mismatch | valid-type: invalid type comment or annotation | 6 | 0 |
+| 19 | 58 | only_mypy | misc: reveal_type expects 1 argument | 0 | 0 |
+| 20 | 58 | concern_mismatch | arg-type | 39 | 6 |
+| 21 | 54 | only_mypy | has-type: cannot determine type | 50 | 4 |
+| 22 | 52 | only_mypy | name-defined | 15 | 4 |
+| 23 | 45 | runtime_miss | (both tools silent, CPython raised) | 2 | 44 |
+| 24 | 42 | only_mypy | overload-cannot-match | 1 | 0 |
+| 25 | 40 | only_ty | empty-body | 1 | 0 |
+
+### Classification of the top patterns
+
+| pattern | class | action |
+|---|---|---|
+| 1, 6, 15 (reveal gradual / ty_more_precise / mypy_more_precise; 96% carry the origin suite's own expectation) | DESIGN_DIVERGENCE (narrow) | ORIGIN-ORACLE-REVEAL: dismiss only when the origin tool matches its own suite comment, the other tool is only less precise, no spec-defined narrowing, CPython does not contradict. Sources: the program's own suite expectation (harvester `# origin:` header required) and typing spec "Any is compatible with every type". |
+| 2, 3 (reveal different / uncomparable) | not dismissed | ORIGIN-ORACLE-NOTE hint explains them (origin tool reproduces its own comment, other differs). |
+| ~300 ty-origin reveals where ty does NOT reproduce its own mdtest comment | HARNESS_NOISE (version skew / python-version not honoured) | ORIGIN-MISMATCH hint bucket; harvester fix listed for round 2. |
+| 5 (only_ty unresolved-reference, 320) | KNOWN_UPSTREAM | UPSTREAM-MYPY-948 (python/mypy#948 read, open; #3088 closed as duplicate). Also exposed pipeline defect D6. |
+| 25-ish, 28, 29 (mypy `empty-body`) | HARNESS_NOISE | MYPY-SUITE-ALLOW-EMPTY-BODIES, verified by re-running mypy with `--allow-empty-bodies`. Source: mypy v2.4.0 `mypy/test/testcheck.py` line 166 and the error-code docs. |
+| 7, 8, 32, 43, 45 (assert_type mismatch) | undecided | needs pyright-majority view; round 2 list. |
+| 19 (pyright `expected_text=` kwarg) | HARNESS_NOISE candidate | no readable source for a clean entry; round 2 list. |
+| 4, 9-14, 16-18, 20-24 | undecided | no readable upstream issue or doc yet; candidates file. |
+
+### Pipeline-defect census (defects in OUR system, found while triaging)
+
+| id | defect | repro | fixed |
+|---|---|---|---|
+| D1 | variadic tuple `tuple[A, *tuple[B, ...], C]` matched positionally -> false strong "does NOT inhabit" | `reveal_type(l)` in `ty__bidirectional__17.py` | yes, `inhabit.py`, test_kbloop_defects |
+| D2 | typing aliases (`Hashable`, `Mapping`, `C[int]`) probed as instances against `type[...]` -> false strong evidence | `v1: Hashable = DC1(0)` in `pyright__dataclassHash1.py` | yes |
+| D3 | operators and subscripts that call stub-bodied dunders (`A() + B()` -> None) were not recognised as scaffolding -> false strong evidence | `mypy__check_classes__testReverseOperatorOrderingCase6.py` | yes, `rules._stub_callee` |
+| D4 | subclass of a TypedDict counted as a nominal class -> false "dict outside TD2" | `pyright__typedDict23.py` | yes, `state.py` |
+| D5 | `TYPE_CHECKING` probed as an operand (False at runtime by definition) -> false strong evidence | `pyright__typedDict28.py` | yes |
+| D6 | runtime harness `compile()` inherited its own `from __future__ import annotations`, so CPython reported "success" where 3.13 raises NameError for unquoted forward references; hid the cause of 320 unresolved-reference findings | `class A:\n    def f(self, o: A): ...` | yes (`dont_inherit=True`) and runtime re-run for the corpus |
+| D7 | origin comments inside bug-report repros (`# revealed: None` in ty#4841) were read as a suite expectation (found by calibration, my own new code) | calibration case ty-4841 | yes, suite header required |
+| D8 | UPSTREAM-MYPY-948 hid the real mypy bug in mypy#7935 behind a forward-reference artefact (found by calibration, my own new code) | calibration case mypy-7935 | yes, mypy-suite header required |
+| D9 | mypy-origin programs are checked without the origin suite's defaults (`allow_empty_bodies`, other `[case]` flags) | `mypy__check_classes__testOperatorDoubleUnion*.py` | partly (KB toggle entry); harvester fix in round 2 list |
+| D10 | pre-existing: LITERAL-WIDENING, BOTH-GRADUAL, MYPY-OPTIONAL-CHECK and rule:undefined-name dismiss the repros of real ty bug reports ty#4786, #4835, #4817, #4713, #4872 (also with the baseline code, checked) | calibration subset on baseline source | no, in candidates file |
+
+### Verification (commands and results)
+
+- `python -m pytest tests -q`: see "Final verification" at the end of this file.
+- `typediff --python-version 3.13 kb-selftest`: all examples PASS (10 entries with examples).
+- Calibration: positives were fetched (`typediff --python-version 3.13 --no-pyright calibrate --fetch --timeout 30`, 211 cases:
+  the fetch returns more issues than the 166 baseline rows). First pass newly dismissed two known real bugs, both caused by this round:
+  ty#4841 (ORIGIN-ORACLE-REVEAL) and mypy#7935 (UPSTREAM-MYPY-948). Both entries were narrowed to require the harvester's `# origin:` suite
+  header. Re-run of 13 positives and all negatives with the final code (`scripts/kbloop_calib_subset.py`): ty#4841 kept, mypy#7935 kept, nothing else
+  changed versus the first pass. The five other positives dismissed in the first pass but not in the 166-row baseline (ty#4872, #4835, #4817, #4786,
+  #4713) are also dismissed by the baseline code (commit 0f1d39b, checked with `PYTHONPATH=/tmp/kbloop/basesrc`), so they are not caused by this round. ty#1172 and ty#1090
+  are dismissed by their own pre-existing KB entries. Known-real bugs newly dismissed by this round: 0.

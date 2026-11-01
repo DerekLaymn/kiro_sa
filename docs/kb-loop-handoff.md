@@ -1,5 +1,14 @@
 # kb-loop handoff (newest entry on top)
 
+## Entry 3: ROUND 1 COMPLETE (docs written), ROUND 2 STARTED
+
+- /tmp was wiped once: venv recreated at /tmp/kbloop/venv (uv venv --python 3.13; pip install -e . mypy==2.4.0 ty==0.0.84 pyright==1.1.414 pytest). Tool quirk: command output files appear a few seconds AFTER the command returns; `sleep 30` before reading.
+- Round 1 final numbers (runs/round2b/out): live all 9908 -> 8934 (-9.8%), tuning 7939 -> 7140 (-10.1%), hold-out 1969 -> 1794 (-8.9%). Written to docs/kb-loop-log.md ("Round 1"), candidates to docs/kb-loop-candidates.md.
+- Calibration: positives fetched (211). ty#4841 and mypy#7935 no longer dismissed after narrowing (confirmed by re-run, runs/tmp/cal_new.txt). ty#4872/4835/4817/4786/4713 are dismissed by the baseline code too (pre-existing, recorded as C-2).
+- Round 2 scope (user): (A) crash-detection defects P1-P5 from .agents/tasks/crash25-check.md section 6, with tests, re-adjudicate the 25 crash cases; (B) new patterns from the ranked list; (C) numbers. Stop after round 2.
+- Round 2 plan, commands: work in runs/round3/out (replay from runs/round2b/out with `python scripts/kbloop_replay.py runs/round2b/out runs/round3/out --jobs 14 --verify-sample 100`; crash cases need a real checker re-run, see the crash step).
+- Full pytest/kb-selftest after round 1 NOT yet re-run in this session: run before final commit.
+
 ## Entry 2: Round 1, after calibration + narrowing (all code committed except scripts/kbloop_calib_subset.py, committed with this entry)
 
 ### State
