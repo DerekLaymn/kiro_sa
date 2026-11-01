@@ -178,6 +178,13 @@ def main() -> None:
             "sha": _git(repo, "rev-parse", "HEAD").stdout.strip(),
             "tag": _git(repo, "describe", "--tags", "--exact-match").stdout.strip() or None,
         }
+        tool = {"ty": "ty", "mypy": "mypy", "pyright": "pyright"}.get(src)
+        if tool and not prov["repos"][src]["tag"]:
+            # kb-loop round 2 (crash25 P5): programs from an untagged HEAD can exercise bugs the pinned tool already
+            # lost or never had (5 of 11 ty crash rows were fixed one release after the pin)
+            prov["repos"][src]["version_skew"] = (
+                f"source is an untagged HEAD, installed {tool} is {vers.get(tool)}: before reporting any crash or "
+                f"discrepancy from these programs, re-run on the newest {tool} release")
         kept = seen = 0
         for name, code, origin in funcs[src](root):
             seen += 1

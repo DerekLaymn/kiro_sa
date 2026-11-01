@@ -28,6 +28,11 @@ K = DiscrepancyKind
 _NONDETERMINISTIC = re.compile(r"\b(random|time\.time|datetime\.now|input\(|open\(|os\.environ|sys\.argv|threading|uuid)\b")
 
 
+RERUN_NOTE = ("RERUN-BEFORE-REPORTING: re-run this program on the newest released {tool} (and, for mypy, an uncompiled build "
+              "for a traceback) before reporting; the pinned version may be older than the seed's source, and crashes of the "
+              "pinned tool are often already fixed (kb-loop round 2: 5 of 11 ty crash rows were fixed one release after the pin)")
+
+
 def crash_findings(crashes: list[Crash]) -> list[Finding]:
     out = []
     for i, c in enumerate(crashes, 1):
@@ -40,7 +45,7 @@ def crash_findings(crashes: list[Crash]) -> list[Finding]:
                 symptom=None, dismissal=None, confidence=0.0, decided_by=f"rule:crash:{c.kind}",
                 reasoning=f"{c.tool.value} exited abnormally ({c.signature}) without diagnostics: the run is invalid, "
                           "its empty output is NOT evidence of 'no errors'",
-                evidence=[Evidence(EvidenceType.STACKTRACE, "neutral", c.excerpt[-1500:], c.signature, verified=True,
+                evidence=[Evidence(EvidenceType.STACKTRACE, "neutral", c.excerpt, c.signature, verified=True,
                                    strength="weak", blame=c.tool.value)],
                 signature=c.signature,
             ))
@@ -50,9 +55,10 @@ def crash_findings(crashes: list[Crash]) -> list[Finding]:
             symptom=Symptom.CRASH, dismissal=None, confidence=0.99, decided_by=f"rule:crash:{c.kind}",
             reasoning=f"{c.tool.value} {c.kind}: {c.signature}",
             correct_behavior="A type checker must never panic/crash/hang; it should report diagnostics (or none).",
-            evidence=[Evidence(EvidenceType.STACKTRACE, "bug", c.excerpt[-1500:], c.signature, verified=True,
+            evidence=[Evidence(EvidenceType.STACKTRACE, "bug", c.excerpt, c.signature, verified=True,
                                strength="strong", blame=c.tool.value)],
             signature=c.signature,
+            review_notes=[RERUN_NOTE.format(tool=c.tool.value)],
         ))
     return out
 
