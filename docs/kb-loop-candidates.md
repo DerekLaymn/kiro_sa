@@ -23,3 +23,19 @@ self-contradiction; never a printed revealed signature alone.
 | 5 | assert_type mismatches (230 + 185 + 32 + 22 + 21) | ~490 | pyright-majority view as weak evidence only, spec text for assert_type | medium |
 | 6 | pyright `expected_text=` kwarg (59) | 58 | harness noise candidate: pyright-only API | small |
 | 7 | harvester: honour `# flags:` of mypy tests and mdtest python-version; record upstream SHAs and tool-version skew | ~300 ORIGIN-MISMATCH | harvester change + re-run of affected programs | medium |
+
+## Crashes (from `.agents/tasks/crash25-check.md`, re-adjudicated in round 2)
+
+All reproduce 3/3 on the pinned tools. Report only after re-running on the newest release (flag `RERUN-BEFORE-REPORTING`).
+
+| group | tool | repro (minimal) | status |
+|---|---|---|---|
+| MA | mypy 2.4.0/2.4.1 SIGSEGV | `type Meta[T] = type[T]` then `type X = Meta[X]` | new, reportable (compiled mypy; master gives RecursionError) |
+| MB | mypy hang | `type Id[T] = T` then `type X = Id[X]` | new, reportable |
+| ME | mypy SIGSEGV | `T = TypeVar("T", default="T")`; `class C(Generic[T]): ...` | new, related to python/mypy#16940 |
+| MC | mypy hang | `type RecursiveParamspec[**P] = Callable[[], RecursiveParamspec[Concatenate[int, P]]]` | known duplicate python/mypy#21123 |
+| TB | ty 0.0.84-0.0.95 stack overflow | two generic protocols `P1`, `P2` (8 lines in the crash25 report, section 5.9) | new, ty main untested |
+| TA | ty exponential time | nested tuple comparison `a < b`, depth 20 | new (perf), low priority |
+| TS | ty slow match | tuple-of-unions match | known duplicate astral-sh/ty#4676 |
+| TX | ty hang/stack overflow/panic | `ty__narrow__type_guards__45/46`, `ty__with__async__43`, `ty__annotations__intersection_types__6`, `ty__annotations__union__7` | fixed in ty 0.0.85 |
+| PR | pyright RangeError | `class C:\n    __init__: type["C"]\nC()` | pyright, out of scope |

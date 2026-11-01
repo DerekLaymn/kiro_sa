@@ -182,3 +182,61 @@ CONFIG_ARTIFACT 58 (47), SPEC_AMBIGUITY 759, INVALID_TEST 245, KNOWN_LIMITATION 
   changed versus the first pass. The five other positives dismissed in the first pass but not in the 166-row baseline (ty#4872, #4835, #4817, #4786,
   #4713) are also dismissed by the baseline code (commit 0f1d39b, checked with `PYTHONPATH=/tmp/kbloop/basesrc`), so they are not caused by this round. ty#1172 and ty#1090
   are dismissed by their own pre-existing KB entries. Known-real bugs newly dismissed by this round: 0.
+
+## Round 2 (crash detection + one more pattern batch)
+
+Scope given by the user: (A) fix our own crash-detection defects from `.agents/tasks/crash25-check.md` section 6, (B) classify the next
+pattern blocks, (C) report numbers. Same safety rules as round 1. Round 2 re-adjudicated from the saved round-1 reports
+(`python scripts/kbloop_replay.py runs/round2b/out runs/round3/out --jobs 14 --verify-sample 100`, result: 100/100 identical to a full checker
+re-run), then the 23 crash programs were re-run with the real checkers (`scripts/kbloop_run.py runs/round3/crash ...`, 242 s) and their reports
+copied over.
+
+### (A) Crash-detection defects (pipeline defects P1-P5, all fixed with regression tests in `tests/test_crash_detection.py`)
+
+| id | defect | fix |
+|---|---|---|
+| P1 | negative exit codes (SIGSEGV -11, SIGABRT -6) and pyright "internal error occurred while type checking" with non-JSON stdout were stored as `abnormal_exit` / NEEDS_HUMAN, confidence 0 (15 of 25 rows) | exit code < 0 is a confirmed crash of kind `signal`; pyright internal error is detected before the JSON branch |
+| P2 | a pyright timeout was counted twice (`pyright:exitNone` plus `pyright:timeout`) | the abnormal-exit branch is skipped when `exit_code is None` |
+| P3 | excerpts kept only the last 25 lines or 1500-2000 characters, cutting the `RangeError: ...` header | `head_tail()` keeps the first 6 and last 19 lines |
+| P4 | coarse signatures (`mypy:exit-11`, `ty:exit-6`, `pyright:exit2` merged different bugs) | `mypy:signal-SIGSEGV`, `ty:signal-SIGABRT:stack-overflow`, `pyright:internal:RangeError` |
+| P5 | harvested seeds come from an untagged HEAD while the tools are pinned (5 of 11 ty crash rows were fixed one release later) | `harvest_seeds.py` records `version_skew` in `PROVENANCE.json`; every crash finding carries `RERUN-BEFORE-REPORTING` in its review notes |
+
+Re-adjudication of the 25 crash cases (real re-run, 23 programs, 24 crash findings now because the double-counted pyright timeout is gone): 23 CONFIRMED with
+signatures (timeout 8, pyright internal_error:RangeError 7, signal 7 = ty stack overflow 3 + mypy SIGSEGV 4, ty salsa panic 1), 1 NEEDS_HUMAN
+(`pyright:exit255` on `ty__pep695_type_aliases__70.py`, not a plain timeout). Before: 15 of the 25 sat in review as NEEDS_HUMAN.
+
+### (B) Pattern batch
+
+| pattern | volume | class | outcome |
+|---|---|---|---|
+| mypy `"reveal_type" expects 1 argument` with pyright-only `expected_text=` / `expected_type=` | 58 tuning, 64 total | HARNESS_NOISE | entry PYRIGHT-REVEAL-EXPECTED-KWARG, INVALID_TEST. Source read: microsoft/pyright `packages/pyright-internal/src/analyzer/typeEvaluator.ts` lines ~10148 and ~10165 (the reveal_type handler reads these keyword names). Narrow: every reveal_type call on the statement carries the keyword, the only mypy diagnostic is that message, no user-defined reveal_type. 5 tests (positive and negatives) plus a kb-selftest example. No calibration positive or negative contains these keywords. |
+| only_ty where the ty mdtest marks the statement `# error: [rule]` and ty reports that rule (mypy silent) | many (invalid-assignment 105, invalid-argument-type 101, invalid-return-type 69 ...) | CANDIDATE (mypy side open) | hint-only entry EXPECTED-ERROR-ORACLE: explains and sorts, never dismisses. Positive and negative tests. |
+| pyright `expected_text` docs | - | - | pyright docs do not mention it (searched docs/*.md); the source code was used instead |
+| only_mypy assignment / arg-type / valid-type / no-redef / has-type, concern_mismatch, assert_type mismatches | ~2500 | undecided | no readable upstream issue or doc found in this round; kept live and listed below |
+
+Stopping rule: round 2 was the last round requested by the user. Natural-stop note: the second batch (only_ty/only_mypy samples) produced no cleanly
+classifiable dismissal pattern, only a hint, so a further round would mostly need human or LLM judgement, not more deterministic entries.
+
+### (C) Numbers
+
+| set | live round 1 baseline | live after round 1 | live after round 2 | change round 2 | dismissed after round 2 |
+|---|---|---|---|---|---|
+| all | 9908 | 8934 | 8869 | -0.7% | 4253 |
+| tuning | 7939 | 7140 | 7081 | -0.8% | 3393 |
+| hold-out | 1969 | 1794 | 1788 | -0.3% | 860 |
+
+Total since the start: all -10.5%, tuning -10.8%, hold-out -9.2%. Round-2 dismissals: PYRIGHT-REVEAL-EXPECTED-KWARG 64 (58 tuning, 6 hold-out), all INVALID_TEST
+(245 -> 309). Crash findings 25 -> 24, with 23 now confirmed instead of 10 (the other 15 were review items).
+Live by kind after round 2 (all): only_mypy 3116, only_ty 1982, reveal_mismatch 2727, concern_mismatch 903, runtime_miss 73, reveal_unpaired 44, crash 24.
+
+Pipeline defects found in round 2: P1-P5 (all fixed). Candidate bugs (live): see `docs/kb-loop-candidates.md`, section "Crashes".
+
+### Final verification
+See the end of this file (pytest and kb-selftest results).
+
+## Final verification (end of round 2, 2026-11-01)
+
+- `python -m pytest tests -q`: 137 passed, 0 failed.
+- `typediff --python-version 3.13 kb-selftest`: 12 PASS, 0 FAIL.
+- Calibration: positives fetched (211 cases). After the round-1 narrowing, ty#4841 and mypy#7935 are kept (re-run `scripts/kbloop_calib_subset.py`); no known-real bug is newly dismissed by this work. Round-2 changes (crash parsing, PYRIGHT-REVEAL-EXPECTED-KWARG, hint-only EXPECTED-ERROR-ORACLE) cannot dismiss a calibration positive: none of the 211 sources uses `expected_text`/`expected_type`. Five positives (ty#4872, #4835, #4817, #4786, #4713) are dismissed by pre-existing entries, also with the baseline code; listed as C-2 in `docs/kb-loop-candidates.md`.
+- Replay equals a full checker re-run on a random 100 programs in both passes (round1 -> round2: 100/100, round2b -> round3: 100/100).

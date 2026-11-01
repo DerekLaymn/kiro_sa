@@ -1,5 +1,11 @@
 # kb-loop handoff (newest entry on top)
 
+## Entry 5: ROUNDS 1 AND 2 COMPLETE (all committed on kb-loop, nothing pushed)
+
+- Round 1: live all 9908 -> 8934, tuning 7939 -> 7140, hold-out 1969 -> 1794. Round 2: 8869 / 7081 / 1788 (crash detection fixes P1-P5, PYRIGHT-REVEAL-EXPECTED-KWARG, EXPECTED-ERROR-ORACLE hint). pytest 137 passed, kb-selftest 12 PASS, calibration: 0 known-real bugs newly dismissed.
+- Docs: docs/kb-loop-log.md (Round 1, Round 2, Final verification), docs/kb-loop-candidates.md (candidates, crashes, ranked next-round list). Run outputs in runs/round1, round2b, round3 (git-ignored).
+- To resume: venv /tmp/kbloop/venv (recreate with uv if wiped), `git log --oneline | head`, nothing is running.
+
 ## Entry 4: ROUND 2 in progress
 
 - Committed: crash-detection fixes P1-P5 (parsers.py signal/pyright-internal/no double count/head+tail, rules.py RERUN note, harvest_seeds.py version_skew, tests/test_crash_detection.py, 10 tests). 
