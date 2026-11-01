@@ -1,5 +1,13 @@
 # kb-loop handoff (newest entry on top)
 
+## Entry 4: ROUND 2 in progress (after commits "fix: crash detection ..." and "feat: SUITE-EXPECTS-ERROR hint entry")
+
+- Round 2 (A) DONE: crash-detection P1-P5 fixed in typediff/parsers.py, rules.py, scripts/harvest_seeds.py with tests/test_crash_detection.py (10 tests). Re-ran the 23 crash programs with the real checkers: runs/round3/crash (24 crash findings; 23 now CONFIRMED with signatures like mypy:signal-SIGSEGV, ty:signal-SIGABRT:stack-overflow, pyright:internal:RangeError, ty:timeout; 1 left NEEDS_HUMAN: pyright:exit255 on the pyright_timeout program). Before: 15 of 25 were NEEDS_HUMAN. pytest 131 passed, kb-selftest all PASS (before the hint entry).
+- Round 2 (B): batch 1 (pyright expected_text: no readable source in pyright docs; only_ty invalid-assignment/return/argument: these are suite negative tests where the tool is right and mypy has a false negative -> not dismissable, candidates) and batch 2 (assert_type: needs majority view, not a dismissal) produced no cleanly dismissable pattern -> stopping rule reached. Added hint-only SUITE-EXPECTS-ERROR (sorting aid, never closes).
+- RUNNING: `python scripts/kbloop_replay.py runs/round2b/out runs/round3/out --jobs 14 --verify-sample 100` (log runs/tmp/replay3.log, ~25 min). After it ends: `cp runs/round3/crash/seed-*.json runs/round3/crash/seed-*.md runs/round3/out/`, `python scripts/kbloop_stats.py runs/round3/out --json runs/round3/stats.json`, count SUITE-EXPECTS-ERROR hints, then write the Round 2 section in docs/kb-loop-log.md, update docs/kb-loop-candidates.md, full pytest + kb-selftest, commit, send_message success "rounds 1 and 2 complete".
+- Calibration for round 2: only parsers/crash code and a hint entry changed (no new dismissals); still run `python scripts/kbloop_calib_subset.py runs/tmp/calr2 ty-4841 mypy-7935 ... --negatives` at the end.
+- Tool quirk: output files appear ~10-30 s after a command returns; sleep before reading.
+
 ## Entry 3: ROUND 1 COMPLETE (docs written), ROUND 2 STARTED
 
 - /tmp was wiped once: venv recreated at /tmp/kbloop/venv (uv venv --python 3.13; pip install -e . mypy==2.4.0 ty==0.0.84 pyright==1.1.414 pytest). Tool quirk: command output files appear a few seconds AFTER the command returns; `sleep 30` before reading.
