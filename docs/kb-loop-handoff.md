@@ -1,5 +1,13 @@
 # kb-loop handoff (newest entry on top)
 
+## Entry 4: ROUND 2 in progress
+
+- Committed: crash-detection fixes P1-P5 (parsers.py signal/pyright-internal/no double count/head+tail, rules.py RERUN note, harvest_seeds.py version_skew, tests/test_crash_detection.py, 10 tests). 
+- Crash re-adjudication (real checker re-run of the 23 crash programs, runs/round3/crash): 23 of 24 crash findings now CONFIRMED with signatures (timeout 8, pyright internal_error:RangeError 7, signal 7 incl. ty:signal-SIGABRT:stack-overflow x3 and mypy:signal-SIGSEGV x4, ty panic 1); 1 stays NEEDS_HUMAN (pyright exit255 on the pep695 alias program). Old count was 25 (one pyright timeout counted twice; the new run shows pyright exit 255 instead).
+- Added KB entry PYRIGHT-REVEAL-EXPECTED-KWARG (source read: microsoft/pyright typeEvaluator.ts lines ~10148/10165 handle expected_text/expected_type), tests + selftest PASS. Not yet committed at the time of this entry.
+- Next: commit; `python scripts/kbloop_replay.py runs/round2b/out runs/round3/out --jobs 14 --verify-sample 100` (log runs/tmp/replay3.log); then copy runs/round3/crash/seed-*.{json,md} over runs/round3/out; `python scripts/kbloop_stats.py runs/round3/out`; calibration subset (scripts/kbloop_calib_subset.py, ids ty-4841 mypy-7935 + the others) ; write Round 2 section in docs/kb-loop-log.md; full pytest; commit; final message 'rounds 1 and 2 complete'.
+- Tool quirk: command output appears seconds after return; `sleep 40` before reading.
+
 ## Entry 4: ROUND 2 in progress (after commits "fix: crash detection ..." and "feat: SUITE-EXPECTS-ERROR hint entry")
 
 - Round 2 (A) DONE: crash-detection P1-P5 fixed in typediff/parsers.py, rules.py, scripts/harvest_seeds.py with tests/test_crash_detection.py (10 tests). Re-ran the 23 crash programs with the real checkers: runs/round3/crash (24 crash findings; 23 now CONFIRMED with signatures like mypy:signal-SIGSEGV, ty:signal-SIGABRT:stack-overflow, pyright:internal:RangeError, ty:timeout; 1 left NEEDS_HUMAN: pyright:exit255 on the pyright_timeout program). Before: 15 of 25 were NEEDS_HUMAN. pytest 131 passed, kb-selftest all PASS (before the hint entry).

@@ -1151,7 +1151,7 @@ ENTRIES.extend([
         "uses a checker-specific API: harness noise, not a mypy bug. Fires only when every reveal_type call on the statement "
         "carries one of these keywords, the only mypy diagnostic is that message, and the program defines no reveal_type of its own.",
         (K.ONLY_MYPY,), m_pyright_reveal_kwarg, auto=True, runtime_override=False,
-        example="x = 1\nreveal_type(x, expected_text=\"int\")\n",
+        example="def f(x: int) -> None:\n    if isinstance(x, int):\n        return\n    reveal_type(x, expected_text=\"Never\")\n",
     ),
 ])
 
