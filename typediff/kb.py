@@ -1111,11 +1111,49 @@ ENTRIES.extend([
                 "# TODO: should error: [missing-argument] once constructor signatures are merged.\np()\n",
     ),
 ])
+_EXPECTED_ERROR = re.compile(r"#\s*(?:E\??:|error\b|type:\s*ignore)|should\s+(?:generate|report|produce|emit)\s+an?\s+(?:\w+[- ])?error", re.I)
+
+
+def m_suite_expects_error(s, d):
+    """The program's own test-suite marks THIS statement as an expected error (`# E:` mypy, `# error:` ty, a pyright
+    "This should generate an error" comment on the statement or the line above). Exactly one tool reports it."""
+    lines = s.amap.lines[max(0, d.anchor - 2):d.anchor_end]
+    return bool(re.search(r"^#\s*origin:", s.source, re.M)) and any(_EXPECTED_ERROR.search(x) for x in lines)
+
+
 def m_suite_allow_empty_bodies(s, d):
     """The program came from mypy's own test-suite (header `# origin: python/mypy`, which mypy's runner runs with
     allow_empty_bodies=True) and every mypy diagnostic here is [empty-body]; ty is silent."""
     return (d.kind == K.ONLY_MYPY and bool(d.mypy) and all(x.code == "empty-body" for x in d.mypy)
             and bool(re.search(r"^#\s*origin:\s*python/mypy\b", s.source, re.M)))
+
+
+def m_pyright_reveal_kwarg(s, d):
+    """pyright-only `reveal_type(x, expected_text=...)` / `expected_type=`: mypy rejects the extra keyword."""
+    if d.kind != K.ONLY_MYPY or not d.mypy or s.amap.tree is None:
+        return False
+    if not all(x.code == "misc" and re.fullmatch(r'"reveal_type" expects 1 argument', x.message.strip()) for x in d.mypy):
+        return False
+    if any(isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name == "reveal_type" for n in ast.walk(s.amap.tree)):
+        return False  # a user-defined reveal_type is a different function
+    calls = [n for n in ast.walk(s.amap.tree) if isinstance(n, ast.Call) and getattr(n.func, "id", getattr(n.func, "attr", "")) == "reveal_type"
+             and d.anchor <= n.lineno <= d.anchor_end]
+    return bool(calls) and all(any(k.arg in ("expected_text", "expected_type") for k in c.keywords) for c in calls)
+
+
+ENTRIES.extend([
+    KBEntry(
+        "PYRIGHT-REVEAL-EXPECTED-KWARG", "pyright-only reveal_type(x, expected_text=...) keyword", Dismissal.INVALID_TEST,
+        "https://github.com/microsoft/pyright/blob/main/packages/pyright-internal/src/analyzer/typeEvaluator.ts",
+        "pyright special-cases the keyword arguments `expected_text` and `expected_type` of reveal_type (typeEvaluator.ts, "
+        "the reveal_type handler reads `arg.d.name.d.value === 'expected_text'` and `'expected_type'`, main branch, read "
+        "2026-11). They are not part of typing.reveal_type(obj), so mypy reports `\"reveal_type\" expects 1 argument`. The seed "
+        "uses a checker-specific API: harness noise, not a mypy bug. Fires only when every reveal_type call on the statement "
+        "carries one of these keywords, the only mypy diagnostic is that message, and the program defines no reveal_type of its own.",
+        (K.ONLY_MYPY,), m_pyright_reveal_kwarg, auto=True, runtime_override=False,
+        example="x = 1\nreveal_type(x, expected_text=\"int\")\n",
+    ),
+])
 
 
 ENTRIES.extend([
@@ -1143,6 +1181,14 @@ ENTRIES.extend([
         "different/uncomparable types.",
         (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=True, runtime_override=True,
         example="# origin: ruff mdtest expression/lambda.md block 10\nlambda *args: reveal_type(args)  # revealed: tuple[Unknown, ...]\n",
+    ),
+    KBEntry(
+        "SUITE-EXPECTS-ERROR", "HINT: the origin suite marks this statement as an expected error; only one tool reports it",
+        Dismissal.NOISE, "https://typing.python.org/en/latest/spec/",
+        "The harvested program says (by `# E:`, `# error:` or a 'should generate an error' comment) that an error is expected "
+        "here. The tool that reports it agrees with the suite, so the silent tool has a false negative (a candidate for the "
+        "silent tool's tracker, not a dismissal). Sorting aid only: it never closes a finding.",
+        (K.ONLY_MYPY, K.ONLY_TY), m_suite_expects_error,
     ),
     KBEntry(
         "ORIGIN-ORACLE-NOTE", "HINT: the origin tool reproduces its suite's expectation, the other tool differs",
