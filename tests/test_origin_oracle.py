@@ -46,9 +46,21 @@ def test_mypy_origin_matches_ty_unknown_dismisses():
     assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
 
 
-def test_precision_relation_when_origin_is_the_precise_one():
+def test_oracle_reveal_is_hint_only_and_never_dismisses():
+    assert BY_ID["ORIGIN-ORACLE-REVEAL"].auto is False
+
+
+def test_precision_relation_when_origin_is_the_precise_one_stays_in_review():
+    # circular: ty's more precise answer would be excused by ty's own suite
     st, d = case("reveal_type(f())  # revealed: Literal[1]\n", "int", "Literal[1]", "ty_more_precise")
-    assert "ORIGIN-ORACLE-REVEAL" in ids(st, d)
+    assert "ORIGIN-ORACLE-REVEAL" not in ids(st, d)
+    assert "ORIGIN-ORACLE-NOTE" in ids(st, d)
+
+
+def test_header_must_be_at_the_top_of_the_file():
+    src = "x = 1\n" * 10 + "# origin: ruff mdtest x.md block 0\nreveal_type(f())  # revealed: tuple[Unknown, ...]\n"
+    st, d = case(src, "Any", "tuple[Unknown, ...]", "gradual", line=12, header=False)
+    assert not ({"ORIGIN-ORACLE-REVEAL", "ORIGIN-ORACLE-NOTE", "ORIGIN-MISMATCH"} & ids(st, d))
 
 
 # ---------------------------------------------------------------- negatives (near misses that must NOT be dismissed)

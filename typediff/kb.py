@@ -963,9 +963,9 @@ def m_origin_oracle_reveal(s, d):
         return False  # narrowing results are (partly) specified: a more/less precise answer there needs a judge
     other = "mypy" if st["origin"] == "ty" else "ty"
     other_text = (d.mypy if other == "mypy" else d.ty)[0].revealed_type
-    if d.reveal_relation == "gradual":
-        return origin.other_is_less_precise(st["expected"], other_text, s.module)
-    return d.reveal_relation == ("ty_more_precise" if st["origin"] == "ty" else "mypy_more_precise")
+    # Only the gradual relation. A more precise answer by the origin tool, blessed by its own suite, is circular
+    # evidence (review kbloop round 2): it stays in review and ORIGIN-ORACLE-NOTE explains it.
+    return d.reveal_relation == "gradual" and origin.other_is_less_precise(st["expected"], other_text, s.module)
 
 
 def m_origin_oracle_note(s, d):
@@ -1008,8 +1008,8 @@ def _unquoted_forward_ref(s, d) -> bool:
     if any(isinstance(n, ast.ImportFrom) and n.module == "__future__" and any(a.name == "annotations" for a in n.names)
            for n in ast.walk(tree)):
         return False
-    if not re.search(r"^#\s*origin:\s*python/mypy\b", s.source, re.M):
-        # only for programs harvested from mypy's own (never executed) test-suite. A bug-report repro that has this
+    if not re.match(r"(?:#[^\n]*\n){0,6}?#\s*origin:\s*python/mypy\b", s.source):
+        # header must be in the first lines (harvester writes it at the top). Only for programs harvested from mypy's own (never executed) test-suite. A bug-report repro that has this
         # shape may hide a real bug behind the forward reference (calibration: python/mypy#7935), so it stays in review
         return False
     names = {m.group(1) for x in d.ty if (m := _TY_UNDEF_NAME.search(x.message))}
@@ -1125,7 +1125,7 @@ def m_suite_allow_empty_bodies(s, d):
     """The program came from mypy's own test-suite (header `# origin: python/mypy`, which mypy's runner runs with
     allow_empty_bodies=True) and every mypy diagnostic here is [empty-body]; ty is silent."""
     return (d.kind == K.ONLY_MYPY and bool(d.mypy) and all(x.code == "empty-body" for x in d.mypy)
-            and bool(re.search(r"^#\s*origin:\s*python/mypy\b", s.source, re.M)))
+            and bool(re.match(r"(?:#[^\n]*\n){0,6}?#\s*origin:\s*python/mypy\b", s.source)))
 
 
 def m_pyright_reveal_kwarg(s, d):
@@ -1197,16 +1197,15 @@ ENTRIES.extend([
         example="# origin: python/mypy check-classes.test [case testExample]\ndef f(x):\n    # type: (int) -> str\n    pass\n",
     ),
     KBEntry(
-        "ORIGIN-ORACLE-REVEAL", "the origin suite blessed this reveal; the other tool is only less precise",
+        "ORIGIN-ORACLE-REVEAL", "HINT: the origin suite blessed this reveal; the other tool is only less precise",
         Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/concepts.html#the-any-type",
         "The harvested program keeps its origin suite's own expectation comment (`# N: Revealed type is ...` for mypy, "
         "`# revealed: ...` for ty) for this very reveal_type call. The origin tool reproduces it; the other tool reveals "
         "a less precise answer (more Any/Unknown parts, or a supertype of the blessed type). A gradual or coarser answer "
-        "is still sound (spec: Any is compatible with every type), so this is imprecision, not unsoundness. Demoted when "
-        "CPython's value falls outside either tool's type. Only reveal-text differences: never accept/reject or "
-        "different/uncomparable types.",
-        (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=True, runtime_override=True,
-        example="# origin: ruff mdtest expression/lambda.md block 10\nlambda *args: reveal_type(args)  # revealed: tuple[Unknown, ...]\n",
+        "is usually sound (spec: Any is compatible with every type), but nothing here verifies that the other answer is a "
+        "supertype of the blessed one. Sorting aid only (review of kbloop round 2): it never closes a finding. Only "
+        "the gradual relation; precision relations and different/uncomparable types are not matched.",
+        (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=False, runtime_override=True,
     ),
     KBEntry(
         "SUITE-EXPECTS-ERROR", "HINT: the origin suite marks this statement as an expected error; only one tool reports it",

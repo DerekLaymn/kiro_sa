@@ -56,11 +56,11 @@
    "codes": ["unresolved-reference"],
    "message": "Name `\\w+` used when not defined",
    "requires": "unquoted_forward_ref",
-   "dismissal": "DUPLICATE",
+   "dismissal": "KNOWN_LIMITATION",
    "stance": "open",
    "example": "# origin: python/mypy check-classes.test [case testX]\nclass A:\n    def f(self, other: A) -> None: ...\n",
    "url": "https://github.com/python/mypy/issues/948",
-   "note": "open mypy feature request (labels feature, topic-quoted-annotations; read 2026-10): mypy does not report a missing string-literal escape for a forward reference in an annotation, which raises NameError at runtime when annotations are evaluated eagerly (Python < 3.14 without `from __future__ import annotations`); the duplicate python/mypy#3088 was closed in its favour. Narrow AST matcher: unquoted name inside an annotation of the same statement, naming a class of the file defined later or enclosing the statement, no future import, ty and pyright agree it is undefined. Many harvested mypy .test files rely on this leniency."
+   "note": "HONEST STATUS: #948 is an open FEATURE REQUEST, not a statement that mypy is right; this dismissal is KNOWN_LIMITATION (a tracked, unimplemented mypy check), and ty's report is arguably correct (the code raises NameError on 3.13 without a future import). The silent tool is mypy. Issue opened and read: open mypy enhancement request, opened and read (title: 'Detect if required string literal escapes are missing from a type'; body: 'Mypy should complain about code that isn't using string literal escaped when they are required', example `def (self) -> A: ...  # Should be an error; string literal escape required`): mypy does not report a missing string-literal escape for a forward reference in an annotation, which raises NameError at runtime when annotations are evaluated eagerly (Python < 3.14 without `from __future__ import annotations`); the duplicate python/mypy#3088 was closed in its favour. Narrow AST matcher: unquoted name inside an annotation of the same statement, naming a class of the file defined later or enclosing the statement, no future import, ty and pyright agree it is undefined. Many harvested mypy .test files rely on this leniency."
   }
  ],
  "prior_stances": [

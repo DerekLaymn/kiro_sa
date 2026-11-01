@@ -23,7 +23,9 @@ from functools import lru_cache
 from .typenorm import GRADUAL_NAMES, NormType, normalize
 
 # the harvester stamps every program with its suite; only then is the comment a suite expectation
-_SUITE_HEADER = {"mypy": r"^#\s*origin:\s*python/mypy\b", "ty": r"^#\s*origin:\s*ruff mdtest\b"}
+# (anchored to the head of the file: the harvester writes it first; a repro that mentions it further down is no suite)
+_HEAD = r"\A(?:#[^\n]*\n){0,6}?"
+_SUITE_HEADER = {"mypy": _HEAD + r"#\s*origin:\s*python/mypy\b", "ty": _HEAD + r"#\s*origin:\s*ruff mdtest\b"}
 _MYPY = re.compile(r'Revealed type is "(.*?)"(?=\s*(?:#|$))')
 _MYPY_SQ = re.compile(r"Revealed type is '(.*?)'(?=\s*(?:#|$))")
 _TY = re.compile(r"#\s*revealed:\s*(.+?)\s*$")
