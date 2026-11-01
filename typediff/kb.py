@@ -1141,6 +1141,32 @@ def m_pyright_reveal_kwarg(s, d):
     return bool(calls) and all(any(k.arg in ("expected_text", "expected_type") for k in c.keywords) for c in calls)
 
 
+_EXPECT_ERR = re.compile(r"#\s*error:\s*\[([\w-]+)\]")
+
+
+def m_expected_error_oracle(s, d):
+    """HINT (never dismisses): the ty mdtest this program came from marks THIS statement with `# error: [rule]` (same line or
+    the line directly above) and ty reports exactly that rule, mypy is silent. ty's report is what its own suite expects, so
+    the open question is mypy's silence (possible mypy false negative or a mypy-only leniency), not a ty false positive."""
+    if d.kind != K.ONLY_TY or not d.ty or not re.search(r"^#\s*origin:\s*ruff mdtest\b", s.source, re.M):
+        return False
+    window = s.amap.lines[max(0, d.anchor - 2):d.anchor_end]
+    expected = {m.group(1) for ln in window for m in _EXPECT_ERR.finditer(ln)}
+    return bool(expected) and all((x.code or "") in expected for x in d.ty)
+
+
+ENTRIES.extend([
+    KBEntry(
+        "EXPECTED-ERROR-ORACLE", "HINT: ty's own suite expects this exact error; the open question is mypy's silence",
+        Dismissal.DESIGN_DIVERGENCE, "https://docs.astral.sh/ty/",
+        "The ty mdtest this program was harvested from marks the statement with `# error: [rule]` and ty reports that rule. "
+        "That makes ty's diagnostic an expected one (not a ty false positive). Whether mypy's silence is a false negative, "
+        "a mypy-only leniency or reachability is still undecided: check the mypy side.",
+        (K.ONLY_TY,), m_expected_error_oracle,
+    ),
+])
+
+
 ENTRIES.extend([
     KBEntry(
         "PYRIGHT-REVEAL-EXPECTED-KWARG", "pyright-only reveal_type(x, expected_text=...) keyword", Dismissal.INVALID_TEST,

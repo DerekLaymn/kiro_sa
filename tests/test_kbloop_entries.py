@@ -99,3 +99,30 @@ def test_reveal_kwarg_negatives():
     assert not rk_hit(*rk('x = 1\nreveal_type(x, expected_text="int")\n', msg='"reveal_type" expects 1 argument, 2 given'))
     assert not rk_hit(*rk('def reveal_type(*a, **k): ...\nreveal_type(1, expected_text="int")\n'))  # user-defined function
     assert not rk_hit(*rk('x = 1\nreveal_type(x, expected_text="int")\n', code="call-arg"))
+
+
+# ---------------------------------------------------------------- EXPECTED-ERROR-ORACLE (hint only)
+
+TY_HEADER = "# origin: ruff mdtest x.md block 0\n"
+
+
+def ee(src, ty_code="invalid-argument-type", line=3):
+    t = [Diagnostic(Tool.TY, line, 1, Severity.ERROR, ty_code, "m")]
+    st = CaseState("t", src, "3.13", {Tool.MYPY: [], Tool.TY: t, Tool.PYRIGHT: []}, RuntimeResult(status="success"), [], {}, {})
+    return st, Discrepancy("D1", K.ONLY_TY, line, line, "s", "", ty=t)
+
+
+def ee_hit(st, d):
+    return "EXPECTED-ERROR-ORACLE" in {e.id for e in matching_entries(st, d)}
+
+
+def test_expected_error_positive_same_line_and_line_above():
+    assert ee_hit(*ee(TY_HEADER + "def f(x: int): ...\nf('a')  # error: [invalid-argument-type]\n"))
+    assert ee_hit(*ee(TY_HEADER + "def f(x: int): ...\n# error: [invalid-argument-type]\nf('a')\n", line=4))
+
+
+def test_expected_error_negatives():
+    assert not ee_hit(*ee(TY_HEADER + "def f(x: int): ...\nf('a')  # error: [invalid-assignment]\n"))  # other rule
+    assert not ee_hit(*ee(TY_HEADER + "def f(x: int): ...\nf('a')\n"))  # no expectation
+    assert not ee_hit(*ee("def f(x: int): ...\nf('a')  # error: [invalid-argument-type]\n"))  # not from a ty mdtest
+    assert not BY_ID["EXPECTED-ERROR-ORACLE"].auto  # a hint, it never dismisses
