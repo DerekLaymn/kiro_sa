@@ -32,7 +32,7 @@ from .concerns import (
 from .discrepancy import META_CODES
 from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner, self_call_plan
 from .inhabit import inhabits
-from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Tool
+from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Severity, Tool
 from .parsers import classify_exception
 from .selfparam import has_self_typed_state
 from .state import CaseState
@@ -1363,7 +1363,61 @@ def m_first_assignment_type(s, d):
     return not any(_name_declared_in_scope(scope, t.id) for t in targets)
 
 
+def _reveal_arg_call(s, diag):
+    """The reveal_type(...) call whose argument starts where this tool's reveal diagnostic points (both ty and mypy put
+    the column of the reveal's ARGUMENT, 1-based), else None."""
+    if diag.col is None or s.amap.tree is None:
+        return None
+    for c in ast.walk(s.amap.tree):
+        if (isinstance(c, ast.Call) and getattr(c.func, "id", getattr(c.func, "attr", None)) == "reveal_type" and c.args
+                and (c.args[0].lineno, c.args[0].col_offset + 1) == (diag.line, diag.col)):
+            return c
+    return None
+
+
+def _error_inside_reveal_arg(s, tool: Tool, diag) -> bool:
+    """True if ``tool`` reports an error INSIDE the argument of the reveal_type call that produced ``diag``."""
+    call = _reveal_arg_call(s, diag)
+    if call is None:
+        return False
+    arg = call.args[0]
+    lo, hi = (arg.lineno, arg.col_offset + 1), (arg.end_lineno or arg.lineno, (arg.end_col_offset or 0) + 1)
+    return any(x.is_problem and x.severity == Severity.ERROR and x.col is not None and lo <= (x.line, x.col) <= hi
+               for x in s.diags.get(tool, []))
+
+
+def m_reveal_error_recovery(s, d):
+    """One tool reveals exactly its gradual type (ty `Unknown`, mypy `Any`) for an expression in which that SAME tool
+    reports an error, while the other tool reveals a type without gradual parts. The gradual reveal is the checker's
+    error-recovery type, not an inference. The error itself is its own discrepancy (judged separately), so nothing is
+    lost. Narrow: the error position must lie inside the revealed argument."""
+    if d.kind != K.REVEAL_MISMATCH or len(d.ty) != 1 or len(d.mypy) != 1:
+        return False
+    for tool, gradual, mine, other in ((Tool.TY, "Unknown", d.ty[0], d.mypy[0]), (Tool.MYPY, "Any", d.mypy[0], d.ty[0])):
+        if (mine.revealed_type or "").strip() != gradual or not other.revealed_type:
+            continue
+        o = normalize(other.revealed_type, s.module)
+        if o.node is None or "gradual" in o.flags or "todo" in o.flags:
+            continue
+        if _error_inside_reveal_arg(s, tool, mine):
+            return True
+    return False
+
+
 ENTRIES.extend([
+    KBEntry(
+        "REVEAL-ERROR-RECOVERY", "a checker reveals its error-recovery type for an expression it reports an error in",
+        Dismissal.NOISE, f"{TY_DOCS}/reference/typing-faq/#what-is-the-unknown-type-and-when-does-it-appear",
+        "ty documents `Unknown` as 'a type that could not be fully inferred' (an unresolved name or import reveals "
+        "Unknown), and mypy gives an erroneous expression the type Any; both behave as Any (spec concepts.rst: Any is "
+        "compatible with every type). When a tool reveals exactly that gradual type for an expression in which it ALSO "
+        "reports an error, the reveal says nothing about inference: the error is the finding, and it is judged as its "
+        "own discrepancy. Fires only when one side is exactly `Unknown` (ty) / `Any` (mypy), the other side has no "
+        "gradual part, and the same tool's error position lies inside the revealed argument. A CPython exception at "
+        "the statement keeps it in review.",
+        (K.REVEAL_MISMATCH,), m_reveal_error_recovery, auto=True, runtime_override=True,
+        example="def f() -> None:\n    x: int\n    reveal_type(x)\n",
+    ),
     KBEntry(
         "ASSERT-TYPE-LITERAL-RETENTION", "assert_type fails only because one tool keeps (or widens) inferred Literal types",
         Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/literal.html",

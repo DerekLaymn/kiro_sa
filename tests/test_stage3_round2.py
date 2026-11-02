@@ -143,6 +143,65 @@ def test_inference_downstream_does_not_trust_an_evaluated_bool_literal():
     assert run("int", "Literal[1]")  # ordinary literal retention is unchanged
 
 
+# ---------------------------------------------------------------- REVEAL-ERROR-RECOVERY
+
+RID = "REVEAL-ERROR-RECOVERY"
+REC_SRC = "def f() -> None:\n    x: int\n    reveal_type(x)\n"  # `x` starts at line 3, column 17 (1-based)
+
+
+def rdg(tool, rev=None, col=17, sev=Severity.ERROR, code=None, line=3):
+    return Diagnostic(tool, line, col, sev, code, "m" if rev is None else "", revealed_type=rev)
+
+
+def recovery(ty_rev="Unknown", mypy_rev="int", ty_err=(17, Severity.ERROR), mypy_err=None, src=REC_SRC, runtime=None):
+    ty = [rdg(Tool.TY, ty_rev)] + ([rdg(Tool.TY, col=ty_err[0], sev=ty_err[1], code="unresolved-reference")] if ty_err else [])
+    my = [rdg(Tool.MYPY, mypy_rev)] + ([rdg(Tool.MYPY, col=mypy_err[0], sev=mypy_err[1], code="name-defined")] if mypy_err else [])
+    st = CaseState("t", src, "3.13", {Tool.MYPY: my, Tool.TY: ty, Tool.PYRIGHT: []}, runtime or RuntimeResult(status="success"),
+                   [], {}, {})
+    d = Discrepancy("D1", K.REVEAL_MISMATCH, 3, 3, "s", "", mypy=[my[0]], ty=[ty[0]], reveal_relation="gradual")
+    return st, d
+
+
+def rhit(st, d):
+    return RID in {e.id for e in matching_entries(st, d)}
+
+
+def test_reveal_error_recovery_ty_side_and_mypy_side():
+    assert rhit(*recovery())  # ty: Unknown + its own error inside `x`; mypy: int
+    assert rhit(*recovery(ty_rev="int", mypy_rev="Any", ty_err=None, mypy_err=(17, Severity.ERROR)))  # mirrored
+
+
+def test_reveal_error_recovery_stays_narrow():
+    assert not rhit(*recovery(ty_err=None))  # no error from the tool that reveals the gradual type
+    assert not rhit(*recovery(ty_err=(5, Severity.ERROR)))  # error on `reveal_type` itself, outside the argument
+    assert not rhit(*recovery(ty_err=(17, Severity.WARNING)))  # a warning is not an error
+    assert not rhit(*recovery(ty_rev="Unknown | None"))  # partially gradual: not the recovery type
+    assert not rhit(*recovery(mypy_rev="Any"))  # both gradual: BOTH-GRADUAL territory
+    assert not rhit(*recovery(mypy_rev="list[Any]"))  # the other side must not be gradual
+    # the OTHER tool's error does not explain this tool's gradual reveal
+    assert not rhit(*recovery(ty_err=None, mypy_err=(17, Severity.ERROR)))
+
+
+@needs_tools
+def test_reveal_error_recovery_example_with_real_tools():
+    p = Pipeline(PipelineConfig(reduce=False, audit_rate=0.0, use_pyright=False), llm=CachedLLM(NullLLM()))
+    rep = p.run_source(BY_ID[RID].example, "recovery-example")
+    assert any(f.decided_by == f"kb:{RID}" and f.tier == Tier.DISMISSED for f in rep.findings)
+    # the ty error that causes the Unknown is NOT swallowed by this entry: it is its own finding
+    assert any(f.decided_by != f"kb:{RID}" for f in rep.findings)
+
+
+def test_reveal_error_recovery_runtime_exception_at_the_statement_keeps_it_in_review():
+    from typediff.kb import entry_demotion
+
+    e = BY_ID[RID]
+    assert e.auto and e.runtime_override
+    rt = RuntimeResult(status="exception", exc_type="NameError", exc_message="name 'x' is not defined", exc_line=3,
+                       frames=[(3, "<module>")])
+    st, d = recovery(runtime=rt)
+    assert rhit(st, d) and entry_demotion(st, d, e) is not None
+
+
 # ---------------------------------------------------------------- ANNOTATION-ONLY-READ is a tracked mypy limitation
 
 
