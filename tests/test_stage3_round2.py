@@ -221,6 +221,8 @@ def test_reveal_error_recovery_example_with_real_tools():
     rep = p.run_source(BY_ID[RID].example, "recovery-example")
     assert any(f.decided_by == f"kb:{RID}" and f.tier == Tier.DISMISSED for f in rep.findings)
     # the ty error that causes the Unknown is NOT swallowed by this entry: it is its own finding
+    rep = p.run_source("def f() -> None:\n    x: int\n    reveal_type(x)\n", "recovery-unbound")
+    assert any(f.decided_by == f"kb:{RID}" and f.tier == Tier.DISMISSED for f in rep.findings)
     assert any(f.decided_by != f"kb:{RID}" for f in rep.findings)
 
 

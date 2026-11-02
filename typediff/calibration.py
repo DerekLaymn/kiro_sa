@@ -100,12 +100,21 @@ def negatives(neg_dir: Path) -> list[dict]:
     return out
 
 
+def must_stay_live(live_dir: Path) -> list[dict]:
+    """Programs with a known real discrepancy that NO dismissal may touch (``calibration/must_stay_live/*.py``)."""
+    return [{"id": f"live-{p.stem}", "kind": "must_stay_live", "source": p.read_text(), "title": p.stem,
+             "faulty_tool": "none", "labels": [], "url": str(p)}
+            for p in (sorted(live_dir.glob("*.py")) if live_dir.exists() else [])]
+
+
 def classify(case: dict, report) -> str:
     if case["kind"] == "positive" and "ty_extensions" in case["source"]:
         return "excluded"
     findings = report.findings
     if not findings:
         return "invisible"
+    if case["kind"] == "must_stay_live":  # stricter than a positive: ONE dismissed finding is already a violation
+        return "violated" if any(f.tier == Tier.DISMISSED for f in findings) else "live"
     kept = [f for f in findings if f.tier in (Tier.CONFIRMED, Tier.CANDIDATE, Tier.REVIEW)]
     return "kept" if kept else "dismissed"
 
@@ -136,6 +145,7 @@ def run_calibration(pipeline, cases: list[dict], out_dir: Path, log=print) -> di
 def summarize(rows: list[dict]) -> dict:
     pos = [r for r in rows if r["kind"] == "positive" and r["outcome"] != "excluded"]
     neg = [r for r in rows if r["kind"] == "negative"]
+    live = [r for r in rows if r["kind"] == "must_stay_live"]
     vis = [r for r in pos if r["outcome"] in ("kept", "dismissed")]
     by_tool = {}
     for tool in ("ty", "mypy"):
@@ -151,4 +161,6 @@ def summarize(rows: list[dict]) -> dict:
                                                        if isinstance(f, (list, tuple)) and f[1] == "dismissed")),
         "negatives": len(neg), "negatives_closed_automatically": len(neg_auto),
         "negatives_left_for_review": [r["id"] for r in neg if r["outcome"] == "kept"],
+        "must_stay_live": len(live), "must_stay_live_outcomes": dict(Counter(r["outcome"] for r in live)),
+        "must_stay_live_dismissed": [r["id"] for r in live if r["outcome"] == "violated"],
     }

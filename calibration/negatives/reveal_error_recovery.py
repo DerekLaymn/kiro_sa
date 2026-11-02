@@ -1,5 +1,4 @@
-def g() -> None:
-    # ty reports the unbound read and reveals its error-recovery type (Unknown); mypy has no definite-assignment check
-    # and reveals str. The reveal difference is not an inference difference; the unbound read is judged on its own.
-    value: str
-    reveal_type(value.upper())
+def g(a: int, b: str) -> None:
+    # Both checkers report the unsupported `+` (no discrepancy there). ty then reveals its error-recovery type
+    # (Unknown) while mypy keeps a concrete type (int). The reveal difference is not an inference difference.
+    reveal_type(a + b)

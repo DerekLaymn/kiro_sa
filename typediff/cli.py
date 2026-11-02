@@ -319,7 +319,7 @@ def cmd_kb_selftest(args) -> int:
 
 
 def cmd_calibrate(args) -> int:
-    from .calibration import fetch_positives, negatives, run_calibration
+    from .calibration import fetch_positives, must_stay_live, negatives, run_calibration
 
     manifest = Path(args.manifest)
     if args.fetch or not manifest.exists():
@@ -333,6 +333,7 @@ def cmd_calibrate(args) -> int:
         cases = cases[: args.limit]
     if args.offset + len(cases) >= total:  # last chunk also runs the negatives
         cases += negatives(Path(args.negatives))
+        cases += must_stay_live(Path(args.must_stay_live))
     p = _pipeline(args)
     p.cfg.tools.timeout_s = args.timeout
     p.cfg.reduce = False
@@ -444,6 +445,8 @@ def main(argv: list[str] | None = None) -> int:
     cb = sub.add_parser("calibrate", help="measure false dismissals on real bug reports + documented divergences")
     cb.add_argument("--manifest", default="calibration/positives.json")
     cb.add_argument("--negatives", default="calibration/negatives")
+    cb.add_argument("--must-stay-live", dest="must_stay_live", default="calibration/must_stay_live",
+                    help="real discrepancies no dismissal may touch; a dismissed one is reported as a violation")
     cb.add_argument("--fetch", action="store_true", help="(re)download open bug reports from GitHub")
     cb.add_argument("--tools", default="ty,mypy")
     cb.add_argument("--limit", type=int, default=0)

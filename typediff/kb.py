@@ -1450,8 +1450,42 @@ def m_aliased_condition(s, d):
         for a in ast.walk(scope):
             if (isinstance(a, (ast.Assign, ast.AnnAssign)) and a.value is not None and a.lineno < n.lineno
                     and any(isinstance(t, ast.Name) and t.id == test.id for t in (a.targets if isinstance(a, ast.Assign) else [a.target]))
-                    and any(ast.unparse(x) == target for x in ast.walk(a.value))):
+                    and any(ast.unparse(x) == target for x in ast.walk(a.value))
+                    and not _target_changed_between(scope, call.args[0], a, n)):
                 return True
+    return False
+
+
+def _expr_root(e: ast.AST) -> str | None:
+    """Leftmost name of an attribute / subscript chain (``a.b[0].c`` -> ``a``), else None."""
+    while isinstance(e, (ast.Attribute, ast.Subscript)):
+        e = e.value
+    return e.id if isinstance(e, ast.Name) else None
+
+
+def _target_changed_between(scope: ast.AST, target: ast.expr, alias_stmt: ast.stmt, if_stmt: ast.stmt) -> bool:
+    """True if the aliased expression ``target`` may have changed between the alias assignment and the ``if``: any store
+    (assignment, ``for``, ``with``, walrus, ``del``) to its root name or into it (``a.x = ..``, ``l[0] = ..``), and, for
+    an attribute / subscript target, any call that mentions the root name (``a.clear()``, ``f(a)``)."""
+    root = _expr_root(target)
+    if root is None:
+        return True  # not a name / attribute / subscript chain: cannot reason about it
+    lo = (alias_stmt.end_lineno or alias_stmt.lineno, alias_stmt.end_col_offset or 0)
+    hi = (if_stmt.lineno, if_stmt.col_offset)
+    plain = isinstance(target, ast.Name)
+    for n in ast.walk(scope):
+        pos = (getattr(n, "lineno", None), getattr(n, "col_offset", None))
+        if pos[0] is None or not (lo <= pos < hi):
+            continue
+        if isinstance(n, (ast.Name, ast.Attribute, ast.Subscript)) and isinstance(getattr(n, "ctx", None), (ast.Store, ast.Del)):
+            if _expr_root(n) == root and (not plain or isinstance(n, ast.Name)):
+                return True
+        elif isinstance(n, ast.Call) and not plain and any(isinstance(x, ast.Name) and x.id == root for x in ast.walk(n)):
+            return True
+        elif isinstance(n, (ast.Import, ast.ImportFrom)) and any((a.asname or a.name.split(".")[0]) == root for a in n.names):
+            return True
+        elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and n.name == root:
+            return True
     return False
 
 
@@ -1480,7 +1514,7 @@ ENTRIES.extend([
         "gradual part, and the same tool's error position lies inside the revealed argument. A CPython exception at "
         "the statement keeps it in review.",
         (K.REVEAL_MISMATCH,), m_reveal_error_recovery, auto=True, runtime_override=True,
-        example="def f() -> None:\n    x: int\n    reveal_type(x)\n",
+        example="def g(a: int, b: str) -> None:\n    reveal_type(a + b)\n",
     ),
     KBEntry(
         "ASSERT-TYPE-LITERAL-RETENTION", "assert_type fails only because one tool keeps (or widens) inferred Literal types",

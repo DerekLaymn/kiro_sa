@@ -8,7 +8,7 @@ import json
 import sys
 from pathlib import Path
 
-from typediff.calibration import negatives, run_calibration
+from typediff.calibration import must_stay_live, negatives, run_calibration
 from typediff.cli import _pipeline
 
 
@@ -28,6 +28,7 @@ def main() -> int:
     cases = [c for c in json.loads(Path("calibration/positives.json").read_text()) if c["id"] in set(a.ids)]
     if a.negatives:
         cases += negatives(Path("calibration/negatives"))
+        cases += must_stay_live(Path("calibration/must_stay_live"))
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     (out / "calibration_rows.jsonl").unlink(missing_ok=True)
