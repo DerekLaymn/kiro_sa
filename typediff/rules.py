@@ -190,10 +190,16 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
     strong_exc = rt.status == "exception" and classify_exception(rt.exc_type, rt.exc_message) == "strong"
     if strong_exc and d.anchor in frame_anchors and rt.exc_type in ("NameError", "UnboundLocalError") and any(
             n in _reported_undefined(state, d) for n in _EXC_NAME.findall(rt.exc_message or "")):
+        # Same policy as kb.runtime_contradiction: a NameError on the flagged name is STRONG evidence. It shows the
+        # REPORTING tool is right and the SILENT tool missed the unbound name, so the blame goes to the silent tool.
+        reporter = "ty" if d.ty and not d.mypy else "mypy" if d.mypy and not d.ty else None
+        silent = {"ty": "mypy", "mypy": "ty"}.get(reporter or "", "unknown")
         d.evidence.append(Evidence(
-            EvidenceType.RUNTIME, "neutral",
-            f"runtime {rt.exc_type} confirms the reporting tool's own diagnostic ({rt.exc_message}); it says nothing "
-            "about the silent tool", citation=f"line {rt.exc_line}", verified=True, strength="weak"))
+            EvidenceType.RUNTIME, "bug",
+            f"CPython raised {rt.exc_type}: {rt.exc_message} on a name that {reporter or 'a checker'} reports as "
+            f"undefined/unbound: the reporting tool is right and the silent tool ({silent}) missed it (a default-off "
+            "or unimplemented check may explain why; see the KB hint)",
+            citation=f"line {rt.exc_line}", verified=True, strength="strong", blame=silent))
     elif strong_exc and rt.exc_type == "TypeError" and "NoneType" in (rt.exc_message or "") and d.anchor in frame_anchors \
             and (stub := _stub_callee(state, rt.exc_line)):
         d.evidence.append(Evidence(
@@ -339,6 +345,23 @@ def _audit(case_id: str, d_id: str, rate: float) -> bool:
     return (h % 10_000) / 10_000 < rate
 
 
+def _verified_hints(state: CaseState, d: Discrepancy, ex: ExperimentRunner, hits: list) -> list:
+    """Hint-only KB entries (auto=False) that carry a ``verify`` experiment are shown only when that experiment
+    confirms them (e.g. mypy reports the name once its opt-in check is on). The evidence is neutral: a hint never
+    closes anything. Auto entries and hints without an experiment pass through unchanged."""
+    out = []
+    for e in hits:
+        if e.auto or e.verify is None:
+            out.append(e)
+            continue
+        ev = e.verify(state, d, ex)
+        if ev is not None and ev.supports == "not_bug":
+            d.evidence.append(Evidence(EvidenceType.EXPERIMENT, "neutral", f"KB hint {e.id}: {e.title} - {ev.summary}",
+                                       citation=ev.citation, verified=True, strength="medium"))
+            out.append(e)
+    return out
+
+
 def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: ExperimentRunner, *,
                         auto_probe: bool = True, audit_rate: float = 0.0, max_probes: int = 8) -> tuple[dict[str, Finding], list[Discrepancy]]:
     decided: dict[str, Finding] = {}
@@ -410,7 +433,7 @@ def deterministic_stage(state: CaseState, discrepancies: list[Discrepancy], ex: 
                     for item in items[:6]:
                         d.evidence.append(Evidence(EvidenceType.EXPERIMENT, "neutral", f"{tool} opt-in check: {item}",
                                                    citation=r.id, verified=True, strength="medium"))
-        hits = matching_entries(state, d)
+        hits = _verified_hints(state, d, ex, matching_entries(state, d))
         d.kb_hits = [h.id for h in hits]
         closed = False
         for e in sorted(hits, key=lambda h: h.verify is not None):

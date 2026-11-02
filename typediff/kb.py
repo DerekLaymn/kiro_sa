@@ -1090,10 +1090,11 @@ ENTRIES.extend([
         "choice: python/mypy#15416 (open, 'Mypy not reporting \"undefined\" variable', the exact `number: int; print(number)` "
         "program), python/mypy#17373 (open, possibly-undefined misses variable annotations), python/mypy#4019 (open, binder "
         "should track declared-but-uninitialised names); #11342 was closed as a duplicate of #686. CPython's NameError at this "
-        "statement is the evidence that ty/pyright are right and mypy has the false negative; the entry keeps "
-        "runtime_override=False on purpose because that NameError confirms the REPORTING tool's own diagnostic and says "
-        "nothing against the silent tool beyond the known limitation (rules.attach_runtime_evidence records it as neutral "
-        "evidence). Fires only when the AST shows the name is only ever declared "
+        "statement is STRONG evidence that ty/pyright are right and mypy has the false negative (both "
+        "kb.runtime_contradiction and rules.attach_runtime_evidence record it as strong, blaming the silent tool, "
+        "mypy). The entry keeps runtime_override=False on purpose: that NameError confirms the REPORTING tool "
+        "(ty) and is the very fact this tracked mypy limitation is about, so it is no reason to hold ty's "
+        "diagnostic back. Fires only when the AST shows the name is only ever declared "
         "(never assigned, imported, defined or a parameter) in its module/function scope and ty and pyright agree. "
         "Forward references and truly undefined names are NOT covered.",
         (K.ONLY_TY,), m_annotation_only_read, auto=True, runtime_override=False,
@@ -1489,7 +1490,30 @@ def _target_changed_between(scope: ast.AST, target: ast.expr, alias_stmt: ast.st
     return False
 
 
+_UNBOUND_OPT_IN_FLAGS = ["--enable-error-code", "possibly-undefined", "--enable-error-code", "used-before-def"]
+
+
+def m_mypy_unbound_opt_in(s, d):
+    """ty reports only `unresolved-reference` (Name `x` used when not defined) and mypy is silent. The pipeline then
+    re-runs mypy with the two opt-in checks (``verify``); the hint is shown only when mypy reports the name there."""
+    return (d.kind == K.ONLY_TY and bool(d.ty) and not d.mypy
+            and all(x.code == "unresolved-reference" and _TY_UNDEF.search(x.message) for x in d.ty))
+
+
 ENTRIES.extend([
+    KBEntry(
+        "MYPY-UNBOUND-OPT-IN-CHECK", "mypy opt-in check catches this; default-off",
+        Dismissal.KNOWN_LIMITATION, "https://mypy.readthedocs.io/en/stable/error_code_list2.html",
+        "HINT ONLY, never dismisses. ty reports an unbound / possibly-unbound name and mypy is silent by default, but "
+        "mypy reports the same name when re-run with `--enable-error-code possibly-undefined --enable-error-code "
+        "used-before-def` (mypy docs, error_code_list2: possibly-undefined is generated only with "
+        "`--enable-error-code possibly-undefined`). The difference is a default-off mypy check, so mypy is not wrong "
+        "to be silent by default. When mypy stays silent even with both checks on, the hint is NOT shown: that is a "
+        "true mypy false negative (python/mypy#15416 annotation-only reads, forward references in class bases and "
+        "bodies). A CPython NameError/UnboundLocalError on the name is strong evidence that ty is right either way.",
+        (K.ONLY_TY,), m_mypy_unbound_opt_in, auto=False, runtime_override=False,
+        verify=_toggle(Tool.MYPY, _UNBOUND_OPT_IN_FLAGS),
+    ),
     KBEntry(
         "MYPY-13807-ALIASED-CONDITIONS", "mypy does not narrow through an aliased condition; ty and pyright do",
         Dismissal.KNOWN_LIMITATION, "https://github.com/python/mypy/issues/13807",

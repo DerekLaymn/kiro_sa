@@ -136,6 +136,86 @@ def test_summary_lists_dismissed_must_stay_live_programs():
     assert s["positives"] == 1 and s["negatives"] == 0  # the new kind does not leak into the other metrics
 
 
+# ---------------------------------------------------------------- NameError policy: one answer in both code paths + hint
+
+NAME_SRC = "x: int\nprint(x)\n"
+NAME_RT = dict(status="exception", exc_type="NameError", exc_message="name 'x' is not defined", exc_line=2,
+               frames=[(2, "<module>")], executed_lines=[1, 2])
+
+
+def name_case(mypy=(), ty=()):
+    from typediff.discrepancy import find_discrepancies
+
+    st = CaseState("t", NAME_SRC, "3.13", {Tool.MYPY: list(mypy), Tool.TY: list(ty), Tool.PYRIGHT: []},
+                   RuntimeResult(**NAME_RT), [], {}, {})
+    return st, next(x for x in find_discrepancies(st.diags, st.amap, st.runtime) if x.kind in (K.ONLY_TY, K.ONLY_MYPY))
+
+
+def test_both_code_paths_treat_a_nameerror_as_strong_and_blame_the_silent_tool():
+    from typediff.kb import runtime_contradiction
+    from typediff.rules import attach_runtime_evidence
+
+    ty = Diagnostic(Tool.TY, 2, 1, Severity.ERROR, "unresolved-reference", "Name `x` used when not defined")
+    st, d = name_case(ty=[ty])
+    assert runtime_contradiction(st, d) is not None  # kb path: strong
+    attach_runtime_evidence(st, d)  # rules path: strong, blames mypy (never ty)
+    strong = [e for e in d.evidence if e.supports == "bug" and e.strength == "strong"]
+    assert len(strong) == 1 and strong[0].blame == "mypy"
+    assert not any(e.blame == "ty" for e in d.evidence)
+
+
+def test_nameerror_policy_does_not_stop_the_tracked_limitation_entries_from_dismissing():
+    from typediff.kb import entry_demotion
+
+    ty = Diagnostic(Tool.TY, 2, 1, Severity.ERROR, "unresolved-reference", "Name `x` used when not defined")
+    st, d = name_case(ty=[ty])
+    # ANNOTATION-ONLY-READ keeps runtime_override=False: the NameError is the very fact the limitation is about
+    assert entry_demotion(st, d, BY_ID["ANNOTATION-ONLY-READ"]) is None
+    # an entry with runtime_override=True is still demoted by the same NameError (no dismissal swallows a crash)
+    assert entry_demotion(st, d, BY_ID["REVEAL-ERROR-RECOVERY"]) is not None
+
+
+HINT = "MYPY-UNBOUND-OPT-IN-CHECK"
+
+
+def test_opt_in_hint_is_hint_only_and_narrow():
+    e = BY_ID[HINT]
+    assert not e.auto and e.verify is not None and e.title == "mypy opt-in check catches this; default-off"
+    ok = Diagnostic(Tool.TY, 2, 1, Severity.ERROR, "unresolved-reference", "Name `x` used when not defined")
+    st, d = name_case(ty=[ok])
+    assert HINT in {x.id for x in matching_entries(st, d)}
+    other = Diagnostic(Tool.TY, 2, 1, Severity.ERROR, "invalid-argument-type", "Argument is incorrect")
+    st, d = name_case(ty=[other])
+    assert HINT not in {x.id for x in matching_entries(st, d)}
+    st, d = name_case(mypy=[Diagnostic(Tool.MYPY, 2, 1, Severity.ERROR, "name-defined", 'Name "x" is not defined')])
+    assert HINT not in {x.id for x in matching_entries(st, d)}  # mypy reports it by default: no hint needed
+
+
+COND_CLASS_BODY = (
+    "from typing import Any\n\nx = None  # type: Any\n\n\nclass A:\n    if x:\n        def f(self, x: int) -> None:\n"
+    "            pass\n        f(x, 1)\n    f(x, 1)\n"
+)
+FORWARD_BASE = "class A(B):\n    pass\n\n\nclass B:\n    pass\n"
+
+
+@needs_tools
+def test_opt_in_hint_appears_only_when_mypy_reports_the_name_with_the_opt_in_checks():
+    # mypy --enable-error-code possibly-undefined reports `f` (default-off check): hint shown
+    rep = pipeline().run_source(COND_CLASS_BODY, "optin-yes")
+    shown = {i for i, hits in ((d.id, d.kb_hits) for d in rep.discrepancies) if HINT in hits}
+    assert shown, [(d.id, d.kind.value, d.kb_hits) for d in rep.discrepancies]
+    # a forward reference in a class base: mypy stays silent even with both checks on (true false negative): no hint
+    rep = pipeline().run_source(FORWARD_BASE, "optin-no")
+    assert rep.discrepancies and not any(HINT in d.kb_hits for d in rep.discrepancies)
+
+
+@needs_tools
+def test_opt_in_hint_never_closes_a_finding():
+    rep = pipeline().run_source(COND_CLASS_BODY, "optin-never-closes")
+    assert not any(f.decided_by == f"kb:{HINT}" or f.tier == Tier.DISMISSED for f in rep.findings
+                   if f.discrepancy_id in {d.id for d in rep.discrepancies if HINT in d.kb_hits})
+
+
 def test_repo_must_stay_live_programs_are_discovered():
     ids = {c["id"] for c in must_stay_live(ROOT / "calibration" / "must_stay_live")}
     assert {"live-ty_constant_fold_tuple_subclass", "live-mypy_stale_alias"} <= ids

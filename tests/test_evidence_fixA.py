@@ -27,14 +27,22 @@ NAME_RT = dict(status="exception", exc_type="NameError", exc_message="name 'x' i
                frames=[(2, "<module>")], executed_lines=[1, 2])
 
 
-def test_nameerror_confirming_reporter_is_not_strong():
+def test_nameerror_confirming_reporter_is_strong_and_blames_the_silent_tool():
+    # round-3 policy (same as kb.runtime_contradiction): the NameError is strong evidence that the REPORTING tool (ty)
+    # is right; the silent tool (mypy) is blamed, never ty
     ty = diag(Tool.TY, 2, "unresolved-reference", "Name `x` used when not defined")
     st = state(SRC, {Tool.MYPY: [], Tool.TY: [ty]}, RuntimeResult(**NAME_RT))
     d = next(x for x in find_discrepancies(st.diags, st.amap, st.runtime) if x.kind == K.ONLY_TY)
     attach_runtime_evidence(st, d)
-    assert not strong_bug(d)
-    assert not any(e.blame == "mypy" for e in d.evidence)
-    assert any("confirms the reporting tool" in e.summary for e in d.evidence)
+    assert len(strong_bug(d)) == 1
+    assert strong_bug(d)[0].blame == "mypy"
+    assert not any(e.blame == "ty" for e in d.evidence)
+    # mirrored: mypy reports the undefined name, ty is silent -> ty is blamed
+    my = diag(Tool.MYPY, 2, "name-defined", 'Name "x" is not defined')
+    st = state(SRC, {Tool.MYPY: [my], Tool.TY: []}, RuntimeResult(**NAME_RT))
+    d = next(x for x in find_discrepancies(st.diags, st.amap, st.runtime) if x.kind == K.ONLY_MYPY)
+    attach_runtime_evidence(st, d)
+    assert strong_bug(d)[0].blame == "ty"
 
 
 def test_nameerror_nobody_reported_stays_strong():
