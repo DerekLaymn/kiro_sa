@@ -1,0 +1,23 @@
+##### repo:python/mypy is:issue "used-before-def" base class
+total=1
+  14539 open mypy reports `used-before-def` with `TypeAlias`es despite `from __future__ import annotations`
+##### repo:python/mypy is:issue "NameError" "base class" forward reference not reported
+total=0
+##### repo:python/mypy is:issue class used before definition at module level not an error
+total=22
+  17924 open Lazily process installed packages
+  12748 open Various improvements to semantic pre-analysis (pass 1).
+  18343 open Issues related to numpy
+  6936 open Rust style force handling of return value
+  16491 open JSONSchema (SchemaStore, validate-pyproject)
+  21640 closed 2.2 Regression with placeholder types in a TypeVar
+##### repo:astral-sh/ty is:issue "used when not defined" mypy
+total=10
+  1297 open Unresolved references of IPython builtins in notebooks
+  2946 closed ty reports `possibly-unresolved-reference` on a `for`-loop variable even if iteration is guaranteed
+  1862 closed False positive for `possibly-unresolved-reference` using walrus operator
+  99 closed Missed exhaustiveness checking for class unions
+  394 closed support forward references in argument-position type expressions in stubs
+  1527 closed `unresolved-reference` fires when a name is declared but not bound
+##### repo:astral-sh/ty is:issue "possibly-unresolved-reference" empty list loop
+total=0

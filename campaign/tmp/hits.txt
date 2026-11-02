@@ -1,0 +1,6 @@
+total 8
+drwxr-xr-x 1 derek derek  146 Nov  2 15:16 .
+drwxr-xr-x 1 derek derek   60 Nov  2 15:16 ..
+-rw-r--r-- 1 derek derek  471 Nov  2 15:16 s3r1_mypy_class_base_forward_ref.py
+-rw-r--r-- 1 derek derek 2689 Nov  2 15:16 s3r1_ty_type_equality_narrowing_any.py
+.gitignore:8:runs/	runs/hits/s3r1_mypy_class_base_forward_ref.py

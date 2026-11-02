@@ -1,0 +1,26 @@
+######## c1
+--- mypy
+--- ty
+c1.py:3:1: error[type-assertion-failure] Type `slice[Literal[1234], Any, Any]` does not match asserted type `slice[int, Any, Any]`
+Found 1 diagnostic
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython
+######## c2
+--- mypy
+--- ty
+c2.py:3:1: error[type-assertion-failure] Type `Literal[True]` does not match asserted type `bool`
+Found 1 diagnostic
+--- pyright
+  /tmp/s3ex.vWfIXQ/c2.py:3:13 - error: Operator "<" not supported for types "tuple[Literal[1], Literal[2]]" and "tuple[Literal[3], Literal[4]]" (reportOperatorIssue)
+  /tmp/s3ex.vWfIXQ/c2.py:3:13 - error: "assert_type" mismatch: expected "bool" but received "Unknown" (reportAssertTypeFailure)
+2 errors, 0 warnings, 0 informations
+--- cpython
+######## c3
+--- mypy
+--- ty
+c3.py:3:1: error[type-assertion-failure] Type `Literal[1, 2]` does not match asserted type `int`
+Found 1 diagnostic
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython

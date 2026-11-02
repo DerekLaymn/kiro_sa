@@ -1,0 +1,332 @@
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/ty__exception__control_flow__80.py
+--- source
+     1	# area: gradual_any
+     2	# origin: ruff mdtest exception/control_flow.md block 80
+     3	def could_raise_returns_str() -> str:
+     4	    return "foo"
+     5	
+     6	x = 1
+     7	
+     8	try:
+     9	    reveal_type(x)  # revealed: Literal[1]
+    10	    x = could_raise_returns_str()
+    11	    reveal_type(x)  # revealed: str
+    12	except:
+    13	    reveal_type(x)  # revealed: Literal[1] | str
+    14	    x = 2
+    15	    reveal_type(x)  # revealed: Literal[2]
+    16	
+    17	reveal_type(x)  # revealed: str | Literal[2]
+--- mypy
+case.py:9:17: note: Revealed type is "int"
+case.py:10:9: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+case.py:11:17: note: Revealed type is "int"
+case.py:13:17: note: Revealed type is "int"
+case.py:15:17: note: Revealed type is "int"
+case.py:17:13: note: Revealed type is "int"
+--- ty
+case.py:9:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:9:17: info[revealed-type] Revealed type: `Literal[1]`
+case.py:11:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:11:17: info[revealed-type] Revealed type: `str`
+case.py:13:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:13:17: info[revealed-type] Revealed type: `Literal[1] | str`
+case.py:15:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:15:17: info[revealed-type] Revealed type: `Literal[2]`
+case.py:17:1: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:17:13: info[revealed-type] Revealed type: `str | Literal[2]`
+--- pyright
+/tmp/s3chk.LikSWm/case.py
+  /tmp/s3chk.LikSWm/case.py:9:17 - information: Type of "x" is "Literal[1]"
+  /tmp/s3chk.LikSWm/case.py:11:17 - information: Type of "x" is "str"
+  /tmp/s3chk.LikSWm/case.py:13:17 - information: Type of "x" is "str | Literal[1]"
+  /tmp/s3chk.LikSWm/case.py:15:17 - information: Type of "x" is "Literal[2]"
+  /tmp/s3chk.LikSWm/case.py:17:13 - information: Type of "x" is "str | Literal[2]"
+0 errors, 0 warnings, 5 informations
+--- cpython
+  File "/tmp/s3chk.LikSWm/case.py", line 13, in <module>
+    reveal_type(x)  # revealed: Literal[1] | str
+    ^^^^^^^^^^^
+NameError: name 'reveal_type' is not defined
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/narrowing_builtin/ty__narrow__conditionals__in__16.py
+--- source
+     1	# area: narrowing_builtin
+     2	# origin: ruff mdtest narrow/conditionals/in.md block 16
+     3	from typing import Literal, final
+     4	
+     5	@final
+     6	class ByteSubstring(bytes): ...
+     7	
+     8	@final
+     9	class ByteIndex:
+    10	    def __index__(self) -> int:
+    11	        return 97
+    12	
+    13	def bytes_subsequence(value: ByteSubstring | Literal[97]) -> None:
+    14	    if value in b"abc":
+    15	        reveal_type(value)  # revealed: ByteSubstring | Literal[97]
+    16	    else:
+    17	        reveal_type(value)  # revealed: ByteSubstring | Literal[97]
+    18	
+    19	def bytes_index(value: ByteIndex | Literal[97], values: bytes) -> None:
+    20	    if value in values:
+    21	        reveal_type(value)  # revealed: ByteIndex | Literal[97]
+    22	    else:
+    23	        reveal_type(value)  # revealed: ByteIndex | Literal[97]
+    24	
+    25	def bytes_union_container(
+    26	    value: Literal[b"a", 97],
+    27	    values: bytes | tuple[int, ...],
+    28	) -> None:
+    29	    if value in values:
+    30	        reveal_type(value)  # revealed: Literal[b"a", 97]
+    31	    else:
+    32	        reveal_type(value)  # revealed: Literal[b"a", 97]
+    33	
+    34	def bytearray_index(value: ByteIndex | Literal[97], values: bytearray) -> None:
+    35	    if value in values:
+    36	        reveal_type(value)  # revealed: ByteIndex | Literal[97]
+    37	    else:
+    38	        reveal_type(value)  # revealed: ByteIndex | Literal[97]
+    39	
+    40	def bytearray_subsequence(value: Literal[b"a", 97], values: bytearray) -> None:
+--- mypy
+case.py:15:21: note: Revealed type is "case.ByteSubstring | Literal[97]"
+case.py:17:21: note: Revealed type is "case.ByteSubstring | Literal[97]"
+case.py:21:21: note: Revealed type is "case.ByteIndex | Literal[97]"
+case.py:23:21: note: Revealed type is "case.ByteIndex | Literal[97]"
+case.py:30:21: note: Revealed type is "Literal[b'a'] | Literal[97]"
+case.py:32:21: note: Revealed type is "Literal[b'a'] | Literal[97]"
+case.py:36:21: note: Revealed type is "case.ByteIndex | Literal[97]"
+case.py:38:21: note: Revealed type is "case.ByteIndex | Literal[97]"
+case.py:42:21: note: Revealed type is "Literal[b'a'] | Literal[97]"
+case.py:44:21: note: Revealed type is "Literal[b'a'] | Literal[97]"
+--- ty
+case.py:15:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:15:21: info[revealed-type] Revealed type: `ByteSubstring | Literal[97]`
+case.py:17:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:17:21: info[revealed-type] Revealed type: `ByteSubstring | Literal[97]`
+case.py:21:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:21:21: info[revealed-type] Revealed type: `ByteIndex | Literal[97]`
+case.py:23:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:23:21: info[revealed-type] Revealed type: `ByteIndex | Literal[97]`
+case.py:30:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:30:21: info[revealed-type] Revealed type: `Literal[b"a", 97]`
+--- pyright
+/tmp/s3chk.dLOqGX/case.py
+  /tmp/s3chk.dLOqGX/case.py:15:21 - information: Type of "value" is "ByteSubstring | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:17:21 - information: Type of "value" is "ByteSubstring | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:21:21 - information: Type of "value" is "ByteIndex | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:23:21 - information: Type of "value" is "ByteIndex | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:30:21 - information: Type of "value" is "Literal[b"a", 97]"
+  /tmp/s3chk.dLOqGX/case.py:32:21 - information: Type of "value" is "Literal[b"a", 97]"
+  /tmp/s3chk.dLOqGX/case.py:36:21 - information: Type of "value" is "ByteIndex | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:38:21 - information: Type of "value" is "ByteIndex | Literal[97]"
+  /tmp/s3chk.dLOqGX/case.py:42:21 - information: Type of "value" is "Literal[b"a", 97]"
+--- cpython
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__9.py
+--- source
+     1	# area: narrowing_builtin
+     2	# origin: ruff mdtest narrow/aliased_conditions.md block 9
+     3	def _(x: int | None):
+     4	    is_none = x is None
+     5	    if bool(is_none):
+     6	        reveal_type(x)  # revealed: None
+     7	    if is_none if True else False:
+     8	        reveal_type(x)  # revealed: None
+     9	    if is_none == True:
+    10	        # TODO: it would be nice to support this case, but even direct narrowing doesn't work here
+    11	        reveal_type(x)  # revealed: int | None
+    12	    if (is_none,)[0]:
+    13	        # TODO: same as above
+    14	        reveal_type(x)  # revealed: int | None
+    15	    if y := is_none:
+    16	        reveal_type(x)  # revealed: None
+    17	        reveal_type(y)  # revealed: Literal[True]
+    18	    else:
+    19	        reveal_type(x)  # revealed: int
+    20	        reveal_type(y)  # revealed: Literal[False]
+    21	    if (lambda: is_none)():
+    22	        # TODO: same as above
+    23	        reveal_type(x)  # revealed: int | None
+--- mypy
+case.py:6:21: note: Revealed type is "int | None"
+case.py:8:21: note: Revealed type is "int | None"
+case.py:11:21: note: Revealed type is "int | None"
+case.py:14:21: note: Revealed type is "int | None"
+case.py:16:21: note: Revealed type is "int | None"
+case.py:17:21: note: Revealed type is "Literal[True]"
+case.py:19:21: note: Revealed type is "int | None"
+case.py:20:21: note: Revealed type is "Literal[False]"
+case.py:23:21: note: Revealed type is "int | None"
+--- ty
+case.py:6:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:6:21: info[revealed-type] Revealed type: `None`
+case.py:8:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:8:21: info[revealed-type] Revealed type: `None`
+case.py:11:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:11:21: info[revealed-type] Revealed type: `int | None`
+case.py:14:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:14:21: info[revealed-type] Revealed type: `int | None`
+case.py:16:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:16:21: info[revealed-type] Revealed type: `None`
+--- pyright
+/tmp/s3chk.cPZjot/case.py
+  /tmp/s3chk.cPZjot/case.py:6:21 - information: Type of "x" is "int | None"
+  /tmp/s3chk.cPZjot/case.py:8:21 - information: Type of "x" is "int | None"
+  /tmp/s3chk.cPZjot/case.py:11:21 - information: Type of "x" is "int | None"
+  /tmp/s3chk.cPZjot/case.py:14:21 - information: Type of "x" is "int | None"
+  /tmp/s3chk.cPZjot/case.py:16:21 - information: Type of "x" is "None"
+  /tmp/s3chk.cPZjot/case.py:17:21 - information: Type of "y" is "Literal[True]"
+  /tmp/s3chk.cPZjot/case.py:19:21 - information: Type of "x" is "int"
+  /tmp/s3chk.cPZjot/case.py:20:21 - information: Type of "y" is "Literal[False]"
+  /tmp/s3chk.cPZjot/case.py:23:21 - information: Type of "x" is "int | None"
+--- cpython
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/narrowing_user/pyright__typeIs11.py
+--- source
+     1	# area: narrowing_user
+     2	# origin: microsoft/pyright tests/samples/typeIs11.py
+     3	# This sample preserves legacy forward equality guards against type(other).
+     4	
+     5	from builtins import type as runtime_type
+     6	from typing import Any, assert_type
+     7	
+     8	
+     9	def unknown_equality(value, sample: dict[str, int] | tuple[int, int]):
+    10	    if type(value) == type(sample):
+    11	        reveal_type(value, expected_text="dict[str, int] | tuple[int, int]")
+    12	        # This should generate two errors because neither alternative has this member.
+    13	        value.nonexistent()
+    14	    else:
+    15	        reveal_type(value, expected_text="Unknown")
+    16	
+    17	
+    18	def any_equality(value: Any, sample: dict[str, int] | tuple[int, int]):
+    19	    assert type(value) == type(sample)
+    20	    assert_type(value, dict[str, int] | tuple[int, int])
+    21	    # This should generate two errors because neither alternative has this member.
+    22	    value.nonexistent()
+    23	
+    24	
+    25	def unknown_inequality(value, sample: dict[str, int] | tuple[int, int]):
+    26	    if type(value) != type(sample):
+    27	        reveal_type(value, expected_text="Unknown")
+    28	    else:
+    29	        reveal_type(value, expected_text="dict[str, int] | tuple[int, int]")
+    30	
+    31	
+    32	def any_inequality(value: Any, sample: int):
+    33	    if type(value) != type(sample):
+    34	        assert_type(value, Any)
+    35	    else:
+    36	        assert_type(value, int)
+    37	
+    38	
+    39	def known_arguments(value: dict[str, int], sample: dict[str, Any]):
+    40	    if type(value) == type(sample):
+--- mypy
+case.py:11:9: error: "reveal_type" expects 1 argument  [misc]
+case.py:13:9: error: Item "dict[str, int]" of "dict[str, int] | tuple[int, int]" has no attribute "nonexistent"  [union-attr]
+case.py:13:9: error: Item "tuple[int, ...]" of "dict[str, int] | tuple[int, int]" has no attribute "nonexistent"  [union-attr]
+case.py:15:9: error: "reveal_type" expects 1 argument  [misc]
+case.py:22:5: error: Item "dict[str, int]" of "dict[str, int] | tuple[int, int]" has no attribute "nonexistent"  [union-attr]
+case.py:22:5: error: Item "tuple[int, ...]" of "dict[str, int] | tuple[int, int]" has no attribute "nonexistent"  [union-attr]
+case.py:27:9: error: "reveal_type" expects 1 argument  [misc]
+case.py:29:9: error: "reveal_type" expects 1 argument  [misc]
+case.py:54:9: error: Expression is of type "int", not "Any"  [assert-type]
+case.py:59:9: error: Expression is of type "int", not "Any"  [assert-type]
+--- ty
+case.py:11:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:11:28: error[unknown-argument] Argument `expected_text` does not match any known parameter of function `reveal_type`
+case.py:15:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:15:28: error[unknown-argument] Argument `expected_text` does not match any known parameter of function `reveal_type`
+case.py:20:5: error[type-assertion-failure] Type `Any` does not match asserted type `dict[str, int] | tuple[int, int]`
+case.py:27:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:27:28: error[unknown-argument] Argument `expected_text` does not match any known parameter of function `reveal_type`
+case.py:29:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:29:28: error[unknown-argument] Argument `expected_text` does not match any known parameter of function `reveal_type`
+case.py:36:9: error[type-assertion-failure] Type `Any` does not match asserted type `int`
+--- pyright
+/tmp/s3chk.vF30aI/case.py
+  /tmp/s3chk.vF30aI/case.py:11:21 - information: Type of "value" is "dict[str, int] | tuple[int, int]"
+  /tmp/s3chk.vF30aI/case.py:13:15 - error: Cannot access attribute "nonexistent" for class "dict[str, int]"
+    Attribute "nonexistent" is unknown (reportAttributeAccessIssue)
+  /tmp/s3chk.vF30aI/case.py:13:15 - error: Cannot access attribute "nonexistent" for class "tuple[int, int]"
+    Attribute "nonexistent" is unknown (reportAttributeAccessIssue)
+  /tmp/s3chk.vF30aI/case.py:15:21 - information: Type of "value" is "Unknown"
+  /tmp/s3chk.vF30aI/case.py:22:11 - error: Cannot access attribute "nonexistent" for class "dict[str, int]"
+    Attribute "nonexistent" is unknown (reportAttributeAccessIssue)
+  /tmp/s3chk.vF30aI/case.py:22:11 - error: Cannot access attribute "nonexistent" for class "tuple[int, int]"
+--- cpython
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/enums_literals/pyright__tupleLiteralInference5.py
+--- source
+     1	# area: enums_literals
+     2	# origin: microsoft/pyright tests/samples/tupleLiteralInference5.py
+     3	# Optional truthiness must not become mandatory literal precision.
+     4	from typing import Literal, assert_type
+     5	
+     6	
+     7	def string_and() -> None:
+     8	    value = (("a",),)[0][0]
+     9	    result = value and "b"
+    10	    row = (result,)
+    11	    rows = [row]
+    12	    assert_type(result, Literal["", "b"])
+    13	    assert_type(rows, list[tuple[Literal["", "b"]]])
+    14	    rows.append(("",))
+    15	    assert_type(value, str)
+    16	
+    17	
+    18	def empty_string_or() -> None:
+    19	    value = (("",),)[0][0]
+    20	    result = value or "b"
+    21	    row = (result,)
+    22	    rows = [row]
+    23	    assert_type(result, str)
+    24	    assert_type(rows, list[tuple[str]])
+    25	    rows.append(("c",))
+    26	    assert_type(value, str)
+    27	
+    28	
+    29	def number_and() -> None:
+    30	    value = ((1,),)[0][0]
+    31	    result = value and 2
+    32	    row = (result,)
+    33	    rows = [row]
+    34	    assert_type(result, Literal[0, 2])
+    35	    assert_type(rows, list[tuple[Literal[0, 2]]])
+    36	    rows.append((0,))
+    37	    assert_type(value, int)
+    38	
+    39	
+    40	def zero_or() -> None:
+--- mypy
+case.py:12:5: error: Expression is of type "Literal[''] | str", not "Literal['', 'b']"  [assert-type]
+case.py:13:5: error: Expression is of type "list[tuple[Literal[''] | str]]", not "list[tuple[Literal['', 'b']]]"  [assert-type]
+case.py:34:5: error: Expression is of type "Literal[0] | int", not "Literal[0, 2]"  [assert-type]
+case.py:35:5: error: Expression is of type "list[tuple[Literal[0] | int]]", not "list[tuple[Literal[0, 2]]]"  [assert-type]
+case.py:56:5: error: Expression is of type "list[tuple[str]]", not "list[tuple[Literal['', 'b']]]"  [assert-type]
+case.py:64:5: error: Expression is of type "list[tuple[Literal[''] | str]]", not "list[tuple[Literal['', 'b']]]"  [assert-type]
+case.py:71:5: error: Expression is of type "tuple[int]", not "tuple[Literal[1]]"  [assert-type]
+case.py:82:17: error: Argument 1 to "append" of "list" has incompatible type "tuple[Literal['']]"; expected "tuple[Literal['b']]"  [arg-type]
+case.py:90:9: error: Expression is of type "list[tuple[Literal[''] | str]]", not "list[tuple[Literal['b']]]"  [assert-type]
+--- ty
+case.py:12:5: error[type-assertion-failure] Type `Literal["b"]` does not match asserted type `Literal["", "b"]`
+case.py:13:5: error[type-assertion-failure] Type `list[tuple[str]]` does not match asserted type `list[tuple[Literal["", "b"]]]`
+case.py:15:5: error[type-assertion-failure] Type `Literal["a"]` does not match asserted type `str`
+case.py:23:5: error[type-assertion-failure] Type `Literal["b"]` does not match asserted type `str`
+case.py:26:5: error[type-assertion-failure] Type `Literal[""]` does not match asserted type `str`
+case.py:34:5: error[type-assertion-failure] Type `Literal[2]` does not match asserted type `Literal[0, 2]`
+case.py:35:5: error[type-assertion-failure] Type `list[tuple[int]]` does not match asserted type `list[tuple[Literal[0, 2]]]`
+case.py:37:5: error[type-assertion-failure] Type `Literal[1]` does not match asserted type `int`
+case.py:45:5: error[type-assertion-failure] Type `Literal[2]` does not match asserted type `int`
+case.py:48:5: error[type-assertion-failure] Type `Literal[0]` does not match asserted type `int`
+--- pyright
+/tmp/s3chk.z8R7PL/case.py
+  /tmp/s3chk.z8R7PL/case.py:71:17 - error: "assert_type" mismatch: expected "tuple[Literal[1]]" but received "tuple[int]" (reportAssertTypeFailure)
+  /tmp/s3chk.z8R7PL/case.py:82:18 - error: Argument of type "tuple[Literal['']]" cannot be assigned to parameter "object" of type "tuple[Literal['b']]" in function "append"
+    "Literal['']" is not assignable to type "Literal['b']" (reportArgumentType)
+  /tmp/s3chk.z8R7PL/case.py:91:22 - error: Argument of type "tuple[Literal['']]" cannot be assigned to parameter "object" of type "tuple[Literal['b']]" in function "append"
+    "Literal['']" is not assignable to type "Literal['b']" (reportArgumentType)
+3 errors, 0 warnings, 0 informations
+--- cpython

@@ -1,0 +1,214 @@
+##### seed-88cc94de9873.json origin=seed seeds/harvested/gradual_any/ty__bidirectional__61.py
+1: # area: gradual_any
+2: # origin: ruff mdtest bidirectional.md block 61
+3: class X[T]:
+4:     value: T
+5: 
+6:     def __init__(self, value: T): ...
+7: 
+8: class A[T](X[T]): ...
+9: 
+10: def a[T](value: T) -> A[T]:
+11:     return A(value)
+12: 
+13: x13: A[object] = A(1)
+14: reveal_type(x13)  # revealed: A[object]
+15: 
+16: x14: X[object] = A(1)
+17: reveal_type(x14)  # revealed: A[object]
+18: 
+19: x15: X[object] | None = A(1)
+20: reveal_type(x15)  # revealed: A[object]
+21: 
+22: x16: X[object] | None = a(1)
+23: reveal_type(x16)  # revealed: A[object]
+24: 
+25: def f[T](x: T) -> list[list[T]]:
+26:     return [[x]]
+27: 
+28: x17: Sequence[Sequence[Any]] = f(1)
+29: reveal_type(x17)  # revealed: list[list[int]]
+30: 
+31: x18: Sequence[list[Any]] = f(1)
+32: reveal_type(x18)  # revealed: list[list[Any]]
+33: 
+34: x19: dict[int, dict[str, int]] = defaultdict(dict)
+35: reveal_type(x19)  # revealed: defaultdict[int, dict[str, int]]
+36: 
+runtime={'status': 'exception', 'exc_type': 'NameError', 'exc_line': 28, 'exc_message': "name 'Sequence' is not defined"}
+finding D1 tier=review by=gate
+finding D2 tier=review by=gate
+finding D3 tier=review by=gate
+finding D4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D5 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+D1 reveal_mismatch L17 mypy:17[None]case.X[object]; ty:17[revealed-type]A[object]; pyright:17[None]A[object]
+D2 reveal_mismatch L20 mypy:20[None]case.X[object] | None; ty:20[revealed-type]A[object]; pyright:20[None]A[object]
+D3 reveal_mismatch L23 mypy:23[None]case.X[object] | None; ty:23[revealed-type]A[object]; pyright:23[None]A[object]
+D4 reveal_mismatch L29 mypy:29[None]Any; ty:29[revealed-type]list[list[int]]; pyright:29[None]Unknown
+D5 reveal_mismatch L32 mypy:32[None]Any; ty:32[revealed-type]list[list[int]]; pyright:32[None]Unknown
+##### seed-9722b1d30398.json origin=seed seeds/harvested/gradual_any/ty__bidirectional__62.py
+1: # area: gradual_any
+2: # origin: ruff mdtest bidirectional.md block 62
+3: from typing import Hashable
+4: 
+5: def variadic(*args: Any, **kwargs: Any) -> Any: ...
+6: 
+7: x20: Mapping[Hashable, list[Callable[..., Any]]] = {"x": [variadic]}
+8: reveal_type(x20)  # revealed: dict[Hashable, list[(...) -> Any]]
+9: 
+10: x21: Mapping[Hashable, list[Callable[..., Any]]] = dict(x=[variadic])
+11: reveal_type(x21)  # revealed: dict[Hashable, list[(...) -> Any]]
+12: 
+13: x22: Mapping[str, Literal["+", "-"]] = {
+14:     "plus": "+",
+15:     "minus": "-",
+16: }
+17: reveal_type(x22)  # revealed: dict[str, Literal["+", "-"]]
+18: 
+19: class DataFrame: ...
+20: 
+21: type Aggregate = Callable[[DataFrame], object] | str
+22: type AggregateSpec = Aggregate | list[Aggregate]
+23: 
+24: def mean(data: DataFrame) -> float:
+25:     return 0.0
+26: 
+27: x23: Mapping[Hashable, AggregateSpec] = {"col1": ["sum", mean], "col2": mean}
+28: 
+runtime={'status': 'exception', 'exc_type': 'NameError', 'exc_line': 5, 'exc_message': "name 'Any' is not defined"}
+finding D1 tier=review by=gate
+finding D2 tier=review by=gate
+finding D3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+D1 reveal_mismatch L8 mypy:8[None]Any; ty:8[revealed-type]dict[str, list[(...) -> Unknown]]; pyright:8[None]Unknown
+D2 reveal_mismatch L11 mypy:11[None]Any; ty:11[revealed-type]dict[str, list[(...) -> Unknown]]; pyright:11[None]Unknown
+D3 reveal_mismatch L17 mypy:17[None]Any; ty:17[revealed-type]dict[str, str]; pyright:17[None]Unknown
+##### seed-af4f20fa5bc3.json origin=seed seeds/harvested/gradual_any/ty__bidirectional__101.py
+1: # area: gradual_any
+2: # origin: ruff mdtest bidirectional.md block 101
+3: from typing import Callable
+4: 
+5: def list_to_callable[T](values: list[T]) -> Callable[[T], T]:
+6:     raise NotImplementedError
+7: 
+8: def propagate[A, B, C, D](
+9:     first: Callable[[C], D],
+10:     second: Callable[[B], C],
+11:     third: Callable[[A], B],
+12:     source: list[A],
+13: ) -> D:
+14:     return first(second(third(source[0])))
+15: 
+16: def propagate_tuple[A, B, C, D](
+17:     arguments: tuple[
+18:         Callable[[C], D],
+19:         Callable[[B], C],
+20:         Callable[[A], B],
+21:         list[A],
+22:     ],
+23: ) -> D:
+24:     raise NotImplementedError
+25: 
+26: def _(seed: int):
+27:     x = propagate(
+28:         list_to_callable([]),
+29:         list_to_callable([]),
+30:         list_to_callable([]),
+31:         [seed],
+32:     )
+33:     reveal_type(x)  # revealed: int
+34: 
+35:     x = propagate_tuple((
+36:         list_to_callable([]),
+37:         list_to_callable([]),
+38:         list_to_callable([]),
+39:         [seed],
+40:     ))
+41:     reveal_type(x)  # revealed: int
+42: 
+runtime={'status': 'success', 'exc_type': None, 'exc_line': None, 'exc_message': None}
+finding D1 tier=review by=gate
+finding D2 tier=review by=gate
+finding D3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D4 tier=review by=gate
+D1 only_mypy L27 mypy:27[var-annotated]Need type annotation for "x"; mypy:30[arg-type]Argument 3 to "propagate" has incompatible type "Callable[[int], int]"
+D2 only_mypy L35 mypy:35[arg-type]Argument 1 to "propagate_tuple" has incompatible type "tuple[Callable[
+D3 reveal_mismatch L33 mypy:33[None]Any; ty:33[revealed-type]int; pyright:33[None]Unknown
+D4 reveal_mismatch L41 mypy:41[None]Never; ty:41[revealed-type]int; pyright:41[None]Unknown
+##### seed-f24c0d204fb8.json origin=seed seeds/harvested/gradual_any/ty__assignment__unbound__0.py
+1: # area: gradual_any
+2: # origin: ruff mdtest assignment/unbound.md block 0
+3: x = foo  # error: [unresolved-reference] "Name `foo` used when not defined"
+4: foo = 1
+5: 
+6: # No error `unresolved-reference` diagnostic is reported for `x`. This is
+7: # desirable because we would get a lot of cascading errors even though there
+8: # is only one root cause (the unbound variable `foo`).
+9: 
+10: # revealed: Unknown
+11: reveal_type(x)
+12: 
+runtime={'status': 'exception', 'exc_type': 'NameError', 'exc_line': 3, 'exc_message': "name 'foo' is not defined"}
+finding D1 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+D1 reveal_mismatch L11 mypy:11[None]int; ty:11[revealed-type]Unknown; pyright:11[None]Unknown
+##### seed-f4f250d4722c.json origin=seed seeds/harvested/narrowing_builtin/ty__narrow__complex_target__1.py
+1: # area: narrowing_builtin
+2: # origin: ruff mdtest narrow/complex_target.md block 1
+3: c = C()
+4: 
+5: if c.x is None:
+6:     reveal_type(c.x)  # revealed: None
+7:     c.x = 1
+8:     reveal_type(c.x)  # revealed: Literal[1]
+9:     c.x = None
+10:     reveal_type(c.x)  # revealed: None
+11: 
+12: reveal_type(c.x)  # revealed: int | None
+13: 
+runtime={'status': 'exception', 'exc_type': 'NameError', 'exc_line': 3, 'exc_message': "name 'C' is not defined"}
+finding D1 tier=review by=gate
+finding D2 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D4 tier=review by=gate
+D1 reveal_mismatch L6 mypy:6[None]None; ty:6[revealed-type]Unknown & None; pyright:6[None]None
+D2 reveal_mismatch L8 mypy:8[None]Any; ty:8[revealed-type]Literal[1]; pyright:8[None]Literal[1]
+D3 reveal_mismatch L10 mypy:10[None]Any; ty:10[revealed-type]None; pyright:10[None]None
+D4 reveal_mismatch L12 mypy:12[None]Any; ty:12[revealed-type](Unknown & ~None) | None; pyright:12[None]Unknown | None
+##### seed-fd53627f1d44.json origin=seed seeds/harvested/gradual_any/ty__annotations__string__15.py
+1: # area: gradual_any
+2: # origin: ruff mdtest annotations/string.md block 15
+3: a: "int" = 1
+4: b: "'int'" = 1
+5: # snapshot
+6: c: """'"int"'""" = 1
+7: d: "Foo"
+8: # error: [invalid-assignment] "Object of type `Literal[1]` is not assignable to `Foo`"
+9: e: "Foo" = 1
+10: # snapshot
+11: f: "'str | int | bool | Foo | Bar'" = 1
+12: 
+13: class Foo: ...
+14: 
+15: d = Foo()
+16: 
+17: reveal_type(a)  # revealed: Literal[1]
+18: reveal_type(b)  # revealed: Literal[1]
+19: reveal_type(c)  # revealed: Literal[1]
+20: reveal_type(d)  # revealed: Foo
+21: reveal_type(e)  # revealed: Foo
+22: reveal_type(f)  # revealed: Literal[1]
+23: 
+runtime={'status': 'success', 'exc_type': None, 'exc_line': None, 'exc_message': None}
+finding D1 tier=review by=gate
+finding D2 tier=review by=gate
+finding D3 tier=review by=gate
+finding D4 tier=dismissed by=kb:LITERAL-WIDENING
+finding D5 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D6 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+finding D7 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY
+D1 only_mypy L4 mypy:4[valid-type]Invalid type comment or annotation
+D2 concern_mismatch L6 mypy:6[valid-type]Invalid type comment or annotation; ty:6[invalid-syntax-in-forward-annotation]Syntax error in forward annotation: Too many levels of nested string a
+D3 concern_mismatch L11 mypy:11[valid-type]Invalid type comment or annotation; ty:11[invalid-syntax-in-forward-annotation]Syntax error in forward annotation: Nested string annotation is too lo; pyright:11[reportUndefinedVariable]"Bar" is not defined
+D4 reveal_mismatch L17 mypy:17[None]int; ty:17[revealed-type]Literal[1]; pyright:17[None]Literal[1]
+D5 reveal_mismatch L18 mypy:18[None]Any; ty:18[revealed-type]Literal[1]; pyright:18[None]Literal[1]
+D6 reveal_mismatch L19 mypy:19[None]Any; ty:19[revealed-type]Literal[1]; pyright:19[None]Literal[1]
+D7 reveal_mismatch L22 mypy:22[None]Any; ty:22[revealed-type]Literal[1]; pyright:22[None]Unknown | Literal[1]

@@ -1,0 +1,281 @@
+new dismissals 76, reopened 2
+pool 76
+=== seeds/harvested/gradual_any/ty__exception__control_flow__92.py D13 L35 runtime=exception NameError exc_line=16 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    35:     reveal_type(x)  # revealed: G
+    mypy: L35 [None] Any
+    ty: L35 [revealed-type] G
+    pyright: L35 [None] G
+    other-mypy: L32 [assignment] Incompatible types in assignment (expression has type "F", variable has type "int") :: x = could_raise_returns_F()
+    other-mypy: L34 [assignment] Incompatible types in assignment (expression has type "G", variable has type "int") :: x = could_raise_returns_G()
+    other-mypy: L15 [None] Revealed type is "int" :: reveal_type(x)  # revealed: Literal[1]
+    other-ty: L15 [revealed-type] Revealed type: `Literal[1]` :: reveal_type(x)  # revealed: Literal[1]
+    other-mypy: L17 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: A
+    other-ty: L17 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: A
+    other-mypy: L19 [None] Revealed type is "int" :: reveal_type(x)  # revealed: Literal[1] | A
+    other-ty: L19 [revealed-type] Revealed type: `Literal[1] | Unknown` :: reveal_type(x)  # revealed: Literal[1] | A
+    other-mypy: L21 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: B
+    other-ty: L21 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: B
+    other-mypy: L23 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: C
+    other-ty: L23 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: C
+    other-mypy: L25 [None] Revealed type is "int" :: reveal_type(x)  # revealed: Literal[1] | A
+    other-ty: L25 [revealed-type] Revealed type: `Literal[1] | Unknown` :: reveal_type(x)  # revealed: Literal[1] | A
+    other-mypy: L27 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: D
+    other-ty: L27 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: D
+    other-mypy: L29 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: E
+    other-ty: L29 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: E
+    other-mypy: L31 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: A
+    other-ty: L31 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: A
+    other-mypy: L33 [None] Revealed type is "Any" :: reveal_type(x)  # revealed: F
+    other-ty: L33 [revealed-type] Revealed type: `F` :: reveal_type(x)  # revealed: F
+=== seeds/harvested/constructors_metaclasses/mypy__check_classes__testInvalidVariableAsMetaclass.py D2 L10 runtime=exception TypeError exc_line=6 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    10: reveal_type(A.y) # N: Revealed type is "builtins.int"
+    mypy: L10 [None] int
+    ty: L10 [revealed-type] Unknown
+    pyright: L10 [None] int
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__84.py D2 L6 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    6: reveal_type(a)  # revealed: Unknown
+    mypy: L6 [None] str
+    ty: L6 [revealed-type] Unknown
+    pyright: L6 [None] LiteralString
+    other-mypy: L4 [str-unpack] Unpacking a string is disallowed :: a, b = "\u9e6c"
+    other-ty: L4 [invalid-assignment] Not enough values to unpack: Expected 2 :: a, b = "\u9e6c"
+=== seeds/harvested/gradual_any/ty__class__slots__34.py D2 L7 runtime=exception NameError exc_line=3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    7: reveal_type(StringChild().value)  # revealed: str
+    mypy: L7 [None] str
+    ty: L7 [revealed-type] Unknown
+    pyright: L7 [None] str
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__76.py D2 L5 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    5: reveal_type(a)  # revealed: Unknown
+    mypy: L5 [None] str
+    ty: L5 [revealed-type] Unknown
+    pyright: L5 [None] LiteralString
+    other-mypy: L4 [str-unpack] Unpacking a string is disallowed :: a, *b, c, d = "ab"
+    other-ty: L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, *b, c, d = "ab"
+=== seeds/harvested/constructors_metaclasses/mypy__check_newsemanal__testNewAnalyzerMetaclass1.py D2 L10 runtime=exception NameError exc_line=3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    10: reveal_type(A.f()) # N: Revealed type is "builtins.int"
+    mypy: L10 [None] int
+    ty: L10 [revealed-type] Unknown
+    pyright: L10 [None] Unknown
+    pyright: L10 [reportAttributeAccessIssue] Cannot access attribute "f" for class "type[A]"
+    other-ty: L3 [unresolved-reference] Name `B` used when not defined :: class A(metaclass=B):
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__77.py D5 L8 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    8: reveal_type(d)  # revealed: Unknown
+    mypy: L8 [None] str
+    ty: L8 [revealed-type] Unknown
+    pyright: L8 [None] LiteralString
+    other-mypy: L4 [str-unpack] Unpacking a string is disallowed :: a, b, *c, d = "a"
+    other-ty: L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, b, *c, d = "a"
+    other-mypy: L5 [None] Revealed type is "str" :: reveal_type(a)  # revealed: Unknown
+    other-ty: L5 [revealed-type] Revealed type: `Unknown` :: reveal_type(a)  # revealed: Unknown
+    other-mypy: L6 [None] Revealed type is "str" :: reveal_type(b)  # revealed: Unknown
+    other-ty: L6 [revealed-type] Revealed type: `Unknown` :: reveal_type(b)  # revealed: Unknown
+    other-mypy: L7 [None] Revealed type is "list[str]" :: reveal_type(c)  # revealed: list[Unknown]
+    other-ty: L7 [revealed-type] Revealed type: `list[Unknown]` :: reveal_type(c)  # revealed: list[Unknown]
+=== seeds/harvested/constructors_metaclasses/mypy__check_classes__testMetaclassAsAny.py D5 L11 runtime=exception NameError exc_line=6 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    11: reveal_type(WithMeta.x)   # N: Revealed type is "builtins.int"
+    mypy: L11 [None] int
+    ty: L11 [revealed-type] Unknown
+    pyright: L11 [None] int
+    other-ty: L6 [unresolved-reference] Name `MyAny` used when not defined :: class WithMeta(metaclass=MyAny):
+    other-mypy: L9 [None] Revealed type is "Any" :: reveal_type(WithMeta.a)   # N: Revealed type is "Any"
+    other-ty: L9 [revealed-type] Revealed type: `Unknown` :: reveal_type(WithMeta.a)   # N: Revealed type is "Any"
+    other-mypy: L10 [None] Revealed type is "Any" :: reveal_type(WithMeta.m)   # N: Revealed type is "Any"
+    other-ty: L10 [revealed-type] Revealed type: `Unknown` :: reveal_type(WithMeta.m)   # N: Revealed type is "Any"
+=== seeds/harvested/self_classmethods/mypy__check_selftype__testSelfTypeGenericClassNoClashInstanceMethod.py D3 L22 runtime=success None exc_line=None tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    22:     reveal_type(x)  # N: Revealed type is "__main__.SubWrapper[S`-1]"
+    mypy: L22 [None] case.SubWrapper[S]
+    ty: L22 [revealed-type] Unknown
+    pyright: L22 [None] Unknown
+    other-ty: L17 [unresolved-reference] Name `wrapper` used when not defined :: return wrapper.create_wrapper(descriptor)
+    other-ty: L21 [unresolved-reference] Name `wrapper` used when not defined :: x = wrapper.create_wrapper(descriptor)
+=== seeds/harvested/protocols/mypy__check_protocols__testProtocolClassValDescriptor.py D4 L22 runtime=exception NameError exc_line=7 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    22: reveal_type(tt.x)  # N: Revealed type is "__main__.Desc"
+    mypy: L22 [None] case.Desc
+    ty: L22 [revealed-type] Unknown
+    pyright: L22 [None] Unknown
+    other-ty: L7 [unresolved-reference] Name `Desc` used when not defined :: def __get__(self, instance: None, owner: object) -> Desc: ...
+    other-ty: L19 [invalid-assignment] Object of type `C` is not assignable to `P` :: t: P = C()
+    other-ty: L21 [invalid-assignment] Object of type `<class 'C'>` is not assignable to `type[P]` :: tt: Type[P] = C
+=== seeds/harvested/gradual_any/ty__subscript__bytes__0.py D11 L17 runtime=exception IndexError exc_line=16 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    17: reveal_type(x)  # revealed: Unknown
+    mypy: L17 [None] int
+    ty: L17 [revealed-type] Unknown
+    pyright: L17 [None] int
+    other-ty: L16 [index-out-of-bounds] Index 5 is out of bounds for bytes literal `Literal[b"\x00abc\xff"]` with length 5 :: x = b[5]  # error: [index-out-of-bounds] "Index 5 is out of bounds for bytes lit
+    other-mypy: L5 [None] Revealed type is "int" :: reveal_type(b[0])  # revealed: Literal[0]
+    other-ty: L5 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[0])  # revealed: Literal[0]
+    other-mypy: L6 [None] Revealed type is "int" :: reveal_type(b[1])  # revealed: Literal[97]
+    other-ty: L6 [revealed-type] Revealed type: `Literal[97]` :: reveal_type(b[1])  # revealed: Literal[97]
+    other-mypy: L7 [None] Revealed type is "int" :: reveal_type(b[4])  # revealed: Literal[255]
+    other-ty: L7 [revealed-type] Revealed type: `Literal[255]` :: reveal_type(b[4])  # revealed: Literal[255]
+    other-mypy: L9 [None] Revealed type is "int" :: reveal_type(b[-1])  # revealed: Literal[255]
+    other-ty: L9 [revealed-type] Revealed type: `Literal[255]` :: reveal_type(b[-1])  # revealed: Literal[255]
+    other-mypy: L10 [None] Revealed type is "int" :: reveal_type(b[-2])  # revealed: Literal[99]
+    other-ty: L10 [revealed-type] Revealed type: `Literal[99]` :: reveal_type(b[-2])  # revealed: Literal[99]
+    other-mypy: L11 [None] Revealed type is "int" :: reveal_type(b[-5])  # revealed: Literal[0]
+    other-ty: L11 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[-5])  # revealed: Literal[0]
+    other-mypy: L13 [None] Revealed type is "int" :: reveal_type(b[False])  # revealed: Literal[0]
+    other-ty: L13 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[False])  # revealed: Literal[0]
+    other-mypy: L14 [None] Revealed type is "int" :: reveal_type(b[True])  # revealed: Literal[97]
+    other-ty: L14 [revealed-type] Revealed type: `Literal[97]` :: reveal_type(b[True])  # revealed: Literal[97]
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__92.py D3 L6 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    6: reveal_type(b)  # revealed: Unknown
+    mypy: L6 [None] int
+    ty: L6 [revealed-type] Unknown
+    pyright: L6 [None] int
+    other-ty: L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, b, *c, d = b"a"
+    other-mypy: L5 [None] Revealed type is "int" :: reveal_type(a)  # revealed: Unknown
+    other-ty: L5 [revealed-type] Revealed type: `Unknown` :: reveal_type(a)  # revealed: Unknown
+=== seeds/harvested/gradual_any/ty__call__type__37.py D3 L8 runtime=exception TypeError exc_line=7 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    8: reveal_type(FromList().attr)  # revealed: int
+    mypy: L8 [None] Any
+    ty: L8 [revealed-type] int
+    pyright: L8 [None] Any
+    other-mypy: L7 [call-overload] No overload variant of "type" matches argument types "str", "list[type[Base]]", "dict[Neve :: FromList = type("FromList", [Base], {})
+    other-ty: L7 [invalid-argument-type] Invalid argument to parameter 2 (`bases`) of `type()`: Expected `tuple[object, ...]`, foun :: FromList = type("FromList", [Base], {})
+=== seeds/harvested/recursive_aliases/ty__generics__pep695__aliases__5.py D30 L98 runtime=exception TypeError exc_line=8 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    98:     reveal_type(x)  # revealed: Unknown
+    mypy: L98 [None] list[str] | list[int]
+    ty: L98 [revealed-type] Unknown
+    pyright: L98 [None] list[str] | list[int]
+    other-ty: L8 [not-subscriptable] Cannot subscript non-generic type alias `B` :: reveal_type(B[int])  # revealed: Unknown
+    other-mypy: L11 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(b: B[int]):
+    other-ty: L11 [not-subscriptable] Cannot specialize non-generic type alias `B` :: def _(b: B[int]):
+    other-mypy: L17 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(c: IntOrStr[int]):
+    other-ty: L17 [not-subscriptable] Cannot specialize non-generic type alias `IntOrStr` :: def _(c: IntOrStr[int]):
+    other-mypy: L23 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(l: ListOfInts[int]):
+    other-ty: L23 [not-subscriptable] Cannot specialize non-generic type alias `ListOfInts` :: def _(l: ListOfInts[int]):
+    other-ty: L29 [not-subscriptable] Cannot specialize non-generic type alias: Double specialization is not allowed :: reveal_type(List[int][str])  # revealed: Unknown
+    other-mypy: L34 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: reveal_type(SpecializedList[str])  # revealed: Unknown
+    other-ty: L34 [not-subscriptable] Cannot specialize non-generic type alias: Double specialization is not allowed :: reveal_type(SpecializedList[str])  # revealed: Unknown
+    other-mypy: L43 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(d: DoubleSpecialization[int]):
+    other-mypy: L49 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(doubly_specialized: Tuple[int]):
+    other-ty: L49 [not-subscriptable] Cannot specialize non-generic type alias `Tuple` :: def _(doubly_specialized: Tuple[int]):
+    other-mypy: L61 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(x: LegacyProtoInt[int]):
+    other-ty: L61 [not-subscriptable] Cannot specialize non-generic type alias `LegacyProtoInt` :: def _(x: LegacyProtoInt[int]):
+    other-mypy: L70 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(x: ProtoInt[int]):
+    other-ty: L70 [not-subscriptable] Cannot specialize non-generic type alias `ProtoInt` :: def _(x: ProtoInt[int]):
+    other-mypy: L74 [misc] All bases of a new TypedDict must be TypedDict types :: class LegacyDict(TypedDict[T]):
+    other-mypy: L74 [valid-type] Variable "typing.TypedDict" is not valid as a type :: class LegacyDict(TypedDict[T]):
+    other-ty: L76 [unbound-type-variable] Type variable `T` is not bound to any outer generic context :: x: T
+    other-ty: L79 [invalid-type-form] Non-generic class `LegacyDict` cannot be specialized in a type expression :: type LegacyDictInt = LegacyDict[int]
+    other-mypy: L82 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(x: LegacyDictInt[int]):
+    other-ty: L82 [not-subscriptable] Cannot specialize non-generic type alias `LegacyDictInt` :: def _(x: LegacyDictInt[int]):
+    other-mypy: L91 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(x: DictInt[int]):
+    other-ty: L91 [not-subscriptable] Cannot specialize non-generic type alias `DictInt` :: def _(x: DictInt[int]):
+    other-mypy: L97 [type-arg] Bad number of arguments for type alias, expected 0, given 1 :: def _(x: Union[int]):
+    other-ty: L97 [not-subscriptable] Cannot specialize non-generic type alias `Union` :: def _(x: Union[int]):
+    other-mypy: L8 [None] Revealed type is "typing.TypeAliasType" :: reveal_type(B[int])  # revealed: Unknown
+    other-ty: L8 [revealed-type] Revealed type: `Unknown` :: reveal_type(B[int])  # revealed: Unknown
+    other-mypy: L12 [None] Revealed type is "int" :: reveal_type(b)  # revealed: Unknown
+    other-ty: L12 [revealed-type] Revealed type: `Unknown` :: reveal_type(b)  # revealed: Unknown
+    other-mypy: L18 [None] Revealed type is "int | str" :: reveal_type(c)  # revealed: Unknown
+    other-ty: L18 [revealed-type] Revealed type: `Unknown` :: reveal_type(c)  # revealed: Unknown
+    other-mypy: L24 [None] Revealed type is "list[int]" :: reveal_type(l)  # revealed: Unknown
+    other-ty: L24 [revealed-type] Revealed type: `Unknown` :: reveal_type(l)  # revealed: Unknown
+    other-mypy: L29 [None] Revealed type is "types.GenericAlias" :: reveal_type(List[int][str])  # revealed: Unknown
+    other-ty: L29 [revealed-type] Revealed type: `Unknown` :: reveal_type(List[int][str])  # revealed: Unknown
+    other-mypy: L34 [None] Revealed type is "Overload(def () -> list[int], def (typing.Iterable[int]) -> list[int])" :: reveal_type(SpecializedList[str])  # revealed: Unknown
+    other-ty: L34 [revealed-type] Revealed type: `Unknown` :: reveal_type(SpecializedList[str])  # revealed: Unknown
+    other-mypy: L38 [None] Revealed type is "Any" :: reveal_type(l)  # revealed: Unknown
+    other-ty: L38 [revealed-type] Revealed type: `Unknown` :: reveal_type(l)  # revealed: Unknown
+    other-mypy: L44 [None] Revealed type is "Any" :: reveal_type(d)  # revealed: Unknown
+    other-ty: L44 [revealed-type] Revealed type: `Unknown` :: reveal_type(d)  # revealed: Unknown
+    other-mypy: L50 [None] Revealed type is "tuple[int, str]" :: reveal_type(doubly_specialized)  # revealed: Unknown
+    other-ty: L50 [revealed-type] Revealed type: `Unknown` :: reveal_type(doubly_specialized)  # revealed: Unknown
+    other-mypy: L62 [None] Revealed type is "case.LegacyProto[int]" :: reveal_type(x)  # revealed: Unknown
+    other-ty: L62 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: Unknown
+    other-mypy: L71 [None] Revealed type is "case.Proto[int]" :: reveal_type(x)  # revealed: Unknown
+    other-ty: L71 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: Unknown
+    other-mypy: L83 [None] Revealed type is "TypedDict(case.LegacyDict, {'x': int})" :: reveal_type(x)  # revealed: Unknown
+    other-ty: L83 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: Unknown
+    other-mypy: L92 [None] Revealed type is "TypedDict(case.Dict, {'x': int})" :: reveal_type(x)  # revealed: Unknown
+    other-ty: L92 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: Unknown
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__90.py D3 L6 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    6: reveal_type(b)  # revealed: Unknown
+    mypy: L6 [None] int
+    ty: L6 [revealed-type] Unknown
+    pyright: L6 [None] int
+    other-ty: L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = b"abc"
+    other-mypy: L5 [None] Revealed type is "int" :: reveal_type(a)  # revealed: Unknown
+    other-ty: L5 [revealed-type] Revealed type: `Unknown` :: reveal_type(a)  # revealed: Unknown
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__90.py D2 L5 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    5: reveal_type(a)  # revealed: Unknown
+    mypy: L5 [None] int
+    ty: L5 [revealed-type] Unknown
+    pyright: L5 [None] int
+    other-ty: L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = b"abc"
+=== seeds/harvested/typevartuple_unpack/ty__unpacking__76.py D4 L7 runtime=exception ValueError exc_line=4 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    7: reveal_type(c)  # revealed: Unknown
+    mypy: L7 [None] str
+    ty: L7 [revealed-type] Unknown
+    pyright: L7 [None] LiteralString
+    other-mypy: L4 [str-unpack] Unpacking a string is disallowed :: a, *b, c, d = "ab"
+    other-ty: L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, *b, c, d = "ab"
+    other-mypy: L5 [None] Revealed type is "str" :: reveal_type(a)  # revealed: Unknown
+    other-ty: L5 [revealed-type] Revealed type: `Unknown` :: reveal_type(a)  # revealed: Unknown
+    other-mypy: L6 [None] Revealed type is "list[str]" :: reveal_type(b)  # revealed: list[Unknown]
+    other-ty: L6 [revealed-type] Revealed type: `list[Unknown]` :: reveal_type(b)  # revealed: list[Unknown]
+=== seeds/harvested/gradual_any/ty__bidirectional__90.py D7 L19 runtime=success None exc_line=None tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=False
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    19:     reveal_type(x3)  # revealed: int | str | None
+    mypy: L19 [None] Any
+    ty: L19 [revealed-type] int | str | None
+    pyright: L19 [None] int | str | None
+    other-mypy: L12 [misc] Cannot infer value of type parameter "T" of "combine" :: x1: int | str | None = combine(y, [x], [z])
+    other-mypy: L15 [misc] Cannot infer value of type parameter "T" of "combine" :: x2 = combine(y, [x], [z])
+    other-mypy: L18 [misc] Cannot infer value of type parameter "T" of "combine_reversed" :: x3 = combine_reversed(y, [z], [x])
+    other-mypy: L16 [None] Revealed type is "Any" :: reveal_type(x2)  # revealed: int | str | None
+    other-ty: L16 [revealed-type] Revealed type: `int | str | None` :: reveal_type(x2)  # revealed: int | str | None
+=== seeds/harvested/gradual_any/ty__subscript__bytes__0.py D12 L20 runtime=exception IndexError exc_line=16 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    20: reveal_type(y)  # revealed: Unknown
+    mypy: L20 [None] int
+    ty: L20 [revealed-type] Unknown
+    pyright: L20 [None] int
+    other-ty: L16 [index-out-of-bounds] Index 5 is out of bounds for bytes literal `Literal[b"\x00abc\xff"]` with length 5 :: x = b[5]  # error: [index-out-of-bounds] "Index 5 is out of bounds for bytes lit
+    other-ty: L19 [index-out-of-bounds] Index -6 is out of bounds for bytes literal `Literal[b"\x00abc\xff"]` with length 5 :: y = b[-6]  # error: [index-out-of-bounds] "Index -6 is out of bounds for bytes l
+    other-mypy: L5 [None] Revealed type is "int" :: reveal_type(b[0])  # revealed: Literal[0]
+    other-ty: L5 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[0])  # revealed: Literal[0]
+    other-mypy: L6 [None] Revealed type is "int" :: reveal_type(b[1])  # revealed: Literal[97]
+    other-ty: L6 [revealed-type] Revealed type: `Literal[97]` :: reveal_type(b[1])  # revealed: Literal[97]
+    other-mypy: L7 [None] Revealed type is "int" :: reveal_type(b[4])  # revealed: Literal[255]
+    other-ty: L7 [revealed-type] Revealed type: `Literal[255]` :: reveal_type(b[4])  # revealed: Literal[255]
+    other-mypy: L9 [None] Revealed type is "int" :: reveal_type(b[-1])  # revealed: Literal[255]
+    other-ty: L9 [revealed-type] Revealed type: `Literal[255]` :: reveal_type(b[-1])  # revealed: Literal[255]
+    other-mypy: L10 [None] Revealed type is "int" :: reveal_type(b[-2])  # revealed: Literal[99]
+    other-ty: L10 [revealed-type] Revealed type: `Literal[99]` :: reveal_type(b[-2])  # revealed: Literal[99]
+    other-mypy: L11 [None] Revealed type is "int" :: reveal_type(b[-5])  # revealed: Literal[0]
+    other-ty: L11 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[-5])  # revealed: Literal[0]
+    other-mypy: L13 [None] Revealed type is "int" :: reveal_type(b[False])  # revealed: Literal[0]
+    other-ty: L13 [revealed-type] Revealed type: `Literal[0]` :: reveal_type(b[False])  # revealed: Literal[0]
+    other-mypy: L14 [None] Revealed type is "int" :: reveal_type(b[True])  # revealed: Literal[97]
+    other-ty: L14 [revealed-type] Revealed type: `Literal[97]` :: reveal_type(b[True])  # revealed: Literal[97]
+    other-mypy: L17 [None] Revealed type is "int" :: reveal_type(x)  # revealed: Unknown
+    other-ty: L17 [revealed-type] Revealed type: `Unknown` :: reveal_type(x)  # revealed: Unknown
+=== seeds/harvested/gradual_any/ty__bidirectional__91.py D3 L32 runtime=exception NameError exc_line=3 tier=dismissed by=kb:REVEAL-ERROR-RECOVERY hold=True
+    finding keys: {'tier': 'dismissed', 'dismissal': 'NOISE', 'decided_by': 'kb:REVEAL-ERROR-RECOVERY'}
+    32:     reveal_type(x4)  # revealed: A | dict[str, int]
+    mypy: L32 [None] Any
+    ty: L32 [revealed-type] A | dict[str, int]
+    pyright: L32 [None] A
+    other-mypy: L24 [misc] Cannot infer value of type parameter "T" of "pair_with_list" :: x2 = pair_with_list(a, [{"a": 1, "b": 2}])
+    other-mypy: L25 [None] Revealed type is "Any" :: reveal_type(x2)  # revealed: A | dict[str, int]
+    other-ty: L25 [revealed-type] Revealed type: `A | dict[str, int]` :: reveal_type(x2)  # revealed: A | dict[str, int]

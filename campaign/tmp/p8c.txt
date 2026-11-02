@@ -1,0 +1,140 @@
+cp: cannot stat '/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_classes__testForwardReferencesInNewTypeMRORecomputed.py': No such file or directory
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_classes__testForwardReferencesInNewTypeMRORecomputed.py
+--- source
+cat: case.py: No such file or directory
+--- mypy
+case.py: error: Cannot read file: No such file or directory
+--- ty
+WARN No python files found under the given path(s)
+error[io] `/tmp/s3chk.Oijucf/case.py`: No such file or directory (os error 2)
+Found 1 diagnostic
+--- pyright
+File or directory "file:///tmp/s3chk.Oijucf/case.py" does not exist
+--- cpython
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/bin/python: can't open file '/tmp/s3chk.Oijucf/case.py': [Errno 2] No such file or directory
+cp: cannot stat '/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_protocols__testSimpleProtocolOneMethodOverride.py': No such file or directory
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_protocols__testSimpleProtocolOneMethodOverride.py
+--- source
+cat: case.py: No such file or directory
+--- mypy
+case.py: error: Cannot read file: No such file or directory
+--- ty
+WARN No python files found under the given path(s)
+error[io] `/tmp/s3chk.FLrhcQ/case.py`: No such file or directory (os error 2)
+Found 1 diagnostic
+--- pyright
+File or directory "file:///tmp/s3chk.FLrhcQ/case.py" does not exist
+--- cpython
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/bin/python: can't open file '/tmp/s3chk.FLrhcQ/case.py': [Errno 2] No such file or directory
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/callables/mypy__check_unions__testSimplifyUnionWithCallable.py
+--- source
+     1	# area: callables
+     2	# origin: python/mypy check-unions.test [case testSimplifyUnionWithCallable]
+     3	from typing import TypeVar, Union, Any, Callable
+     4	
+     5	T = TypeVar('T')
+     6	S = TypeVar('S')
+     7	def u(x: T, y: S) -> Union[S, T]: pass
+     8	
+     9	class C: pass
+    10	class D(C): pass
+    11	
+    12	D_C: Callable[[D], C]
+    13	A_C: Callable[[Any], C]
+    14	D_A: Callable[[D], Any]
+    15	C_C: Callable[[C], C]
+    16	D_D: Callable[[D], D]
+    17	i_C: Callable[[int], C]
+    18	
+    19	# TODO: Test argument names and kinds once we have flexible callable types.
+    20	
+    21	reveal_type(u(D_C, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    22	
+    23	reveal_type(u(A_C, D_C)) # N: Revealed type is "(def (__main__.D) -> __main__.C) | (def (Any) -> __main__.C)"
+    24	reveal_type(u(D_C, A_C)) # N: Revealed type is "(def (Any) -> __main__.C) | (def (__main__.D) -> __main__.C)"
+    25	
+    26	reveal_type(u(D_A, D_C)) # N: Revealed type is "(def (__main__.D) -> __main__.C) | (def (__main__.D) -> Any)"
+    27	reveal_type(u(D_C, D_A)) # N: Revealed type is "(def (__main__.D) -> Any) | (def (__main__.D) -> __main__.C)"
+    28	
+    29	reveal_type(u(D_C, C_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    30	reveal_type(u(C_C, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    31	
+    32	reveal_type(u(D_C, D_D)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    33	reveal_type(u(D_D, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    34	
+    35	reveal_type(u(D_C, i_C)) # N: Revealed type is "(def (builtins.int) -> __main__.C) | (def (__main__.D) -> __main__.C)"
+    36	
+--- mypy
+case.py:7:1: error: Missing return statement  [empty-body]
+case.py:21:13: note: Revealed type is "def (case.D) -> case.C"
+case.py:23:13: note: Revealed type is "(def (case.D) -> case.C) | (def (Any) -> case.C)"
+case.py:24:13: note: Revealed type is "(def (Any) -> case.C) | (def (case.D) -> case.C)"
+case.py:26:13: note: Revealed type is "(def (case.D) -> case.C) | (def (case.D) -> Any)"
+case.py:27:13: note: Revealed type is "(def (case.D) -> Any) | (def (case.D) -> case.C)"
+case.py:29:13: note: Revealed type is "def (case.D) -> case.C"
+case.py:30:13: note: Revealed type is "def (case.D) -> case.C"
+--- ty
+case.py:7:22: error[empty-body] Function always implicitly returns `None`, which is not assignable to return type `S@u | T@u`
+case.py:21:1: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:21:13: info[revealed-type] Revealed type: `Unknown`
+case.py:21:15: error[unresolved-reference] Name `D_C` used when not defined
+case.py:21:20: error[unresolved-reference] Name `D_C` used when not defined
+case.py:23:1: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:23:13: info[revealed-type] Revealed type: `Unknown`
+case.py:23:15: error[unresolved-reference] Name `A_C` used when not defined
+--- pyright
+/tmp/s3chk.BB4PRI/case.py
+  /tmp/s3chk.BB4PRI/case.py:7:22 - error: Function with declared return type "S@u | T@u" must return value on all code paths
+    Type "None" is not assignable to type "S@u | T@u"
+      Type "None" is not assignable to type "S@u"
+      Type "None" is not assignable to type "T@u" (reportReturnType)
+  /tmp/s3chk.BB4PRI/case.py:21:13 - information: Type of "u(D_C, D_C)" is "Unknown"
+  /tmp/s3chk.BB4PRI/case.py:21:15 - error: "D_C" is unbound (reportUnboundVariable)
+  /tmp/s3chk.BB4PRI/case.py:21:20 - error: "D_C" is unbound (reportUnboundVariable)
+--- cpython
+  File "/tmp/s3chk.BB4PRI/case.py", line 21, in <module>
+    reveal_type(u(D_C, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    ^^^^^^^^^^^
+NameError: name 'reveal_type' is not defined
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_newsemanal__testForwardBaseDeferAttr.py
+--- source
+     1	# area: gradual_any
+     2	# origin: python/mypy check-newsemanal.test [case testForwardBaseDeferAttr]
+     3	from typing import Optional, Callable, TypeVar
+     4	
+     5	class C(B):
+     6	    def a(self) -> None:
+     7	        reveal_type(self._foo)  # N: Revealed type is "builtins.int | None"
+     8	        self._foo = defer()
+     9	
+    10	class B:
+    11	    def __init__(self) -> None:
+    12	        self._foo: Optional[int] = None
+    13	
+    14	T = TypeVar("T")
+    15	def deco(fn: Callable[[], T]) -> Callable[[], T]: ...
+    16	
+    17	@deco
+    18	def defer() -> int: ...
+    19	
+--- mypy
+case.py:7:21: note: Revealed type is "int | None"
+case.py:15:1: error: Missing return statement  [empty-body]
+case.py:18:1: error: Missing return statement  [empty-body]
+--- ty
+case.py:5:9: error[unresolved-reference] Name `B` used when not defined
+case.py:7:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:7:21: info[revealed-type] Revealed type: `Unknown`
+case.py:15:34: error[empty-body] Function always implicitly returns `None`, which is not assignable to return type `() -> T@deco`
+case.py:18:16: error[empty-body] Function always implicitly returns `None`, which is not assignable to return type `int`
+Found 5 diagnostics
+--- pyright
+/tmp/s3chk.IMMgoo/case.py
+  /tmp/s3chk.IMMgoo/case.py:5:9 - error: "B" is not defined (reportUndefinedVariable)
+  /tmp/s3chk.IMMgoo/case.py:7:21 - information: Type of "self._foo" is "int"
+1 error, 0 warnings, 1 information
+--- cpython
+  File "/tmp/s3chk.IMMgoo/case.py", line 5, in <module>
+    class C(B):
+            ^
+NameError: name 'B' is not defined

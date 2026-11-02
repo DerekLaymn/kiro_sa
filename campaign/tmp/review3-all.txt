@@ -1,0 +1,79 @@
+n=76 crash_at_reveal=[]
+Counter({'kb:REVEAL-ERROR-RECOVERY': 76})
+Counter({'ty': 49, 'mypy': 27})
+True | mypy__check_type_aliases__testAliasRefOnClass.py | D6 | 28 | reveal_type(w)  # N: Revealed type is "__main__.C[builtins.i | ty | Unknown | case.C[int] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 14
+False | ty__unpacking__74.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__74.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__74.py | D4 | 7 | reveal_type(c)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | mypy__check_overloading__testOverloadingInferUnionReturnWithFunctionTypevarReturn.py | D5 | 26 | reveal_type(a2)  # N: Revealed type is "__main__.A" | ty | Unknown | case.A | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | mypy__check_optional__testNarrowingFromObjectToOptional.py | D2 | 7 | reveal_type(x) # N: Revealed type is "builtins.int | None" | ty | Unknown | int | None | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 6
+True | ty__subscript__bytes__0.py | D11 | 17 | reveal_type(x)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | IndexError | 16
+True | ty__subscript__bytes__0.py | D12 | 20 | reveal_type(y)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | IndexError | 16
+False | ty__assignment__augmented__3.py | D5 | 17 | reveal_type(x)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__unpacking__75.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__75.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | mypy__check_protocols__testProtocolClassValDescriptor.py | D4 | 22 | reveal_type(tt.x)  # N: Revealed type is "__main__.Desc" | ty | Unknown | case.Desc | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 7
+False | ty__call__type__20.py | D2 | 12 | reveal_type(X)  # revealed: <class 'X'> | mypy | Any | <class 'X'> | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__call__type__20.py | D3 | 15 | reveal_type(X.x)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__call__type__20.py | D4 | 16 | reveal_type(X.y)  # revealed: str | mypy | Any | str | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__bidirectional__90.py | D6 | 16 | reveal_type(x2)  # revealed: int | str | None | mypy | Any | int | str | None | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__bidirectional__90.py | D7 | 19 | reveal_type(x3)  # revealed: int | str | None | mypy | Any | int | str | None | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__bidirectional__90.py | D8 | 25 | reveal_type(x)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__bidirectional__90.py | D9 | 37 | reveal_type(x)  # revealed: str | None | mypy | Any | str | None | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | mypy__check_classes__testMetaclassAsAny.py | D5 | 11 | reveal_type(WithMeta.x)   # N: Revealed type is "builtins.in | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 6
+False | ty__unpacking__54.py | D8 | 11 | reveal_type(first)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__54.py | D10 | 13 | reveal_type(last)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__generics__pep695__aliases__5.py | D30 | 98 | reveal_type(x)  # revealed: Unknown | ty | Unknown | list[str] | list[int] | kb:REVEAL-ERROR-RECOVERY | exception | TypeError | 8
+True | ty__call__type__24.py | D7 | 20 | reveal_type(super(RegularChild, rc).method())  # revealed: i | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__call__methods__41.py | D2 | 9 | reveal_type(D.f(1))  # revealed: Literal["a"] | ty | Unknown | Literal['a'] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 5
+False | ty__unpacking__92.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__92.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__92.py | D5 | 8 | reveal_type(d)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__77.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__77.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__77.py | D5 | 8 | reveal_type(d)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | mypy__check_newsemanal__testNewAnalyzerMetaclass1.py | D2 | 10 | reveal_type(A.f()) # N: Revealed type is "builtins.int" | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | ty__unpacking__83.py | D2 | 6 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__83.py | D3 | 7 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__bidirectional__61.py | D4 | 29 | reveal_type(x17)  # revealed: list[list[int]] | mypy | Any | list[list[int]] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 28
+False | ty__bidirectional__61.py | D5 | 32 | reveal_type(x18)  # revealed: list[list[Any]] | mypy | Any | list[list[int]] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 28
+True | ty__unpacking__90.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__90.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__call__type__19.py | D2 | 11 | reveal_type(Y)  # revealed: <class 'Y'> | mypy | Any | <class 'Y'> | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__call__type__19.py | D3 | 14 | reveal_type(Y.z)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__bidirectional__62.py | D3 | 17 | reveal_type(x22)  # revealed: dict[str, Literal["+", "-"]] | mypy | Any | dict[str, str] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 5
+False | ty__exception__control_flow__92.py | D12 | 33 | reveal_type(x)  # revealed: F | mypy | Any | F | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 16
+False | ty__exception__control_flow__92.py | D13 | 35 | reveal_type(x)  # revealed: G | mypy | Any | G | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 16
+False | mypy__check_selftype__testSelfTypeGenericClassNoClashInstanceMethod.py | D3 | 22 | reveal_type(x)  # N: Revealed type is "__main__.SubWrapper[S | ty | Unknown | case.SubWrapper[S] | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__class__slots__33.py | D2 | 10 | reveal_type(InitializedChild().value)  # revealed: int | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+True | mypy__check_newsemanal__testNewAnalyzerGenericsTypeVarForwardRef.py | D8 | 17 | reveal_type(c.get()) # N: Revealed type is "builtins.int" | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 5
+False | ty__bidirectional__78.py | D10 | 48 | reveal_type(x5)  # revealed: int | str | mypy | Any | int | str | kb:REVEAL-ERROR-RECOVERY | exception | NotImplementedError | 15
+False | ty__bidirectional__78.py | D15 | 86 | reveal_type(x8)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NotImplementedError | 15
+False | ty__bidirectional__101.py | D3 | 33 | reveal_type(x)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | success | None | None
+True | ty__bidirectional__91.py | D2 | 25 | reveal_type(x2)  # revealed: A | dict[str, int] | mypy | Any | A | dict[str, int] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+True | ty__bidirectional__91.py | D3 | 32 | reveal_type(x4)  # revealed: A | dict[str, int] | mypy | Any | A | dict[str, int] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | ty__subscript__string__0.py | D9 | 14 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | IndexError | 13
+False | ty__subscript__string__0.py | D10 | 17 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | IndexError | 13
+True | ty__unpacking__84.py | D2 | 6 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__84.py | D3 | 7 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__91.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__91.py | D4 | 7 | reveal_type(c)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__91.py | D5 | 8 | reveal_type(d)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__89.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__89.py | D3 | 6 | reveal_type(b)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__89.py | D4 | 7 | reveal_type(c)  # revealed: Unknown | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__76.py | D2 | 5 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__76.py | D4 | 7 | reveal_type(c)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+False | ty__unpacking__76.py | D5 | 8 | reveal_type(d)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__call__type__37.py | D3 | 8 | reveal_type(FromList().attr)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | exception | TypeError | 7
+True | ty__call__type__37.py | D4 | 14 | reveal_type(FromStarredList().attr)  # revealed: int | mypy | Any | int | kb:REVEAL-ERROR-RECOVERY | exception | TypeError | 7
+False | ty__class__slots__34.py | D2 | 7 | reveal_type(StringChild().value)  # revealed: str | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | mypy__check_classes__testInvalidVariableAsMetaclass.py | D2 | 10 | reveal_type(A.y) # N: Revealed type is "builtins.int" | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | TypeError | 6
+False | ty__assignment__unbound__0.py | D1 | 11 | reveal_type(x) | ty | Unknown | int | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | ty__narrow__complex_target__1.py | D2 | 8 | reveal_type(c.x)  # revealed: Literal[1] | mypy | Any | Literal[1] | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | ty__narrow__complex_target__1.py | D3 | 10 | reveal_type(c.x)  # revealed: None | mypy | Any | None | kb:REVEAL-ERROR-RECOVERY | exception | NameError | 3
+False | ty__annotations__string__15.py | D5 | 18 | reveal_type(b)  # revealed: Literal[1] | mypy | Any | Literal[1] | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__annotations__string__15.py | D6 | 19 | reveal_type(c)  # revealed: Literal[1] | mypy | Any | Literal[1] | kb:REVEAL-ERROR-RECOVERY | success | None | None
+False | ty__annotations__string__15.py | D7 | 22 | reveal_type(f)  # revealed: Literal[1] | mypy | Any | Literal[1] | kb:REVEAL-ERROR-RECOVERY | success | None | None
+True | ty__unpacking__85.py | D2 | 6 | reveal_type(a)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4
+True | ty__unpacking__85.py | D3 | 7 | reveal_type(b)  # revealed: Unknown | ty | Unknown | str | kb:REVEAL-ERROR-RECOVERY | exception | ValueError | 4

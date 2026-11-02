@@ -1,0 +1,25 @@
+total 373
+93 ('assign-name-undeclared', 'pyright-silent', 'ok', '') pyright__constrainedTypeVar15.py:L26
+56 ('assign-name-undeclared', 'pyright-silent', 'ok', 'suite-expects-err') mypy__check_expressions__testSimpleConditionalExpression.py:L9
+40 ('annassign', 'pyright-silent', 'ok', '') conformance__typeddicts_extra_items.py:L302
+23 ('annassign', 'pyright-agrees', 'ok', '') pyright__typeForm3.py:L41
+22 ('assign-name-declared', 'pyright-agrees', 'ok', 'suite-expects-err') mypy__check_generics__testGenericTypeBodyWithMultipleVariables.py:L12
+20 ('assign-name-undeclared', 'pyright-agrees', 'ok', 'suite-expects-err') mypy__check_generics__testGenericTypeBodyWithMultipleVariables.py:L13
+19 ('annassign', 'pyright-agrees', 'ok', 'suite-expects-err') ty__bidirectional__148.py:L18
+19 ('augassign-name-undeclared', 'pyright-silent', 'ok', '') pyright__augmentedAssignment3.py:L10
+13 ('assign-name-declared', 'pyright-silent', 'ok', 'suite-expects-err') mypy__check_generic_subtyping__testSubtypingAndInheritingNonGenericTypeFromGenericType.py:L11
+13 ('assign-name-declared', 'pyright-silent', 'ok', '') ty__loops__while_loop__50.py:L9
+10 ('other-stmt', 'pyright-silent', 'ok', '') ty__narrow__complex_target__34.py:L5
+8 ('assign-name-undeclared', 'pyright-agrees', 'ok', '') pyright__annotatedVar3.py:L27
+7 ('assign-attr', 'pyright-silent', 'ok', 'suite-expects-err') mypy__check_generic_subtyping__testInheritanceFromGenericWithImplicitDynamic.py:L16
+5 ('assign-name-declared', 'pyright-agrees', 'ok', '') pyright__staticExpression1.py:L42
+5 ('assign-attr', 'pyright-agrees', 'ok', '') ty__loops__while_loop__56.py:L7
+4 ('assign-attr', 'pyright-agrees', 'ok', 'suite-expects-err') ty__generics__pep695__variables__59.py:L10
+4 ('augassign-name-declared', 'pyright-agrees', 'ok', 'suite-expects-err') pyright__typeVar6.py:L60
+3 ('assign-attr', 'pyright-silent', 'ok', '') pyright__augmentedAssignment3.py:L14
+2 ('other-stmt', 'pyright-agrees', 'ok', '') pyright__annotatedVar3.py:L42
+2 ('assign-tuple/other', 'pyright-agrees', 'ok', 'suite-expects-err') pyright__annotatedVar3.py:L53
+2 ('assign-subscript', 'pyright-silent', 'ok', '') ty__bidirectional__136.py:L5
+1 ('annassign', 'pyright-silent', 'ok', 'suite-expects-err') conformance__typeddicts_extra_items.py:L306
+1 ('annassign', 'pyright-agrees', 'cpython-raised', '') pyright__typeForm3.py:L44
+1 ('assign-tuple/other', 'pyright-silent', 'ok', '') ty__unpacking__56.py:L8

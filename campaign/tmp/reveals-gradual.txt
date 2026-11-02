@@ -1,0 +1,295 @@
+total 623 distinct 294
+48 | mypy: Any | ty: Unknown | pyright: Unknown | ty__call__type__17.py:L13
+25 | mypy: Any | ty: int | pyright: int | ty__call__type__25.py:L17
+21 | mypy: int | ty: Unknown | pyright: Unknown | mypy__check_classes__testForwardReferencesInNewTypeMRORecomputed.py:L11
+15 | mypy: str | ty: Unknown | pyright: LiteralString | ty__unpacking__74.py:L5
+15 | mypy: int | ty: Unknown | pyright: int | ty__annotations__string__12.py:L38
+11 | mypy: Any | ty: int | pyright: Any | ty__properties__25.py:L9
+10 | mypy: functools.partial[case.MyClass] | ty: partial[Unknown] | pyright: partial[MyClass] | ty__call__functools_partial__82.py:L12
+10 | mypy: Any | Any | ty: Unknown | pyright: Unknown | ty__narrow__conditionals__eq__93.py:L6
+9 | mypy: Any | ty: Foo | pyright: Foo | ty__call__constructor__30.py:L10
+9 | mypy: Any | ty: int | pyright: Unknown | ty__call__type__20.py:L15
+7 | mypy: Any | ty: str | pyright: Unknown | ty__type_qualifiers__initvar__8.py:L15
+7 | mypy: int | ty: Unknown | pyright: Unbound | mypy__check_generics__testTypeAliasesResultingInPlainInstance.py:L12
+7 | mypy: str | ty: Unknown | pyright: Unknown | mypy__check_typevar_values__testAttributeInGenericTypeWithTypevarValues3.py:L11
+7 | mypy: Any | ty: str | pyright: str | ty__annotations__generic_alias__3.py:L11
+6 | mypy: type[type] | ty: type[Unknown] | pyright: property | ty__call__type__85.py:L15
+6 | mypy: Any | ty: Unknown | pyright: int | mypy__check_overloading__testOverloadWithOverlappingItemsAndAnyArgument4.py:L13
+6 | mypy: Any | ty: bool | pyright: bool | ty__decorators__total_ordering__4.py:L27
+6 | mypy: int | ty: Unknown | pyright: None | ty__binary__instances__20.py:L12
+5 | mypy: Any | ty: T@constrained | Unknown | pyright: T@constrained | Unknown | ty__generics__pep695__variables__42.py:L5
+4 | mypy: list[None] | ty: list[None | Unknown] | pyright: list[None] | ty__literal__collections__list__5.py:L5
+4 | mypy: Any | None | ty: None | pyright: Any | None | ty__generics__pep695__variables__21.py:L7
+4 | mypy: Any | ty: None | Unknown | pyright: Unknown | None | ty__with__async__12.py:L18
+4 | mypy: Any | ty: Unknown | pyright: None | ty__subscript__lists__0.py:L13
+4 | mypy: case.C | ty: Unknown | pyright: Unbound | mypy__check_newsemanal__testNewAnalyzerTypeAlias.py:L16
+4 | mypy: list[Any] | ty: list[object] | pyright: list[int] | ty__bidirectional__82.py:L7
+4 | mypy: Any | ty: Never | pyright: None | ty__properties__16.py:L31
+4 | mypy: Any | ty: Literal[1] | pyright: Literal[1] | ty__enums__140.py:L8
+4 | mypy: Any | ty: bool | pyright: None | ty__decorators__total_ordering__19.py:L24
+3 | mypy: Any | ty: Foo | pyright: None | ty__call__constructor__9.py:L16
+3 | mypy: Any | ty: int | str | pyright: int | str | ty__unpacking__109.py:L13
+3 | mypy: set[Any] | ty: set[object] | pyright: set[int] | ty__bidirectional__83.py:L7
+3 | mypy: Any | ty: Unknown | int | pyright: int | ty__call__callable_instance__4.py:L13
+3 | mypy: list[int] | ty: list[Unknown] | pyright: list[Unknown] | ty__annotations__string__12.py:L30
+3 | mypy: Any | ty: <class 'C'> | pyright: type[C] | ty__scopes__dunder_class__0.py:L5
+3 | mypy: case.MyClass | ty: Unknown | pyright: MyClass | ty__call__functools_partial__82.py:L14
+3 | mypy: str | Any | ty: str | pyright: str | Unknown | ty__with__sync__47.py:L18
+3 | mypy: Any | ty: bool | pyright: Unknown | ty__comparison__tuples__20.py:L5
+3 | mypy: case.Parent | ty: Unknown | pyright: None | mypy__check_classes__testOperatorDoubleUnionStandardSubtyping.py:L17
+3 | mypy: Any | ty: str | pyright: Any | ty__properties__4.py:L32
+3 | mypy: Any | ty: int | pyright: bool | ty__decorators__total_ordering__14.py:L26
+3 | mypy: list[str] | ty: list[Unknown] | pyright: list[LiteralString] | ty__unpacking__77.py:L7
+3 | mypy: tuple[Literal[1]?, Literal['I like this']?] | ty: Any | pyright: int | ty__enums__51.py:L14
+3 | mypy: bool | ty: Unknown | pyright: Unknown | ty__narrow__type_guards__3.py:L13
+3 | mypy: Any | ty: Literal[1] | pyright: Any | ty__binary__booleans__0.py:L27
+3 | mypy: case.Foo | case.Bar | ty: Unknown | pyright: None | mypy__check_classes__testOperatorDoubleUnionNoRelationship2.py:L17
+3 | mypy: str | ty: Unknown | pyright: str | mypy__check_functions__testFunctionReturningGenericFunctionTwoLevelBinding.py:L13
+3 | mypy: Any | ty: str | bool | pyright: bool | ty__decorators__total_ordering__15.py:L25
+2 | mypy: list[int] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695WrongNumberOfConstrainedTypes.py:L6
+2 | mypy: list[str] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695WrongNumberOfConstrainedTypes.py:L10
+2 | mypy: int | Any | ty: Unknown | pyright: Unknown | Literal[1] | ty__exception__control_flow__89.py:L17
+2 | mypy: Any | ty: int | pyright: None | ty__scopes__class_implicit_attrs__1.py:L4
+2 | mypy: case.C | int | ty: Unknown | pyright: Unbound | mypy__check_newsemanal__testNewAnalyzerTypeAlias2.py:L9
+2 | mypy: None | ty: Unknown | pyright: Unknown | ty__expression__yield_and_yield_from__5.py:L10
+2 | mypy: case.C[case.D[Any]] | ty: Unknown | pyright: Unbound | mypy__check_python313__testRecursiveTypeVarDefaultMutualNewStyle.py:L11
+2 | mypy: case.D[case.C[Any]] | ty: Unknown | pyright: Unbound | mypy__check_python313__testRecursiveTypeVarDefaultMutualNewStyle.py:L12
+2 | mypy: Any | ty: Literal[0, 1] | pyright: Literal[0] | ty__exception__control_flow__57.py:L12
+2 | mypy: case.B | ty: Unknown | pyright: B | mypy__check_overloading__testOverloadInferUnionReturnMultipleArguments.py:L17
+2 | mypy: case.B | case.D | ty: Unknown | pyright: B | mypy__check_overloading__testOverloadInferUnionReturnMultipleArguments.py:L26
+2 | mypy: Any | ty: Literal[1, 2] | pyright: Literal[1, 2] | ty__enums__104.py:L15
+2 | mypy: dataclasses.InitVar[int] | ty: Any | pyright: InitVar[int] | ty__type_qualifiers__initvar__13.py:L8
+2 | mypy: int | None | ty: Unknown | pyright: Unbound | mypy__check_optional__testFlattenOptionalUnion.py:L8
+2 | mypy: int | ty: int | Divergent | pyright: int | ty__call__functools_partial__72.py:L12
+2 | mypy: case.Child | ty: Unknown | pyright: None | mypy__check_classes__testOperatorDoubleUnionStandardSubtyping.py:L20
+2 | mypy: list[Never] | ty: list[Unknown] | pyright: list[Unknown] | ty__literal__collections__list__0.py:L3
+2 | mypy: dict[case.X | int, Any] | ty: dict[X | int, Unknown] | pyright: dict[X | int, X] | ty__bidirectional__55.py:L50
+2 | mypy: dict[case.X | str, Any] | ty: dict[X | str, Unknown] | pyright: dict[X | int, X] | ty__bidirectional__55.py:L50
+2 | mypy: dict[case.X | int, Any] | ty: dict[X | int, Unknown] | pyright: dict[X | int, Unknown] | ty__bidirectional__55.py:L55
+2 | mypy: dict[case.X | str, Any] | ty: dict[X | str, Unknown] | pyright: dict[X | int, Unknown] | ty__bidirectional__55.py:L55
+2 | mypy: tuple[Any, ...] | ty: tuple[int | str, ...] | pyright: tuple[int | str, ...] | ty__unpacking__51.py:L4
+2 | mypy: list[Any] | ty: Unknown | pyright: Any | pyright__overloadResultController1.py:L42
+2 | mypy: dict[Any, Any] | ty: Unknown | pyright: Unknown | ty__generics__legacy__aliases__0.py:L20
+2 | mypy: case.B | ty: Unknown | pyright: Unknown | mypy__check_protocols__testProtocolClassObjectInference.py:L14
+2 | mypy: Any | ty: list[Unknown] | pyright: list[Unknown] | ty__unpacking__54.py:L6
+2 | mypy: list[int] | ty: list[Unknown] | pyright: list[int] | ty__unpacking__54.py:L12
+2 | mypy: str | Any | int | ty: Any | pyright: str | int | None | mypy__check_redefine2__testRegularNarrowingForNestedUnionWithNone.py:L10
+2 | mypy: type[list[Any]] | ty: type[list[int]] | pyright: type[list[int]] | ty__narrow__issubclass__18.py:L7
+2 | mypy: list[Any] | ty: list[int] | pyright: list[int] | ty__narrow__issubclass__18.py:L8
+2 | mypy: Any | ty: Literal[42] | pyright: Unknown | ty__call__type__15.py:L8
+2 | mypy: T | ty: Unknown | pyright: Unknown | ty__generics__pep695__variables__23.py:L12
+2 | mypy: Any | ty: Unknown & ~AlwaysFalsy | pyright: Unknown | ty__narrow__conditionals__nested__9.py:L12
+2 | mypy: Any | ty: Unknown | Literal[1] | pyright: int | ty__expression__lambda__9.py:L3
+2 | mypy: case.A | ty: Unknown | pyright: int | mypy__check_classes__testMetaclassOverloadResolution.py:L27
+2 | mypy: Any | ty: object | pyright: Unknown | ty__narrow__hasattr__1.py:L9
+2 | mypy: case.A[int] | ty: A[Unknown] | pyright: A[int] | mypy__check_classes__testClassValuedAttributesGeneric.py:L20
+2 | mypy: list[Any] | ty: list[int] | pyright: object | ty__narrow__conditionals__is__3.py:L5
+2 | mypy: Any | ty: bytes | pyright: Unknown | ty__expression__yield_and_yield_from__12.py:L10
+2 | mypy: Any | ty: list[list[int]] | pyright: Unknown | ty__bidirectional__61.py:L29
+2 | mypy: case.C[int] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695TypeAliasForwardReference5.py:L10
+2 | mypy: case.Out.In | ty: Unknown | pyright: Unbound | mypy__check_type_aliases__testNestedClassOnAliasAsType.py:L18
+2 | mypy: case.Out.In.Inner | ty: Unknown | pyright: Unbound | mypy__check_type_aliases__testNestedClassOnAliasAsType.py:L19
+2 | mypy: case.C[case.D] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695UpperBoundForwardReference1.py:L7
+2 | mypy: case.C[case.E] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695UpperBoundForwardReference1.py:L8
+2 | mypy: tuple[float, float] | ty: Any | pyright: Any | ty__enums__23.py:L14
+2 | mypy: case.C[Any] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695NonGenericAliasToGenericClass.py:L7
+2 | mypy: case.Bar | ty: Unknown | pyright: None | mypy__check_classes__testOperatorDoubleUnionNoRelationship2.py:L20
+2 | mypy: Any | ty: Unknown & ~AlwaysTruthy | pyright: Unknown | ty__loops__while_loop__60.py:L7
+2 | mypy: int | str | ty: Unknown | pyright: Unbound | mypy__check_basic__testMultilineQuotedAnnotation.py:L9
+2 | mypy: case.GenericShape[Never] | ty: GenericShape[Unknown] | pyright: GenericShape[Unknown] | ty__annotations__self__12.py:L22
+2 | mypy: case.GenericCircle[Never] | ty: GenericCircle[Unknown] | pyright: GenericCircle[Unknown] | ty__annotations__self__12.py:L27
+2 | mypy: list[list[Any]] | ty: list[Divergent] | pyright: list[Unknown] | ty__bidirectional__130.py:L5
+1 | mypy: case.Gen[int] | ty: Unknown | pyright: Gen[A@id_] | mypy__check_functions__testTypeVarIdClashPolymorphic.py:L18
+1 | mypy: Any | ty: str | Unknown | pyright: type[case.Spam] | ty__subscript__class__5.py:L14
+1 | mypy: case.C[case.Int[T]] | ty: C[Unknown] | pyright: C[Unknown] | mypy__check_generics__testOverloadedGenericInit.py:L20
+1 | mypy: case.C[case.Str[T]] | ty: C[Unknown] | pyright: C[Unknown] | mypy__check_generics__testOverloadedGenericInit.py:L21
+1 | mypy: Any | ty: Unknown & ~Literal["a"] & ~Literal["b"] & ~Literal["c"] & ~Literal["d"] | pyright: Unknown | ty__narrow__conditionals__in__14.py:L7
+1 | mypy: str | None | ty: Unknown | pyright: str | mypy__check_optional__testOverloadWithNoneAndOptional.py:L14
+1 | mypy: frozenset[Any] | ty: frozenset[object] | pyright: frozenset[Unknown] | ty__narrow__type__5.py:L31
+1 | mypy: Any | ty: Unknown | pyright: object | mypy__check_overloading__testOverloadWithOverlappingItemsAndAnyArgument7.py:L19
+1 | mypy: Any | ty: ChildCls | pyright: ChildCls | ty__call__type__25.py:L16
+1 | mypy: Any | ty: tuple[int, int] | tuple[int, str] | pyright: tuple[int, int] | tuple[int, str] | ty__unpacking__109.py:L14
+1 | mypy: case.Child | str | ty: Unknown | pyright: Child | mypy__check_overloading__testOverloadAndSelfTypes.py:L26
+1 | mypy: type[type] | ty: type[Unknown] | pyright: type[type[Forward]] | ty__call__type__85.py:L16
+1 | mypy: object | ty: Unknown | pyright: object | ty__comparison__intersections__31.py:L5
+1 | mypy: bool | ty: Unknown | pyright: bool | ty__comparison__intersections__31.py:L11
+1 | mypy: None | Any | int | ty: Unknown | pyright: Unknown | mypy__check_unions__testJoinUnionWithUnionAndAny.py:L9
+1 | mypy: int | None | Any | ty: Unknown | pyright: Unknown | mypy__check_unions__testJoinUnionWithUnionAndAny.py:L10
+1 | mypy: int | None | ty: Unknown | pyright: int | mypy__check_newsemanal__testForwardBaseDeferAttr.py:L7
+1 | mypy: typing.Sequence[case.Element[case.Bar]] | ty: Unknown | pyright: Unknown | mypy__check_classes__testNoCrashOnSelfWithForwardRefGenericClass.py:L15
+1 | mypy: Never | ty: Unknown | pyright: Never | ty__annotations__union__3.py:L7
+1 | mypy: Any | ty: Unknown & ~Literal["a"] & ~Literal["b"] & ~Literal["c"] & ~Literal[2] | pyright: Unknown | ty__narrow__conditionals__in__6.py:L7
+1 | mypy: case.D | Any | ty: Unknown | pyright: Unknown | mypy__check_overloading__testUnionMathTrickyOverload2.py:L17
+1 | mypy: dataclasses.InitVar[Never] | ty: Any | pyright: None | ty__type_qualifiers__initvar__13.py:L12
+1 | mypy: dataclasses.InitVar[str] | ty: Any | pyright: InitVar[Unknown] | ty__type_qualifiers__initvar__13.py:L14
+1 | mypy: dataclasses.InitVar[Any] | ty: Any | pyright: InitVar[Unknown] | ty__type_qualifiers__initvar__13.py:L18
+1 | mypy: case.O[int] | ty: O[Unknown] | pyright: O[Unknown] | mypy__check_classes__testNewReturnType5.py:L16
+1 | mypy: case.O[str] | ty: O[Unknown] | pyright: O[Unknown] | mypy__check_classes__testNewReturnType5.py:L17
+1 | mypy: Any | ty: Literal["before", 1] | pyright: int | Literal['before'] | ty__exception__control_flow__54.py:L13
+1 | mypy: int | str | None | ty: Unknown | pyright: Unbound | mypy__check_optional__testFlattenOptionalUnion.py:L6
+1 | mypy: dict[Any, Any] | ty: dict[str, list[int]] | pyright: dict[str, list[int]] | ty__bidirectional__114.py:L13
+1 | mypy: int | None | ty: Unknown | pyright: Unknown | object | mypy__check_optional__testNarrowingFromObjectToOptional.py:L7
+1 | mypy: list[Any] | ty: list[int | None] | pyright: list[Unknown] | ty__bidirectional__124.py:L5
+1 | mypy: case.Box[tuple[T?, ... | None]] | ty: Box[Unknown] | pyright: Box[tuple[Tree[Unknown], Tree | None]] | ty__generics__pep695__variables__85.py:L12
+1 | mypy: case.NestedBox[tuple[tuple[N?, ... | None], ... | None]] | ty: NestedBox[Unknown] | pyright: NestedBox[tuple[Tree[Tree[Tree[Unknown]]], Tree | None]] | ty__generics__pep695__variables__85.py:L13
+1 | mypy: list[str] | ty: list[Unknown] | pyright: list[Never] | ty__unpacking__40.py:L13
+1 | mypy: T | ty: Unknown | pyright: Self@B* | mypy__check_super__testSuperSelfTypeInstanceMethod.py:L12
+1 | mypy: Any | ty: Unknown & ~Literal["a"] & ~Literal["b"] & ~Literal["c"] | pyright: Unknown | ty__narrow__conditionals__in__15.py:L8
+1 | mypy: case.G[case.G[Any]] | ty: Unknown | pyright: Unbound | mypy__check_classes__testForwardInstanceWithNoArgs.py:L10
+1 | mypy: Any | ty: str | pyright: type[WithMeta] | ty__subscript__class__7.py:L9
+1 | mypy: list[tuple[None]] | ty: list[tuple[None | Unknown]] | pyright: list[tuple[None]] | ty__literal__collections__list__5.py:L7
+1 | mypy: list[list[None]] | ty: list[list[None | Unknown]] | pyright: list[list[None]] | ty__literal__collections__list__5.py:L8
+1 | mypy: tuple[tuple[tuple[tuple[list[None]]]]] | ty: tuple[tuple[tuple[tuple[list[None | Unknown]]]]] | pyright: tuple[tuple[tuple[tuple[list[None]]]]] | ty__literal__collections__list__5.py:L33
+1 | mypy: case.Desc | ty: Unknown | pyright: Unknown | mypy__check_protocols__testProtocolClassValDescriptor.py:L22
+1 | mypy: case.C[case.D[case.X]] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695UpperBoundForwardReference3.py:L14
+1 | mypy: case.C[case.E[case.X]] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695UpperBoundForwardReference3.py:L15
+1 | mypy: Any | ty: <class 'X'> | pyright: type[X] | ty__call__type__20.py:L12
+1 | mypy: Any | ty: int | str | None | pyright: int | str | ty__bidirectional__90.py:L16
+1 | mypy: Any | ty: int | str | None | pyright: int | str | None | ty__bidirectional__90.py:L19
+1 | mypy: Any | ty: str | None | pyright: str | ty__bidirectional__90.py:L37
+1 | mypy: Any | ty: dict[str, Field[Any]] | pyright: Unknown | ty__call__type__26.py:L16
+1 | mypy: Any | ty: LambdaNew | pyright: LambdaNew | ty__call__constructor__4.py:L6
+1 | mypy: case.Node[Any, Any] | ty: Node[T@SameNode, T@SameNode] | pyright: Node[Unknown, Unknown] | mypy__check_generics__testGenericTypeAliasesRuntimeExpressionsInstance.py:L19
+1 | mypy: type[type] | ty: type[Unknown] | pyright: type[type[Reversed]] | ty__call__type__83.py:L16
+1 | mypy: Any | ty: Literal[9223372036854775807] | pyright: Literal[1] | ty__enums__154.py:L7
+1 | mypy: Any | ty: int | pyright: Literal[2] | ty__enums__154.py:L8
+1 | mypy: Any | ty: Unknown | pyright: Literal['a'] | ty__narrow__conditionals__eq__99.py:L28
+1 | mypy: Any | ty: bool & Unknown | pyright: Unknown | ty__comparison__intersections__12.py:L6
+1 | mypy: Any | ty: Literal[1, 2] | pyright: int | ty__scopes__nonlocal__39.py:L11
+1 | mypy: Any | ty: Literal[2, 3] | pyright: Literal[3] | ty__scopes__nonlocal__39.py:L14
+1 | mypy: Any | ty: type[_TMeta@__call__] | pyright: Unknown | ty__class__super__5.py:L16
+1 | mypy: typing.TypeAliasType | ty: Unknown | pyright: GenericAlias | ty__generics__pep695__aliases__5.py:L8
+1 | mypy: int | str | ty: Unknown | pyright: int | str | ty__generics__pep695__aliases__5.py:L18
+1 | mypy: list[int] | ty: Unknown | pyright: list[int] | ty__generics__pep695__aliases__5.py:L24
+1 | mypy: types.GenericAlias | ty: Unknown | pyright: TypeAliasType | ty__generics__pep695__aliases__5.py:L29
+1 | mypy: tuple[int, str] | ty: Unknown | pyright: tuple[int, str] | ty__generics__pep695__aliases__5.py:L50
+1 | mypy: case.LegacyProto[int] | ty: Unknown | pyright: LegacyProto[int] | ty__generics__pep695__aliases__5.py:L62
+1 | mypy: case.Proto[int] | ty: Unknown | pyright: Proto[int] | ty__generics__pep695__aliases__5.py:L71
+1 | mypy: list[str] | list[int] | ty: Unknown | pyright: list[str] | list[int] | ty__generics__pep695__aliases__5.py:L98
+1 | mypy: Any | ty: object | pyright: object | ty__bidirectional__97.py:L16
+1 | mypy: Any | ty: str | int | pyright: type[A] | type[B] | ty__subscript__class__4.py:L15
+1 | mypy: type[object] | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyingUnionWithTypeTypes1.py:L14
+1 | mypy: type[str] | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyingUnionWithTypeTypes1.py:L15
+1 | mypy: type[Any] | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyingUnionWithTypeTypes1.py:L16
+1 | mypy: Any | ty: type[Foo] | pyright: type[Foo] | ty__call__type__30.py:L9
+1 | mypy: Any | ty: list[Unknown] | pyright: list[int] | ty__unpacking__23.py:L6
+1 | mypy: int | Any | str | ty: Unknown | pyright: None | ty__binary__unions__1.py:L7
+1 | mypy: case.A@10 | ty: Unknown | pyright: Unknown | mypy__check_newsemanal__testNewAnalyzerClassInFunction.py:L9
+1 | mypy: T | ty: Unknown | pyright: int | ty__narrow__match__12.py:L9
+1 | mypy: case.ReturnsAny | ty: Any | pyright: Any | ty__call__constructor__41.py:L13
+1 | mypy: Literal['a'] | ty: Unknown | pyright: Unknown | ty__call__methods__41.py:L9
+1 | mypy: Any | ty: type[Unknown] | pyright: None | ty__call__type__35.py:L4
+1 | mypy: case.ActiveInitializer[Any] | ty: ActiveInitializer[int] | pyright: ActiveInitializer[int] | ty__bidirectional__93.py:L11
+1 | mypy: type[Any] | ty: <class 'classmethod'> | pyright: type[Unknown] | ty__call__getattr_static__13.py:L17
+1 | mypy: type[Any] | ty: <class 'staticmethod'> | pyright: type[Unknown] | ty__call__getattr_static__13.py:L18
+1 | mypy: Any | ty: list[Unknown] | pyright: list[Literal[2]] | ty__unpacking__10.py:L6
+1 | mypy: Any | ty: Unknown | pyright: Unknown | bool | ty__narrow__isinstance__100.py:L5
+1 | mypy: Any | bool | ty: Unknown | pyright: Unknown | bool | ty__narrow__isinstance__100.py:L10
+1 | mypy: case.Foo | ty: Unknown | pyright: Unknown | mypy__check_protocols__testInferenceViaTypeTypeMetaclass.py:L16
+1 | mypy: case.C | ty: Unknown | pyright: Unknown | mypy__check_generics__testInferenceAgainstGenericEllipsisSelfSpecialCase.py:L13
+1 | mypy: case.D[int, case.C] | ty: Unknown | pyright: Unbound | mypy__check_newsemanal__testNewAnalyzerTypeAlias.py:L20
+1 | mypy: tuple[Any, Any] | ty: tuple[A, Unknown] | pyright: tuple[Any, Unknown] | ty__narrow__isinstance__97.py:L12
+1 | mypy: tuple[Any, ...] | ty: tuple[Unknown, ...] | pyright: Tuple[Unknown, ...] | ty__subscript__tuple__14.py:L8
+1 | mypy: tuple[Literal[1]?, Literal['foo']?] | ty: Any | pyright: Any | ty__enums__31.py:L16
+1 | mypy: case.Test@12 | ty: Unknown | pyright: Unknown | mypy__check_newsemanal__testNewAnalyzerDeeplyNestedFunctions.py:L7
+1 | mypy: Any | ty: Unknown | Literal[3] | pyright: int | ty__function__parameters__5.py:L10
+1 | mypy: Any | ty: Unknown | Literal[5] | pyright: int | ty__function__parameters__5.py:L12
+1 | mypy: case.Z[Any] | ty: Z[Unknown] | pyright: Z[Unknown] | ty__bidirectional__45.py:L13
+1 | mypy: dict[str, int] | ty: dict[str | Any, int | Any] | pyright: dict[str, int] | ty__bidirectional__23.py:L16
+1 | mypy: set[int] | ty: set[Unknown] | pyright: set[Unknown] | ty__bidirectional__118.py:L39
+1 | mypy: Any | bytes | ty: Unknown | pyright: Unknown | None | ty__narrow__conditionals__is__26.py:L8
+1 | mypy: Any | None | ty: Unknown | pyright: Unknown | bytes | ty__narrow__conditionals__is__26.py:L9
+1 | mypy: case.B | case.C | ty: Unknown | pyright: B | mypy__check_overloading__testOverloadInferUnionIfParameterNamesAreDifferent.py:L18
+1 | mypy: case.Y[Any] | ty: Y[Unknown] | pyright: Y[Unknown] | ty__bidirectional__44.py:L13
+1 | mypy: Any | ty: tuple[Unknown, ...] | pyright: tuple[Unknown, ...] | ty__expression__lambda__10.py:L3
+1 | mypy: str | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695TypeAliasForwardReference5.py:L9
+1 | mypy: case.C[str] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695TypeAliasForwardReference5.py:L11
+1 | mypy: list[tuple[int, str]] | ty: list[Unknown | tuple[int, str]] | pyright: list[tuple[int, str]] | ty__bidirectional__146.py:L19
+1 | mypy: list[tuple[int, str]] | ty: list[Any | tuple[int, str]] | pyright: list[tuple[int, str]] | ty__bidirectional__146.py:L24
+1 | mypy: case.C | int | ty: Unknown | pyright: Unknown | mypy__check_selftype__testAccessingTypingSelfUnion.py:L10
+1 | mypy: Any | ty: A & B | pyright: Unknown | ty__annotations__intersection_types__3.py:L9
+1 | mypy: Any | ty: ~A | pyright: Unknown | ty__annotations__intersection_types__3.py:L10
+1 | mypy: dict[Any, Any] | ty: dict[str, int] | pyright: dict[Unknown, Unknown] | ty__bidirectional__134.py:L5
+1 | mypy: Any | ty: <class 'Y'> | pyright: type[Y] | ty__call__type__19.py:L11
+1 | mypy: case.A.B[int] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695NestedGenericClass1.py:L21
+1 | mypy: Any | ty: str | pyright: str | Unknown | ty__class__super__14.py:L27
+1 | mypy: type[tuple[Any, ...]] | ty: type[tuple[Unknown, ...]] | pyright: type[tuple[Unknown, ...]] | ty__subscript__tuple__12.py:L12
+1 | mypy: object | ty: Unknown | pyright: Unknown | ty__narrow__conditionals__is__34.py:L6
+1 | mypy: Any | ty: Literal[1] | pyright: Unbound | Literal[1] | ty__loops__while_loop__18.py:L8
+1 | mypy: Any | ty: Literal[0] | pyright: Any | ty__binary__booleans__0.py:L29
+1 | mypy: Any | ty: dict[str, str] | pyright: Unknown | ty__bidirectional__62.py:L17
+1 | mypy: Any | ty: F | pyright: F | ty__exception__control_flow__92.py:L33
+1 | mypy: Any | ty: G | pyright: G | ty__exception__control_flow__92.py:L35
+1 | mypy: Any | ty: Unknown | G | pyright: Unknown | G | Literal[1] | ty__exception__control_flow__92.py:L40
+1 | mypy: Any | ty: MemberDescriptorType | pyright: None | ty__class__slots__1.py:L6
+1 | mypy: case.C[case.C[Any]] | ty: Unknown | pyright: Unbound | mypy__check_python313__testRecursiveTypeVarDefaultBasicNewStyle.py:L7
+1 | mypy: case.SubWrapper[S] | ty: Unknown | pyright: Unknown | mypy__check_selftype__testSelfTypeGenericClassNoClashInstanceMethod.py:L22
+1 | mypy: type[Any] | ty: type[Foo] | pyright: type[Foo] | ty__call__type__29.py:L9
+1 | mypy: bool | Any | ty: bool | pyright: None | ty__unary__custom__4.py:L17
+1 | mypy: str | Any | ty: str | pyright: None | ty__unary__custom__4.py:L20
+1 | mypy: int | Any | ty: int | pyright: None | ty__unary__custom__4.py:L23
+1 | mypy: Literal['accepted by the assigned hook']? | ty: Any | pyright: Any | ty__enums__24.py:L38
+1 | mypy: Any | ty: Never | pyright: Literal[1] | ty__properties__19.py:L17
+1 | mypy: Any | ty: NoDefault | pyright: Any | ty__generics__pep695__variables__1.py:L11
+1 | mypy: int | str | ty: Unknown | pyright: int | mypy__check_overloading__testOverloadInferUnionRespectsVariance.py:L22
+1 | mypy: case.MyClass | ty: Unknown | pyright: str | ty__call__functools_partial__85.py:L26
+1 | mypy: None | Any | ty: None | pyright: Any | None | mypy__check_optional__testDontSimplifyNoneUnionsWithStrictOptional.py:L15
+1 | mypy: case.B[case.D] | ty: B[Unknown] | pyright: B[Unknown] | mypy__check_inference_context__testInferTypeVariableFromTwoGenericTypes3.py:L18
+1 | mypy: types.MappingProxyType[str, Any] | ty: Unknown | pyright: MappingProxyType[str, Any] | ty__class__slots__6.py:L4
+1 | mypy: Any | ty: int | pyright: type[WithMetaAndClassGetItem] | ty__subscript__class__8.py:L11
+1 | mypy: list[int] | ty: list[Unknown | int] | pyright: list[int] | ty__bidirectional__145.py:L7
+1 | mypy: list[Never] | ty: list[Unknown] | pyright: list[T@f4] | ty__bidirectional__78.py:L56
+1 | mypy: Any | ty: T@h & Unknown & ~None | pyright: Unknown | ty__generics__pep695__variables__55.py:L8
+1 | mypy: case.Container[case.Child[Any]] | ty: Container[Child[str]] | pyright: Container[Child[Unknown]] | ty__bidirectional__109.py:L14
+1 | mypy: Any | ty: Slotted | pyright: Slotted | ty__call__type__49.py:L6
+1 | mypy: Any | ty: Unknown | Divergent | pyright: int | ty__call__functools_partial__68.py:L12
+1 | mypy: Any | ty: IntContainer | pyright: IntContainer | ty__call__type__28.py:L15
+1 | mypy: Any | ty: Unknown | pyright: Any | mypy__check_overloading__testOverloadWithOverlappingItemsAndAnyArgument12.py:L12
+1 | mypy: Any | ty: Unknown & ~None | pyright: Literal['hello'] | ty__narrow__conditionals__eq__74.py:L5
+1 | mypy: Any | ty: Unknown & ~bytes | pyright: Unknown | Literal[10, 11] | ty__narrow__conditionals__in__21.py:L7
+1 | mypy: Any | ty: Unknown & ~bytes & ~Literal[11] | pyright: Unknown | Literal[10] | ty__narrow__conditionals__in__21.py:L13
+1 | mypy: float | ty: Unknown | pyright: float | mypy__check_final__testFinalBadDefinitionTooManyArgs.py:L12
+1 | mypy: Any | ty: Unknown & Container | pyright: Container | ty__comparison__intersections__30.py:L11
+1 | mypy: BrandedFirstNumber? | ty: Unknown | pyright: Unknown | ty__narrow__conditionals__eq__111.py:L18
+1 | mypy: BrandedSecondNumber? | ty: Unknown | pyright: Unknown | ty__narrow__conditionals__eq__111.py:L19
+1 | mypy: case.D | None | Any | ty: D | None | pyright: D | None | ty__narrow__conditionals__nested__5.py:L46
+1 | mypy: case.C | None | Any | ty: C | None | pyright: C | None | ty__narrow__conditionals__nested__5.py:L47
+1 | mypy: Any | ty: Unknown | Literal["foo"] | pyright: str | ty__function__parameters__2.py:L4
+1 | mypy: Any | ty: Unknown | Literal[0] | pyright: int | ty__function__parameters__2.py:L5
+1 | mypy: Any | ty: Unknown | Literal[True] | pyright: bool | ty__function__parameters__2.py:L6
+1 | mypy: Any | ty: Unknown | None | pyright: Unknown | None | ty__function__parameters__2.py:L7
+1 | mypy: Any | ty: str | int | pyright: type[UnionClassGetItem] | ty__subscript__class__3.py:L13
+1 | mypy: list[Any] | ty: list[float | str] | pyright: list[Unknown] | ty__bidirectional__126.py:L5
+1 | mypy: dict[str, Any] | ty: dict[str, Unknown] | pyright: None | ty__bidirectional__99.py:L13
+1 | mypy: case.Node[str] | ty: Node[Unknown] | pyright: Node[str] | ty__generics__pep695__variables__83.py:L9
+1 | mypy: Any | ty: int | pyright: Literal[1] | ty__binary__integers__1.py:L5
+1 | mypy: case.C[int] | ty: C[Unknown] | pyright: C[int] | mypy__check_inference_context__testOptionalTypeNarrowedByGenericCall4.py:L10
+1 | mypy: Any | ty: Unknown & ~str | pyright: Unknown | ty__narrow__conditionals__eq__96.py:L55
+1 | mypy: case.A.B.C.D[int] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695MultipleNestedGenericClass1.py:L12
+1 | mypy: Any | ty: T@constrained | pyright: T@constrained | ty__generics__pep695__variables__57.py:L4
+1 | mypy: case.A[Never] | ty: A[Unknown] | pyright: A[Unknown] | mypy__check_inference_context__testRevealTypeContext.py:L7
+1 | mypy: Any | ty: str | pyright: type[Identity] | ty__subscript__class__1.py:L7
+1 | mypy: Any | ty: Any & ~Literal[NeverUnequalEnum.A] | pyright: Any | ty__narrow__conditionals__eq__112.py:L29
+1 | mypy: functools.partial[int] | ty: partial[Unknown] | pyright: partial[int] | ty__call__functools_partial__101.py:L14
+1 | mypy: list[Any] | ty: Unknown | pyright: Unbound | mypy__check_python312__testPEP695InvalidType.py:L8
+1 | mypy: case.Out3 | case.Out1 | case.Out2 | case.Out4 | ty: Unknown | pyright: None | mypy__check_classes__testOperatorDoubleUnionInterwovenUnionAdd.py:L22
+1 | mypy: case.Out3 | case.Out1 | ty: Unknown | pyright: Out1 | mypy__check_classes__testOperatorDoubleUnionInterwovenUnionAdd.py:L23
+1 | mypy: case.Out2 | case.Out4 | ty: Unknown | pyright: Out2 | mypy__check_classes__testOperatorDoubleUnionInterwovenUnionAdd.py:L24
+1 | mypy: case.Out3 | case.Out2 | ty: Unknown | pyright: Out3 | mypy__check_classes__testOperatorDoubleUnionInterwovenUnionAdd.py:L25
+1 | mypy: case.Out1 | case.Out4 | ty: Unknown | pyright: Out4 | mypy__check_classes__testOperatorDoubleUnionInterwovenUnionAdd.py:L26
+1 | mypy: list[list[list[Any]]] | ty: list[Divergent] | pyright: list[Unknown] | ty__bidirectional__131.py:L10
+1 | mypy: list[str] | ty: list[Unknown] | pyright: list[str] | ty__conditional__if_expression__4.py:L5
+1 | mypy: dict[str, int] | ty: dict[Unknown, Unknown] | pyright: dict[str, int] | ty__conditional__if_expression__4.py:L11
+1 | mypy: Any | ty: dict[str, Unknown] | pyright: dict[str, Unknown] | ty__expression__lambda__11.py:L3
+1 | mypy: Any | ty: Never | pyright: Never | ty__comparison__intersections__11.py:L11
+1 | mypy: Any | ty: IntSubclass | pyright: IntSubclass | ty__call__type__21.py:L35
+1 | mypy: dict[Any, Any] | ty: dict[str | None, object] | pyright: dict[str | None, object] | ty__bidirectional__84.py:L6
+1 | mypy: Any | ty: None | pyright: None | ty__narrow__complex_target__1.py:L10
+1 | mypy: Any | ty: (Unknown & ~None) | None | pyright: Unknown | None | ty__narrow__complex_target__1.py:L12
+1 | mypy: int | Any | ty: int | pyright: int | mypy__check_inference__testInferringLvarTypesUnpackedFromIterableClassObject.py:L51
+1 | mypy: case.Descr | ty: Unknown | pyright: Unknown | mypy__check_classes__testGetAttrDescriptor.py:L18
+1 | mypy: Any | ty: WithClassmethodCallable | pyright: WithClassmethodCallable | ty__call__constructor__101.py:L10
+1 | mypy: Any | ty: int | Literal["default"] | pyright: Any | ty__call__getattr_static__11.py:L10
+1 | mypy: case.Invariant[int] | ty: Unknown | pyright: Unknown | mypy__check_python312__testPEP695InferVarianceNotReadyForMeet.py:L14
+1 | mypy: Never | ty: Unknown | pyright: Unknown | mypy__check_python312__testPEP695InferVarianceNotReadyForMeet.py:L19
+1 | mypy: Any | ty: Literal[1] | pyright: Unknown | Literal[1] | ty__annotations__string__15.py:L22

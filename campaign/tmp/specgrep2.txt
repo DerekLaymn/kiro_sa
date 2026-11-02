@@ -1,0 +1,21 @@
+#### LiteralString assignable (file + context)
+/home/derek/.cache/typediff/docs/spec/literal.txt-608-has type ``str``. This matches the pre-existing behavior of type
+/home/derek/.cache/typediff/docs/spec/literal.txt-609-checkers.
+/home/derek/.cache/typediff/docs/spec/literal.txt-610-
+/home/derek/.cache/typediff/docs/spec/literal.txt:611:``LiteralString`` is assignable to the type ``str``. It inherits all
+/home/derek/.cache/typediff/docs/spec/literal.txt-612-methods from ``str``. So, if we have a variable ``s`` of type
+/home/derek/.cache/typediff/docs/spec/literal.txt-613-``LiteralString``, it is safe to write ``s.startswith("hello")``.
+/home/derek/.cache/typediff/docs/spec/literal.txt-614-
+/home/derek/.cache/typediff/docs/spec/literal.txt-615-Some type checkers refine the type of a string when doing an equality
+#### equivalent to type[Any]
+/home/derek/.cache/typediff/docs/spec/special-types.txt-241-indicated base class (``User`` in the example above) should be
+/home/derek/.cache/typediff/docs/spec/special-types.txt-242-allowed.  A program containing a complex or extensible class hierarchy
+/home/derek/.cache/typediff/docs/spec/special-types.txt-243-might also handle this by using a factory class method.
+/home/derek/.cache/typediff/docs/spec/special-types.txt-244-
+/home/derek/.cache/typediff/docs/spec/special-types.txt-245-When ``type`` is parameterized it requires exactly one parameter.
+/home/derek/.cache/typediff/docs/spec/special-types.txt-246-Plain ``type`` without brackets, the root of Python's metaclass
+/home/derek/.cache/typediff/docs/spec/special-types.txt:247:hierarchy, is equivalent to ``type[Any]``.
+/home/derek/.cache/typediff/docs/spec/special-types.txt-248-
+/home/derek/.cache/typediff/docs/spec/special-types.txt-249-Regarding the behavior of ``type[Any]`` (or ``type``),
+/home/derek/.cache/typediff/docs/spec/special-types.txt-250-accessing attributes of a variable with this type only provides
+#### type[C] subtype of type

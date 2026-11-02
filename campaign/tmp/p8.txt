@@ -1,0 +1,178 @@
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/mypy__check_newsemanal__testNewAnalyzerTypeArgValueRestriction.py
+--- source
+     1	# area: gradual_any
+     2	# origin: python/mypy check-newsemanal.test [case testNewAnalyzerTypeArgValueRestriction]
+     3	from typing import TypeVar, Generic
+     4	
+     5	class F(E): pass
+     6	class E: pass
+     7	T = TypeVar('T', E, str)
+     8	class C(Generic[T]): pass
+     9	
+    10	class D(B): pass
+    11	
+    12	x: C[D] # E: Value of type variable "T" of "C" cannot be "D"
+    13	y: C[E]
+    14	z: C[str]
+    15	
+    16	class B: pass
+    17	
+--- mypy
+case.py:12:6: error: Value of type variable "T" of "C" cannot be "D"  [type-var]
+--- ty
+case.py:5:9: error[unresolved-reference] Name `E` used when not defined
+case.py:10:9: error[unresolved-reference] Name `B` used when not defined
+Found 2 diagnostics
+--- pyright
+/tmp/s3chk.6Q831h/case.py
+  /tmp/s3chk.6Q831h/case.py:5:9 - error: "E" is not defined (reportUndefinedVariable)
+  /tmp/s3chk.6Q831h/case.py:10:9 - error: "B" is not defined (reportUndefinedVariable)
+2 errors, 0 warnings, 0 informations
+--- cpython
+  File "/tmp/s3chk.6Q831h/case.py", line 5, in <module>
+    class F(E): pass
+            ^
+NameError: name 'E' is not defined
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/enums_literals/pyright__literalForLoop1.py
+--- source
+     1	# area: enums_literals
+     2	# origin: microsoft/pyright tests/samples/literalForLoop1.py
+     3	# This sample tests that for loops over non-empty literal list or tuple
+     4	# expressions are treated as executing at least once for definite assignment
+     5	# analysis.
+     6	
+     7	# pyright: reportPossiblyUnboundVariable=true
+     8	
+     9	
+    10	def test_non_empty_list_literal():
+    11	    """Variable assigned in for loop over non-empty list literal should not be reported as possibly unbound."""
+    12	    for x in [1]:
+    13	        y = 123
+    14	    # This should not generate an error because the loop executes at least once
+    15	    del y
+    16	
+    17	
+    18	def test_non_empty_tuple_literal():
+    19	    """Variable assigned in for loop over non-empty tuple literal should not be reported as possibly unbound."""
+    20	    for x in (1,):
+    21	        z = 456
+    22	    # This should not generate an error because the loop executes at least once
+    23	    del z
+    24	
+    25	
+    26	def test_non_empty_list_multiple_elements():
+    27	    """Variable assigned in for loop over non-empty list with multiple elements."""
+    28	    for x in [1, 2, 3]:
+    29	        a = "hello"
+    30	    # This should not generate an error
+    31	    del a
+    32	
+    33	
+    34	def test_non_empty_tuple_multiple_elements():
+    35	    """Variable assigned in for loop over non-empty tuple with multiple elements."""
+    36	    for x in (1, 2, 3):
+    37	        b = "world"
+    38	    # This should not generate an error
+    39	    del b
+    40	
+    41	
+    42	def test_empty_list_literal():
+    43	    """Variable assigned in for loop over empty list literal should be reported as possibly unbound."""
+    44	    for x in []:
+    45	        # This should generate an error because c is possibly unbound
+    46	        c = 789
+    47	    del c
+    48	
+    49	
+    50	def test_empty_tuple_literal():
+    51	    """Variable assigned in for loop over empty tuple literal should be reported as possibly unbound."""
+    52	    for x in ():
+    53	        # This should generate an error because d is possibly unbound
+    54	        d = 999
+    55	    del d
+    56	
+    57	
+    58	def test_non_literal_iterable():
+    59	    """Variable assigned in for loop over non-literal iterable should still be reported as possibly unbound."""
+    60	    items = [1, 2, 3]
+--- mypy
+case.py:44:5: error: Need type annotation for "x"  [var-annotated]
+case.py:52:5: error: Need type annotation for "x"  [var-annotated]
+case.py:86:14: error: Need type annotation for "v"  [var-annotated]
+--- ty
+case.py:47:9: error[unresolved-reference] Name `c` used when not defined
+case.py:55:9: error[unresolved-reference] Name `d` used when not defined
+case.py:140:9: error[unresolved-reference] Name `z` used when not defined
+Found 3 diagnostics
+--- pyright
+/tmp/s3chk.tGPYYz/case.py
+  /tmp/s3chk.tGPYYz/case.py:47:9 - error: "c" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:55:9 - error: "d" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:64:9 - error: "e" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:72:9 - error: "f" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:81:9 - error: "g" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:89:9 - error: "h" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:99:9 - error: "x" is possibly unbound (reportPossiblyUnboundVariable)
+  /tmp/s3chk.tGPYYz/case.py:140:9 - error: "z" is unbound (reportUnboundVariable)
+8 errors, 0 warnings, 0 informations
+--- cpython
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/seeds/harvested/gradual_any/pyright__typeCheckOnly1.py
+--- source
+     1	# area: gradual_any
+     2	# origin: microsoft/pyright tests/samples/typeCheckOnly1.py
+     3	# This sample tests the reporting of a function or class decorated with
+     4	# @type_check_only when used in a value expression.
+     5	
+     6	from __future__ import annotations
+     7	
+     8	from typing import TYPE_CHECKING, type_check_only
+     9	
+    10	if TYPE_CHECKING:
+    11	    from typing import _TypedDict
+    12	
+    13	a1: function
+    14	a2: _TypedDict
+    15	
+    16	# This should generate an error.
+    17	v1 = function
+    18	
+    19	# This should generate an error.
+    20	v2 = isinstance(1, ellipsis)
+    21	
+    22	# This should generate an error.
+    23	v3 = _TypedDict
+    24	
+    25	
+    26	if TYPE_CHECKING:
+    27	
+    28	    class ClassA:
+    29	        @type_check_only
+    30	        def method1(self):
+    31	            pass
+    32	
+    33	    @type_check_only
+    34	    def func1() -> None: ...
+    35	
+    36	
+    37	# This should generate an error.
+    38	ClassA().method1()
+    39	
+    40	# This should generate an error.
+    41	func1()
+--- mypy
+--- ty
+case.py:13:5: error[unresolved-reference] Name `function` used when not defined
+case.py:17:6: error[unresolved-reference] Name `function` used when not defined
+Found 2 diagnostics
+--- pyright
+/tmp/s3chk.3VYxGz/case.py
+  /tmp/s3chk.3VYxGz/case.py:17:6 - error: "function" is marked as @type_check_only and can be used only in type annotations (reportGeneralTypeIssues)
+  /tmp/s3chk.3VYxGz/case.py:23:6 - error: "_TypedDict" is marked as @type_check_only and can be used only in type annotations (reportGeneralTypeIssues)
+  /tmp/s3chk.3VYxGz/case.py:38:10 - error: "method1" is marked as @type_check_only and can be used only in type annotations (reportGeneralTypeIssues)
+  /tmp/s3chk.3VYxGz/case.py:41:1 - error: "func1" is marked as @type_check_only and can be used only in type annotations (reportGeneralTypeIssues)
+4 errors, 0 warnings, 0 informations
+--- cpython
+Traceback (most recent call last):
+  File "/tmp/s3chk.3VYxGz/case.py", line 8, in <module>
+    from typing import TYPE_CHECKING, type_check_only
+ImportError: cannot import name 'type_check_only' from 'typing' (/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py)

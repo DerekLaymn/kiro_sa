@@ -1,0 +1,19 @@
+194 cases -> calibration/positives.json
+mypy-10146 mypy-10163 mypy-10806 mypy-11902 mypy-12120 mypy-12867 mypy-13613 myp
+194 Counter({'ty': 123, 'mypy': 71})
+/tmp/s3base:
+calibration
+kbloop_calib_subset.py
+scripts
+typediff
+
+/tmp/s3base/calibration/negatives:
+assignment_narrowing.py
+generic_isinstance.py
+join_vs_union.py
+literal_widening.py
+suppression_codes.py
+unknown_attribute.py
+unreachable_reveal.py
+baseline typediff from /tmp/s3base/typediff/__init__.py
+.gitignore:6:calibration/positives.json	calibration/positives.json

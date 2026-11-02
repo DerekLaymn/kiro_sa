@@ -1,0 +1,170 @@
+   422 typediff/adjudicator.py
+   168 typediff/anchors.py
+   154 typediff/calibration.py
+    50 typediff/causes.py
+   464 typediff/cli.py
+   149 typediff/concerns.py
+   209 typediff/corpus.py
+    89 typediff/dataset.py
+   154 typediff/discrepancy.py
+   974 typediff/experiments.py
+    75 typediff/features.py
+    90 typediff/generator.py
+   157 typediff/inhabit.py
+     7 typediff/__init__.py
+  1265 typediff/kb.py
+   212 typediff/llm.py
+   274 typediff/models.py
+    94 typediff/origin.py
+   398 typediff/parsers.py
+   211 typediff/pipeline.py
+    94 typediff/priors.py
+   372 typediff/prompts.py
+   221 typediff/reducer.py
+    51 typediff/replay.py
+   125 typediff/report.py
+   447 typediff/rules.py
+   170 typediff/runners.py
+   157 typediff/runtime_harness.py
+   168 typediff/selfparam.py
+    75 typediff/state.py
+   197 typediff/strategy.py
+   483 typediff/typenorm.py
+  8176 total
+70:def _stmt_node(s: CaseState, d: Discrepancy) -> ast.AST | None:
+75:def _chain_tags(s: CaseState, d: Discrepancy) -> set[str]:
+97:def _codes(diags) -> set[str]:
+101:def _rev(d: Discrepancy, tool: str, s: CaseState):
+106:def runtime_contradiction(s: CaseState, d: Discrepancy) -> str | None:
+122:def matched_probe(s: CaseState, d: Discrepancy, tool: str):
+149:def _toggle(tool: Tool, flags: list[str]):
+167:def entry_demotion(s: CaseState, d: Discrepancy, e: KBEntry) -> Evidence | None:
+179:def own_experiment_confirmed(d: Discrepancy, e: KBEntry, ex: ExperimentRunner | None) -> bool:
+193:def m_redeclaration(s, d):
+215:def m_callable_dunder(s, d):
+220:def m_equality_narrowing(s, d):
+224:def m_generic_narrowing(s, d):
+228:def m_unknown_union(s, d):
+236:def m_todo(s, d):
+248:def m_ty_check_missing(s, d):
+254:def m_ty_check_missing_other(s, d):
+260:def m_ty_check_missing_partial(s, d):
+265:def _optional_mypy_codes_for(d) -> list[str]:
+274:def m_mypy_optional(s, d):
+278:def v_mypy_optional(s, d, ex):
+285:def _mypy_optional_flags(d) -> list[str]:
+295:def m_ty_only_rule(s, d):
+300:def m_untyped_defs(s, d):
+308:def _explicit_any_in_source(s) -> bool:
+314:def m_self_upper_bound(s, d):
+321:def demote_self_state_crash(s, d) -> str | None:
+333:def v_self_desugar(s, d, ex):
+352:def m_both_gradual(s, d):
+366:def m_literal_widening(s, d):
+371:def m_join_union(s, d):
+376:def _class_defs(s) -> dict[str, ast.ClassDef]:
+380:def _ancestors(name: str, classes: dict[str, ast.ClassDef]) -> set[str]:
+391:def _new_return_name(c: ast.ClassDef) -> str | None:
+399:def m_callable_join_union(s, d):
+423:def demote_exception_at_statement(s, d) -> str | None:
+434:def m_new_returns_non_subtype(s, d):
+450:def _scope_bindings(scope: ast.AST, name: str):
+488:def m_annotation_only_read(s, d):
+511:def m_mdtest_todo(s, d):
+518:def _typevars(s) -> set[str]:
+528:def m_precision_runtime_consistent(s, d):
+539:def m_mypy_skips_unreachable(s, d):
+546:def m_unreachable_but_executed(s, d):
+558:def m_env_import(s, d):
+566:def m_suppression_expected(s, d):
+582:def m_on_ignore_line(s, d):
+587:def m_inference_downstream(s, d):
+610:def m_gradual_operand(s, d):
+616:def m_cascade(s, d):
+634:def m_stdlib_call(s, d):
+639:def m_partial_types(s, d):
+658:    KBEntry(
+667:    KBEntry(
+676:    KBEntry(
+686:    KBEntry(
+695:    KBEntry(
+702:    KBEntry(
+711:    KBEntry(
+719:    KBEntry(
+727:    KBEntry(
+734:    KBEntry(
+741:    KBEntry(
+748:    KBEntry(
+755:    KBEntry(
+762:    KBEntry(
+770:    KBEntry(
+779:    KBEntry(
+787:    KBEntry(
+794:    KBEntry(
+802:    KBEntry(
+808:    KBEntry(
+815:    KBEntry(
+822:    KBEntry(
+829:    KBEntry(
+837:    KBEntry(
+844:    KBEntry(
+851:    KBEntry(
+858:    KBEntry(
+879:def _open_typeddict_kwargs(s, d) -> bool:
+900:def _rebound_inferred_lambda(s, d) -> bool:
+944:def _origin_status(s: CaseState, d: Discrepancy):
+952:def m_origin_oracle_reveal(s, d):
+971:def m_origin_oracle_note(s, d):
+976:def m_origin_mismatch(s, d):
+981:def _annotation_roots(node: ast.AST) -> list[ast.AST]:
+994:def _unquoted_forward_ref(s, d) -> bool:
+1038:def _upstream_entries() -> list[KBEntry]:
+1061:        out.append(KBEntry(
+1070:    KBEntry(
+1081:    KBEntry(
+1091:    KBEntry(
+1103:    KBEntry(
+1117:def m_suite_expects_error(s, d):
+1124:def m_suite_allow_empty_bodies(s, d):
+1131:def m_pyright_reveal_kwarg(s, d):
+1147:def m_expected_error_oracle(s, d):
+1159:    KBEntry(
+1171:    KBEntry(
+1186:    KBEntry(
+1199:    KBEntry(
+1210:    KBEntry(
+1218:    KBEntry(
+1225:    KBEntry(
+1238:def matching_entries(s: CaseState, d: Discrepancy) -> list[KBEntry]:
+1250:def kb_prompt_block(ids: list[str]) -> str:
+1254:def tracking_issue_for(d: Discrepancy) -> list[str]:
+__pycache__
+test_audit_fixes.py
+test_crash_detection.py
+test_evidence_fixA.py
+test_harness_annotations.py
+test_harvest_mdtest_env_fixE.py
+test_kb_fixD.py
+test_kbloop_defects.py
+test_kbloop_entries.py
+test_kbloop_upstream.py
+test_known_closure_bug.py
+test_origin_oracle.py
+test_phase3.py
+test_runtime_miss_fixB.py
+assignment_narrowing.py
+generic_isinstance.py
+join_vs_union.py
+literal_widening.py
+suppression_codes.py
+unknown_attribute.py
+unreachable_reveal.py
+negatives
+results
+RESULTS.md
+/usr/bin/gh
+github.com
+  ✓ Logged in to github.com account DerekLaymn (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************

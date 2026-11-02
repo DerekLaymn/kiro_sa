@@ -1,0 +1,8 @@
+13aae01 docs: log stage 3 round 2 (triage, KB changes, replay, calibration) and round-2 campaign outputs
+69f5ff6 fix: REVEAL-ERROR-RECOVERY never dismisses a statement CPython raised on (any exception type)
+ba8fbe0 feat: MYPY-13807-ALIASED-CONDITIONS KB entry (mypy does not narrow through aliased conditions)
+1b708d4 fix: typenorm treats intersections, LiteralString, type[X] and Never as refinements instead of 'different'
+9456642 feat: REVEAL-ERROR-RECOVERY KB entry (gradual reveal inside an expression the same tool reports an error in)
+c1d243b fix: close the constant-fold hole in assert_type retention, require pyright agreement, record annotation-only read as tracked mypy limitation
+d479c03 docs: log stage 3 round 1 (triage, KB changes, replay, calibration)
+0cd8539 docs: cite the conformance suite's 'either is acceptable' note in ASSERT-TYPE-LITERAL-RETENTION

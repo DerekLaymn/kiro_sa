@@ -1,0 +1,39 @@
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-263-required (mypy will tell you this). Often the annotation can
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-264-make your code easier to understand, so it doesn't only help mypy but
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-265-everybody who is reading the code!
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-266-
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt:267:Redefinitions with incompatible types
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-268--------------------------------------
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-269-
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-270-Each name within a function only has a single 'declared' type. You can
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-271-reuse for loop indices etc., but if you want to use a variable with
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-272-multiple types within a single function, you may need to instead use
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-273-multiple variables (or maybe declare the variable with an ``Any`` type).
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-274-
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-275-.. code-block:: python
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-276-
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-277-   def f() -> None:
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-278-       n = 1
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-279-       ...
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-280-       n = 'x'  # error: Incompatible types in assignment (expression has type "str", variable has type "int")
+/home/derek/.cache/typediff/docs/mypy/common_issues.txt-281-
+#### allow-redefinition-new
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-647-    release.
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-648-
+/home/derek/.cache/typediff/docs/mypy/command_line.txt:649:.. option:: --allow-redefinition-new
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-650-
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-651-    Deprecated alias for :option:`--allow-redefinition <mypy --allow-redefinition>`.
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-652-
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-653-.. option:: --allow-redefinition-old
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-654-
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-655-    This is an older, more limited variant of
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-656-    :option:`--allow-redefinition <mypy --allow-redefinition>`.
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-657-    This flag enables redefinition of a variable with an
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-658-    arbitrary type *in some contexts*: only redefinitions within the
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-659-    same block and nesting depth as the original definition are allowed.
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-660-
+/home/derek/.cache/typediff/docs/mypy/command_line.txt-661-    We have no plans to remove this flag, but
+#### ty docs: declared type / inferred
+/home/derek/.cache/typediff/docs/ty/features/type-system.txt:115:"largest" type that a gradual type can materialize to: the union of all possible materializations.
+/home/derek/.cache/typediff/docs/ty/reference/configuration.txt:347:representing the (infinite) union of all possible `list` specializations. Iterating
+/home/derek/.cache/typediff/docs/ty/reference/configuration.txt:1071:representing the (infinite) union of all possible `list` specializations. Iterating

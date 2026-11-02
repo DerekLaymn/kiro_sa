@@ -1,0 +1,16 @@
+baseline package files:
+adjudicator.py
+anchors.py
+calibration.py
+baseline typediff from /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/typediff/__init__.py
+2 ty-4546 ty-4548 ty-4551 ty-4573 ty-4582 ty-4588 ty-4590 ty-4593 ty-4594 ty-4599 ty-4600 ty-4607 ty-4611 ty-4612 ty-4613 ty-4614 ty-4615 ty-4617 ty-4618 ty-4619 ty-4621 ty-4627 ty-4628 ty-4645 ty-4646 ty-4648 ty-4657 ty-4661 ty-4683 ty-4684 ty-4695 ty-4696 ty-4711 ty-4713 ty-4715 ty-4735 ty-4736 ty-4737 ty-4746 ty-4754 ty-4755 ty-4759 ty-4762 ty-4766 ty-4772 ty-4775 ty-4786 ty-4787 ty-4788 ty-4798 ty-4802 ty-4808 ty-4813 ty-4814 ty-4817 ty-4825 ty-4828 ty-4829 ty-4830 ty-4832 ty-4835 ty-4836 ty-4841 ty-4850 ty-4851 ty-4864 ty-4869 ty-4872 ty-4875 ty-4876 ty-4877 ty-4878 ty-4882 ty-523 ty-727
+ M typediff/kb.py
+ M typediff/typenorm.py
+?? -l
+?? calibration/negatives/assert_type_literal_retention.py
+?? calibration/negatives/mypy_first_assignment.py
+?? campaign/s3-r1-baseline-stats.txt
+?? campaign/s3-r1-baseline.done
+?? campaign/s3-r1-calib-fetch.txt
+?? campaign/s3-r1-kb-selftest.txt
+?? campaign/s3-r1-patterns-holdout.txt

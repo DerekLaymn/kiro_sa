@@ -1,0 +1,83 @@
+######## t1: x = 1|x = "a"|reveal_type(x)|
+--- mypy default
+t1.py:2: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+t1.py:3: note: Revealed type is "int"
+--- mypy +allow-redefinition-new
+t1.py:3: note: Revealed type is "str"
+--- mypy +allow-redefinition
+t1.py:3: note: Revealed type is "str"
+--- ty
+t1.py:3:1: warning[undefined-reveal] `reveal_type` used without importing it
+t1.py:3:13: info[revealed-type] Revealed type: `Literal["a"]`
+Found 2 diagnostics
+--- pyright
+  /tmp/s3p4.cVobxw/t1.py:3:13 - information: Type of "x" is "Literal['a']"
+0 errors, 0 warnings, 1 information
+--- cpython
+NameError: name 'reveal_type' is not defined
+######## t2: x = 1|x /= 2|
+--- mypy default
+t2.py:2: error: Incompatible types in assignment (expression has type "float", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+--- mypy +allow-redefinition
+--- ty
+All checks passed!
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython
+######## t3: def f(flag: bool) -> None:|    y = 1|    if flag:|        y = "s"|    print(y)|
+--- mypy default
+t3.py:4: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+--- mypy +allow-redefinition
+--- ty
+All checks passed!
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython
+######## t4: x: int = 1|x = "a"|
+--- mypy default
+t4.py:2: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+t4.py:2: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition
+t4.py:2: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- ty
+t4.py:2:5: error[invalid-assignment] Object of type `Literal["a"]` is not assignable to `int`
+Found 1 diagnostic
+--- pyright
+  /tmp/s3p4.cVobxw/t4.py:2:5 - error: Type "Literal['a']" is not assignable to declared type "int"
+1 error, 0 warnings, 0 informations
+--- cpython
+######## t5: def f(a: int) -> None:|    a = "s"|
+--- mypy default
+t5.py:2: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+--- mypy +allow-redefinition
+--- ty
+t5.py:2:9: error[invalid-assignment] Object of type `Literal["s"]` is not assignable to `int`
+Found 1 diagnostic
+--- pyright
+  /tmp/s3p4.cVobxw/t5.py:2:9 - error: Type "Literal['s']" is not assignable to declared type "int"
+1 error, 0 warnings, 0 informations
+--- cpython
+######## t6: for i in range(3):|    pass|i = "s"|
+--- mypy default
+t6.py:3: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+--- mypy +allow-redefinition
+--- ty
+All checks passed!
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython
+######## t7: class A:|    z = 1|    z = "s"|
+--- mypy default
+t7.py:3: error: Incompatible types in assignment (expression has type "str", variable has type "int")  [assignment]
+--- mypy +allow-redefinition-new
+--- mypy +allow-redefinition
+--- ty
+All checks passed!
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython
