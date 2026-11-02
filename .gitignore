@@ -6,6 +6,3 @@ llm_inbox/
 calibration/positives.json
 seeds/harvested/
 runs/
-.mypy_cache
-.pytest_cache
-typediff.egg-info
