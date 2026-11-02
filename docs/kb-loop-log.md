@@ -234,6 +234,15 @@ Pipeline defects found in round 2: P1-P5 (all fixed). Candidate bugs (live): see
 ### Final verification
 See the end of this file (pytest and kb-selftest results).
 
+## Iteration 2 (reviewer fixes, final numbers)
+
+- ORIGIN-ORACLE-REVEAL changed to hint-only (`auto=False`). Reason: a suite comment expressing one tool's output is not evidence that the other tool is merely less precise. Its roughly 800 dismissals went back to the live queue.
+- UPSTREAM-MYPY-948: header regex anchored to the first 6 comment lines; the note says #948 is an open feature request; category DUPLICATE -> KNOWN_LIMITATION.
+- Full calibration re-run (193 positives + 18 negatives, 211 rows): 24 dismissed. None is newly dismissed relative to the 166-row baseline ids. The pre-existing dismissals of ty#4872/4835/4817/4786/4713 remain (C-2, documented, not narrowed). The re-run happened before the DUPLICATE -> KNOWN_LIMITATION edit (category only, matcher unchanged).
+- Replay `runs/round3/out` -> `runs/round4/out`. The `--verify-sample 100` result line was not retained (log lived in /tmp); earlier replays were 100/100 identical.
+- Final numbers (round 4): all live 9650 (baseline 9908, -2.6%), tuning 7719 (7939), hold-out 1931 (1969); dismissed 3472 (baseline 3213); crash findings 24.
+- Final verification: `python -m pytest tests -q` 139 passed; `typediff --python-version 3.13 kb-selftest` all PASS (11 entries with examples).
+
 ## Final verification (end of round 2, 2026-11-01)
 
 - `python -m pytest tests -q`: 137 passed, 0 failed.
