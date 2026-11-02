@@ -50,13 +50,40 @@ MYPY_NORMAL_EXIT = (0, 1)  # 2 = usage / fatal error
 TY_NORMAL_EXIT = (0, 1)  # 101 = panic
 
 
+def head_tail(text: str, head: int = 6, tail: int = 19) -> str:
+    """Keep the first and the last lines: the cause of a crash is at the top (`RangeError: ...`), the location at the end."""
+    lines = [ln for ln in text.strip().splitlines() if ln.strip()]
+    if len(lines) <= head + tail:
+        return "\n".join(lines)
+    return "\n".join([*lines[:head], f"... ({len(lines) - head - tail} lines omitted) ...", *lines[-tail:]])
+
+
+def signal_name(exit_code: int) -> str:
+    import signal as _signal
+
+    try:
+        return _signal.Signals(-exit_code).name
+    except ValueError:
+        return f"SIG{-exit_code}"
+
+
+def _signal_crash(tool: Tool, exit_code: int, blob: str) -> Crash:
+    """A negative exit code means the checker process was killed by a signal: always a crash, never a usage problem."""
+    sig = f"{tool.value}:signal-{signal_name(exit_code)}"
+    if "overflowed its stack" in blob or "stack overflow" in blob.lower():
+        sig += ":stack-overflow"
+    return Crash(tool, "signal", sig, head_tail(blob), exit_code)
+
+
 def _mypy_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagnostic] | None = None) -> list[Crash]:
     blob = f"{stdout}\n{stderr}"
+    if exit_code is not None and exit_code < 0:
+        return [_signal_crash(Tool.MYPY, exit_code, blob)]
     if not _MYPY_INTERNAL.search(blob) and "Traceback (most recent call last)" not in stderr:
         if exit_code is not None and exit_code not in MYPY_NORMAL_EXIT and not diags:
             # abnormal exit without any diagnostics must not be read as "no errors"
             return [Crash(Tool.MYPY, "abnormal_exit", f"mypy:exit{exit_code}",
-                          "\n".join(blob.strip().splitlines()[-25:]), exit_code)]
+                          head_tail(blob), exit_code)]
         return []
     frames = [m for m in (_PY_FRAME.match(ln) for ln in blob.splitlines()) if m]
     last = frames[-1] if frames else None
@@ -71,7 +98,7 @@ def _mypy_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Dia
             tool=Tool.MYPY,
             kind="internal_error",
             signature=f"mypy:{exc_type}@{loc}",
-            excerpt="\n".join(blob.strip().splitlines()[-25:]),
+            excerpt=head_tail(blob),
             exit_code=exit_code,
         )
     ]
@@ -164,6 +191,8 @@ def _ty_diag(file: str, line: int, col: int | None, sev: str, code: str, msg: st
 
 def _ty_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagnostic]) -> list[Crash]:
     blob = f"{stdout}\n{stderr}"
+    if exit_code is not None and exit_code < 0:
+        return [_signal_crash(Tool.TY, exit_code, blob)]
     panic = _TY_PANIC.search(blob)
     hit = (
         exit_code == 101
@@ -176,7 +205,7 @@ def _ty_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagn
         if exit_code is not None and exit_code not in TY_NORMAL_EXIT and not diags:
             # abnormal exit without any diagnostics must not be read as "no errors"
             lines = [ln for ln in blob.strip().splitlines() if ln.strip()]
-            return [Crash(Tool.TY, "abnormal_exit", f"ty:exit{exit_code}", "\n".join(lines[-25:]), exit_code)]
+            return [Crash(Tool.TY, "abnormal_exit", f"ty:exit{exit_code}", head_tail("\n".join(lines)), exit_code)]
         return []
     if panic:
         loc = re.sub(r"^.*?(crates/)", r"\1", panic["loc"])  # strip absolute build paths
@@ -184,7 +213,7 @@ def _ty_crash(stdout: str, stderr: str, exit_code: int | None, diags: list[Diagn
     else:
         sig = f"ty:exit{exit_code}"
     lines = [ln for ln in blob.strip().splitlines() if ln.strip()]
-    return [Crash(tool=Tool.TY, kind="panic", signature=sig, excerpt="\n".join(lines[-25:]), exit_code=exit_code)]
+    return [Crash(tool=Tool.TY, kind="panic", signature=sig, excerpt=head_tail("\n".join(lines)), exit_code=exit_code)]
 
 
 def parse_ty(stdout: str, stderr: str = "", exit_code: int | None = None, filename: str = "") -> tuple[list[Diagnostic], list[Crash]]:
@@ -251,15 +280,21 @@ def parse_pyright(stdout: str, stderr: str = "", exit_code: int | None = None, f
         data = json.loads(stdout[start:])
     except (ValueError, json.JSONDecodeError):
         data = None
+    internal = re.search(r"internal error occurred while type checking|unhandled exception", f"{stdout}\n{stderr}", re.I)
+    if exit_code is not None and exit_code < 0:
+        return [], [_signal_crash(Tool.PYRIGHT, exit_code, f"{stderr}\n{stdout}")]
     if data is None:
-        if stdout.strip() or stderr.strip() or (exit_code or 0) > 1:
-            crashes.append(
-                Crash(Tool.PYRIGHT, "abnormal_exit", f"pyright:exit{exit_code}", (stderr or stdout)[-2000:], exit_code)
-            )
+        if internal:  # pyright prints this even when it produced no JSON
+            err = re.search(r"\b(\w*Error): ([^\n]+)", f"{stderr}\n{stdout}")
+            sig = f"pyright:internal:{err.group(1)}" if err else "pyright:internal"
+            crashes.append(Crash(Tool.PYRIGHT, "internal_error", sig, head_tail(f"{stderr}\n{stdout}"), exit_code))
+        elif exit_code is not None and (stdout.strip() or stderr.strip() or exit_code > 1):
+            # exit_code None = our own timeout, which Runners.check reports once; do not count it twice
+            crashes.append(Crash(Tool.PYRIGHT, "abnormal_exit", f"pyright:exit{exit_code}", head_tail(stderr or stdout), exit_code))
         return [], crashes
     blob = stderr or ""
     if "internal error" in blob.lower() or "unhandled exception" in blob.lower():
-        crashes.append(Crash(Tool.PYRIGHT, "internal_error", "pyright:internal", blob[-2000:], exit_code))
+        crashes.append(Crash(Tool.PYRIGHT, "internal_error", "pyright:internal", head_tail(blob), exit_code))
     diags = []
     for d in data.get("generalDiagnostics", []):
         if not _same_file(d.get("file", ""), filename):

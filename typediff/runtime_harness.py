@@ -113,7 +113,9 @@ def main() -> None:
     sys.modules["__main__"] = module
     sys.argv = [target]
     try:
-        code = compile(source, target, "exec")
+        # dont_inherit: this module has `from __future__ import annotations`, and compile() would otherwise apply it to the
+        # program, hiding the NameError CPython raises for unquoted forward references in annotations
+        code = compile(source, target, "exec", dont_inherit=True)
     except SyntaxError as exc:
         result.update(status="exception", exc_type="SyntaxError", exc_message=str(exc), exc_line=exc.lineno)
         _dump(out_path, result, executed)

@@ -897,7 +897,142 @@ def _open_typeddict_kwargs(s, d) -> bool:
                for c in ast.walk(node))
 
 
-_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs}
+def _rebound_inferred_lambda(s, d) -> bool:
+    """Narrow mypy#9658 match: inferred lambda captures an optional parameter,
+    narrowed by an earlier None check and then explicitly rebound to None.
+    Other closure patterns must still be investigated independently.
+    """
+    node = _stmt_node(s, d)
+    if not isinstance(node, ast.Assign) or not isinstance(node.value, ast.Lambda) or not s.amap.tree:
+        return False
+    body = node.value.body
+    if not (isinstance(body, ast.BinOp) and isinstance(body.op, ast.Add)
+            and isinstance(body.left, ast.Name) and isinstance(body.right, ast.Constant)
+            and isinstance(body.right.value, int)):
+        return False
+    captured = {body.left.id}
+    captured -= {a.arg for a in node.value.args.posonlyargs + node.value.args.args + node.value.args.kwonlyargs}
+    for fn in ast.walk(s.amap.tree):
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)) or node not in fn.body:
+            continue
+        index = fn.body.index(node)
+        for arg in fn.args.posonlyargs + fn.args.args + fn.args.kwonlyargs:
+            if arg.arg not in captured or arg.annotation is None:
+                continue
+            ann = arg.annotation
+            optional = any(isinstance(n, ast.Constant) and n.value is None for n in ast.walk(ann)) or (
+                isinstance(ann, ast.Subscript) and getattr(ann.value, "id", "") == "Optional")
+            if not optional:
+                continue
+            rebound = any(isinstance(st, ast.Assign) and isinstance(st.value, ast.Constant) and st.value.value is None
+                          and any(isinstance(t, ast.Name) and t.id == arg.arg for t in st.targets)
+                          for st in fn.body[index + 1:])
+            narrowed = any(isinstance(st, ast.If) and isinstance(st.test, ast.Compare)
+                           and isinstance(st.test.left, ast.Name) and st.test.left.id == arg.arg
+                           and len(st.test.ops) == 1 and isinstance(st.test.ops[0], ast.Is)
+                           and isinstance(st.test.comparators[0], ast.Constant) and st.test.comparators[0].value is None
+                           and any(isinstance(assign, ast.Assign) and isinstance(assign.value, ast.Constant)
+                                   and assign.value.value is not None
+                                   and any(isinstance(t, ast.Name) and t.id == arg.arg for t in assign.targets)
+                                   for assign in st.body)
+                           for st in fn.body[:index])
+            if rebound and narrowed:
+                return True
+    return False
+
+
+def _origin_status(s: CaseState, d: Discrepancy):
+    from . import origin
+
+    if d.kind != K.REVEAL_MISMATCH:
+        return None
+    return origin.status(s.source, s.module, d.mypy, d.ty)
+
+
+def m_origin_oracle_reveal(s, d):
+    """Narrow: the program carries its origin suite's expectation for this exact reveal; the ORIGIN tool matches it, the
+    other tool does not, and the other tool's answer is only LESS precise (more Any/Unknown parts than the blessed
+    answer; or, for a precision relation, the blessed answer is the more precise one). Never a different/uncomparable
+    type, never an accept/reject difference."""
+    from . import origin
+
+    st = _origin_status(s, d)
+    if st is None or not st["match"][st["origin"]] or st["match"]["mypy" if st["origin"] == "ty" else "ty"]:
+        return False
+    if _chain_tags(s, d) & _SPEC_NARROWING:
+        return False  # narrowing results are (partly) specified: a more/less precise answer there needs a judge
+    other = "mypy" if st["origin"] == "ty" else "ty"
+    other_text = (d.mypy if other == "mypy" else d.ty)[0].revealed_type
+    # Only the gradual relation. A more precise answer by the origin tool, blessed by its own suite, is circular
+    # evidence (review kbloop round 2): it stays in review and ORIGIN-ORACLE-NOTE explains it.
+    return d.reveal_relation == "gradual" and origin.other_is_less_precise(st["expected"], other_text, s.module)
+
+
+def m_origin_oracle_note(s, d):
+    st = _origin_status(s, d)
+    return bool(st and st["match"][st["origin"]] and not st["match"]["mypy" if st["origin"] == "ty" else "ty"])
+
+
+def m_origin_mismatch(s, d):
+    st = _origin_status(s, d)
+    return bool(st and not st["match"][st["origin"]])
+
+
+def _annotation_roots(node: ast.AST) -> list[ast.AST]:
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        a = node.args
+        return [x.annotation for x in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg]
+                if x is not None and x.annotation is not None] + ([node.returns] if node.returns is not None else [])
+    if isinstance(node, ast.AnnAssign):
+        return [node.annotation]
+    return []
+
+
+_TY_UNDEF_NAME = re.compile(r"Name `(\w+)` used when not defined")
+
+
+def _unquoted_forward_ref(s, d) -> bool:
+    """python/mypy#948: mypy does not require string-literal escapes for forward references. Narrow: no
+    `from __future__ import annotations` in the program; every name ty reports undefined at this statement is an
+    UNQUOTED name inside an annotation of this very statement and names a class of this file that is defined later or
+    whose body encloses the statement; pyright (when it ran) reports the same name undefined."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    # one-line `def f(x: B) -> None: ...` anchors on its body: use every def / annotated assignment starting on this line
+    headers = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.AnnAssign))
+               and d.anchor <= n.lineno <= d.anchor_end]
+    if not headers:
+        return False
+    node = headers[0]
+    if any(isinstance(n, ast.ImportFrom) and n.module == "__future__" and any(a.name == "annotations" for a in n.names)
+           for n in ast.walk(tree)):
+        return False
+    if not re.match(r"(?:#[^\n]*\n){0,6}?#\s*origin:\s*python/mypy\b", s.source):
+        # header must be in the first lines (harvester writes it at the top). Only for programs harvested from mypy's own (never executed) test-suite. A bug-report repro that has this
+        # shape may hide a real bug behind the forward reference (calibration: python/mypy#7935), so it stays in review
+        return False
+    names = {m.group(1) for x in d.ty if (m := _TY_UNDEF_NAME.search(x.message))}
+    if not names or len(names) != len(d.ty):
+        return False
+    unquoted = {n.id for h in headers for r in _annotation_roots(h) for n in ast.walk(r) if isinstance(n, ast.Name)}
+    classes = {n.name: n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)}
+    line = getattr(node, "lineno", d.anchor)
+    for name in names:
+        c = classes.get(name)
+        if name not in unquoted or c is None or not (c.lineno > line or c.lineno <= line <= (c.end_lineno or c.lineno)):
+            return False
+    if s.pyright_ran:
+        pr = {m.group(1) for x in s.diags.get(Tool.PYRIGHT, []) if s.amap.anchor(x.line) == d.anchor
+              for m in [re.search(r'"(\w+)" is (?:not defined|unbound)', x.message)] if m}
+        if not names <= pr:
+            return False
+    return True
+
+
+_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs,
+             "rebound_inferred_lambda": _rebound_inferred_lambda,
+             "unquoted_forward_ref": _unquoted_forward_ref}
 
 
 def _upstream_entries() -> list[KBEntry]:
@@ -926,7 +1061,7 @@ def _upstream_entries() -> list[KBEntry]:
         out.append(KBEntry(
             f"UPSTREAM-{e['id']}", f"already reported upstream: {e['note']}", Dismissal(e["dismissal"]), e["url"],
             f"{e['note']} ({e['url']}). Known issue - do not file again; add new variants as a comment if they "
-            "add information.", (kind,), matcher, auto=True, runtime_override=False,
+            "add information.", (kind,), matcher, auto=True, runtime_override=False, example=e.get("example", ""),
         ))
     return out
 
@@ -974,6 +1109,126 @@ ENTRIES.extend([
         example="from functools import partial\n\n\nclass MyClass:\n    def __new__(cls, x: int) -> 'MyClass':\n"
                 "        return super().__new__(cls)\n\n    def __init__(self) -> None: ...\n\n\np = partial(MyClass, 1)\n"
                 "# TODO: should error: [missing-argument] once constructor signatures are merged.\np()\n",
+    ),
+])
+_EXPECTED_ERROR = re.compile(r"#\s*(?:E\??:|error\b|type:\s*ignore)|should\s+(?:generate|report|produce|emit)\s+an?\s+(?:\w+[- ])?error", re.I)
+
+
+def m_suite_expects_error(s, d):
+    """The program's own test-suite marks THIS statement as an expected error (`# E:` mypy, `# error:` ty, a pyright
+    "This should generate an error" comment on the statement or the line above). Exactly one tool reports it."""
+    lines = s.amap.lines[max(0, d.anchor - 2):d.anchor_end]
+    return bool(re.search(r"^#\s*origin:", s.source, re.M)) and any(_EXPECTED_ERROR.search(x) for x in lines)
+
+
+def m_suite_allow_empty_bodies(s, d):
+    """The program came from mypy's own test-suite (header `# origin: python/mypy`, which mypy's runner runs with
+    allow_empty_bodies=True) and every mypy diagnostic here is [empty-body]; ty is silent."""
+    return (d.kind == K.ONLY_MYPY and bool(d.mypy) and all(x.code == "empty-body" for x in d.mypy)
+            and bool(re.match(r"(?:#[^\n]*\n){0,6}?#\s*origin:\s*python/mypy\b", s.source)))
+
+
+def m_pyright_reveal_kwarg(s, d):
+    """pyright-only `reveal_type(x, expected_text=...)` / `expected_type=`: mypy rejects the extra keyword."""
+    if d.kind != K.ONLY_MYPY or not d.mypy or s.amap.tree is None:
+        return False
+    if not all(x.code == "misc" and re.fullmatch(r'"reveal_type" expects 1 argument', x.message.strip()) for x in d.mypy):
+        return False
+    if any(isinstance(n, (ast.FunctionDef, ast.ClassDef)) and n.name == "reveal_type" for n in ast.walk(s.amap.tree)):
+        return False  # a user-defined reveal_type is a different function
+    calls = [n for n in ast.walk(s.amap.tree) if isinstance(n, ast.Call) and getattr(n.func, "id", getattr(n.func, "attr", "")) == "reveal_type"
+             and d.anchor <= n.lineno <= d.anchor_end]
+    return bool(calls) and all(any(k.arg in ("expected_text", "expected_type") for k in c.keywords) for c in calls)
+
+
+_EXPECT_ERR = re.compile(r"#\s*error:\s*\[([\w-]+)\]")
+
+
+def m_expected_error_oracle(s, d):
+    """HINT (never dismisses): the ty mdtest this program came from marks THIS statement with `# error: [rule]` (same line or
+    the line directly above) and ty reports exactly that rule, mypy is silent. ty's report is what its own suite expects, so
+    the open question is mypy's silence (possible mypy false negative or a mypy-only leniency), not a ty false positive."""
+    if d.kind != K.ONLY_TY or not d.ty or not re.search(r"^#\s*origin:\s*ruff mdtest\b", s.source, re.M):
+        return False
+    window = s.amap.lines[max(0, d.anchor - 2):d.anchor_end]
+    expected = {m.group(1) for ln in window for m in _EXPECT_ERR.finditer(ln)}
+    return bool(expected) and all((x.code or "") in expected for x in d.ty)
+
+
+ENTRIES.extend([
+    KBEntry(
+        "EXPECTED-ERROR-ORACLE", "HINT: ty's own suite expects this exact error; the open question is mypy's silence",
+        Dismissal.DESIGN_DIVERGENCE, "https://docs.astral.sh/ty/",
+        "The ty mdtest this program was harvested from marks the statement with `# error: [rule]` and ty reports that rule. "
+        "That makes ty's diagnostic an expected one (not a ty false positive). Whether mypy's silence is a false negative, "
+        "a mypy-only leniency or reachability is still undecided: check the mypy side.",
+        (K.ONLY_TY,), m_expected_error_oracle,
+    ),
+])
+
+
+ENTRIES.extend([
+    KBEntry(
+        "PYRIGHT-REVEAL-EXPECTED-KWARG", "pyright-only reveal_type(x, expected_text=...) keyword", Dismissal.INVALID_TEST,
+        "https://github.com/microsoft/pyright/blob/main/packages/pyright-internal/src/analyzer/typeEvaluator.ts",
+        "pyright special-cases the keyword arguments `expected_text` and `expected_type` of reveal_type (typeEvaluator.ts, "
+        "the reveal_type handler reads `arg.d.name.d.value === 'expected_text'` and `'expected_type'`, main branch, read "
+        "2026-11). They are not part of typing.reveal_type(obj), so mypy reports `\"reveal_type\" expects 1 argument`. The seed "
+        "uses a checker-specific API: harness noise, not a mypy bug. Fires only when every reveal_type call on the statement "
+        "carries one of these keywords, the only mypy diagnostic is that message, and the program defines no reveal_type of its own.",
+        (K.ONLY_MYPY,), m_pyright_reveal_kwarg, auto=True, runtime_override=False,
+        example="def f(x: int) -> None:\n    if isinstance(x, int):\n        return\n    reveal_type(x, expected_text=\"Never\")\n",
+    ),
+])
+
+
+ENTRIES.extend([
+    KBEntry(
+        "MYPY-SUITE-ALLOW-EMPTY-BODIES", "mypy's own test runner allows empty bodies; our default mypy run does not",
+        Dismissal.CONFIG_ARTIFACT, "https://github.com/python/mypy/blob/v2.4.0/mypy/test/testcheck.py#L166",
+        "mypy's check-*.test runner sets `options.allow_empty_bodies = not testcase.name.endswith(\"_no_empty\")` "
+        "(mypy v2.4.0, mypy/test/testcheck.py line 166), so harvested mypy test programs written with `pass` bodies "
+        "and non-None return types are clean under the suite's config. mypy documents [empty-body] as an error outside "
+        "stubs/protocols/abstract methods (error_code_list.html, 'Check that functions don't have empty bodies outside "
+        "stubs'). Fires only for a program whose header says `# origin: python/mypy`, only when every mypy diagnostic is "
+        "[empty-body], and only after re-running mypy with --allow-empty-bodies makes the discrepancy disappear.",
+        (K.ONLY_MYPY,), m_suite_allow_empty_bodies, auto=True, runtime_override=False,
+        verify=_toggle(Tool.MYPY, ["--allow-empty-bodies"]),
+        example="# origin: python/mypy check-classes.test [case testExample]\ndef f(x):\n    # type: (int) -> str\n    pass\n",
+    ),
+    KBEntry(
+        "ORIGIN-ORACLE-REVEAL", "HINT: the origin suite blessed this reveal; the other tool is only less precise",
+        Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/concepts.html#the-any-type",
+        "The harvested program keeps its origin suite's own expectation comment (`# N: Revealed type is ...` for mypy, "
+        "`# revealed: ...` for ty) for this very reveal_type call. The origin tool reproduces it; the other tool reveals "
+        "a less precise answer (more Any/Unknown parts, or a supertype of the blessed type). A gradual or coarser answer "
+        "is usually sound (spec: Any is compatible with every type), but nothing here verifies that the other answer is a "
+        "supertype of the blessed one. Sorting aid only (review of kbloop round 2): it never closes a finding. Only "
+        "the gradual relation; precision relations and different/uncomparable types are not matched.",
+        (K.REVEAL_MISMATCH,), m_origin_oracle_reveal, auto=False, runtime_override=True,
+    ),
+    KBEntry(
+        "SUITE-EXPECTS-ERROR", "HINT: the origin suite marks this statement as an expected error; only one tool reports it",
+        Dismissal.NOISE, "https://typing.python.org/en/latest/spec/",
+        "The harvested program says (by `# E:`, `# error:` or a 'should generate an error' comment) that an error is expected "
+        "here. The tool that reports it agrees with the suite, so the silent tool has a false negative (a candidate for the "
+        "silent tool's tracker, not a dismissal). Sorting aid only: it never closes a finding.",
+        (K.ONLY_MYPY, K.ONLY_TY), m_suite_expects_error,
+    ),
+    KBEntry(
+        "ORIGIN-ORACLE-NOTE", "HINT: the origin tool reproduces its suite's expectation, the other tool differs",
+        Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/concepts.html",
+        "The origin tool matches the expectation comment on this line and the other tool does not. Use it to explain "
+        "and sort the queue; it does not say the other tool is wrong.",
+        (K.REVEAL_MISMATCH,), m_origin_oracle_note,
+    ),
+    KBEntry(
+        "ORIGIN-MISMATCH", "HINT: the origin tool does NOT reproduce its own suite's expectation (version skew / harvest)",
+        Dismissal.INVALID_TEST, "https://typing.python.org/en/latest/spec/concepts.html",
+        "The expectation comment on this line came from a suite that belongs to one of the two tools, and that tool's "
+        "installed version does not reproduce it: the installed version differs from the suite's, the mdtest python-version "
+        "was not honoured, or the harvest broke the program. A pipeline/harvest issue, not evidence of a tool bug.",
+        (K.REVEAL_MISMATCH,), m_origin_mismatch,
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation

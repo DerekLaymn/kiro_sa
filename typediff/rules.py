@@ -28,6 +28,11 @@ K = DiscrepancyKind
 _NONDETERMINISTIC = re.compile(r"\b(random|time\.time|datetime\.now|input\(|open\(|os\.environ|sys\.argv|threading|uuid)\b")
 
 
+RERUN_NOTE = ("RERUN-BEFORE-REPORTING: re-run this program on the newest released {tool} (and, for mypy, an uncompiled build "
+              "for a traceback) before reporting; the pinned version may be older than the seed's source, and crashes of the "
+              "pinned tool are often already fixed (kb-loop round 2: 5 of 11 ty crash rows were fixed one release after the pin)")
+
+
 def crash_findings(crashes: list[Crash]) -> list[Finding]:
     out = []
     for i, c in enumerate(crashes, 1):
@@ -40,7 +45,7 @@ def crash_findings(crashes: list[Crash]) -> list[Finding]:
                 symptom=None, dismissal=None, confidence=0.0, decided_by=f"rule:crash:{c.kind}",
                 reasoning=f"{c.tool.value} exited abnormally ({c.signature}) without diagnostics: the run is invalid, "
                           "its empty output is NOT evidence of 'no errors'",
-                evidence=[Evidence(EvidenceType.STACKTRACE, "neutral", c.excerpt[-1500:], c.signature, verified=True,
+                evidence=[Evidence(EvidenceType.STACKTRACE, "neutral", c.excerpt, c.signature, verified=True,
                                    strength="weak", blame=c.tool.value)],
                 signature=c.signature,
             ))
@@ -50,9 +55,10 @@ def crash_findings(crashes: list[Crash]) -> list[Finding]:
             symptom=Symptom.CRASH, dismissal=None, confidence=0.99, decided_by=f"rule:crash:{c.kind}",
             reasoning=f"{c.tool.value} {c.kind}: {c.signature}",
             correct_behavior="A type checker must never panic/crash/hang; it should report diagnostics (or none).",
-            evidence=[Evidence(EvidenceType.STACKTRACE, "bug", c.excerpt[-1500:], c.signature, verified=True,
+            evidence=[Evidence(EvidenceType.STACKTRACE, "bug", c.excerpt, c.signature, verified=True,
                                strength="strong", blame=c.tool.value)],
             signature=c.signature,
+            review_notes=[RERUN_NOTE.format(tool=c.tool.value)],
         ))
     return out
 
@@ -134,22 +140,46 @@ def _stub_callee(state: CaseState, line: int | None) -> str | None:
     if tree is None or not line:
         return None
     defs = {n.name: n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
-    for c in ast.walk(tree):
-        if not isinstance(c, ast.Call) or not (c.lineno <= line <= (c.end_lineno or c.lineno)):
-            continue
-        f = c.func
-        fd = defs.get(f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else "")
+
+    def stubbed(fd) -> bool:
         if fd is None or fd.returns is None:
-            continue
+            return False
         r = fd.returns
         if (isinstance(r, ast.Constant) and r.value is None) or (isinstance(r, (ast.Name, ast.Attribute)) and
                                                                    getattr(r, "id", getattr(r, "attr", "")) in ("NoReturn", "Never")):
+            return False
+        return all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
+                                               and (s.value.value is Ellipsis or isinstance(s.value.value, str)))
+                   for s in fd.body)
+
+    for c in ast.walk(tree):
+        if not (hasattr(c, "lineno") and c.lineno <= line <= (getattr(c, "end_lineno", None) or c.lineno)):
             continue
-        if all(isinstance(s, ast.Pass) or (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant)
-                                           and (s.value.value is Ellipsis or isinstance(s.value.value, str)))
-               for s in fd.body):
-            return fd.name
+        if isinstance(c, ast.Call):
+            f = c.func
+            fd = defs.get(f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else "")
+            if stubbed(fd):
+                return fd.name
+        else:  # operators and subscripts dispatch to dunder methods: `A() + B()` calls a stub-bodied __add__ / __radd__
+            names = _DUNDERS.get(type(c)) or (_DUNDERS.get(type(getattr(c, "op", None))) if hasattr(c, "op") else None)
+            if names:
+                for fd in (n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                           and n.name in names):
+                    if stubbed(fd):
+                        return fd.name
     return None
+
+
+_DUNDERS: dict[type, tuple[str, ...]] = {
+    ast.Subscript: ("__getitem__",),
+    ast.Compare: ("__eq__", "__ne__", "__lt__", "__le__", "__gt__", "__ge__", "__contains__"),
+    ast.Add: ("__add__", "__radd__"), ast.Sub: ("__sub__", "__rsub__"), ast.Mult: ("__mul__", "__rmul__"),
+    ast.Div: ("__truediv__", "__rtruediv__"), ast.FloorDiv: ("__floordiv__", "__rfloordiv__"),
+    ast.Mod: ("__mod__", "__rmod__"), ast.Pow: ("__pow__", "__rpow__"), ast.MatMult: ("__matmul__", "__rmatmul__"),
+    ast.BitAnd: ("__and__", "__rand__"), ast.BitOr: ("__or__", "__ror__"), ast.BitXor: ("__xor__", "__rxor__"),
+    ast.LShift: ("__lshift__", "__rlshift__"), ast.RShift: ("__rshift__", "__rrshift__"),
+    ast.USub: ("__neg__",), ast.UAdd: ("__pos__",), ast.Invert: ("__invert__",),
+}
 
 
 def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:

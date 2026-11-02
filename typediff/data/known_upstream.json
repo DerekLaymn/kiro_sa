@@ -35,6 +35,32 @@
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/2255",
    "note": "open ty issue: overriding a method that takes Self as a non-receiver parameter should be a Liskov violation (only pyright reports it)"
+  },
+  {
+   "id": "MYPY-9658",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["unsupported-operator"],
+   "message": "Operator `\\+` is not supported",
+   "statement": "lambda\\s*:",
+   "requires": "rebound_inferred_lambda",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/9658",
+   "note": "Known mypy false negative: an inferred lambda retains narrowing of a captured optional parameter even after explicit reassignment to None; narrow AST matcher only. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-948",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["unresolved-reference"],
+   "message": "Name `\\w+` used when not defined",
+   "requires": "unquoted_forward_ref",
+   "dismissal": "KNOWN_LIMITATION",
+   "stance": "open",
+   "example": "# origin: python/mypy check-classes.test [case testX]\nclass A:\n    def f(self, other: A) -> None: ...\n",
+   "url": "https://github.com/python/mypy/issues/948",
+   "note": "HONEST STATUS: #948 is an open FEATURE REQUEST, not a statement that mypy is right; this dismissal is KNOWN_LIMITATION (a tracked, unimplemented mypy check), and ty's report is arguably correct (the code raises NameError on 3.13 without a future import). The silent tool is mypy. Issue opened and read: open mypy enhancement request, opened and read (title: 'Detect if required string literal escapes are missing from a type'; body: 'Mypy should complain about code that isn't using string literal escaped when they are required', example `def (self) -> A: ...  # Should be an error; string literal escape required`): mypy does not report a missing string-literal escape for a forward reference in an annotation, which raises NameError at runtime when annotations are evaluated eagerly (Python < 3.14 without `from __future__ import annotations`); the duplicate python/mypy#3088 was closed in its favour. Narrow AST matcher: unquoted name inside an annotation of the same statement, naming a class of the file defined later or enclosing the statement, no future import, ty and pyright agree it is undefined. Many harvested mypy .test files rely on this leniency."
   }
  ],
  "prior_stances": [
@@ -45,6 +71,14 @@
    "kinds": ["only_mypy", "only_ty", "reveal_mismatch", "concern_mismatch", "runtime_miss"],
    "tags": ["self"],
    "note": "closed 'Not planned' (intended): ty treats Self in a method signature as a TypeVar bounded by the defining class and solves it jointly with the receiver, so Leaf().add(Node()) is accepted; mypy/pyright pin Self to the receiver. The spec is ambiguous. A crash through Self-typed state (list[Self], next: Self | None) is a different, genuine unsoundness"
+  },
+  {
+   "id": "TY-4152",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4152",
+   "kinds": ["only_mypy", "reveal_mismatch", "runtime_miss"],
+   "tags": ["typevartuple", "callable", "star_unpack"],
+   "note": "TypeVarTuple constraint-set implementation is already tracked. Callable[[*Ts], R] plus *args: *Ts can accept incompatible types or arity (verified ty 0.0.84/0.0.91). Related ty#4262. Treat as potentially known; this broad prior does not dismiss findings or establish an exact duplicate."
   },
   {
    "id": "TY-4673",

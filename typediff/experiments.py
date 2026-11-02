@@ -49,7 +49,7 @@ ALLOWED_MYPY_FLAGS = {
     "--no-check-untyped-defs", "--check-untyped-defs", "--local-partial-types", "--allow-redefinition",
     "--allow-redefinition-new", "--strict-bytes", "--warn-return-any", "--disallow-any-generics",
     "--warn-redundant-casts", "--warn-unused-ignores", "--disallow-untyped-defs", "--disallow-untyped-calls",
-    "--disallow-untyped-decorators", "--implicit-optional", "--no-strict-optional",
+    "--disallow-untyped-decorators", "--implicit-optional", "--no-strict-optional", "--allow-empty-bodies",
 }
 _MYPY_CODE_FLAG = re.compile(r"^--(enable|disable)-error-code$")
 MYPY_CODE_ENABLERS = {
@@ -860,6 +860,8 @@ def default_probe_exprs(state: "CaseState", d: Discrepancy, limit: int = 6) -> l
             elif isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load):
                 if n.id not in bound_here and n.id not in defs and n.id not in state.builtin_names:
                     expr = n.id
+            if expr and expr.rsplit(".", 1)[-1] == "TYPE_CHECKING":
+                expr = None  # False at runtime by definition, True for checkers: never a soundness probe
             if expr and expr not in seen:
                 seen.append(expr)
     return seen[:limit]

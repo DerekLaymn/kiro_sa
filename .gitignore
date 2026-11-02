@@ -7,3 +7,6 @@ calibration/positives.json
 seeds/harvested/
 runs/
 .worktrees/
+.mypy_cache
+.pytest_cache
+typediff.egg-info
