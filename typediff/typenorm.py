@@ -72,7 +72,7 @@ class TNode:
 
 
 _TOKEN = re.compile(
-    r"""\s*(?:(?P<str>'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|(?P<punct>[\[\](),|&~])|(?P<ellipsis>\.\.\.)|(?P<word>[^\s\[\](),|&~'"]+))"""
+    r"""\s*(?:(?P<str>b?'(?:[^'\\]|\\.)*'|b?"(?:[^"\\]|\\.)*")|(?P<punct>[\[\](),|&~])|(?P<ellipsis>\.\.\.)|(?P<word>[^\s\[\](),|&~'"]+))"""
 )
 
 
@@ -280,9 +280,11 @@ def _canon(node: TNode) -> TNode:
 
 def _lit_text(node: TNode) -> str:
     text = node.render()
-    if len(text) >= 2 and text[0] == text[-1] and text[0] in "'\"":
-        body = text[1:-1].replace('\\"', '"').replace("\\'", "'")
-        return '"' + body.replace('"', '\\"') + '"'
+    prefix = "b" if text.startswith(("b'", 'b"')) else ""  # mypy spells bytes Literal[b'a'], ty/pyright Literal[b"a"]
+    core = text[len(prefix):]
+    if len(core) >= 2 and core[0] == core[-1] and core[0] in "'\"":
+        body = core[1:-1].replace('\\"', '"').replace("\\'", "'")
+        return prefix + '"' + body.replace('"', '\\"') + '"'
     return text
 
 
@@ -431,6 +433,34 @@ def is_literal_widening(narrow: NormType, wide: NormType) -> bool:
     return widened == sorted(m.render() for m in _members(wide.node)) and any(
         m.kind == "literal" for m in _members(narrow.node)
     )
+
+
+def _has_literal(node: TNode) -> bool:
+    return any(n.kind == "literal" for n in node.walk())
+
+
+def deep_widen(node: TNode) -> TNode:
+    """Widen every Literal inside a type, nested ones too: tuple[Literal[0]] -> tuple[int], Literal['a', 'b'] -> str."""
+    if node.kind == "literal":
+        return TNode("name", name=_widen(node))
+    if node.kind in ("union", "inter"):
+        return _canon(TNode(node.kind, args=[deep_widen(a) for a in node.args]))
+    if node.kind == "neg":
+        return TNode("neg", args=[deep_widen(node.args[0])])
+    if node.kind == "name":
+        return TNode("name", name=node.name, args=[deep_widen(a) for a in node.args], flags=set(node.flags))
+    return node
+
+
+def is_literal_retention(a: NormType, b: NormType) -> bool:
+    """True if one type is EXACTLY the other with its Literal parts (also nested ones) widened to their base class.
+
+    One-sided on purpose: ``Literal[10, 20, 30]`` vs ``Literal[10, 30]`` widens to ``int`` on both sides but neither is
+    the other's widening, so it is a narrowing difference and does not match."""
+    if not (a.node and b.node) or a.text == b.text:
+        return False
+    return any(_has_literal(keep.node) and deep_widen(keep.node).render() == wide.node.render()
+               for keep, wide in ((a, b), (b, a)))
 
 
 _MYPY_CALLABLE = re.compile(r"^(?:builtins\.|__main__\.)*def \(\) -> (?:__main__\.)?(?P<base>[\w.]+)$")
