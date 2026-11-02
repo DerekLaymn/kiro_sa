@@ -1387,11 +1387,46 @@ def _error_inside_reveal_arg(s, tool: Tool, diag) -> bool:
                for x in s.diags.get(tool, []))
 
 
+def _error_at_binding_of_reveal_arg(s, tool: Tool, diag) -> bool:
+    """True if ``tool`` reports an ERROR on an EARLIER simple statement that binds a name read in the argument of the
+    reveal_type call that produced ``diag`` (assignment target, unpacking, ``for``/``with`` target, def/class name).
+    Compound statements count only through their own binding (def/class name, ``for`` target, ``with`` variables)."""
+    call = _reveal_arg_call(s, diag)
+    if call is None:
+        return False
+    names = {n.id for n in ast.walk(call.args[0]) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Load)}
+    if not names:
+        return False
+    here = s.amap.anchor(diag.line)
+    for x in s.diags.get(tool, []):
+        if not (x.is_problem and x.severity == Severity.ERROR) or s.amap.anchor(x.line) >= here:
+            continue
+        st = s.amap.stmt(x.line)
+        node = st.node if st else None
+        if node is None:
+            continue
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            bound = {node.name}
+        elif isinstance(node, (ast.For, ast.AsyncFor)):
+            bound = {n.id for n in ast.walk(node.target) if isinstance(n, ast.Name)}
+        elif isinstance(node, (ast.With, ast.AsyncWith)):
+            bound = {n.id for i in node.items if i.optional_vars is not None for n in ast.walk(i.optional_vars)
+                     if isinstance(n, ast.Name)}
+        elif isinstance(node, (ast.If, ast.While, ast.Try, ast.Match)) or type(node).__name__ == "TryStar":
+            continue
+        else:
+            bound = {n.id for n in ast.walk(node) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+        if bound & names:
+            return True
+    return False
+
+
 def m_reveal_error_recovery(s, d):
     """One tool reveals exactly its gradual type (ty `Unknown`, mypy `Any`) for an expression in which that SAME tool
     reports an error, while the other tool reveals a type without gradual parts. The gradual reveal is the checker's
     error-recovery type, not an inference. The error itself is its own discrepancy (judged separately), so nothing is
-    lost. Narrow: the error position must lie inside the revealed argument."""
+    lost. Narrow: the error position lies inside the revealed argument, OR the same tool reported an error on an
+    earlier statement that binds a name the revealed argument reads (the recovery type flows through the binding)."""
     if d.kind != K.REVEAL_MISMATCH or len(d.ty) != 1 or len(d.mypy) != 1:
         return False
     rt = s.runtime
@@ -1403,7 +1438,7 @@ def m_reveal_error_recovery(s, d):
         o = normalize(other.revealed_type, s.module)
         if o.node is None or "gradual" in o.flags or "todo" in o.flags:
             continue
-        if _error_inside_reveal_arg(s, tool, mine):
+        if _error_inside_reveal_arg(s, tool, mine) or _error_at_binding_of_reveal_arg(s, tool, mine):
             return True
     return False
 
@@ -1535,8 +1570,10 @@ ENTRIES.extend([
         "compatible with every type). When a tool reveals exactly that gradual type for an expression in which it ALSO "
         "reports an error, the reveal says nothing about inference: the error is the finding, and it is judged as its "
         "own discrepancy. Fires only when one side is exactly `Unknown` (ty) / `Any` (mypy), the other side has no "
-        "gradual part, and the same tool's error position lies inside the revealed argument. A CPython exception at "
-        "the statement keeps it in review.",
+        "gradual part, and the same tool either reports an error inside the revealed argument, or reported an error "
+        "on an EARLIER statement that binds a name the argument reads (`a, b, *c = 'x'` then `reveal_type(a)`: the "
+        "recovery type flows through the binding; mypy's `Any` after an invalid assignment/class/def is the mirror). "
+        "A CPython exception at the statement keeps it in review.",
         (K.REVEAL_MISMATCH,), m_reveal_error_recovery, auto=True, runtime_override=True,
         example="def g(a: int, b: str) -> None:\n    reveal_type(a + b)\n",
     ),

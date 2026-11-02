@@ -136,6 +136,73 @@ def test_summary_lists_dismissed_must_stay_live_programs():
     assert s["positives"] == 1 and s["negatives"] == 0  # the new kind does not leak into the other metrics
 
 
+# ---------------------------------------------------------------- REVEAL-ERROR-RECOVERY through a flagged binding
+
+RID = "REVEAL-ERROR-RECOVERY"
+BIND_SRC = "a, b = 1\nprint(0)\nreveal_type(a)\n"  # the argument `a` starts at line 3, column 13
+
+
+def bind_case(tool=Tool.TY, err_line=1, err_sev=Severity.ERROR, src=BIND_SRC, runtime=None, other_rev="int"):
+    gradual, mine_rev, other_tool = ("Unknown", "Unknown", Tool.MYPY) if tool == Tool.TY else ("Any", "Any", Tool.TY)
+    mine = Diagnostic(tool, 3, 13, Severity.NOTE, "revealed-type", "", revealed_type=mine_rev)
+    other = Diagnostic(other_tool, 3, 13, Severity.NOTE, None, "", revealed_type=other_rev)
+    err = Diagnostic(tool, err_line, 1, err_sev, "invalid-assignment", "m")
+    diags = {tool: [err, mine], other_tool: [other], Tool.PYRIGHT: []}
+    st = CaseState("t", src, "3.13", diags, runtime or RuntimeResult(status="success"), [], {}, {})
+    ty, my = (mine, other) if tool == Tool.TY else (other, mine)
+    return st, Discrepancy("D1", K.REVEAL_MISMATCH, 3, 3, "s", "", mypy=[my], ty=[ty], reveal_relation="gradual")
+
+
+def rec_hit(st, d):
+    return RID in {e.id for e in matching_entries(st, d)}
+
+
+def test_recovery_through_a_flagged_binding_both_tools():
+    assert rec_hit(*bind_case(Tool.TY))
+    assert rec_hit(*bind_case(Tool.MYPY))
+    # def / class / for / with bindings count through their own binding only
+    assert rec_hit(*bind_case(src="def a() -> int:\n    return 1\nreveal_type(a)\n"))
+    assert rec_hit(*bind_case(src="for a in 1:\n    pass\nreveal_type(a)\n"))
+    assert rec_hit(*bind_case(src="with 1 as a:\n    pass\nreveal_type(a)\n"))
+
+
+def test_recovery_through_a_binding_stays_narrow():
+    assert not rec_hit(*bind_case(err_sev=Severity.WARNING))  # a warning is not an error
+    assert not rec_hit(*bind_case(src="b = 1\nprint(0)\nreveal_type(a)\n"))  # the flagged statement binds another name
+    assert not rec_hit(*bind_case(src="a, b = 1\nprint(0)\nreveal_type(len)\n"))  # argument reads no flagged name
+    assert not rec_hit(*bind_case(err_line=3))  # error on the reveal statement itself is the other (inside-arg) branch
+    assert not rec_hit(*bind_case(other_rev="Any"))  # both gradual
+    assert not rec_hit(*bind_case(other_rev="list[Any]"))
+    # an error inside a compound statement's body does not bind the names of its header or other statements
+    assert not rec_hit(*bind_case(src="if 1:\n    print(0)\nreveal_type(a)\n", err_line=2))
+    # the OTHER tool's earlier error does not explain this tool's gradual reveal
+    st, d = bind_case(Tool.TY)
+    st.diags[Tool.MYPY].append(st.diags[Tool.TY][0].__class__(Tool.MYPY, 1, 1, Severity.ERROR, "assignment", "m"))
+    st.diags[Tool.TY] = [x for x in st.diags[Tool.TY] if x.revealed_type is not None]
+    assert not rec_hit(st, d)
+
+
+def test_recovery_through_a_binding_keeps_a_cpython_exception_in_review():
+    rt = RuntimeResult(status="exception", exc_type="ValueError", exc_message="x", exc_line=3, frames=[(3, "<module>")])
+    assert not rec_hit(*bind_case(runtime=rt))
+    rt = RuntimeResult(status="exception", exc_type="ValueError", exc_message="x", exc_line=1, frames=[(1, "<module>")])
+    assert rec_hit(*bind_case(runtime=rt))  # raised at the (flagged) binding, not at the reveal
+
+
+@needs_tools
+def test_recovery_through_a_binding_real_tools_keeps_the_error_visible():
+    src = 'a, b, *c, d = "a"\nreveal_type(a)\n'
+    rep = pipeline().run_source(src, "bind-recovery")
+    by = {f.discrepancy_id: f for f in rep.findings}
+    kinds = {d.id: d.kind for d in rep.discrepancies}
+    reveals = [i for i, k in kinds.items() if k == K.REVEAL_MISMATCH]
+    assert reveals, [(d.id, d.kind.value) for d in rep.discrepancies]
+    # the reveal row (ty Unknown after its own unpacking error) is closed; the error itself is NOT swallowed
+    assert any(by[i].decided_by == f"kb:{RID}" and by[i].tier == Tier.DISMISSED for i in reveals)
+    others = [f for i, f in by.items() if i not in reveals]
+    assert others and not any(f.decided_by == f"kb:{RID}" for f in others)
+
+
 # ---------------------------------------------------------------- NameError policy: one answer in both code paths + hint
 
 NAME_SRC = "x: int\nprint(x)\n"
