@@ -80,6 +80,8 @@ def _check(shape: dict, node: TNode, nominal: set[str], exact_float: bool = Fals
     if name == "complex":
         return bool(mro & {"complex", "float", "int"})
     if name == "type" and node.args:
+        if _short(shape.get("type", "")).rsplit(".", 1)[-1] in ("_GenericAlias", "GenericAlias"):
+            return None  # C[int] at runtime is an alias object that inhabits type[C[int]]
         if not shape.get("is_class"):
             return False
         inner = node.args[0]

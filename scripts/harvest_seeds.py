@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import json
 import re
 import subprocess
 import sys
@@ -53,7 +54,23 @@ def guess_area(name: str) -> str:
     return "gradual_any"
 
 
-def clone(src: str) -> Path:
+def tool_versions() -> dict[str, str | None]:
+    from importlib import metadata
+
+    out: dict[str, str | None] = {}
+    for pkg in ("mypy", "ty"):
+        try:
+            out[pkg] = metadata.version(pkg)
+        except metadata.PackageNotFoundError:
+            out[pkg] = None
+    return out
+
+
+def _git(dest: Path, *a: str, check: bool = False) -> subprocess.CompletedProcess:
+    return subprocess.run(["git", "-C", str(dest), *a], check=check, capture_output=True, text=True)
+
+
+def clone(src: str, tags: tuple[str, ...] = ()) -> Path:
     url, sub = REPOS[src]
     dest = CACHE / src
     if not (dest / ".git").exists():
@@ -62,6 +79,10 @@ def clone(src: str) -> Path:
         subprocess.run(["git", "-C", str(dest), "sparse-checkout", "set", sub], check=True)
     else:
         subprocess.run(["git", "-C", str(dest), "pull", "-q", "--depth=1"], check=False)
+    for tag in tags:  # prefer the tag matching the installed tool; else stay on HEAD
+        if _git(dest, "fetch", "-q", "--depth=1", "origin", "tag", tag).returncode == 0 and \
+                _git(dest, "checkout", "-q", tag).returncode == 0:
+            break
     return dest / sub
 
 
@@ -87,7 +108,71 @@ def harvest_conformance(root: Path):
         yield f"conformance__{f.stem}", f.read_text(encoding="utf-8"), f"python/typing conformance/tests/{f.name}"
 
 
-_MD_BLOCK = re.compile(r"(?P<head>[^\n]*)\n```(?:py|python)\n(?P<code>.*?)```", re.S)
+MDTEST_SKIP_KEYS = ("python-platform", "extra-paths", "root")
+MDTEST_SKIPPED: dict[str, int] = {}
+
+
+def parse_mdtest(text: str, target: str = "3.13"):
+    """Return [(code, effective_env, heading, skip_reason_or_None)] for each py block, in file order.
+
+    A section's toml [environment] applies to the whole section (even snippets before it) and its
+    subsections; a nested heading's own toml keys override the parent's.
+    """
+    secs: list[dict] = [{"parent": None, "env": {}, "title": ""}]
+    stack: list[tuple[int, dict]] = [(0, secs[0])]
+    blocks: list[tuple[str, dict]] = []
+    lines = text.split("\n")
+    i = 0
+    while i < len(lines):
+        ln = lines[i]
+        fm = re.match(r"```(\w*)", ln)
+        if fm:
+            lang, j = fm.group(1), i + 1
+            while j < len(lines) and not lines[j].startswith("```"):
+                j += 1
+            body = "\n".join(lines[i + 1 : j])
+            cur = stack[-1][1]
+            if lang == "toml":
+                sect = None
+                for l in body.split("\n"):
+                    h = re.match(r"\[(.+)\]\s*$", l.strip())
+                    if h:
+                        sect = h.group(1)
+                    elif sect == "environment":
+                        kv = re.match(r"([\w-]+)\s*=\s*(.*?)\s*(#.*)?$", l.strip())
+                        if kv:
+                            cur["env"][kv.group(1)] = kv.group(2).strip("\"'")
+            elif lang in ("py", "python"):
+                blocks.append((body + "\n", cur))
+            i = j + 1
+            continue
+        hm = re.match(r"(#+)\s+(.*)", ln)
+        if hm:
+            lvl = len(hm.group(1))
+            while stack[-1][0] >= lvl:
+                stack.pop()
+            sec = {"parent": stack[-1][1], "env": {}, "title": hm.group(2).strip()}
+            stack.append((lvl, sec))
+        i += 1
+    out = []
+    for code, sec in blocks:
+        chain, s_ = [], sec
+        while s_:
+            chain.append(s_)
+            s_ = s_["parent"]
+        env: dict = {}
+        for c in reversed(chain):
+            env.update(c["env"])
+        reason = None
+        if "python-version" in env and env["python-version"] != target:
+            reason = f"python-version={env['python-version']}"
+        else:
+            for k in MDTEST_SKIP_KEYS:
+                if k in env:
+                    reason = k
+                    break
+        out.append((code, env, sec["title"], reason))
+    return out
 
 
 def harvest_ty(root: Path):
@@ -95,9 +180,12 @@ def harvest_ty(root: Path):
         text = md.read_text(encoding="utf-8")
         if re.search(r"^`[\w/]+\.pyi?`:\s*$", text, re.M):
             continue  # multi-file test: blocks depend on each other
-        for i, m in enumerate(_MD_BLOCK.finditer(text)):
+        for i, (code, _env, _head, reason) in enumerate(parse_mdtest(text)):
+            if reason:
+                MDTEST_SKIPPED[reason] = MDTEST_SKIPPED.get(reason, 0) + 1
+                continue
             rel = md.relative_to(root).with_suffix("")
-            yield f"ty__{str(rel).replace('/', '__')}__{i}", m.group("code"), f"ruff mdtest {rel}.md block {i}"
+            yield f"ty__{str(rel).replace('/', '__')}__{i}", code, f"ruff mdtest {rel}.md block {i}"
 
 
 _CASE = re.compile(r"^\[case (?P<name>[^\]]+)\]\n(?P<body>.*?)(?=^\[case |\Z)", re.S | re.M)
@@ -124,8 +212,17 @@ def main() -> None:
     version = tuple(int(x) for x in args.python_version.split("."))
     out = Path(args.out)
     funcs = {"conformance": harvest_conformance, "ty": harvest_ty, "mypy": harvest_mypy}
+    vers = tool_versions()
+    prov: dict = {"tool_versions": vers, "repos": {}}
+    tag_for = {"mypy": (f"v{vers['mypy']}",) if vers["mypy"] else (), "ty": (vers["ty"],) if vers["ty"] else ()}
     for src in args.sources.split(","):
-        root = clone(src)
+        root = clone(src, tag_for.get(src, ()))
+        repo = CACHE / src
+        prov["repos"][src] = {
+            "url": REPOS[src][0],
+            "sha": _git(repo, "rev-parse", "HEAD").stdout.strip(),
+            "tag": _git(repo, "describe", "--tags", "--exact-match").stdout.strip() or None,
+        }
         kept = seen = 0
         for name, code, origin in funcs[src](root):
             seen += 1
@@ -140,6 +237,11 @@ def main() -> None:
             if args.limit and kept >= args.limit:
                 break
         print(f"{src}: kept {kept} of {seen} programs -> {out}")
+    if "ty" in args.sources.split(","):
+        prov["mdtest_skipped"] = dict(sorted(MDTEST_SKIPPED.items()))
+        print(f"ty mdtest skipped by env: {prov['mdtest_skipped']}")
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "PROVENANCE.json").write_text(json.dumps(prov, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,152 @@
+
+##  661 findings (167 with strong bug evidence)  only_ty | ('unresolved-reference',) | name _ used when not defined
+     * ck_abstract__testInstantiationAbstractsInTypeForFunctions.py  D3 L23: f(x)  # OK
+     * abstract__testMemberAccessWithMultipleAbstractBaseClasses.py  D1 L14: x.f()
+     * s/mypy__check_classes__testNewReturnTypeCallableInference.py  D1 L14: reveal_type(foo(ta))  # N: Revealed type is "builtins.int"
+
+## 1332 findings (133 with strong bug evidence)  reveal_mismatch | gradual
+     * s/mypy__check_classes__testNewReturnTypeCallableInference.py  D3 L14: reveal_type(foo(ta))  # N: Revealed type is "builtins.int"
+     * vested/constructors_metaclasses/ty__call__constructor__17.py  D5 L16: reveal_type(C())  # revealed: int
+     * vested/constructors_metaclasses/ty__call__constructor__18.py  D3 L10: reveal_type(C[C[End[int]]]())  # revealed: int
+
+## 1012 findings (107 with strong bug evidence)  reveal_mismatch | different
+     * mypy__check_classes__testMetaclassConflictingInstanceVars.py  D3 L17: reveal_type(Foo.foo)  # N: Revealed type is "builtins.int"
+     * /mypy__check_unions__testNotSimplifyingUnionWithMetaclass.py  D5 L16: reveal_type(u(M(*a), t_a)) # N: Revealed type is "__main__.M"
+     * vested/constructors_metaclasses/ty__call__constructor__35.py  D3 L10: reveal_type(ReturnsIntWithInit())  # revealed: int
+
+##   55 findings (55 with strong bug evidence)  runtime_miss | () | 
+     * nstructors_metaclasses/conformance__constructors_call_new.py  D9 L100: return super().__new__(cls, *args, **kwargs)
+     * _check_classes__testCorrectConstructorTypeWithAnyFallback.py  D4 L5: class B(Unknown):  # type: ignore
+     * seed seeds/harvested/enums_literals/ty__enums__20.py  D3 L5: class Planet(Enum):
+
+##  733 findings (23 with strong bug evidence)  reveal_mismatch | uncomparable
+     * ables/mypy__check_classes__testNewReturnTypeCallableJoins.py  D1 L20: reveal_type(join(A, Foo))  # N: Revealed type is "def () -> __main__.F
+     * ables/mypy__check_classes__testNewReturnTypeCallableJoins.py  D2 L21: reveal_type(join(Foo, A))  # N: Revealed type is "def () -> __main__.F
+     * ables/mypy__check_classes__testNewReturnTypeCallableJoins.py  D3 L22: reveal_type(join(A, B))  # N: Revealed type is "def () -> __main__.Bas
+
+##   57 findings (13 with strong bug evidence)  only_mypy | ('attr-defined',) | _ has no attribute _
+     * ted/gradual_any/mypy__check_classes__testSetattrSignature.py  D1 L11: t.crash = 'test'  # E: Attribute function "__setattr__" with type "Cal
+     * seed seeds/harvested/gradual_any/ty__call__type__26.py  D1 L16: reveal_type(DynamicModel.__dataclass_fields__)  # revealed: dict[str, 
+     * seed seeds/harvested/gradual_any/ty__class__slots__0.py  D1 L6: reveal_type(Slotted().value)  # revealed: Unknown
+
+##  311 findings (11 with strong bug evidence)  reveal_mismatch | ty_more_precise
+     * vested/constructors_metaclasses/ty__call__constructor__60.py  D6 L16: reveal_type(MixedSelf(1))  # revealed: Literal[1]
+     * y__check_python312__testPEP695GenericMethodInGenericClass.py  D1 L9: reveal_type(C[str]().m(1))  # N: Revealed type is "builtins.str | buil
+     * ck_optional__testInferOptionalFromDefaultNoneInlineConfig.py  D3 L5: reveal_type(x)  # N: Revealed type is "builtins.int | None"
+
+##  120 findings (10 with strong bug evidence)  reveal_mismatch | mypy_more_precise
+     * variance/mypy__check_classes__testReverseOperatorTypeVar1.py  D1 L12: reveal_type(Real() + Fraction())      # N: Revealed type is "__main__.
+     * ariance/mypy__check_classes__testReverseOperatorTypeVar2a.py  D2 L10: reveal_type(Real() + Fraction())      # N: Revealed type is "__main__.
+     * ariance/mypy__check_classes__testReverseOperatorTypeVar2b.py  D2 L10: reveal_type(Real() + Fraction())      # N: Revealed type is "__main__.
+
+##   98 findings (10 with strong bug evidence)  concern_mismatch | ('assignment',) | incompatible types in assignment (expression has type _, variable has type _)
+     * ance/mypy__check_generics__testTypeVariableAsTypeArgument.py  D4 L9: a.v = c # E: Incompatible types in assignment (expression has type "A[
+     * dual_any/mypy__check_classes__testExplicitAttributeInBody.py  D2 L7: a.x = object() # E: Incompatible types in assignment (expression has t
+     * adual_any/mypy__check_errorcodes__testErrorCodeAssignment.py  D2 L15: a.x = ''  # E: Incompatible types in assignment (expression has type "
+
+##   15 findings (10 with strong bug evidence)  only_ty | ('unsupported-bool-conversion',) | boolean conversion is not supported for type _
+     *  seeds/harvested/gradual_any/ty__comprehensions__basic__4.py  D1 L7: [x for x in range(3) if InvalidBoolReturn()]  # error: [unsupported-bo
+     * /harvested/gradual_any/ty__conditional__if_expression__13.py  D1 L7: 3 if NotBoolable() else 4
+     * ds/harvested/gradual_any/ty__conditional__if_statement__9.py  D1 L7: if NotBoolable():
+
+##   16 findings (9 with strong bug evidence)  only_ty | ('unresolved-attribute',) | object of type _ has no attribute _
+     * rvested/constructors_metaclasses/ty__call__constructor__4.py  D1 L7: LambdaNew().missing_attribute  # error: [unresolved-attribute]
+     * ed seeds/harvested/dataclasses/ty__dataclasses__fields__6.py  D1 L13: dc.sentinel
+     * py__check_functions__testCallConditionalMethodViaInstance.py  D2 L8: A().f(1)
+
+##   16 findings (8 with strong bug evidence)  concern_mismatch | ('misc',) | class _ has incompatible disjoint bases
+     * rvested/gradual_any/conformance__directives_disjoint_base.py  D5 L107: class IncompatibleSlots(SlotBase1, SlotBase2):  # E: incompatible disj
+     * eds/harvested/gradual_any/ty__instance_layout_conflict__1.py  D1 L9: class C(  # error: [instance-layout-conflict]
+     * ds/harvested/gradual_any/ty__instance_layout_conflict__12.py  D1 L7: class A(  # error: [instance-layout-conflict]
+
+##   60 findings (7 with strong bug evidence)  concern_mismatch | ('arg-type',) | argument n to _ has incompatible type _; expected _
+     * s/mypy__check_classes__testNewReturnTypeCallableSubtyping.py  D1 L55: f(ta)  # E: Argument 1 to "f" has incompatible type "type[A]"; expecte
+     * ce/mypy__check_generics__testErrorWithLongGenericTypeName.py  D2 L35: f(a) # E: Argument 1 to "f" has incompatible type "A[object, object, o
+     * mypy__check_generics__testErrorWithShorterGenericTypeName.py  D2 L9: f(a) # E: Argument 1 to "f" has incompatible type "A[object, B]"; expe
+
+##    7 findings (7 with strong bug evidence)  concern_mismatch | ('str-unpack',) | unpacking a string is disallowed
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__70.py  D1 L4: a, b, c = "ab"
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__71.py  D1 L4: a, b = "abc"
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__72.py  D1 L4: a, *b, c, d = "ab"
+
+##   76 findings (6 with strong bug evidence)  only_mypy | ('has-type',) | cannot determine type of _
+     * ed/generics_variance/conformance__generics_syntax_scoping.py  D2 L37: print(T)  # E: Runtime error: 'T' is not defined
+     * al_any/mypy__check_columns__testColumnCannotDetermineType.py  D1 L3: (x)  # E:2: Cannot determine type of "x"  # E:2: Name "x" is used befo
+     * /mypy__check_errorcodes__testErrorCodeCannotDetermineType.py  D1 L3: y = x  # E: Cannot determine type of "x"  [has-type] \
+
+##   52 findings (5 with strong bug evidence)  only_mypy | ('name-defined',) | name _ is not defined
+     * seed seeds/harvested/gradual_any/ty__scripts__6.py  D2 L9: print(missing)
+     * seed seeds/harvested/gradual_any/ty__scripts__7.py  D1 L18: print(missing)
+     * seed seeds/harvested/gradual_any/ty__scripts__8.py  D1 L13: print(missing)
+
+##   90 findings (4 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ has incompatible type _; expected _
+     * eeds/harvested/gradual_any/ty__call__functools_partial__2.py  D1 L13: p("hello")
+     * nce__testGenericFunctionInferenceWithMultipleInheritance2.py  D1 L19: h(a) # E: Argument 1 to "h" has incompatible type "I"; expected "J"
+     * nce__testGenericFunctionInferenceWithMultipleInheritance2.py  D2 L22: h(b) # E: Argument 1 to "h" has incompatible type "I"; expected "J"
+
+##   27 findings (4 with strong bug evidence)  concern_mismatch | ('arg-type',) | argument n to _ of _ has incompatible type _; expected _
+     * _variance/mypy__check_generics__testGenericMethodArgument.py  D4 L13: a.f(c) # E: Argument 1 to "f" of "A" has incompatible type "C"; expect
+     * y__check_python312__testPEP695MultipleNestedGenericClass1.py  D1 L11: x.g('a') # E: Argument 1 to "g" of "D" has incompatible type "str"; ex
+     * ance/mypy__check_python312__testPEP695NestedGenericClass1.py  D1 L19: x.g("x")  # E: Argument 1 to "g" of "B" has incompatible type "str"; e
+
+##   15 findings (4 with strong bug evidence)  only_ty | ('call-non-callable',) | object of type _ is not callable
+     * seeds/harvested/dataclasses/conformance__dataclasses_hash.py  D2 L19: DC1(0).__hash__()  # E
+     * dual_any/mypy__check_classes__testClassDecoratorIncorrect.py  D1 L4: class A3: pass
+     * s__testRedefineFunctionDefinedAsVariableInitializedToNone.py  D1 L7: f()
+
+##   14 findings (4 with strong bug evidence)  only_ty | ('unsupported-operator',) | operator _ is not supported between objects of type _ and _
+     * radual_any/mypy__check_errorcodes__testRecommendErrorCode.py  D2 L4: 1 + "asdf"
+     * adual_any/mypy__check_errorcodes__testRecommendErrorCode2.py  D2 L4: 1 + "asdf"
+     * mypy__check_unreachable_code__testConditionalTypeAliasPY3.py  D1 L11: y = 'x' / 1
+
+##    6 findings (4 with strong bug evidence)  concern_mismatch | ('misc',) | enum class cannot be generic
+     * seed seeds/harvested/enums_literals/ty__enums__167.py  D1 L6: class E[T](Enum):
+     * seed seeds/harvested/enums_literals/ty__enums__168.py  D1 L9: class F(Enum, Generic[T]):
+     * seed seeds/harvested/enums_literals/ty__enums__170.py  D1 L9: class MyIntEnum[T](IntEnum):
+
+##    6 findings (4 with strong bug evidence)  only_ty | ('invalid-base',) | invalid class base with type _
+     * ck_optional__testDontSimplifyNoneUnionsWithStrictOptional.py  D1 L5: class C(A): pass
+     * ual_any/mypy__check_optional__testOptionalAndAnyBaseClass.py  D1 L5: class C(A):
+     * seed seeds/harvested/gradual_any/ty__call__new_class__5.py  D1 L7: types.new_class("Foo", (1, 2))
+
+##   11 findings (3 with strong bug evidence)  only_ty | ('unsupported-operator',) | operator _ is unsupported between objects of type _ and _
+     * d seeds/harvested/gradual_any/ty__annotations__string__10.py  D2 L9: X = list["int" | None]
+     * ed seeds/harvested/gradual_any/ty__annotations__string__6.py  D2 L58: X = list["int" | None]
+     * ed seeds/harvested/gradual_any/ty__annotations__string__9.py  D1 L17: X = list["int" | None]
+
+##   11 findings (3 with strong bug evidence)  concern_mismatch | ('attr-defined',) | _ has no attribute _
+     * dual_any/mypy__check_classes__testReferToInvalidAttribute.py  D1 L8: a.y  # E: "A" has no attribute "y"
+     * check_classes__testReferToInvalidAttributeUnannotatedInit.py  D1 L8: a.y  # E: "A" has no attribute "y"
+     * ds/harvested/gradual_any/mypy__check_classes__testSetattr.py  D2 L27: d.crash = 4  # E: "D" has no attribute "crash"
+
+##    9 findings (3 with strong bug evidence)  concern_mismatch | ('call-overload',) | no overload variant of _ of _ matches argument types _, _
+     * seeds/harvested/gradual_any/ty__assignment__augmented__22.py  D1 L8: holder.values[0] /= 2
+     * sted/gradual_any/ty__subscript__assignment_diagnostics__3.py  D1 L4: numbers["zero"] = 3  # error: [invalid-assignment]
+     * seed seeds/harvested/gradual_any/ty__subscript__lists__1.py  D1 L7: x["a" if (y := 2) else 1] = 6
+
+##    9 findings (3 with strong bug evidence)  only_mypy | ('misc',) | _ object is not iterable
+     * ed seeds/harvested/typevartuple_unpack/ty__unpacking__105.py  D1 L11: (a, b), c = Iterable()
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__19.py  D1 L11: a, b = Iterable()
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__20.py  D1 L11: a, (b, c), d = (1, Iterable(), 2)
+
+##    7 findings (3 with strong bug evidence)  concern_mismatch | ('operator',) | _ not callable
+     * l_any/mypy__check_dynamic_typing__testIndexingWithDynamic.py  D3 L9: d[a()] = a # E: "A" not callable
+     * seed seeds/harvested/gradual_any/ty__with__sync__44.py  D1 L9: with Manager():
+     * seed seeds/harvested/gradual_any/ty__with__sync__45.py  D1 L11: with Manager():
+
+##    6 findings (3 with strong bug evidence)  concern_mismatch | ('call-arg',) | too few arguments
+     * heck_classvar__testSuggestClassVarOnTooFewArgumentsMethod.py  D2 L8: c.foo()  # E: Too few arguments \
+     * eed seeds/harvested/gradual_any/ty__binary__instances__20.py  D1 L12: reveal_type(A() + A())
+     * seed seeds/harvested/gradual_any/ty__call__dunder__4.py  D1 L13: reveal_type(this_fails[0])  # revealed: Unknown
+
+##    5 findings (3 with strong bug evidence)  only_ty | ('invalid-assignment',) | not enough values to unpack: expected at least n
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__51.py  D1 L4: first, *rest, last = (*{"key": 1},)
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__87.py  D1 L4: a, *b, c, d = b"ab"
+     * eed seeds/harvested/typevartuple_unpack/ty__unpacking__88.py  D1 L4: a, b, *c, d = b"a"
+
+##    4 findings (3 with strong bug evidence)  only_mypy | ('metaclass',) | metaclasses not inheriting from _ are not supported
+     * etaclasses/mypy__check_classes__testMetaclassNoTypeReveal.py  D1 L6: class A(metaclass=M): pass  # E: Metaclasses not inheriting from "type
+     * sses/mypy__check_errorcodes__testMetaclassNotTypeSubclass.py  D1 L4: class A(metaclass=M): pass  # E: Metaclasses not inheriting from "type
+     * classes/mypy__check_newsemanal__testNewAnalyzerMetaclass2.py  D1 L12: class AA(metaclass=C): # E: Metaclasses not inheriting from "type" are
+
+7480 findings in 618 patterns (* = strong verified bug evidence; triage those patterns first)

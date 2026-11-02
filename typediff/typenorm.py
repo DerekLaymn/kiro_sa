@@ -433,6 +433,33 @@ def is_literal_widening(narrow: NormType, wide: NormType) -> bool:
     )
 
 
+_MYPY_CALLABLE = re.compile(r"^(?:builtins\.|__main__\.)*def \(\) -> (?:__main__\.)?(?P<base>[\w.]+)$")
+_TY_CLASS = re.compile(r"^<class '(?:__main__\.)?(?P<n>[\w.]+)'>$")
+_PYRIGHT_TYPE = re.compile(r"^type\[(?P<n>[\w.]+)\]$")
+
+
+def callable_join_vs_union(mypy_text: str | None, ty_text: str | None, pyright_text: str | None) -> str | None:
+    """mypy joins constructors into ``def () -> X``; ty (``<class 'A'> | <class 'B'>``) and pyright
+    (``type[A] | type[B]``) keep the union. Returns X when both union spellings name the same >= 2 classes."""
+    if not (mypy_text and ty_text and pyright_text):
+        return None
+    m = _MYPY_CALLABLE.match(mypy_text.strip())
+    if not m:
+        return None
+
+    def names(text: str, rx: re.Pattern[str]) -> set[str] | None:
+        parts = [p.strip() for p in text.split("|")]
+        hits = [rx.match(p) for p in parts]
+        return {h["n"] for h in hits} if len(parts) >= 2 and all(hits) else None
+
+    t, p = names(ty_text, _TY_CLASS), names(pyright_text, _PYRIGHT_TYPE)
+    return m["base"] if t and t == p else None
+
+
+def members_of_union_text(ty_text: str) -> set[str]:
+    return {m["n"] for m in (_TY_CLASS.match(x.strip()) for x in ty_text.split("|")) if m}
+
+
 def is_join_vs_union(join_side: NormType, union_side: NormType, typevars: set[str] = frozenset()) -> bool:
     """mypy joins (``list[object]``, ``list[Base]``) where ty/pyright build unions (``list[A | B]``).
 
