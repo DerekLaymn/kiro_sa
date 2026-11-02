@@ -1,0 +1,84 @@
+===== kb:ASSERT-TYPE-LITERAL-RETENTION total 130 distinct 44
+runtime: {'exception:TypeError': 5, 'success:None': 125}
+by origin family: [('pyright_', 102), ('typeshed__builtins__check', 16), ('conformance__generics', 8), ('conformance__enums_member', 2), ('pyright__tupleComparisonResource_cyclic', 1), ('typeshed__check', 1)]
+  34 Type `Literal[True]` does not match asserted type `bool`
+  28 Type `Literal[False]` does not match asserted type `bool`
+  5 Type `Literal[1]` does not match asserted type `int`
+  4 Expression is of type "int", not "Literal[1]"
+  4 Expression is of type "tuple[int, str]", not "tuple[Literal[1], Literal['a']]"
+  4 Expression is of type "int", not "Literal[0]"
+  3 Expression is of type "tuple[tuple[int, str]]", not "tuple[tuple[Literal[1], Literal['a']]]"
+  3 Type `Literal[1234]` does not match asserted type `int`
+  2 Expression is of type "int", not "Literal[0, 1, 2, 3, 4, 5, 6]"
+  2 Expression is of type "tuple[tuple[int, str]]", not "tuple[tuple[Literal[1], Literal['a']]] | tuple[tuple[Lite
+  2 Type `slice[Any, Literal[5678], Any]` does not match asserted type `slice[Any, int, Any]`
+  2 Type `slice[Literal[1234], Any, Any]` does not match asserted type `slice[int, Any, Any]`
+  2 Type `slice[Literal[1234], Literal[5678], Any]` does not match asserted type `slice[int, int, Any]`
+  2 Type `Literal[5678]` does not match asserted type `int`
+  2 Type `tuple[Literal[0]] | tuple[Literal[1]]` does not match asserted type `tuple[int]`
+  2 Expression is of type "tuple[int]", not "tuple[Literal[0]]"
+  2 Expression is of type "tuple[int]", not "tuple[Literal[1]]"
+  1 Type `Literal[16]` does not match asserted type `int`
+  1 Type `list[tuple[int]]` does not match asserted type `list[tuple[Literal[1]]]`
+  1 Type `tuple[Literal[1], Literal["text"]]` does not match asserted type `tuple[int, str]`
+  1 Type `tuple[U@GenericMethods, Literal[1]]` does not match asserted type `tuple[U@GenericMethods, int]`
+  1 Type `str | Literal[0] | bytes` does not match asserted type `str | bytes | int`
+  1 Expression is of type "int", not "Literal[3]"
+  1 Type `int` does not match asserted type `Literal[7]`
+  1 Type `list[tuple[bool]]` does not match asserted type `list[tuple[Literal[True]]]`
+===== kb:MYPY-FIRST-ASSIGNMENT-TYPE total 182 distinct 86
+runtime: {'success:None': 161, 'exception:NameError': 11, 'exception:TypeError': 10}
+by origin family: [('ty__exception__control_flow_', 38), ('pyright_', 27), ('ty__binary__tuples_', 26), ('mypy__check_inference_', 21), ('mypy__check_generics_', 19), ('ty__assignment__augmented_', 6), ('mypy__check_functions_', 5), ('mypy__check_statements_', 5)]
+  19 Incompatible types in assignment (expression has type "str", variable has type "int")
+  18 Incompatible types in assignment (expression has type "B", variable has type "A")
+  13 Incompatible types in assignment (expression has type "tuple[int, int]", variable has type "tuple[int]")
+  9 Incompatible types in assignment (expression has type "float", variable has type "int")
+  6 Incompatible types in assignment (expression has type "A", variable has type "B")
+  6 Incompatible types in assignment (expression has type "tuple[int]", variable has type "tuple[()]")
+  6 Incompatible types in assignment (expression has type "Custom | tuple[int, ...]", variable has type "Custom | 
+  5 Incompatible types in assignment (expression has type "int", variable has type "str")
+  3 Incompatible types in assignment (expression has type "A", variable has type "int")
+  3 Incompatible types in assignment (expression has type "B", variable has type "int")
+  3 Incompatible types in assignment (expression has type "C", variable has type "int")
+  3 Incompatible types in assignment (expression has type "D", variable has type "int")
+  3 Incompatible types in assignment (expression has type "E", variable has type "int")
+  3 Incompatible types in assignment (expression has type "Callable[[A@f1], A@f1]", variable has type "Callable[[A
+  2 Incompatible types in assignment (expression has type "int", variable has type "list[int]")
+  2 Incompatible types in assignment (expression has type "F", variable has type "int")
+  2 Incompatible types in assignment (expression has type "G", variable has type "int")
+  2 Incompatible types in assignment (expression has type "A", variable has type "C")
+  2 Incompatible types in assignment (expression has type "Callable[[int, str], None]", variable has type "def g(a
+  2 Incompatible types in assignment (expression has type "Callable[[int], A@f4]", variable has type "Callable[[A@
+  2 Incompatible types in assignment (expression has type "int", variable has type "Literal[1, 3, 5, 7, 11, 13]")
+  2 Incompatible types in assignment (expression has type "tuple[int]", variable has type "int")
+  2 Incompatible types in assignment (expression has type "Callable[[list[int], list[int]], Any]", variable has ty
+  2 Incompatible types in assignment (expression has type "C", variable has type "B")
+  1 Incompatible types in assignment (expression has type "ClassA", variable has type "int")
+===== kb:ANNOTATION-ONLY-READ total 334 distinct 69
+runtime: {'exception:NameError': 292, 'exception:UnboundLocalError': 1, 'success:None': 28, 'exception:TypeError': 10, 'exception:AttributeError': 3}
+by origin family: [('mypy__check_classes_', 55), ('mypy__check_overloading_', 50), ('mypy__check_unions_', 45), ('mypy__check_python312_', 33), ('mypy__check_newsemanal_', 15), ('mypy__check_generics_', 15), ('mypy__check_dynamic_typing_', 15), ('mypy__check_protocols_', 13)]
+  89 1 names ('a',)
+  51 1 names ('x',)
+  25 1 names ('b',)
+  16 1 names ('d',)
+  14 1 names ('y',)
+  9 1 names ('c',)
+  8 2 names ('a', 'b')
+  7 1 names ('t_o',)
+  6 1 names ('ci',)
+  6 1 names ('cs',)
+  5 1 names ('ta',)
+  5 1 names ('t_s',)
+  5 1 names ('t_a',)
+  4 2 names ('x', 'y')
+  4 2 names ('a', 'c')
+  4 2 names ('a', 't_a')
+  3 1 names ('obj1',)
+  3 1 names ('arg1',)
+  3 1 names ('tf',)
+  2 1 names ('u',)
+  2 2 names ('A_C', 'D_C')
+  2 2 names ('D_A', 'D_C')
+  2 2 names ('C_C', 'D_C')
+  2 2 names ('D_C', 'D_D')
+  2 1 names ('e',)

@@ -1,0 +1,21 @@
+rows before/after: 212 216
+== BEFORE (HEAD code): positives=194 negatives=18
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 13 of 18
+   dismissed rows total (positives+negatives): 24 of 212
+== AFTER (current code): positives=194 negatives=22
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 17 of 22
+   dismissed rows total (positives+negatives): 28 of 216
+== changes per id (before -> after outcome) / decided_by
+  kb-ASSERT-TYPE-LITERAL-RETENTION: None -> dismissed   before=[] after=['kb:ASSERT-TYPE-LITERAL-RETENTION']
+  kb-MYPY-FIRST-ASSIGNMENT-TYPE: None -> dismissed   before=[] after=['kb:MYPY-FIRST-ASSIGNMENT-TYPE']
+  neg-assert_type_literal_retention: None -> dismissed   before=[] after=['kb:ASSERT-TYPE-LITERAL-RETENTION']
+  neg-mypy_first_assignment: None -> dismissed   before=[] after=['kb:MYPY-FIRST-ASSIGNMENT-TYPE']
+NEWLY DISMISSED POSITIVES (real bugs): []

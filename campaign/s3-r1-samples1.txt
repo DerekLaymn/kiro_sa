@@ -1,0 +1,369 @@
+##### P1 reveal gradual
+623 matches
+--- seeds/harvested/enums_literals/ty__enums__154.py D1 L7  runtime=success None
+    7: reveal_type(Big.A.value)  # revealed: Literal[9223372036854775807]
+    mypy: L7 [None] Any
+    ty: L7 [revealed-type] Literal[9223372036854775807]
+    pyright: L7 [None] Literal[1]
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__call__type__83.py D3 L15  runtime=success None
+    15:     reveal_type(Combined.__class__)  # revealed: type[Unknown]
+    mypy: L15 [None] type[type]
+    ty: L15 [revealed-type] type[Unknown]
+    pyright: L15 [None] property
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/generics_variance/ty__generics__pep695__variables__23.py D1 L12  runtime=exception TypeError
+    12:     reveal_type(a)  # revealed: Unknown
+    mypy: L12 [None] T
+    ty: L12 [revealed-type] Unknown
+    pyright: L12 [None] Unknown
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_classes__testSupportForwardUnionOfNewTypes.py D3 L5  runtime=exception NameError
+    5: reveal_type(x.x) # N: Revealed type is "builtins.int"
+    mypy: L5 [None] int
+    ty: L5 [revealed-type] Unknown
+    pyright: L5 [None] Unknown
+    pyright: L5 [reportUnboundVariable] "x" is unbound
+    pyright: L5 [reportAttributeAccessIssue] Cannot access attribute "x" for class "Unbound"
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_python312__testPEP695UpperBoundForwardReference2.py D3 L11  runtime=exception NameError
+    11: reveal_type(a)  # N: Revealed type is "__main__.C[__main__.D]"
+    mypy: L11 [None] case.C[case.D]
+    ty: L11 [revealed-type] Unknown
+    pyright: L11 [None] Unbound
+    pyright: L11 [reportUnboundVariable] "a" is unbound
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_python312__testPEP695UpperBoundForwardReference3.py D3 L14  runtime=exception NameError
+    14: reveal_type(a)  # N: Revealed type is "__main__.C[__main__.D[__main__.X]]"
+    mypy: L14 [None] case.C[case.D[case.X]]
+    ty: L14 [revealed-type] Unknown
+    pyright: L14 [None] Unbound
+    pyright: L14 [reportUnboundVariable] "a" is unbound
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__loops__while_loop__60.py D4 L14  runtime=exception NameError
+    14:     reveal_type(box.value)  # revealed: Literal[True]
+    mypy: L14 [None] Any
+    ty: L14 [revealed-type] Unknown & ~AlwaysFalsy
+    pyright: L14 [None] Unknown
+    hints=['ORIGIN-MISMATCH']
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__75.py D3 L6  runtime=exception ValueError
+    6: reveal_type(b)  # revealed: Unknown
+    mypy: L6 [None] str
+    ty: L6 [revealed-type] Unknown
+    pyright: L6 [None] LiteralString
+    hints=['ORIGIN-ORACLE-NOTE']
+##### P2 reveal different
+552 matches
+--- seeds/harvested/gradual_any/ty__comparison__intersections__21.py D1 L20  runtime=success None
+    20:         reveal_type(index.__eq__(""))  # revealed: Index & ~MultiIndex
+    mypy: L20 [None] case.Index
+    ty: L20 [revealed-type] Index & ~MultiIndex
+    pyright: L20 [None] Index
+    hints=['TY-GRADUAL-GENERIC-NARROWING', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__call__type__28.py D3 L12  runtime=exception TypeError
+    12: reveal_type(IntContainer)  # revealed: <class 'IntContainer'>
+    mypy: L12 [None] type
+    ty: L12 [revealed-type] <class 'IntContainer'>
+    pyright: L12 [None] type[IntContainer]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__exception__control_flow__80.py D3 L11  runtime=success None
+    11:     reveal_type(x)  # revealed: str
+    mypy: L11 [None] int
+    ty: L11 [revealed-type] str
+    pyright: L11 [None] str
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/constructors_metaclasses/ty__call__constructor__67.py D4 L20  runtime=success None
+    20: reveal_type(E(1, 2))  # revealed: int
+    mypy: L20 [None] case.E[int]
+    ty: L20 [revealed-type] int
+    pyright: L20 [None] int
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__conditionals__eq__63.py D3 L9  runtime=success None
+    9:         reveal_type(other)  # revealed: LiteralString & ~Literal["a"]
+    mypy: L9 [None] str
+    ty: L9 [revealed-type] Never
+    pyright: L9 [None] LiteralString
+    hints=['TY-STRICT-EQUALITY', 'ORIGIN-MISMATCH']
+--- seeds/harvested/gradual_any/ty__boolean__short_circuit__20.py D2 L12  runtime=success None
+    12:         reveal_type(value)  # revealed: Never
+    mypy: L12 [None] case.Comparable
+    ty: L12 [revealed-type] Never
+    pyright: L12 [None] Comparable
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__exception__control_flow__88.py D6 L23  runtime=success None
+    23:     reveal_type(x)  # revealed: Literal[1] | A
+    mypy: L23 [None] int
+    ty: L23 [revealed-type] Literal[1] | A
+    pyright: L23 [None] A | Literal[1]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__exception__control_flow__13.py D3 L8  runtime=success None
+    8:     reveal_type(state)  # revealed: Literal[0, 1]
+    mypy: L8 [None] str
+    ty: L8 [revealed-type] Literal[0, 1]
+    pyright: L8 [None] Literal['before']
+    hints=['ORIGIN-ORACLE-NOTE']
+##### P3 reveal uncomparable
+476 matches
+--- seeds/harvested/gradual_any/ty__exception__basic__12.py D5 L11  runtime=exception NameError
+    11: reveal_type(e)  # revealed: Unknown
+    mypy: L11 [None] <Deleted 'e'>
+    ty: L11 [revealed-type] Unknown
+    pyright: L11 [None] Unbound
+    pyright: L11 [reportUnboundVariable] "e" is unbound
+    hints=['PARTIAL-TYPES', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/dataclasses/ty__dataclasses__fields__1.py D2 L18  runtime=success None
+    18: reveal_type(AnyInitFalseField.__init__)  # revealed: (self: AnyInitFalseField, key: str | None) -> None
+    mypy: L18 [None] def (self: case.AnyInitFalseField, key: str | None)
+    ty: L18 [revealed-type] (self: AnyInitFalseField, key: str | None) -> None
+    pyright: L18 [None] (self: AnyInitFalseField, key: str | None) -> None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__annotations__string__6.py D4 L45  runtime=exception TypeError
+    45:     reveal_type(c)  # revealed: TD | None
+    mypy: L45 [None] TypedDict(case.TD, {}) | None
+    ty: L45 [revealed-type] TD | None
+    pyright: L45 [None] TD | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__doc__public_type_undeclared_symbols__1.py D2 L14  runtime=success None
+    14:         reveal_type(self.response_class)  # revealed: type[Response]
+    mypy: L14 [None] def () -> case.Response
+    ty: L14 [revealed-type] type[Response]
+    pyright: L14 [None] type[Response]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__doc__public_type_undeclared_symbols__1.py D8 L40  runtime=success None
+    40:     reveal_type(response.response_class)  # revealed: type[Response]
+    mypy: L40 [None] def () -> case.Response
+    ty: L40 [revealed-type] type[Response]
+    pyright: L40 [None] type[Response]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__subscript__bytes__1.py D5 L5  runtime=exception ValueError
+    5: reveal_type(b[0:2])  # revealed: Literal[b"\x00a"]
+    mypy: L5 [None] bytes
+    ty: L5 [revealed-type] Literal[b"\x00a"]
+    pyright: L5 [None] bytes
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__len__16.py D3 L12  runtime=success None
+    12:         reveal_type(data)  # revealed: Literal[b"a"]
+    mypy: L12 [None] Literal[b''] | Literal[b'a']
+    ty: L12 [revealed-type] Literal[b"a"]
+    pyright: L12 [None] Literal[b"", b"a"]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__conditionals__eq__77.py D2 L11  runtime=success None
+    11:         reveal_type(C)  # revealed: <class 'A'>
+    mypy: L11 [None] def () -> case.A@4
+    ty: L11 [revealed-type] <class 'A'>
+    pyright: L11 [None] type[A] | type[B]
+    hints=['TY-STRICT-EQUALITY', 'ORIGIN-ORACLE-NOTE']
+##### P4 only_mypy assignment
+399 matches
+--- seeds/harvested/gradual_any/pyright__typeForm3.py D6 L45  runtime=exception TypeError
+    45: v9: GenericAlias = member[int]
+    mypy: L45 [assignment] Incompatible types in assignment (expression has type "type[member[int]]", variable has type "GenericAlias")
+    pyright: L45 [reportAssignmentType] Type "type[member[int]]" is not assignable to declared type "GenericAlias"
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/gradual_any/ty__assignment__augmented__0.py D2 L8  runtime=success None
+    8: x /= 2
+    mypy: L8 [assignment] Incompatible types in assignment (expression has type "float", variable has type "int")
+    hints=[]
+--- seeds/harvested/typeddict/conformance__typeddicts_extra_items.py D60 L306  runtime=exception KeyError
+    306: int_str_mapping: Mapping[str, int | str] = extra_int3  # OK
+    mypy: L306 [assignment] Incompatible types in assignment (expression has type "MovieExtraInt", variable has type "Mapping[str, int | str]")
+    hints=['ERROR-CASCADE', 'SUITE-EXPECTS-ERROR']
+--- seeds/harvested/gradual_any/ty__bidirectional__148.py D1 L18  runtime=success None
+    18:     x2: list[int | None] | list[str | None] = [y]
+    mypy: L18 [assignment] Incompatible types in assignment (expression has type "list[str]", variable has type "list[int | None] | list[str | None]")
+    pyright: L18 [reportPossiblyUnboundVariable] "y" is possibly unbound
+    hints=['SUITE-EXPECTS-ERROR']
+--- seeds/harvested/generics_variance/pyright__typeVar5.py D1 L35  runtime=success None
+    35:         a += 3
+    mypy: L35 [assignment] Incompatible types in assignment (expression has type "int", variable has type "_T1")
+    pyright: L35 [reportOperatorIssue] Operator "+=" not supported for types "_T1@ClassA" and "Literal[3]"
+    hints=['SUITE-EXPECTS-ERROR']
+--- seeds/harvested/typeddict/conformance__typeddicts_extra_items.py D66 L332  runtime=exception KeyError
+    332: regular_dict: dict[str, int] = not_required_num_dict  # OK
+    mypy: L332 [assignment] Incompatible types in assignment (expression has type "IntDictWithNum", variable has type "dict[str, int]")
+    hints=['ERROR-CASCADE']
+--- seeds/harvested/generics_variance/mypy__check_typevar_values__testGenericFunctionSubtypingWithTypevarValues.py D1 L18  runtime=success None
+    18:     b = f # E: Incompatible types in assignment (expression has type "Callable[[T], T]", variable has type "Callable[[U], U]")
+    mypy: L18 [assignment] Incompatible types in assignment (expression has type "Callable[[T], T]", variable has type "Callable[[U], U]")
+    hints=['SUITE-EXPECTS-ERROR']
+--- seeds/harvested/narrowing_builtin/ty__narrow__complex_target__34.py D1 L5  runtime=success None
+    5:     if isinstance(value := value[0], str):
+    mypy: L5 [assignment] Incompatible types in assignment (expression has type "str | int", variable has type "tuple[str] | tuple[int]")
+    hints=['TY-GRADUAL-GENERIC-NARROWING']
+##### P5 only_mypy assert-type
+228 matches
+--- seeds/harvested/descriptors_properties/pyright__methodDescriptor1.py D26 L128  runtime=exception TypeError
+    128: assert_type(Example.descriptor_cm[0].__get__(None, Child)(1), int)
+    mypy: L128 [assert-type] Expression is of type "Any", not "int"
+    pyright: L128 [reportAssertTypeFailure] "assert_type" mismatch: expected "int" but received "Any"
+    hints=[]
+--- seeds/harvested/tuples_unpacking/pyright__tupleComparisonResults4.py D48 L237  runtime=success None
+    237:     assert_type(left, tuple[Literal[1]])
+    mypy: L237 [assert-type] Expression is of type "tuple[int, ...]", not "tuple[Literal[1]]"
+    hints=[]
+--- seeds/harvested/tuples_unpacking/pyright__tupleComparisonResults17.py D9 L94  runtime=success None
+    94:     assert_type(left < right, str | bool)
+    mypy: L94 [assert-type] Expression is of type "bool", not "str | bool"
+    pyright: L94 [reportAssertTypeFailure] "assert_type" mismatch: expected "str | bool" but received "bool"
+    hints=[]
+--- seeds/harvested/narrowing_builtin/pyright__enumNarrowing1.py D4 L27  runtime=success None
+    27:         assert_type(x, Union[Literal[10], Literal[30]])
+    mypy: L27 [assert-type] Expression is of type "Literal[10, 20, 30]", not "Literal[10, 30]"
+    hints=['TY-STRICT-EQUALITY']
+--- seeds/harvested/tuples_unpacking/pyright__tupleComparisonResults1.py D42 L263  runtime=success None
+    263:         assert_type(result, str | bool)
+    mypy: L263 [assert-type] Expression is of type "bool", not "str | bool"
+    pyright: L263 [reportAssertTypeFailure] "assert_type" mismatch: expected "str | bool" but received "Unknown"
+    hints=[]
+--- seeds/harvested/enums_literals/pyright__tupleLiteralInference5.py D8 L71  runtime=success None
+    71:     assert_type(result, tuple[Literal[1]])
+    mypy: L71 [assert-type] Expression is of type "tuple[int]", not "tuple[Literal[1]]"
+    pyright: L71 [reportAssertTypeFailure] "assert_type" mismatch: expected "tuple[Literal[1]]" but received "tuple[int]"
+    hints=[]
+--- seeds/harvested/enums_literals/pyright__enum15.py D11 L328  runtime=success None
+    328:     assert_type(value, AliasedLiterals)
+    mypy: L328 [assert-type] Expression is of type "Aliased", not "Literal[Aliased.FIRST, Aliased.SECOND]"
+    hints=[]
+--- seeds/harvested/narrowing_builtin/pyright__enumNarrowing1.py D5 L31  runtime=success None
+    31:         assert_type(s, Literal["done"])
+    mypy: L31 [assert-type] Expression is of type "Literal['pending', 'done', 'failed']", not "Literal['done']"
+    hints=['TY-STRICT-EQUALITY']
+##### P6 only_ty type-assertion-failure
+190 matches
+--- seeds/harvested/narrowing_builtin/pyright__typeNarrowingContainer1.py D2 L32  runtime=success None
+    32:         assert_type(x, type[FinalClassA] | type[FinalClassB])
+    ty: L32 [type-assertion-failure] Type `<class 'FinalClassA'> | <class 'FinalClassB'> | type[ClassC]` does not match asserted type `<class 'FinalClassA'> | <class 'FinalClassB'>`
+    hints=['TY-STRICT-EQUALITY']
+--- seeds/harvested/narrowing_user/pyright__typeIs11.py D2 L20  runtime=success None
+    20:     assert_type(value, dict[str, int] | tuple[int, int])
+    ty: L20 [type-assertion-failure] Type `Any` does not match asserted type `dict[str, int] | tuple[int, int]`
+    hints=[]
+--- seeds/harvested/enums_literals/pyright__tupleLiteralInference7.py D14 L76  runtime=success None
+    76:     assert_type(selected, tuple[int] | tuple[str])
+    ty: L76 [type-assertion-failure] Type `tuple[Literal[0]] | tuple[Literal["x"]]` does not match asserted type `tuple[int] | tuple[str]`
+    hints=[]
+--- seeds/harvested/gradual_any/typeshed__builtins__check_slice.py D3 L47  runtime=success None
+    47: assert_type(slice(1234, None), "slice[int, Any, Any]")
+    ty: L47 [type-assertion-failure] Type `slice[Literal[1234], Any, Any]` does not match asserted type `slice[int, Any, Any]`
+    hints=[]
+--- seeds/harvested/constructors_metaclasses/pyright__constructor34.py D3 L55  runtime=success None
+    55:     assert_type(result, dict[str, int])
+    ty: L55 [type-assertion-failure] Type `dict[str, int | Unknown]` does not match asserted type `dict[str, int]`
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/tuples_unpacking/pyright__tupleComparisonResults21.py D23 L157  runtime=success None
+    157:     assert_type(left < right, bool)
+    ty: L157 [type-assertion-failure] Type `Literal[True]` does not match asserted type `bool`
+    hints=[]
+--- seeds/harvested/tuples_unpacking/pyright__tupleComparisonResults4.py D80 L380  runtime=success None
+    380:     assert_type(result, bool)
+    ty: L380 [type-assertion-failure] Type `Literal[False]` does not match asserted type `bool`
+    pyright: L380 [reportAssertTypeFailure] "assert_type" mismatch: expected "bool" but received "Unknown"
+    hints=[]
+--- seeds/harvested/gradual_any/pyright__sentinel5.py D2 L40  runtime=success None
+    40:         assert_never(first)
+    ty: L40 [type-assertion-failure] Type `sentinel` is not equivalent to `Never`
+    hints=['SUITE-EXPECTS-ERROR']
+##### P7 reveal ty_more_precise
+178 matches
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__9.py D3 L16  runtime=success None
+    16:         reveal_type(x)  # revealed: None
+    mypy: L16 [None] int | None
+    ty: L16 [revealed-type] None
+    pyright: L16 [None] None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__issubclass__16.py D5 L13  runtime=success None
+    13:         reveal_type(x)  # revealed: type[bytes]
+    mypy: L13 [None] type[int] | type[str] | type[bytes] | type[range]
+    ty: L13 [revealed-type] type[bytes]
+    pyright: L13 [None] type[bytes]
+    hints=['TY-GRADUAL-GENERIC-NARROWING', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__type_guards__6.py D4 L46  runtime=success None
+    46:         reveal_type(narrowed)  # revealed: int
+    mypy: L46 [None] object
+    ty: L46 [revealed-type] int
+    pyright: L46 [None] object
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__complex_target__55.py D2 L8  runtime=success None
+    8:         reveal_type(x[False][0])  # revealed: int
+    mypy: L8 [None] int | None
+    ty: L8 [revealed-type] int
+    pyright: L8 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__10.py D2 L15  runtime=success None
+    15:         reveal_type(a.x)  # revealed: int
+    mypy: L15 [None] int | None
+    ty: L15 [revealed-type] int
+    pyright: L15 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__5.py D1 L6  runtime=success None
+    6:         reveal_type(x)  # revealed: None
+    mypy: L6 [None] int | None
+    ty: L6 [revealed-type] None
+    pyright: L6 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__conditionals__in__7.py D5 L23  runtime=success None
+    23:         reveal_type(value)  # revealed: Literal["c"]
+    mypy: L23 [None] Literal['a'] | Literal['b'] | Literal['c']
+    ty: L23 [revealed-type] Literal["c"]
+    pyright: L23 [None] Literal['a', 'b', 'c']
+    hints=['TY-STRICT-EQUALITY', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__conditionals__in__13.py D4 L17  runtime=success None
+    17:         reveal_type(x)  # revealed: Literal["z"]
+    mypy: L17 [None] Literal[''] | Literal['ab'] | Literal['z']
+    ty: L17 [revealed-type] Literal["z"]
+    pyright: L17 [None] Literal['', 'ab', 'z']
+    hints=['TY-STRICT-EQUALITY', 'ORIGIN-ORACLE-NOTE']
+##### P8 only_ty unresolved-reference
+154 matches
+--- seeds/harvested/gradual_any/mypy__check_newsemanal__testNewAnalyzerTypeArgValueRestriction.py D2 L10  runtime=exception NameError
+    10: class D(B): pass
+    ty: L10 [unresolved-reference] Name `B` used when not defined
+    pyright: L10 [reportUndefinedVariable] "B" is not defined
+    hints=[]
+--- seeds/harvested/callables/mypy__check_unions__testSimplifyUnionWithCallable.py D3 L24  runtime=exception NameError
+    24: reveal_type(u(D_C, A_C)) # N: Revealed type is "(def (Any) -> __main__.C) | (def (__main__.D) -> __main__.C)"
+    ty: L24 [unresolved-reference] Name `D_C` used when not defined
+    ty: L24 [unresolved-reference] Name `A_C` used when not defined
+    pyright: L24 [None] Unknown
+    pyright: L24 [reportUnboundVariable] "D_C" is unbound
+    pyright: L24 [reportUnboundVariable] "A_C" is unbound
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/gradual_any/pyright__typeCheckOnly1.py D1 L13  runtime=exception ImportError
+    13: a1: function
+    ty: L13 [unresolved-reference] Name `function` used when not defined
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/callables/mypy__check_unions__testSimplifyUnionWithCallable.py D7 L30  runtime=exception NameError
+    30: reveal_type(u(C_C, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    ty: L30 [unresolved-reference] Name `C_C` used when not defined
+    ty: L30 [unresolved-reference] Name `D_C` used when not defined
+    pyright: L30 [None] Unknown
+    pyright: L30 [reportUnboundVariable] "C_C" is unbound
+    pyright: L30 [reportUnboundVariable] "D_C" is unbound
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/gradual_any/mypy__check_classes__testOperatorDoubleUnionNoRelationship2.py D7 L19  runtime=exception NameError
+    19: reveal_type(b + a)  # N: Revealed type is "__main__.Foo | __main__.Bar"
+    ty: L19 [unresolved-reference] Name `b` used when not defined
+    ty: L19 [unresolved-reference] Name `a` used when not defined
+    pyright: L19 [reportOperatorIssue] Operator "+" not supported for types "Unbound" and "Unbound"
+    pyright: L19 [None] Unknown
+    pyright: L19 [reportUnboundVariable] "b" is unbound
+    pyright: L19 [reportUnboundVariable] "a" is unbound
+    hints=['GRADUAL-OPERAND']
+--- seeds/harvested/enums_literals/pyright__literalForLoop1.py D4 L55  runtime=success None
+    55:     del d
+    ty: L55 [unresolved-reference] Name `d` used when not defined
+    pyright: L55 [reportPossiblyUnboundVariable] "d" is possibly unbound
+    hints=[]
+--- seeds/harvested/gradual_any/mypy__check_fastparse__testFastParseInvalidTypes3.py D15 L23  runtime=exception AttributeError
+    23: def f4(x: Iterable[x][x]) -> None: pass # E: Invalid type comment or annotation
+    ty: L23 [unresolved-reference] Name `x` used when not defined
+    ty: L23 [unresolved-reference] Name `x` used when not defined
+    pyright: L23 [reportInvalidTypeArguments] Type "Iterable[Unknown]" is already specialized
+    pyright: L23 [reportInvalidTypeForm] Variable not allowed in type expression
+    pyright: L23 [reportInvalidTypeForm] Variable not allowed in type expression
+    hints=['SUITE-EXPECTS-ERROR']
+--- seeds/harvested/gradual_any/ty__expression__lambda__13.py D1 L9  runtime=success None
+    9: def invalid(value: "Annotated[int, lambda default=missing: None]"): ...
+    ty: L9 [unresolved-reference] Name `missing` used when not defined
+    pyright: L9 [reportUndefinedVariable] "missing" is not defined
+    hints=['EXPECTED-ERROR-ORACLE', 'SUITE-EXPECTS-ERROR']

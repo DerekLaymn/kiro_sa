@@ -1,0 +1,16 @@
+findings only in B: 0
+14 ('holdout', 'live->dismissed', 'gate', 'kb:ANNOTATION-ONLY-READ') programs= 4
+10 ('holdout', 'live->dismissed', 'gate', 'kb:MYPY-FIRST-ASSIGNMENT-TYPE') programs= 8
+4 ('holdout', 'live->dismissed', 'gate', 'kb:ASSERT-TYPE-LITERAL-RETENTION') programs= 3
+2 ('holdout', 'live->dismissed', 'gate', 'kb:INFERENCE-DOWNSTREAM') programs= 1
+1 ('holdout', 'disappeared', 'review', 'gate') programs= 0
+171 ('tuning', 'live->dismissed', 'gate', 'kb:MYPY-FIRST-ASSIGNMENT-TYPE') programs= 84
+126 ('tuning', 'live->dismissed', 'gate', 'kb:ASSERT-TYPE-LITERAL-RETENTION') programs= 21
+25 ('tuning', 'live->dismissed', 'gate', 'kb:ANNOTATION-ONLY-READ') programs= 9
+13 ('tuning', 'disappeared', 'review', 'gate') programs= 0
+3 ('tuning', 'live->dismissed', 'gate', 'kb:LITERAL-WIDENING') programs= 2
+3 ('tuning', 'dismissed->dismissed', 'rule:cascade-of:D1', 'kb:ANNOTATION-ONLY-READ') programs= 2
+2 ('tuning', 'dismissed->dismissed', 'kb:TY-STRICT-EQUALITY', 'kb:LITERAL-WIDENING') programs= 2
+1 ('tuning', 'live->dismissed', 'gate', 'rule:cascade-of:D19') programs= 1
+1 ('tuning', 'dismissed->dismissed', 'rule:cascade-of:D1', 'kb:MYPY-FIRST-ASSIGNMENT-TYPE') programs= 1
+1 ('tuning', 'live->dismissed', 'gate', 'rule:cascade-of:D2') programs= 1
