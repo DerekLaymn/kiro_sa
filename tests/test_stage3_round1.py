@@ -87,8 +87,12 @@ def mypy_assert(src, line, actual, asserted):
 
 def test_assert_type_retention_ty_side():
     assert "ASSERT-TYPE-LITERAL-RETENTION" in ids(*ty_assert(ASSERT_SRC, 3, 'Literal["a"]', "str"))
-    assert "ASSERT-TYPE-LITERAL-RETENTION" in ids(*ty_assert(
+    # round 2 (reviewer issue 2): a folded comparison is no longer "retention", Literal[True]/Literal[False] stays live
+    assert "ASSERT-TYPE-LITERAL-RETENTION" not in ids(*ty_assert(
         "from typing import assert_type\nx = (1, 2) < (3, 4)\nassert_type(x < x, bool)\n", 3, "Literal[True]", "bool"))
+    assert "ASSERT-TYPE-LITERAL-RETENTION" in ids(*ty_assert(
+        "from typing import assert_type\nx = ((1, 2),)\nassert_type(x, tuple[tuple[int, int]])\n", 3,
+        "tuple[tuple[Literal[1], Literal[2]]]", "tuple[tuple[int, int]]"))
 
 
 def test_assert_type_retention_mypy_side():

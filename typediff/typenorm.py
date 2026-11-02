@@ -452,6 +452,11 @@ def deep_widen(node: TNode) -> TNode:
     return node
 
 
+def has_bool_literal(node: TNode) -> bool:
+    """True if ``Literal[True]`` / ``Literal[False]`` occurs anywhere in the type (also nested ones)."""
+    return any(n.kind == "literal" and n.name in ("True", "False") for n in node.walk())
+
+
 def is_literal_retention(a: NormType, b: NormType) -> bool:
     """True if one type is EXACTLY the other with its Literal parts (also nested ones) widened to their base class.
 

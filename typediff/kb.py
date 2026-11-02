@@ -36,7 +36,8 @@ from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceT
 from .parsers import classify_exception
 from .selfparam import has_self_typed_state
 from .state import CaseState
-from .typenorm import gradual_diff, is_join_vs_union, is_literal_retention, is_literal_widening, normalize
+from .typenorm import (gradual_diff, has_bool_literal, is_join_vs_union, is_literal_retention, is_literal_widening,
+                       normalize)
 
 K = DiscrepancyKind
 TY_DOCS = "https://docs.astral.sh/ty"
@@ -613,6 +614,8 @@ def m_inference_downstream(s, d):
         # a mypy false positive caused by mypy's join is a tracked mypy bug class (topic-join-v-union) -> adjudicate
         if is_join_vs_union(m, t, _typevars(s)) and d.kind == K.ONLY_TY:
             return True
+        if has_bool_literal(m.node) or has_bool_literal(t.node):
+            continue  # Literal[True]/[False] = a tool EVALUATED an expression; CPython can contradict it (stage 3 round 2)
         if is_literal_widening(t, m) or is_literal_widening(m, t):
             return True
     return False
@@ -1080,12 +1083,19 @@ def _upstream_entries() -> list[KBEntry]:
 ENTRIES.extend([
     KBEntry(
         "ANNOTATION-ONLY-READ", "mypy has no definite-assignment check for annotation-only variables",
-        Dismissal.DESIGN_DIVERGENCE, "https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-name-is-not-used-before-definition-used-before-def",
+        Dismissal.KNOWN_LIMITATION, "https://github.com/python/mypy/issues/15416",
         "A bare `x: int` (no value) followed by a read: ty [unresolved-reference] and pyright (unbound) agree with CPython "
         "(NameError); mypy does not track definite assignment of declared-only names (reproduced on mypy 2.4.0 even with "
-        "possibly-undefined and used-before-def enabled). Fires only when the AST shows the name is only ever declared "
+        "possibly-undefined and used-before-def enabled). This is a TRACKED, unimplemented mypy check, not a mypy design "
+        "choice: python/mypy#15416 (open, 'Mypy not reporting \"undefined\" variable', the exact `number: int; print(number)` "
+        "program), python/mypy#17373 (open, possibly-undefined misses variable annotations), python/mypy#4019 (open, binder "
+        "should track declared-but-uninitialised names); #11342 was closed as a duplicate of #686. CPython's NameError at this "
+        "statement is the evidence that ty/pyright are right and mypy has the false negative; the entry keeps "
+        "runtime_override=False on purpose because that NameError confirms the REPORTING tool's own diagnostic and says "
+        "nothing against the silent tool beyond the known limitation (rules.attach_runtime_evidence records it as neutral "
+        "evidence). Fires only when the AST shows the name is only ever declared "
         "(never assigned, imported, defined or a parameter) in its module/function scope and ty and pyright agree. "
-        "Forward references and truly undefined names are NOT covered. ty is correct here; the gap is mypy's.",
+        "Forward references and truly undefined names are NOT covered.",
         (K.ONLY_TY,), m_annotation_only_read, auto=True, runtime_override=False,
         example="x: int\nprint(x)\n",
     ),
@@ -1244,6 +1254,7 @@ ENTRIES.extend([
 ])
 _TY_ASSERT = re.compile(r"^Type `(?P<actual>.+)` does not match asserted type `(?P<asserted>.+)`$")
 _MYPY_ASSERT = re.compile(r'^Expression is of type "(?P<actual>.+)", not "(?P<asserted>.+)"$')
+_PYRIGHT_ASSERT = re.compile(r'^"assert_type" mismatch: expected "(?P<asserted>.+)" but received "(?P<actual>.+)"$')
 
 
 def _declared_names(tree: ast.AST) -> set[str]:
@@ -1261,20 +1272,35 @@ def _declared_names(tree: ast.AST) -> set[str]:
 
 def m_assert_type_literal_retention(s, d):
     """assert_type() compares INFERRED types; the failing tool's type is exactly the asserted type with its Literal parts
-    kept (or widened), the other tool is silent. The spec leaves literal retention of inferred types open (literal.rst:
-    "should the inferred type of x be str or Literal['blue']?"). Narrow: only assert_type diagnostics (every diagnostic on
-    the statement), one-sided literal retention only, no spec narrowing construct around the call, and the asserted
-    expression is not a bare name with a declared type (a declared type that a tool ignores is a real bug)."""
+    kept (or widened). The spec leaves literal retention of inferred types open (literal.rst: "should the inferred type
+    of x be str or Literal['blue']?"). Narrow: only assert_type diagnostics (every diagnostic on the statement),
+    one-sided literal retention only, never a `Literal[True]`/`Literal[False]` type (that is a tool EVALUATING a
+    comparison/operator, which CPython can contradict: reviewer round 1, ty folds `R((1,)) < (1,)` to Literal[False]
+    where CPython gives True), pyright silent on the statement or reporting the same assert_type failure (any other
+    pyright error, e.g. reportOperatorIssue, keeps the finding in review), no spec narrowing construct around the call,
+    and the asserted expression is not a bare name with a declared type (a declared type that a tool ignores is a real
+    bug)."""
     if d.kind not in (K.ONLY_TY, K.ONLY_MYPY) or s.amap.tree is None:
         return False
     diags, rx, code = (d.ty, _TY_ASSERT, "type-assertion-failure") if d.kind == K.ONLY_TY else (d.mypy, _MYPY_ASSERT, "assert-type")
     if not diags or any(x.code != code for x in diags):
         return False
+    pairs = set()
     for x in diags:
         m = rx.match(x.message)
         a, b = (normalize(m["actual"], s.module), normalize(m["asserted"], s.module)) if m else (None, None)
         if not (a and b and is_literal_retention(a, b)):
             return False
+        if has_bool_literal(a.node) or has_bool_literal(b.node):
+            return False  # Literal[True]/Literal[False]: the tool EVALUATED a comparison/operator/call; that value is not "retention"
+        pairs.add((a.text, b.text))
+    if s.pyright_ran:  # pyright must be silent on the statement or agree with the failing tool (same actual/asserted types)
+        for x in s.diags.get(Tool.PYRIGHT, []):
+            if not (x.is_problem and d.anchor <= s.amap.anchor(x.line) <= d.anchor_end):
+                continue
+            m = _PYRIGHT_ASSERT.match(x.message) if x.code == "reportAssertTypeFailure" else None
+            if not m or (normalize(m["actual"], s.module).text, normalize(m["asserted"], s.module).text) not in pairs:
+                return False  # another pyright error (e.g. reportOperatorIssue) or a different answer: stays in review
     if _chain_tags(s, d) & _SPEC_NARROWING:
         return False  # narrowing results are (partly) specified: a different literal/non-literal answer there needs a judge
     node = _stmt_node(s, d)
@@ -1349,7 +1375,10 @@ ENTRIES.extend([
         "acceptable'. The suite the assertion came from encodes ONE checker's choice, so another checker that "
         "answers with the literal-widened (or literal-keeping) type fails the assertion without any unsoundness. Fires "
         "only for assert_type diagnostics where the failing tool's type is exactly the asserted type with Literal parts "
-        "kept or widened (nested too), the other tool is silent, no narrowing construct surrounds the call and the "
+        "kept or widened (nested too) and neither side contains Literal[True]/Literal[False] (a tool that evaluates a "
+        "comparison or operator can be wrong, and CPython can show it), the other checkers are silent (mypy/ty by the "
+        "discrepancy kind; pyright must be silent on the statement or report the very same assert_type mismatch, so "
+        "e.g. a pyright reportOperatorIssue keeps the finding visible), no narrowing construct surrounds the call and the "
         "asserted expression is not a declared name. A runtime exception at the statement keeps it in review.",
         (K.ONLY_TY, K.ONLY_MYPY), m_assert_type_literal_retention, auto=True, runtime_override=True,
         example="from typing import Any, assert_type\n\nassert_type(slice(1234, None), \"slice[int, Any, Any]\")\n",
