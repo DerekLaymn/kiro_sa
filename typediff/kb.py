@@ -1404,7 +1404,68 @@ def m_reveal_error_recovery(s, d):
     return False
 
 
+def _scope_stores(scope: ast.AST, name: str) -> list[ast.AST]:
+    """Statements in ``scope`` (nested scopes skipped) that bind ``name`` by plain/annotated/augmented assignment, or
+    any other binding (``for``, ``with``, import, walrus, ...) represented by the binding node itself."""
+    out, todo = [], list(ast.iter_child_nodes(scope))
+    while todo:
+        n = todo.pop()
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+            if getattr(n, "name", None) == name:
+                out.append(n)
+            continue
+        if isinstance(n, ast.Name) and n.id == name and isinstance(n.ctx, (ast.Store, ast.Del)):
+            out.append(n)
+        elif isinstance(n, (ast.Import, ast.ImportFrom)) and any((a.asname or a.name.split(".")[0]) == name for a in n.names):
+            out.append(n)
+        todo.extend(ast.iter_child_nodes(n))
+    return out
+
+
+def m_aliased_condition(s, d):
+    """ty narrows `x` in `if alias:` where `alias = <condition on x>` (assigned once, before the `if`); mypy only narrows
+    on the inline condition (python/mypy#13807, open feature request; pyright supports it too). The reveal is a
+    precision difference (ty narrower). Narrow: the reveal sits inside an `if`/`while` whose test is exactly `alias` or
+    `not alias`, `alias` is a local bound exactly once, by an assignment whose value contains the revealed expression."""
+    if d.kind != K.REVEAL_MISMATCH or d.reveal_relation != "ty_more_precise" or len(d.ty) != 1 or s.amap.tree is None:
+        return False
+    call = _reveal_arg_call(s, d.ty[0])
+    if call is None:
+        return False
+    target = ast.unparse(call.args[0])
+    chain = s.amap.enclosing_nodes(d.anchor)
+    for i, n in enumerate(chain):
+        if not isinstance(n, (ast.If, ast.While)):
+            continue
+        test = n.test.operand if isinstance(n.test, ast.UnaryOp) and isinstance(n.test.op, ast.Not) else n.test
+        if not isinstance(test, ast.Name):
+            continue
+        scope = next((c for c in reversed(chain[:i]) if isinstance(c, (ast.FunctionDef, ast.AsyncFunctionDef))), s.amap.tree)
+        stores = _scope_stores(scope, test.id)
+        if len(stores) != 1:
+            continue
+        for a in ast.walk(scope):
+            if (isinstance(a, (ast.Assign, ast.AnnAssign)) and a.value is not None and a.lineno < n.lineno
+                    and any(isinstance(t, ast.Name) and t.id == test.id for t in (a.targets if isinstance(a, ast.Assign) else [a.target]))
+                    and any(ast.unparse(x) == target for x in ast.walk(a.value))):
+                return True
+    return False
+
+
 ENTRIES.extend([
+    KBEntry(
+        "MYPY-13807-ALIASED-CONDITIONS", "mypy does not narrow through an aliased condition; ty and pyright do",
+        Dismissal.KNOWN_LIMITATION, "https://github.com/python/mypy/issues/13807",
+        "`is_none = x is None; if is_none: reveal_type(x)`: ty and pyright narrow `x` to `None`, mypy keeps the declared "
+        "type, while the inline `if x is None:` narrows in all three (checked on mypy 2.4.0, ty 0.0.84). python/mypy#13807 "
+        "(open, label 'feature': 'Add support for control flow analysis of aliased conditions') tracks the missing mypy "
+        "feature; TypeScript 4.4 and pyright implement it. The typing spec leaves narrowing beyond the listed forms to "
+        "implementations, and mypy's wider answer is sound. Fires only for a ty_more_precise reveal inside an `if`/`while` "
+        "whose test is exactly `alias` / `not alias`, where `alias` is bound once, before the `if`, by an assignment "
+        "whose value contains the revealed expression. A CPython value outside ty's narrower type keeps it in review.",
+        (K.REVEAL_MISMATCH,), m_aliased_condition, auto=True, runtime_override=True,
+        example="def f(x: int | None) -> None:\n    is_none = x is None\n    if is_none:\n        reveal_type(x)\n",
+    ),
     KBEntry(
         "REVEAL-ERROR-RECOVERY", "a checker reveals its error-recovery type for an expression it reports an error in",
         Dismissal.NOISE, f"{TY_DOCS}/reference/typing-faq/#what-is-the-unknown-type-and-when-does-it-appear",

@@ -235,6 +235,68 @@ def test_reveal_error_recovery_runtime_exception_at_the_statement_keeps_it_in_re
     assert rhit(st, d) and entry_demotion(st, d, e) is not None
 
 
+# ---------------------------------------------------------------- MYPY-13807-ALIASED-CONDITIONS
+
+AID = "MYPY-13807-ALIASED-CONDITIONS"
+
+
+def alias_case(src, line, col, rel_name="ty_more_precise"):
+    ty = Diagnostic(Tool.TY, line, col, Severity.NOTE, "revealed-type", "", revealed_type="None")
+    my = Diagnostic(Tool.MYPY, line, col, Severity.NOTE, None, "", revealed_type="int | None")
+    st = CaseState("t", src, "3.13", {Tool.MYPY: [my], Tool.TY: [ty], Tool.PYRIGHT: []}, RuntimeResult(status="success"), [], {}, {})
+    return st, Discrepancy("D1", K.REVEAL_MISMATCH, line, line, "s", "", mypy=[my], ty=[ty], reveal_relation=rel_name)
+
+
+def ahit(st, d):
+    return AID in {e.id for e in matching_entries(st, d)}
+
+
+ALIAS_SRC = "def f(x: int | None) -> None:\n    is_none = x is None\n    if is_none:\n        reveal_type(x)\n"
+
+
+def test_aliased_condition_positive_forms():
+    assert ahit(*alias_case(ALIAS_SRC, 4, 21))
+    assert ahit(*alias_case(ALIAS_SRC.replace("if is_none:", "if not is_none:"), 4, 21))
+    # annotated alias, subscript target
+    src = "def f(l: list[int | None]) -> None:\n    is_none: bool = l[0] is None\n    if is_none:\n        reveal_type(l[0])\n"
+    assert ahit(*alias_case(src, 4, 21))
+    # module level alias and a while loop
+    src = "x: int | None = None\nis_none = x is None\nwhile is_none:\n    reveal_type(x)\n"
+    assert ahit(*alias_case(src, 4, 17))
+
+
+def test_aliased_condition_negatives():
+    # inline condition: no alias involved
+    assert not ahit(*alias_case("def f(x: int | None) -> None:\n    if x is None:\n        reveal_type(x)\n", 3, 21))
+    # alias re-bound: not a single-assignment alias
+    src = ALIAS_SRC.replace("    if is_none:", "    is_none = bool(x)\n    if is_none:")
+    assert not ahit(*alias_case(src, 5, 21))
+    # alias condition mentions a different variable than the revealed one
+    src = "def f(x: int | None, y: int | None) -> None:\n    is_none = y is None\n    if is_none:\n        reveal_type(x)\n"
+    assert not ahit(*alias_case(src, 4, 21))
+    # alias assigned AFTER the if
+    src = "def f(x: int | None) -> None:\n    if is_none:\n        reveal_type(x)\n    is_none = x is None\n"
+    assert not ahit(*alias_case(src, 3, 21))
+    # test is a compound expression: the other operand could be doing the narrowing
+    src = "def f(x: int | None, ok: bool) -> None:\n    is_none = x is None\n    if is_none and ok:\n        reveal_type(x)\n"
+    assert not ahit(*alias_case(src, 4, 21))
+    # other relations (mypy more precise / different) are not covered
+    assert not ahit(*alias_case(ALIAS_SRC, 4, 21, rel_name="different"))
+    assert not ahit(*alias_case(ALIAS_SRC, 4, 21, rel_name="mypy_more_precise"))
+
+
+def test_aliased_condition_entry_flags():
+    e = BY_ID[AID]
+    assert e.auto and e.runtime_override and e.dismissal == Dismissal.KNOWN_LIMITATION and e.source.endswith("mypy/issues/13807")
+
+
+@needs_tools
+def test_aliased_condition_example_with_real_tools():
+    p = Pipeline(PipelineConfig(reduce=False, audit_rate=0.0, use_pyright=False), llm=CachedLLM(NullLLM()))
+    rep = p.run_source(BY_ID[AID].example, "alias-example")
+    assert rep.findings and any(f.decided_by == f"kb:{AID}" and f.tier == Tier.DISMISSED for f in rep.findings)
+
+
 # ---------------------------------------------------------------- ANNOTATION-ONLY-READ is a tracked mypy limitation
 
 
