@@ -342,6 +342,15 @@ def _refines(a: TNode, b: TNode) -> bool:
             continue
         if r == "bool" and "int" in bm:
             continue
+        if r == "Never":
+            continue  # the bottom type is a subtype of every type
+        if r == "LiteralString" and "str" in bm:
+            continue  # typing spec, literal.rst: LiteralString is a subtype of str
+        if m.kind == "name" and m.name == "type" and m.args and any(
+                x.kind == "name" and x.name == "type" and not x.args for x in _members(b)):
+            continue  # type[X] is a subtype of bare `type` (= type[Any] / type[object])
+        if m.kind == "inter" and any(a.kind != "neg" and not _is_gradual_atom(a) and _refines(a, b) for a in m.args):
+            continue  # A & X is a subtype of A (also A & ~X)
         if r == "int" and "float" in bm:
             continue  # numeric promotion (typing spec, special-types)
         if m.kind == "name" and m.name in _RUNTIME_SUBCLASS:

@@ -143,6 +143,39 @@ def test_inference_downstream_does_not_trust_an_evaluated_bool_literal():
     assert run("int", "Literal[1]")  # ordinary literal retention is unchanged
 
 
+# ---------------------------------------------------------------- typenorm: refinement of intersections, LiteralString, type[X], Never
+
+
+def rel(mypy, ty):
+    from typediff.typenorm import relation
+
+    return relation(normalize(mypy, "case"), normalize(ty, "case")).value
+
+
+def test_intersections_with_negations_refine_their_positive_part():
+    assert rel("str", 'str & ~Literal["a"]') == "b_more_precise"
+    assert rel("case.B", "B & ~A") == "b_more_precise"
+    assert rel("int", "int & ~Literal[1] & ~Literal[True]") == "b_more_precise"
+    assert rel("bool", "bool & Unknown") == "b_more_precise"
+    assert rel("str & ~AlwaysFalsy", "str") == "a_more_precise"
+    # unrelated positive part: still different
+    assert rel("int", 'str & ~Literal["a"]') == "different"
+    assert rel("str", "Unknown & int") == "different"
+
+
+def test_literalstring_type_x_and_never_are_subtypes():
+    assert rel("str", "LiteralString") == "b_more_precise"
+    assert rel("LiteralString", "str") == "a_more_precise"
+    assert rel("type", "<class 'Foo'>") == "b_more_precise"
+    assert rel("int", "Never") == "b_more_precise"
+    assert rel("Never", "int") == "a_more_precise"
+    # invariance is respected: list[LiteralString] is not a subtype of list[str]
+    assert rel("list[str]", "list[LiteralString]") == "different"
+    # LiteralString is not a subtype of int, a class object is not a subtype of an instance type
+    assert rel("int", "LiteralString") == "different"
+    assert rel("str", "<class 'Foo'>") == "different"
+
+
 # ---------------------------------------------------------------- REVEAL-ERROR-RECOVERY
 
 RID = "REVEAL-ERROR-RECOVERY"
