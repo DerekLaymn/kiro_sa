@@ -1,0 +1,10 @@
+2 {('tuning', 'ty'): 2}
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__34.py D4 L35 runtime=success None frames=[] split=tuning
+    mypy: [None] int | None
+    ty: [revealed-type] Literal[42]
+    reveal L35: reveal_type(x)  # revealed: Literal[42]
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__30.py D3 L27 runtime=success None frames=[] split=tuning
+    mypy: [None] int | None
+    ty: [revealed-type] None
+    mypy error L12 [misc] Method must have at least one argument. Did you forget the "self" argument? :: def f():
+    reveal L27: reveal_type(x)  # revealed: None

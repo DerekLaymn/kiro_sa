@@ -1,0 +1,8 @@
+replayed 1000/5086
+replayed 2000/5086
+replayed 3000/5086
+replayed 4000/5086
+replayed 5000/5086
+replayed 5086 reports into runs/day2/out3
+verify-sample: 100/100 identical to a full re-run (mismatches: 0)
+replay exit=0

@@ -1,0 +1,43 @@
+rows stage2-baseline / round1-end / round2-end / round3-end: 212 216 220 222
+== STAGE-2 BASELINE CODE (b4bf9e8): positives=194 negatives=18 must_stay_live=0
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 13 of 18
+   must_stay_live outcomes: {}
+   dismissed rows total (positives+negatives): 24 of 212
+== ROUND-1 END (d479c03): positives=194 negatives=22 must_stay_live=0
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 17 of 22
+   must_stay_live outcomes: {}
+   dismissed rows total (positives+negatives): 28 of 216
+== ROUND-2 END (13aae01): positives=194 negatives=26 must_stay_live=0
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 19 of 26
+   must_stay_live outcomes: {}
+   dismissed rows total (positives+negatives): 30 of 220
+== ROUND-3 END (working tree): positives=194 negatives=26 must_stay_live=2
+   positive outcomes: {'kept': 117, 'invisible': 61, 'dismissed': 11, 'excluded': 5}
+   ty: n=123 {'kept': 81, 'invisible': 30, 'dismissed': 7, 'excluded': 5}
+   mypy: n=71 {'invisible': 31, 'kept': 36, 'dismissed': 4}
+   dismissed positives: ['mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872']
+   negatives dismissed (closed automatically): 21 of 26
+   must_stay_live outcomes: {'live': 2}
+   dismissed rows total (positives+negatives): 32 of 220
+== changes per id, round-2 end -> round-3 end (outcome / decided_by)
+  kb-REVEAL-ERROR-RECOVERY: kept -> dismissed   before=['gate', 'kb:REVEAL-ERROR-RECOVERY'] after=['kb:REVEAL-ERROR-RECOVERY']
+  live-mypy_stale_alias: None -> live   before=[] after=['gate']
+  live-ty_constant_fold_tuple_subclass: None -> live   before=[] after=['gate']
+  neg-reveal_error_recovery: kept -> dismissed   before=['gate', 'kb:REVEAL-ERROR-RECOVERY'] after=['kb:REVEAL-ERROR-RECOVERY']
+NEWLY DISMISSED POSITIVES (real bugs) vs round-2 end: []
+NEWLY DISMISSED POSITIVES (real bugs) vs round-1 end: []
+NEWLY DISMISSED POSITIVES (real bugs) vs stage-2 baseline: []
+negatives NOT closed at round-3 end: ['kb-ANNOTATION-ONLY-READ', 'kb-JOIN-VS-UNION-CALLABLE', 'kb-MDTEST-TODO', 'kb-MYPY-15182-NEW-RETURNS', 'neg-generic_isinstance']
+must_stay_live violated: []

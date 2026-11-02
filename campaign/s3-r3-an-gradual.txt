@@ -1,0 +1,122 @@
+22 ('holdout', 'mypy', 'no-raise', 'clean')
+6 ('holdout', 'mypy', 'no-raise', 'earlier-error')
+5 ('holdout', 'mypy', 'no-raise', 'flagged-binding')
+2 ('holdout', 'ty', 'no-raise', 'clean')
+20 ('holdout', 'ty', 'no-raise', 'earlier-error')
+17 ('holdout', 'ty', 'no-raise', 'flagged-binding')
+8 ('holdout', 'ty', 'raised', 'clean')
+6 ('holdout', 'ty', 'raised', 'earlier-error')
+1 ('holdout', 'ty', 'raised', 'flagged-binding')
+56 ('tuning', 'mypy', 'no-raise', 'clean')
+32 ('tuning', 'mypy', 'no-raise', 'earlier-error')
+24 ('tuning', 'mypy', 'no-raise', 'flagged-binding')
+3 ('tuning', 'mypy', 'raised', 'clean')
+2 ('tuning', 'mypy', 'raised', 'earlier-error')
+2 ('tuning', 'ty', 'no-raise', 'clean')
+35 ('tuning', 'ty', 'no-raise', 'earlier-error')
+33 ('tuning', 'ty', 'no-raise', 'flagged-binding')
+25 ('tuning', 'ty', 'raised', 'clean')
+18 ('tuning', 'ty', 'raised', 'earlier-error')
+1 ('tuning', 'ty', 'raised', 'no-names')
+
+('holdout', 'mypy', 'no-raise', 'clean')
+     ty__call__type__18.py:L11 mypy=Any other=Literal[42] fb=[]
+     ty__call__type__18.py:L15 mypy=Any other=Literal[56] fb=[]
+     mypy__check_overloading__testOverloadWithOverlappingItemsAndAnyArgument6.py:L17 mypy=Any other=int fb=[]
+     mypy__check_overloading__testOverloadWithOverlappingItemsAndAnyArgument6.py:L18 mypy=Any other=float fb=[]
+     ty__enums__33.py:L19 mypy=Any other=str fb=[]
+('holdout', 'mypy', 'no-raise', 'earlier-error')
+     ty__comparison__intersections__24.py:L5 mypy=Any other=bool fb=[]
+     ty__call__constructor__29.py:L18 mypy=Any other=int fb=[]
+     ty__annotations__intersection_types__2.py:L12 mypy=Any other=A & B fb=[]
+     ty__annotations__intersection_types__2.py:L13 mypy=Any other=~A fb=[]
+     ty__comparison__strings__3.py:L7 mypy=Any other=bool fb=[]
+('holdout', 'mypy', 'no-raise', 'flagged-binding')
+     ty__call__type__24.py:L20 mypy=Any other=int fb=[('RegularChild', 15), ('RegularChild', 15)]
+     ty__bidirectional__91.py:L25 mypy=Any other=A | dict[str, int] fb=[('x2', 24)]
+     ty__bidirectional__91.py:L32 mypy=Any other=A | dict[str, int] fb=[('x4', 31)]
+     ty__call__type__37.py:L8 mypy=Any other=int fb=[('FromList', 7)]
+     ty__call__type__37.py:L14 mypy=Any other=int fb=[('FromStarredList', 13)]
+('holdout', 'ty', 'no-raise', 'clean')
+     mypy__check_overloading__testOverloadAgainstEmptyCovariantCollections.py:L18 ty=Unknown other=int fb=[]
+     pyright__overloadResultMethods1.py:L41 ty=Unknown other=case.Container[int] fb=[]
+('holdout', 'ty', 'no-raise', 'earlier-error')
+     ty__annotations__unsupported_special_forms__2.py:L14 ty=Unknown other=bool fb=[]
+     ty__annotations__unsupported_special_forms__2.py:L15 ty=Unknown other=bool fb=[]
+     ty__annotations__unsupported_special_forms__2.py:L20 ty=Unknown other=e? fb=[]
+     mypy__check_classes__testOverloadedDescriptorSelected.py:L29 ty=Unknown other=case.BoolField fb=[]
+     mypy__check_classes__testOverloadedDescriptorSelected.py:L30 ty=Unknown other=case.NumField fb=[]
+('holdout', 'ty', 'no-raise', 'flagged-binding')
+     mypy__check_type_aliases__testAliasRefOnClass.py:L28 ty=Unknown other=case.C[int] fb=[('w', 27)]
+     mypy__check_overloading__testOverloadingInferUnionReturnWithFunctionTypevarReturn.py:L26 ty=Unknown other=case.A fb=[('a2', 24)]
+     ty__subscript__bytes__0.py:L17 ty=Unknown other=int fb=[('x', 16)]
+     ty__subscript__bytes__0.py:L20 ty=Unknown other=int fb=[('y', 19)]
+     ty__unpacking__90.py:L5 ty=Unknown other=int fb=[('a', 4)]
+('holdout', 'ty', 'raised', 'clean')
+     mypy__check_generics__testAliasesInClassBodyNormalVsSubscripted.py:L24 ty=Unknown other=int | str fb=[]
+     mypy__check_overloading__testOverloadsAndNoneWithStrictOptional.py:L20 ty=Unknown other=int fb=[]
+     ty__call__dunder__4.py:L13 ty=Unknown other=str fb=[]
+     mypy__check_python312__testPEP695TypeAliasForwardReference3.py:L7 ty=Unknown other=case.C[case.D] fb=[]
+     ty__bidirectional__38.py:L9 ty=Unknown other=Never fb=[]
+('holdout', 'ty', 'raised', 'earlier-error')
+     ty__comparison__tuples__3.py:L11 ty=Unknown other=bool fb=[]
+     mypy__check_classes__testNewReturnTypeCallableInference.py:L14 ty=Unknown other=int fb=[]
+     mypy__check_selftype__testRecursiveSelfTypeCallMethodNoCrash.py:L13 ty=Unknown other=Never fb=[]
+     mypy__check_overloading__testOverloadingInferUnionReturnWithTypevarWithValueRestriction.py:L25 ty=Unknown other=case.C | case.B fb=[]
+     mypy__check_typevar_values__testAttributeInGenericTypeWithTypevarValuesUsingInference2.py:L11 ty=Unknown other=int fb=[]
+('holdout', 'ty', 'raised', 'flagged-binding')
+     mypy__check_overloading__testOverloadOnInvalidTypeArgument.py:L17 ty=Unknown other=int fb=[('a', 16)]
+('tuning', 'mypy', 'no-raise', 'clean')
+     ty__call__type__25.py:L16 mypy=Any other=ChildCls fb=[]
+     ty__call__type__25.py:L17 mypy=Any other=int fb=[]
+     ty__enums__104.py:L15 mypy=Any other=Literal[1, 2] fb=[]
+     ty__enums__104.py:L16 mypy=Any other=Literal[1, 2] fb=[]
+     ty__properties__25.py:L9 mypy=Any other=int fb=[]
+('tuning', 'mypy', 'no-raise', 'earlier-error')
+     ty__call__constructor__9.py:L16 mypy=Any other=Foo fb=[]
+     ty__call__constructor__30.py:L10 mypy=Any other=Foo fb=[]
+     ty__comparison__tuples__20.py:L5 mypy=Any other=bool fb=[]
+     ty__call__type__20.py:L19 mypy=Any other=int fb=[]
+     ty__call__type__20.py:L20 mypy=Any other=str fb=[]
+('tuning', 'mypy', 'no-raise', 'flagged-binding')
+     ty__assignment__augmented__3.py:L17 mypy=Any other=int fb=[('x', 8), ('x', 16)]
+     ty__call__type__20.py:L12 mypy=Any other=<class 'X'> fb=[('X', 10)]
+     ty__call__type__20.py:L15 mypy=Any other=int fb=[('X', 10)]
+     ty__call__type__20.py:L16 mypy=Any other=str fb=[('X', 10)]
+     ty__bidirectional__90.py:L16 mypy=Any other=int | str | None fb=[('x2', 15)]
+('tuning', 'mypy', 'raised', 'clean')
+     ty__call__constructor__99.py:L12 mypy=Any other=Foo fb=[]
+     ty__call__constructor__98.py:L18 mypy=Any other=Foo fb=[]
+     ty__properties__5.py:L18 mypy=Any other=bytes fb=[]
+('tuning', 'mypy', 'raised', 'earlier-error')
+     ty__call__constructor__9.py:L18 mypy=Any other=Foo fb=[]
+     ty__call__constructor__30.py:L12 mypy=Any other=Foo fb=[]
+('tuning', 'ty', 'no-raise', 'clean')
+     mypy__check_selftype__testMixinProtocolSuper.py:L11 ty=Unknown other=int fb=[]
+     ty__expression__yield_and_yield_from__4.py:L18 ty=Unknown other=None fb=[]
+('tuning', 'ty', 'no-raise', 'earlier-error')
+     ty__comparison__intersections__31.py:L5 ty=Unknown other=object fb=[]
+     ty__comparison__intersections__31.py:L11 ty=Unknown other=bool fb=[]
+     mypy__check_newsemanal__testForwardBaseDeferAttr.py:L7 ty=Unknown other=int | None fb=[]
+     ty__annotations__string__12.py:L29 ty=Unknown other=int fb=[]
+     ty__annotations__string__12.py:L35 ty=Unknown other=int fb=[]
+('tuning', 'ty', 'no-raise', 'flagged-binding')
+     ty__expression__yield_and_yield_from__5.py:L10 ty=Unknown other=None fb=[('result', 3), ('result', 3)]
+     ty__unpacking__74.py:L5 ty=Unknown other=str fb=[('a', 4)]
+     ty__unpacking__74.py:L6 ty=Unknown other=str fb=[('b', 4)]
+     ty__unpacking__74.py:L7 ty=Unknown other=str fb=[('c', 4)]
+     mypy__check_optional__testNarrowingFromObjectToOptional.py:L7 ty=Unknown other=int | None fb=[('x', 6)]
+('tuning', 'ty', 'raised', 'clean')
+     mypy__check_classes__testNoCrashOnSelfWithForwardRefGenericClass.py:L15 ty=Unknown other=typing.Sequence[case.Element[c fb=[]
+     mypy__check_overloading__testOverloadInferUnionReturnMultipleArguments.py:L17 ty=Unknown other=case.B fb=[]
+     mypy__check_optional__testFlattenOptionalUnion.py:L6 ty=Unknown other=int | str | None fb=[]
+     ty__bidirectional__41.py:L9 ty=Unknown other=int fb=[]
+     mypy__check_python312__testPEP695UpperBoundForwardReference3.py:L14 ty=Unknown other=case.C[case.D[case.X]] fb=[]
+('tuning', 'ty', 'raised', 'earlier-error')
+     mypy__check_functions__testTypeVarIdClashPolymorphic.py:L18 ty=Unknown other=case.Gen[int] fb=[]
+     mypy__check_python312__testPEP695WrongNumberOfConstrainedTypes.py:L6 ty=Unknown other=list[int] fb=[]
+     mypy__check_optional__testOverloadWithNoneAndOptional.py:L14 ty=Unknown other=str | None fb=[]
+     mypy__check_overloading__testOverloadAndSelfTypes.py:L26 ty=Unknown other=case.Child | str fb=[]
+     mypy__check_newtype__testCannotUseNewTypeWithProtocols.py:L13 ty=Unknown other=int fb=[]
+('tuning', 'ty', 'raised', 'no-names')
+     ty__binary__integers__0.py:L14 ty=Unknown other=int fb=[]

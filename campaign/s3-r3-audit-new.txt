@@ -1,0 +1,170 @@
+76 {('tuning', 'ty'): 48, ('holdout', 'mypy'): 3, ('tuning', 'mypy'): 6, ('holdout', 'ty'): 19}
+--- seeds/harvested/gradual_any/ty__exception__control_flow__92.py D13 L35 runtime=exception NameError frames=[16] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] G
+    mypy error L16 [name-defined] Name "could_raise_returns_A" is not defined; did you mean "could_raise_returns_F :: x = could_raise_returns_A()
+    mypy error L20 [name-defined] Name "could_raise_returns_B" is not defined; did you mean "could_raise_returns_F :: x = could_raise_returns_B()
+    mypy error L22 [name-defined] Name "could_raise_returns_C" is not defined; did you mean "could_raise_returns_F :: x = could_raise_returns_C()
+    reveal L35: reveal_type(x)  # revealed: G
+--- seeds/harvested/constructors_metaclasses/mypy__check_classes__testInvalidVariableAsMetaclass.py D2 L10 runtime=exception TypeError frames=[6] split=tuning
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L6 [invalid-metaclass] Metaclass type `Literal[0]` is not callable :: class A(metaclass=M): # E: Invalid metaclass "M"
+    ty error L8 [invalid-metaclass] Metaclass type `Literal[0]` is not callable :: class B(metaclass=MM): # E: Invalid metaclass "MM"
+    reveal L10: reveal_type(A.y) # N: Revealed type is "builtins.int"
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__91.py D4 L7 runtime=exception ValueError frames=[4] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, *b, c, d = b"ab"
+    reveal L7: reveal_type(c)  # revealed: Unknown
+--- seeds/harvested/gradual_any/ty__class__slots__34.py D2 L7 runtime=exception NameError frames=[3] split=tuning
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L3 [unresolved-reference] Name `Base` used when not defined :: class StringChild(Base):
+    reveal L7: reveal_type(StringChild().value)  # revealed: str
+--- seeds/harvested/gradual_any/ty__call__type__37.py D3 L8 runtime=exception TypeError frames=[7] split=holdout
+    mypy: [None] Any
+    ty: [revealed-type] int
+    mypy error L7 [call-overload] No overload variant of "type" matches argument types "str", "list[type[Base]]",  :: FromList = type("FromList", [Base], {})
+    reveal L8: reveal_type(FromList().attr)  # revealed: int
+--- seeds/harvested/constructors_metaclasses/mypy__check_newsemanal__testNewAnalyzerMetaclass1.py D2 L10 runtime=exception NameError frames=[3] split=tuning
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L3 [unresolved-reference] Name `B` used when not defined :: class A(metaclass=B):
+    reveal L10: reveal_type(A.f()) # N: Revealed type is "builtins.int"
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__77.py D5 L8 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, b, *c, d = "a"
+    reveal L8: reveal_type(d)  # revealed: Unknown
+--- seeds/harvested/gradual_any/ty__call__type__20.py D4 L16 runtime=success None frames=[] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] str
+    mypy error L10 [call-overload] No overload variant of "type" matches argument types "str", "tuple[()]", "Closed :: X = type("X", (), ns)
+    reveal L16: reveal_type(X.y)  # revealed: str
+--- seeds/harvested/self_classmethods/mypy__check_selftype__testSelfTypeGenericClassNoClashInstanceMethod.py D3 L22 runtime=success None frames=[] split=tuning
+    mypy: [None] case.SubWrapper[S]
+    ty: [revealed-type] Unknown
+    ty error L12 [empty-body] Function always implicitly returns `None`, which is not assignable to return typ :: def create_wrapper(self: T, metric_descriptor: Descriptor[M]) -> T: ..
+    ty error L17 [unresolved-reference] Name `wrapper` used when not defined :: return wrapper.create_wrapper(descriptor)
+    ty error L21 [unresolved-reference] Name `wrapper` used when not defined :: x = wrapper.create_wrapper(descriptor)
+    reveal L22: reveal_type(x)  # N: Revealed type is "__main__.SubWrapper[S`-1]"
+--- seeds/harvested/gradual_any/ty__assignment__augmented__3.py D5 L17 runtime=success None frames=[] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] int
+    mypy error L8 [misc] Result type of - incompatible in assignment :: x -= 1
+    mypy error L11 [no-redef] Name "C" already defined on line 3 :: class C:
+    mypy error L16 [operator] Unsupported left operand type for + ("C") :: x += "Hello"
+    reveal L17: reveal_type(x)  # revealed: int
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__75.py D2 L5 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = "abc"
+    reveal L5: reveal_type(a)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__92.py D5 L8 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected at least 3 :: a, b, *c, d = b"a"
+    reveal L8: reveal_type(d)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__89.py D3 L6 runtime=exception ValueError frames=[4] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected 3 :: a, b, c = b"ab"
+    reveal L6: reveal_type(b)  # revealed: Unknown
+--- seeds/harvested/recursive_aliases/ty__generics__pep695__aliases__5.py D30 L98 runtime=exception TypeError frames=[8] split=tuning
+    mypy: [None] list[str] | list[int]
+    ty: [revealed-type] Unknown
+    ty error L8 [not-subscriptable] Cannot subscript non-generic type alias `B` :: reveal_type(B[int])  # revealed: Unknown
+    ty error L11 [not-subscriptable] Cannot specialize non-generic type alias `B` :: def _(b: B[int]):
+    ty error L17 [not-subscriptable] Cannot specialize non-generic type alias `IntOrStr` :: def _(c: IntOrStr[int]):
+    reveal L98: reveal_type(x)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__90.py D3 L6 runtime=exception ValueError frames=[4] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = b"abc"
+    reveal L6: reveal_type(b)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__90.py D2 L5 runtime=exception ValueError frames=[4] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = b"abc"
+    reveal L5: reveal_type(a)  # revealed: Unknown
+--- seeds/harvested/gradual_any/ty__call__type__37.py D4 L14 runtime=exception TypeError frames=[7] split=holdout
+    mypy: [None] Any
+    ty: [revealed-type] int
+    mypy error L7 [call-overload] No overload variant of "type" matches argument types "str", "list[type[Base]]",  :: FromList = type("FromList", [Base], {})
+    mypy error L13 [call-overload] No overload variant of "type" matches argument types "str", "list[type[Base]]",  :: FromStarredList = type("FromStarredList", [*bases], {})
+    reveal L14: reveal_type(FromStarredList().attr)  # revealed: int
+--- seeds/harvested/gradual_any/ty__bidirectional__90.py D9 L37 runtime=success None frames=[] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] str | None
+    mypy error L12 [misc] Cannot infer value of type parameter "T" of "combine" :: x1: int | str | None = combine(y, [x], [z])
+    mypy error L15 [misc] Cannot infer value of type parameter "T" of "combine" :: x2 = combine(y, [x], [z])
+    mypy error L18 [misc] Cannot infer value of type parameter "T" of "combine_reversed" :: x3 = combine_reversed(y, [z], [x])
+    reveal L37: reveal_type(x)  # revealed: str | None
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__75.py D3 L6 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Too many values to unpack: Expected 2 :: a, b = "abc"
+    reveal L6: reveal_type(b)  # revealed: Unknown
+--- seeds/harvested/gradual_any/ty__bidirectional__91.py D2 L25 runtime=exception NameError frames=[3] split=holdout
+    mypy: [None] Any
+    ty: [revealed-type] A | dict[str, int]
+    mypy error L3 [name-defined] Name "TypedDict" is not defined :: class A(TypedDict):
+    mypy error L10 [name-defined] Name "Sequence" is not defined :: def pair_with_sequence[T](x: T, y: Sequence[T]) -> T:
+    mypy error L20 [misc] Cannot infer value of type parameter "T" of "pair_with_list" :: x1: A = pair_with_list(a, [{"a": 1, "b": 2}])
+    reveal L25: reveal_type(x2)  # revealed: A | dict[str, int]
+--- seeds/harvested/gradual_any/ty__assignment__unbound__0.py D1 L11 runtime=exception NameError frames=[3] split=tuning
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L3 [unresolved-reference] Name `foo` used when not defined :: x = foo  # error: [unresolved-reference] "Name `foo` used when not def
+    reveal L11: reveal_type(x)
+--- seeds/harvested/gradual_any/ty__call__methods__41.py D2 L9 runtime=exception NameError frames=[5] split=tuning
+    mypy: [None] Literal['a']
+    ty: [revealed-type] Unknown
+    ty error L5 [unresolved-reference] Name `Meta` used when not defined :: class D(metaclass=Meta):
+    reveal L9: reveal_type(D.f(1))  # revealed: Literal["a"]
+--- seeds/harvested/gradual_any/ty__call__type__20.py D2 L12 runtime=success None frames=[] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] <class 'X'>
+    mypy error L10 [call-overload] No overload variant of "type" matches argument types "str", "tuple[()]", "Closed :: X = type("X", (), ns)
+    reveal L12: reveal_type(X)  # revealed: <class 'X'>
+--- seeds/harvested/gradual_any/ty__bidirectional__90.py D6 L16 runtime=success None frames=[] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] int | str | None
+    mypy error L12 [misc] Cannot infer value of type parameter "T" of "combine" :: x1: int | str | None = combine(y, [x], [z])
+    mypy error L15 [misc] Cannot infer value of type parameter "T" of "combine" :: x2 = combine(y, [x], [z])
+    reveal L16: reveal_type(x2)  # revealed: int | str | None
+--- seeds/harvested/gradual_any/ty__subscript__bytes__0.py D11 L17 runtime=exception IndexError frames=[16] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L16 [index-out-of-bounds] Index 5 is out of bounds for bytes literal `Literal[b"\x00abc\xff"]` with length :: x = b[5]  # error: [index-out-of-bounds] "Index 5 is out of bounds for
+    reveal L17: reveal_type(x)  # revealed: Unknown
+--- seeds/harvested/gradual_any/ty__bidirectional__61.py D5 L32 runtime=exception NameError frames=[28] split=tuning
+    mypy: [None] Any
+    ty: [revealed-type] list[list[int]]
+    mypy error L28 [name-defined] Name "Sequence" is not defined :: x17: Sequence[Sequence[Any]] = f(1)
+    mypy error L31 [name-defined] Name "Sequence" is not defined :: x18: Sequence[list[Any]] = f(1)
+    reveal L32: reveal_type(x18)  # revealed: list[list[Any]]
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__83.py D2 L6 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected 2 :: a, b = "é"
+    reveal L6: reveal_type(a)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__84.py D2 L6 runtime=exception ValueError frames=[4] split=holdout
+    mypy: [None] str
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected 2 :: a, b = "\u9e6c"
+    reveal L6: reveal_type(a)  # revealed: Unknown
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__54.py D10 L13 runtime=exception ValueError frames=[4] split=tuning
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L4 [invalid-assignment] Not enough values to unpack: Expected at least 2 :: first, *rest, last = (*(1,),)
+    ty error L10 [invalid-assignment] Not enough values to unpack: Expected at least 2 :: first, *rest, last = [*[1]]
+    reveal L13: reveal_type(last)  # revealed: Unknown
+--- seeds/harvested/generics_variance/mypy__check_newsemanal__testNewAnalyzerGenericsTypeVarForwardRef.py D8 L17 runtime=exception NameError frames=[5] split=holdout
+    mypy: [None] int
+    ty: [revealed-type] Unknown
+    ty error L5 [invalid-argument-type] `Unknown` is not a valid argument to `Generic` :: class C(Generic[T]):
+    ty error L5 [unresolved-reference] Name `T` used when not defined :: class C(Generic[T]):
+    ty error L6 [unresolved-reference] Name `T` used when not defined :: def __init__(self, x: T) -> None:
+    reveal L17: reveal_type(c.get()) # N: Revealed type is "builtins.int"

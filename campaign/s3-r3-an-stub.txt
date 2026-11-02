@@ -1,0 +1,18 @@
+9 ('tuning', "'NoneType' object is not callable", 'no-stub')
+      pyright__typeVarTuple5.py:L44 c1_1 = c1() stub=None
+      mypy__check_functions__testFunctionReturningGenericFunction.py:L10 i = f(3) stub=None
+      mypy__check_functions__testNestedDecorators.py:L9 f() stub=None
+      mypy__check_functions__testFunctionReturningGenericFunctionPartialBinding.py:L12 i = f(3, "eggs") stub=None
+5 ('tuning', "'NoneType' object is not callable", 'stub-callee')
+      pyright__assignmentExpr9.py:L15 @decorator( stub=decorator
+      pyright__dataclassDescriptors2.py:L41 @dataclass_like() stub=dataclass_like
+      pyright__dataclassTransform1.py:L32 @create_model(kw_only=False, order=False) stub=create_model
+      pyright__solver18.py:L40 @decorator1() stub=decorator1
+3 ('holdout', "'NoneType' object is not callable", 'stub-callee')
+      pyright__overload2.py:L63 @deco1(func5) stub=deco1
+      pyright__dataclassTransform4.py:L62 @create_model() stub=create_model
+      pyright__paramSpec50.py:L28 func1(func2, 3, 1.1) stub=func1
+1 ('holdout', "'NoneType' object is not callable", 'no-stub')
+      pyright__hashability3.py:L21 B().__hash__() stub=None
+1 ('tuning', "'int' object is not callable", 'no-stub')
+      mypy__check_fastparse__testFasterParseTooFewArgumentsAnnotation.py:L5 x() stub=None

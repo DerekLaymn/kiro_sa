@@ -1,0 +1,76 @@
+15 ('tuning', 'TypeError', "'_' object is not callable")
+       pyright__assignmentExpr9.py:L15 @decorator(
+       pyright__typeVarTuple5.py:L44 c1_1 = c1()
+       mypy__check_functions__testFunctionReturningGenericFunction.py:L10 i = f(3)
+6 ('tuning', 'TypeError', "type '_' is not subscriptable")
+       typeshed__email__check_parser.py:L11 assert_type(p1, Parser[Message[str, str]])
+       typeshed__multiprocessing__check_ctypes.py:L15 assert_type(numbers, SynchronizedArray[int])
+       typeshed__itertools__check_batched.py:L11 assert_type(batched([0], 1, strict=True), batched[tuple[int]])
+6 ('tuning', 'AttributeError', "'_' object has no attribute '_'")
+       ty__del__4.py:L7 del c.x
+       pyright__memberAccess25.py:L21 del ClassA[int].y
+       pyright__genericType17.py:L22 x._pair._dict["foo"]
+6 ('tuning', 'NameError', "name '_' is not defined")
+       mypy__check_functions__testConditionalFunctionDefinitionInTry.py:L10 g('x')
+       ty__loops__while_loop__55.py:L4 x  # error: [possibly-unresolved-reference]
+       ty__loops__while_loop__29.py:L9 x
+4 ('holdout', 'TypeError', "'_' object is not callable")
+       pyright__overload2.py:L63 @deco1(func5)
+       pyright__dataclassTransform4.py:L62 @create_model()
+       pyright__hashability3.py:L21 B().__hash__()
+3 ('tuning', 'TypeError', "unhashable type: '_'")
+       pyright__hashability2.py:L21 s2 = {B()}
+       pyright__hashability1.py:L13 s1 = {{}, 2, dict, frozenset(), []}
+       ty__type_compendium__tuple__27.py:L12 aa: tuple[list[int], ...] = ([42], *{[56], [78]}, [100])
+3 ('holdout', 'TypeError', "type '_' is not subscriptable")
+       ty__narrow__isinstance__102.py:L9 def f(fn: Callable[P, R] | classmethod[Any, P, R]) -> Callable[P, R]:
+       typeshed__builtins__check_zip.py:L13 assert_type(zip(ints), zip[tuple[int]])
+       typeshed__ctypes__check_pointer.py:L10 assert_type(ctypes.POINTER(ctypes.c_int), Type[ctypes._Pointer[ctypes.c_int]])
+2 ('tuning', 'TypeError', 'Cannot take a Union of no types.')
+       pyright__unions4.py:L17 v2: Union[()]
+       ty__annotations__union__0.py:L11 a6: Union[()]
+2 ('holdout', 'AttributeError', "'_' object has no attribute '_'")
+       pyright__memberAccess17.py:L49 del obj.foo
+       ty__narrow__truthiness__2.py:L6 if (foo := Foo()).val:
+2 ('tuning', 'TypeError', 'Type parameter with a default follows TypeVarTuple')
+       ty__generics__legacy__typevartuple__30.py:L8 class Callback(Generic[*Ts, P]):
+       pyright__typeVarDefaultClass1.py:L112 class ClassD(Generic[*Ts5, P4, P5]): ...  # OK
+2 ('tuning', 'TypeError', "iter() returned non-iterator of type '_'")
+       mypy__check_generics__testMultipleAssignmentFromAnyIterable.py:L7 x, y = A()
+       mypy__check_inference__testInferringLvarTypesUnpackedFromIterableClassObjectWithGenericIter.py:L10 A, B, C = Foo
+1 ('holdout', 'TypeError', 'cannot unpack non-iterable NoneType object')
+       pyright__tuple7.py:L17 (a, b, c, d) = objA
+1 ('tuning', 'TypeError', "unsupported operand type(s) for &: '_' and '_'")
+       pyright__typeIs1.py:L174 v3 = v0 & v0
+1 ('tuning', 'TypeError', "Metan.__new__() missing n required keyword-only arguments: '_' and '_'")
+       pyright__metaclass9.py:L34 class Class1_4(metaclass=Meta1): ...
+1 ('tuning', 'TypeError', 'Customern() takes no arguments')
+       pyright__dataclassTransform2.py:L58 c1_1 = Customer1(id=3, name="Sue", other_name="Susan")
+1 ('tuning', 'TypeError', "can'_'NoneType'")
+       mypy__check_statements__testInplaceOperatorMethods.py:L10 a *= ''
+1 ('holdout', 'TypeError', "'_' object is not an iterator")
+       pyright__solver3.py:L20 a: int = next(generator_of_ints)
+1 ('tuning', 'TypeError', 'Meta.__init__() takes n positional argument but n were given')
+       pyright__metaclass2.py:L38 class MyClass1(metaclass=Meta):
+1 ('holdout', 'NameError', "name '_' is not defined")
+       ty__with__sync__10.py:L11 after_break  # error: [possibly-unresolved-reference]
+1 ('tuning', 'TypeError', 'f() takes n positional arguments but n were given')
+       ty__call__functools_partial__23.py:L10 p()
+1 ('tuning', 'TypeError', 'type.__new__() argument n must be tuple, not list')
+       ty__call__new_class__11.py:L8 FromList = types.new_class("FromList", [Base])
+1 ('holdout', 'TypeError', 'object.__new__(): not enough arguments')
+       pyright__metaclass7.py:L15 return object.__new__(**kwargs)
+1 ('tuning', 'ValueError', 'too many values to unpack (expected n)')
+       pyright__tuple9.py:L11 left, right = tuple(str_list)
+1 ('tuning', 'TypeError', 'cannot unpack non-iterable NoneType object')
+       pyright__tuple8.py:L18 (a, b, c, d) = objA
+1 ('holdout', 'TypeError', '__get__(None, None) is invalid')
+       ty__call__methods__38.py:L23 method_wrapper(None)
+1 ('holdout', 'AttributeError', "type object '_' has no attribute '_'")
+       mypy__check_selftype__testSelfTypeProtocolMetaclassMatch.py:L12 cls.x
+1 ('tuning', 'TypeError', 'object.__new__() takes exactly one argument (the type to instantiate)')
+       conformance__constructors_call_new.py:L100 return super().__new__(cls, *args, **kwargs)
+1 ('tuning', 'TypeError', 'Too few arguments for tuple[~Tn, typing.Unpack[Ts], ~Tn]; actual n, expected at ')
+       pyright__typeVarTuple28.py:L14 TA1_Spec2 = TA1[float, *tuple[int, ...]]
+1 ('tuning', 'TypeError', "type() doesn't support MRO entry resolution; use types.new_class()")
+       ty__call__type__28.py:L11 IntContainer = type("IntContainer", (Container[int],), {})
