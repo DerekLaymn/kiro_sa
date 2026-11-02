@@ -1,0 +1,35 @@
+1 | seed-081899078e60.json | C1 | rule:crash:timeout | ty:timeout | seeds/harvested/narrowing_builtin/ty__narrow__type_guards__45.py | seed-081899078e60 | 
+2 | seed-0a9ab22514ce.json | C1 | rule:crash:timeout | ty:timeout | seeds/harvested/match_statement/pyright__matchSequence2.py | seed-0a9ab22514ce | 
+3 | seed-15316c3be6b4.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__24.py | seed-15316c3be6b4 | 
+4 | seed-15d3e4864af4.json | C1 | rule:crash:timeout | mypy:timeout | seeds/harvested/recursive_aliases/ty__pep695_type_aliases__70.py | seed-15d3e4864af4 | 
+5 | seed-15d3e4864af4.json | C2 | rule:crash:abnormal_exit | pyright:exitNone | seeds/harvested/recursive_aliases/ty__pep695_type_aliases__70.py | seed-15d3e4864af4 | 
+6 | seed-15d3e4864af4.json | C3 | rule:crash:timeout | pyright:timeout | seeds/harvested/recursive_aliases/ty__pep695_type_aliases__70.py | seed-15d3e4864af4 | 
+7 | seed-1e892ab807bf.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__15.py | seed-1e892ab807bf | 
+8 | seed-33f83747643b.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__14.py | seed-33f83747643b | 
+9 | seed-43a94ff17ffe.json | C1 | rule:crash:abnormal_exit | mypy:exit-11 | seeds/harvested/gradual_any/ty__call__type__5.py | seed-43a94ff17ffe | 
+10 | seed-4ce164777c19.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__21.py | seed-4ce164777c19 | 
+11 | seed-50a85e2bdd8d.json | C1 | rule:crash:abnormal_exit | ty:exit-6 | seeds/harvested/async_generators/ty__with__async__43.py | seed-50a85e2bdd8d | 
+12 | seed-6515781d7a26.json | C1 | rule:crash:abnormal_exit | ty:exit-6 | seeds/harvested/gradual_any/ty__annotations__intersection_types__6.py | seed-6515781d7a26 | 
+13 | seed-6be978dceb39.json | C1 | rule:crash:panic | ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9 | seeds/harvested/gradual_any/ty__annotations__union__7.py | seed-6be978dceb39 | 
+14 | seed-6ec46aeec17d.json | C1 | rule:crash:timeout | ty:timeout | seeds/harvested/tuples_unpacking/pyright__tupleComparisonResource_deep_nonbool.py | seed-6ec46aeec17d | 
+15 | seed-7eb92c7ac931.json | C1 | rule:crash:timeout | ty:timeout | seeds/harvested/tuples_unpacking/pyright__tupleComparisonResource_repeated_nested_types.py | seed-7eb92c7ac931 | 
+16 | seed-918936c5da72.json | C1 | rule:crash:timeout | mypy:timeout | seeds/harvested/recursive_aliases/ty__generics__pep695__aliases__17.py | seed-918936c5da72 | 
+17 | seed-98ca621dc55a.json | C1 | rule:crash:timeout | mypy:timeout | seeds/harvested/recursive_aliases/ty__pep695_type_aliases__55.py | seed-98ca621dc55a | 
+18 | seed-bf8056ac96cf.json | C1 | rule:crash:timeout | ty:timeout | seeds/harvested/narrowing_builtin/ty__narrow__type_guards__46.py | seed-bf8056ac96cf | 
+19 | seed-cc5516daf5f7.json | C1 | rule:crash:abnormal_exit | mypy:exit-11 | seeds/harvested/gradual_any/ty__call__type__4.py | seed-cc5516daf5f7 | 
+20 | seed-d088506c023d.json | C1 | rule:crash:abnormal_exit | ty:exit-6 | seeds/harvested/protocols/mypy__check_protocols__testTwoUncomfortablyIncompatibleProtocolsWithoutRunningInIssue9771.py | seed-d088506c023d | 
+21 | seed-d75b50d44f0b.json | C1 | rule:crash:abnormal_exit | mypy:exit-11 | seeds/harvested/recursive_aliases/pyright__typeVarDefaultTypeAlias2.py | seed-d75b50d44f0b | 
+22 | seed-e3e7171ad41a.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__22.py | seed-e3e7171ad41a | 
+23 | seed-edec1a3899cb.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__25.py | seed-edec1a3899cb | 
+24 | seed-f78c2105fbcb.json | C1 | rule:crash:abnormal_exit | pyright:exit2 | seeds/harvested/constructors_metaclasses/ty__call__constructor__16.py | seed-f78c2105fbcb | 
+25 | seed-fe4d8323a2d7.json | C1 | rule:crash:abnormal_exit | mypy:exit-11 | seeds/harvested/generics_variance/pyright__typeVarDefaultClass2.py | seed-fe4d8323a2d7 | 
+25
+['case_id', 'source', 'target_python', 'tool_versions', 'flags', 'diagnostics', 'runtime', 'crashes', 'discrepancies', 'findings', 'validity', 'strategy', 'llm_calls', 'notes']
+<class 'str'> # area: gradual_any
+# origin: ruff mdtest intersection_types.md block 54
+class Meta(type): ...
+class Bound(metaclass=Meta): ...
+
+def accepts_meta(value: type[Meta]) -> None: ...
+def exclude_none[T: ty
+{'mypy': 'mypy 2.4.0 (compiled: yes)', 'ty': 'ty 0.0.84', 'pyright': 'pyright 1.1.414', 'runtime': '3.13.15'} {'mypy': ['--python-version', '3.13', '--check-untyped-defs', '--show-column-numbers', '--show-error-codes', '--show-error-end', '--no-error-summary', '--no-color-output', '--hide-error-context', '--no-incremental', '--cache-dir', '/tmp/typediff-zi2f2phx/.mypy_cache'], 'ty': ['--python-version', '3.13', '--output-format', 'concise', '--no-progress', '--color', 'never'], 'pyright': ['--pythonversion', '3.13', '--outputjson']}

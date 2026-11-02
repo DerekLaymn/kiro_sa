@@ -1,0 +1,8 @@
+pyright RangeError rc=2: [('abnormal_exit', 'pyright:exit2', 2000)]
+   excerpt starts: 'typeEvaluator.ts:23478:28)\n    at n.timeOperation (/tmp/kbloop/venv/lib/python3.'
+mypy SIGSEGV rc=-11: [('abnormal_exit', 'mypy:exit-11')]
+ty SIGABRT rc=-6: [('abnormal_exit', 'ty:exit-6')]
+pyright timeout parse (before runner adds its own): [('abnormal_exit', 'pyright:exitNone')]
+finding for segfault: Verdict.NEEDS_HUMAN Tier.REVIEW 0.0
+mypy diag containing INTERNAL ERROR: []
+ty diag containing 'internal error' in stderr only: []

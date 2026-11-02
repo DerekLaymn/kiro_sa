@@ -427,7 +427,320 @@ def slide_outcomes(prs):
              "We are not promising a specific number of bugs. The status of all this is on the updates slide.")
 
 
-SLIDES = [slide_title, slide_problem, slide_motivation, slide_arch, slide_plan, slide_updates, slide_outcomes]
+# ---- appended slides (8-16) -------------------------------------------------
+MONO = "Courier New"
+
+
+def grid(slide, x, y, colw, rows, size=14, rowh=0.5, head_h=0.45, head=True, zebra=True):
+    """Simple table from rectangles + text. rows[0] is the header when head=True.
+    Cell may be str or (str, dict) for text options."""
+    cy = y
+    for ri, row in enumerate(rows):
+        is_head = head and ri == 0
+        h = head_h if is_head else rowh
+        cx = x
+        for ci, cell in enumerate(row):
+            w = colw[ci]
+            fill = ACCENT if is_head else (LIGHT if (zebra and ri % 2 == 1) else WHITE)
+            rect(slide, cx, cy, w, h, fill=fill, line=MID if not is_head else None, lw=0.75)
+            t, o = (cell, {}) if isinstance(cell, str) else cell
+            opts = dict(o)
+            if is_head:
+                opts.update(bold=True, color=WHITE)
+            text(slide, cx + 0.05, cy, w - 0.1, h, [(t, opts)], size=size,
+                 anchor=MSO_ANCHOR.MIDDLE, inset=0.05)
+            cx += w
+        cy += h
+    return cy
+
+
+def code_block(slide, x, y, w, h, lines, size=14):
+    rect(slide, x, y, w, h, fill=LIGHT)
+    rect(slide, x, y, 0.06, h, fill=ACCENT)
+    tb = slide.shapes.add_textbox(Inches(x + 0.15), Inches(y), Inches(w - 0.2), Inches(h))
+    tf = tb.text_frame
+    tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    tf.margin_left = tf.margin_right = Inches(0.05)
+    tf.margin_top = tf.margin_bottom = Inches(0.05)
+    for i, ln in enumerate(lines):
+        para = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
+        r = para.add_run()
+        r.text = ln
+        r.font.name, r.font.size, r.font.color.rgb = MONO, Pt(size), NAVY
+
+
+def slide_outline(prs):
+    s = blank(prs)
+    title(s, "Draft paper structure", 8)
+    rows = [
+        ("Introduction", "Why test type checkers, why ty, our contribution"),
+        ("Background", "Typing spec, mypy, pyright, ty, differential testing"),
+        ("Approach", "Pipeline S0\u2013S8, knowledge base, oracles, cost model"),
+        ("Seed corpus and mutation", "Hand and harvested seeds, hold-out, LLM mutation plan"),
+        ("Evaluation", "Funnel, calibration on known bugs, hold-out, yield"),
+        ("Findings", "Filed issues and how each was found"),
+        ("Threats to validity", "Bugs both tools share, version skew, suite seeds"),
+        ("Related work", "Type-checker testing and differential fuzzing"),
+        ("Conclusion", "What we found and what comes next"),
+    ]
+    y = 1.5
+    for i, (h, b) in enumerate(rows, 1):
+        o = rect(s, MARGIN + 0.05, y + 0.04, 0.46, 0.46, fill=ACCENT, shape=MSO_SHAPE.OVAL)
+        fill_tf(o.text_frame, str(i), size=16, color=WHITE, bold=True, align=PP_ALIGN.CENTER,
+                anchor=MSO_ANCHOR.MIDDLE, inset=0)
+        text(s, MARGIN + 0.75, y, 3.8, 0.54, h, size=20, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+        text(s, MARGIN + 4.6, y, SW - 2 * MARGIN - 4.6, 0.54, b, size=16, anchor=MSO_ANCHOR.MIDDLE)
+        y += 0.59
+    notes(s, "This is the outline we propose for the paper. It follows the usual shape of a fuzzing report: methodology, results, findings and reflection. "
+             "Approach covers the pipeline, the knowledge base, the oracles and the cost model. Evaluation and findings come from the runs described on the next slides. "
+             "Threats to validity covers bugs that both tools share, version skew and the nature of test-suite seeds. No results are claimed in the outline itself.")
+
+
+def flow_row(slide, x0, y, labels, w=1.85, h=0.9, gap=0.16, size=14):
+    boxes = []
+    for i, lab in enumerate(labels):
+        b = rect(slide, x0 + i * (w + gap), y, w, h, fill=ACCENT if i < len(labels) - 1 else LIGHT,
+                 line=None if i < len(labels) - 1 else GREY, shape=MSO_SHAPE.ROUNDED_RECTANGLE, lw=2.0)
+        b.adjustments[0] = 0.12
+        fill_tf(b.text_frame, lab, size=size, bold=True,
+                color=WHITE if i < len(labels) - 1 else NAVY,
+                align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, inset=0.05)
+        boxes.append(b)
+    for a, b in zip(boxes, boxes[1:]):
+        conn(slide, a, 3, b, 1)
+    return boxes
+
+
+def slide_setup(prs):
+    s = blank(prs)
+    title(s, "First end-to-end run: setup and loop", 9)
+    text(s, MARGIN, 1.4, 3.6, 1.2, "6,089", size=72, bold=True, color=ACCENT, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, MARGIN, 2.6, 3.6, 0.5, "seed programs", size=20, color=GREY)
+    pts = [
+        "29 hand-written + 6,060 harvested (conformance, ty/ruff mdtests, mypy tests, pyright samples, typeshed)",
+        "6,044 ran, 45 rejected",
+        "Deterministic stage only, no LLM yet",
+        "20% held out (1,218 programs) to check we do not overfit",
+    ]
+    text(s, 4.6, 1.5, SW - 4.6 - MARGIN, 2.4, [("\u2022  " + t) for t in pts], size=18, space=8)
+    text(s, MARGIN, 3.85, 8, 0.45, "The loop", size=22, bold=True, color=ACCENT)
+    flow_row(s, MARGIN, 4.45, ["Run mypy, ty, pyright, CPython", "List disagreements",
+                               "Add evidence + KB rules", "Live or dismissed",
+                               "Group into patterns", "Fix pipeline or add cited KB entry"], h=1.1)
+    text(s, MARGIN, 5.8, SW - 2 * MARGIN, 0.9,
+         "After each change we re-judge from the saved results, without re-running the checkers.",
+         size=18, color=NAVY)
+    notes(s, "Setup: 6,089 seed programs, 29 hand-written plus 6,060 harvested from the typing conformance suite, ty and ruff mdtests, mypy tests, pyright samples and typeshed. "
+             "6,044 ran and 45 were rejected before running. This is the deterministic stage only, with no LLM. We held out 20 percent of the programs. "
+             "The loop: run the four tools, list disagreements, add evidence and knowledge base rules, mark findings live or dismissed, group into patterns, triage the top patterns, then fix the pipeline or add a cited knowledge base entry and re-judge from saved results.")
+
+
+def slide_results(prs):
+    s = blank(prs)
+    title(s, "First results: live findings", 10)
+    text(s, MARGIN, 1.35, 3.4, 1.2, "\u221210.5%", size=66, bold=True, color=ACCENT, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, 4.2, 1.45, SW - 4.2 - MARGIN, 1.1,
+         "live findings vs baseline after rounds 1 and 2",
+         size=20, anchor=MSO_ANCHOR.MIDDLE, space=4)
+    rows = [
+        ["Set", "Baseline", "After rounds 1+2"],
+        ["All (6,044 programs)", "9,908", "8,869  (\u221210.5%)"],
+        ["Tuning set", "7,939", "7,081  (\u221210.8%)"],
+        ["Hold-out", "1,969", "1,788  (\u22129.2%)"],
+    ]
+    grid(s, MARGIN, 2.85, [4.7, 3.6, 3.73], rows, size=18, rowh=0.62, head_h=0.55)
+    text(s, MARGIN, 5.55, SW - 2 * MARGIN, 1.3,
+         ["Live findings = disagreements between the tools that nobody has explained yet (the review queue).",
+          ("About 800 of the closures came from one rule we later downgraded to a note only; without it the drop is about 3%.", {"color": GREY})],
+         size=18, space=8)
+    notes(s, "Live findings are the disagreements still waiting for review. Baseline is 9,908. After two rounds of rules it dropped to 8,869, which is 10.5 percent lower. "
+             "The largest rule, ORIGIN-ORACLE-REVEAL, was later made hint-only by a reviewer because it closed findings without strong enough proof. That brought the figure back to about 9,650, which is 2.6 percent below baseline. "
+             "The 50 percent goal was not reached. The remaining findings need human or LLM judgement, not more deterministic rules. "
+             "Numbers come from the stats files of rounds 1, 3 and 4 in the kb-loop worktree.")
+
+
+def slide_checks(prs):
+    s = blank(prs)
+    title(s, "Safety checks and pipeline fixes", 11)
+    cards = [
+        ("Calibration", "211", "known-bug cases re-run: 193 bug reports + 18 known negatives",
+         ["Caught 2 real bugs wrongly dismissed: ty#4841, mypy#7935",
+          "Fixed by narrowing the two rules",
+          "Hold-out moves like the tuning set"]),
+        ("Crash detection", "23 of 24", "crash findings now confirmed with a signature",
+         ["Before: 15 of 25 crash cases were left unlabelled for review",
+          "Fix: signals, pyright internal errors, no double count"]),
+    ]
+    cw, gap = 5.8, 0.3
+    for i, (head, big, cap, items) in enumerate(cards):
+        x = MARGIN + i * (cw + gap)
+        rect(s, x, 1.5, cw, 5.1, fill=LIGHT)
+        rect(s, x, 1.5, cw, 0.08, fill=ACCENT)
+        text(s, x + 0.2, 1.75, cw - 0.4, 0.5, head, size=24, bold=True, color=ACCENT)
+        text(s, x + 0.2, 2.3, cw - 0.4, 1.1, big, size=54, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+        text(s, x + 0.2, 3.45, cw - 0.4, 0.7, cap, size=18, color=GREY)
+        text(s, x + 0.2, 4.4, cw - 0.4, 2.1, [("\u2022  " + t) for t in items], size=18, space=8)
+    notes(s, "Safety checks: we re-ran 211 calibration cases, 193 known bug reports and 18 known negatives. The first pass newly dismissed two real bugs, ty 4841 and mypy 7935, because of our own new rules. We narrowed both rules and re-checked. "
+             "The hold-out set shrank by about the same amount as the tuning set, so there is no sign of overfitting. "
+             "Crash detection: before the fix, 15 of 25 crash cases sat in review as unlabelled. After the fix, 23 of 24 crash findings are confirmed with a signature.")
+
+
+def bug_card(s, x, w, ref, link, ttl, status, code, symptom, code_h, card_h=5.4):
+    rect(s, x, 1.45, w, card_h, fill=WHITE, line=MID, lw=1.0)
+    rect(s, x, 1.45, w, 0.08, fill=ACCENT)
+    text(s, x + 0.2, 1.6, w - 0.4, 0.45, [(ref, {"link": link})], size=22, bold=True, color=ACCENT)
+    text(s, x + 0.2, 2.07, w - 0.4, 0.85, ttl, size=16, bold=True)
+    text(s, x + 0.2, 2.9, w - 0.4, 0.35, status, size=14, color=GREY)
+    code_block(s, x + 0.2, 3.3, w - 0.4, code_h, code)
+    text(s, x + 0.2, 3.3 + code_h + 0.1, w - 0.4, 6.75 - (3.3 + code_h + 0.1), symptom, size=14)
+
+
+def slide_bugs_mypy(prs):
+    s = blank(prs)
+    title(s, "First bug candidates: mypy", 12)
+    cw, gap = 5.8, 0.3
+    bug_card(s, MARGIN, cw, "python/mypy#22343", "https://github.com/python/mypy/issues/22343",
+             "Segfault on a type alias that refers to itself through another generic alias",
+             "Filed, open, label: crash, no replies yet",
+             ["type Meta[T] = type[T]", "type X = Meta[X]"],
+             "Compiled mypy 2.4.x segfaults (exit 139). Uncompiled master raises RecursionError. "
+             "Expected: an error, as for type A = A.", 1.0, 4.2)
+    bug_card(s, MARGIN + cw + gap, cw, "python/mypy#22344", "https://github.com/python/mypy/issues/22344",
+             "Segfault on a class parameterised by a TypeVar whose default is itself",
+             "Filed, open, label: crash, no replies yet",
+             ["from typing import Generic, TypeVar",
+              "T = TypeVar(\"T\", default=\"T\")",
+              "class C(Generic[T]): ..."],
+             "Compiled mypy 2.4.0 and 2.4.1 segfault. Uncompiled master raises RecursionError. "
+             "Expected: an error about a cyclic default.", 1.3, 4.2)
+    notes(s, "Two mypy crash reports we filed. 22343: a type alias that refers to itself through another generic alias makes compiled mypy segfault. "
+             "22344: a TypeVar whose default is itself makes compiled mypy segfault when used as a class parameter. "
+             "Both are open with no replies, and neither is confirmed by a maintainer yet. Status was read from the GitHub API.")
+
+
+def slide_bugs_ty(prs):
+    s = blank(prs)
+    title(s, "First bug candidates: ty", 13)
+    cw, gap = 5.8, 0.3
+    bug_card(s, MARGIN, cw, "astral-sh/ty#4882", "https://github.com/astral-sh/ty/issues/4882",
+             "Stack overflow on two generic protocols with a self-referential method",
+             "Filed, open, labels: bug, fatal, protocols, no replies yet",
+             ["T1 = TypeVar(\"T1\", covariant=True)",
+              "T2 = TypeVar(\"T2\")",
+              "class P1(Protocol[T1]):",
+              "    def b(self) -> int: ...",
+              "    def a(self, other: \"P1[T2]\") -> T1: ...",
+              "class P2(Protocol[T1]):",
+              "    def a(self, other: \"P1[T2] | P2[T2]\") -> T1: ..."],
+             "ty 0.0.95 aborts with a stack overflow (exit 134). No call needed.", 2.45)
+    bug_card(s, MARGIN + cw + gap, cw, "astral-sh/ty#4883", "https://github.com/astral-sh/ty/issues/4883",
+             "Exponential time comparing values of the same deeply nested tuple type",
+             "Filed, open, label: performance, no replies yet",
+             ["type T0 = tuple[int]",
+              "type T1 = tuple[T0, T0]   # ... up to T20",
+              "def compare(a: T20, b: T20) -> bool:",
+              "    return a < b"],
+             "ty 0.0.95: each level doubles the time, depth 20 takes 11.1 s. "
+             "mypy 2.4.1 checks depth 32 in 0.11 s.", 1.55)
+    notes(s, "Two ty reports we filed. 4882: two generic protocols with a self-referential method make ty abort with a stack overflow, with no call or assignment needed. "
+             "4883: comparing two values of the same nested tuple type takes time exponential in the depth, about 11 seconds at depth 20. "
+             "Both are open with no replies, so neither is confirmed by a maintainer. Status was read from the GitHub API.")
+
+
+def slide_found(prs):
+    s = blank(prs)
+    title(s, "How we found them", 14)
+    flow_row(s, MARGIN, 1.45, ["Run seed corpus", "Checker crash or hang flagged", "Reproduce 3x, pinned versions",
+                               "Re-run on newest versions", "Shrink to minimal repro", "Search trackers, then file"],
+             h=0.95, size=14)
+    rows = [
+        ["Issue", "Tool", "Symptom", "Seed program(s)", "Source suite"],
+        ["mypy#22343", "mypy", "Segfault (exit -11)",
+         "ty__call__type__5.py, ty__call__type__4.py", "ruff/ty mdtest (call/type.md)"],
+        ["mypy#22344", "mypy", "Segfault (exit -11)",
+         "pyright__typeVarDefaultTypeAlias2.py, pyright__typeVarDefaultClass2.py", "pyright samples"],
+        ["ty#4882", "ty", "Stack overflow (exit -6)",
+         "mypy__check_protocols__testTwoUncomfortably\u2026Issue9771.py", "mypy check-protocols tests"],
+        ["ty#4883", "ty", "Timeout (exponential time)",
+         "pyright__tupleComparisonResource_deep_nonbool.py, \u2026_repeated_nested_types.py", "pyright samples"],
+    ]
+    grid(s, MARGIN, 2.65, [1.6, 0.7, 2.1, 5.2, 2.33], rows, size=14, rowh=0.85, head_h=0.45)
+    text(s, MARGIN, 6.55, SW - 2 * MARGIN, 0.4,
+         "All four came from the round-1 crash/hang detection of the deterministic stage.",
+         size=14, color=GREY)
+    notes(s, "All four bugs came from the same first run of 6,089 seed programs. The deterministic stage flagged a checker crash or hang. "
+             "We reproduced it three times on the pinned versions, re-ran on the newest versions, shrank it to a minimal repro, searched the trackers and filed. "
+             "The two mypy segfaults trace to ruff and ty mdtests and to pyright samples. The ty stack overflow traces to a mypy check-protocols test. "
+             "The ty exponential time report traces to two pyright tuple comparison stress samples. The filed repros are reduced versions of those programs.")
+
+
+def slide_eval1(prs):
+    s = blank(prs)
+    title(s, "Evaluation plan: what we measure", 15)
+    rows = [
+        ["Metric", "Status"],
+        ["Programs run and disagreements found", "Now"],
+        ["Funnel: disagreements \u2192 review \u2192 candidates \u2192 confirmed \u2192 filed \u2192 acknowledged", "Up to filed"],
+        ["Share closed automatically, by knowledge-base category", "Now"],
+        ["Precision of dismissals: calibration and hold-out", "Now"],
+        ["Recall on known bug reports (193 positives)", "Now"],
+        ["Yield per mutation operator, judge precision (known negatives such as ty#4656), time to first bug", "Later (needs LLM)"],
+    ]
+    cy = 1.5
+    for ri, (m, st) in enumerate(rows):
+        head = ri == 0
+        h = 0.5 if head else (0.95 if ri in (2, 6) else 0.7)
+        rect(s, MARGIN, cy, 9.1, h, fill=ACCENT if head else (LIGHT if ri % 2 == 0 else WHITE), line=None if head else MID, lw=0.75)
+        text(s, MARGIN + 0.1, cy, 8.9, h, [(m, {"bold": head, "color": WHITE if head else NAVY})], size=16, anchor=MSO_ANCHOR.MIDDLE)
+        chip_fill = ACCENT if st == "Now" else (WHITE if st == "Up to filed" else LIGHT)
+        if head:
+            rect(s, MARGIN + 9.1, cy, SW - 2 * MARGIN - 9.1, h, fill=ACCENT)
+            text(s, MARGIN + 9.1, cy, SW - 2 * MARGIN - 9.1, h, [(st, {"bold": True, "color": WHITE})], size=16,
+                 anchor=MSO_ANCHOR.MIDDLE, align=PP_ALIGN.CENTER)
+        else:
+            rect(s, MARGIN + 9.1, cy, SW - 2 * MARGIN - 9.1, h, fill=WHITE, line=MID, lw=0.75)
+            c = rect(s, MARGIN + 9.2, cy + h / 2 - 0.2, SW - 2 * MARGIN - 9.3, 0.4, fill=chip_fill,
+                     line=ACCENT if st == "Up to filed" else None, shape=MSO_SHAPE.ROUNDED_RECTANGLE, lw=1.5)
+            c.adjustments[0] = 0.5
+            fill_tf(c.text_frame, st, size=14, bold=True,
+                    color=WHITE if st == "Now" else (ACCENT if st == "Up to filed" else GREY),
+                    align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, inset=0.02)
+        cy += h
+    notes(s, "These are the metrics we will report. Volume, the share of disagreements closed automatically, precision of dismissals through calibration and the hold-out, and recall on known bug reports are measured now. "
+             "The funnel is measured up to filed issues; acknowledgement by maintainers is still open. "
+             "Per-mutation-operator yield, judge precision on known negatives such as ty 4656, and time to first bug need the LLM stage, so they come later.")
+
+
+def slide_eval2(prs):
+    s = blank(prs)
+    title(s, "Evaluation plan: limits and next steps", 16)
+    cards = [
+        ("Baselines and threats", [
+            "Bugs where both tools agree are invisible: 51 of 156 known bugs",
+            "Test-suite seeds mostly give known or intended differences",
+            "Pinned: ty 0.0.84, mypy 2.4.0, pyright 1.1.414, Python 3.13",
+            "Newer releases already fix some crashes"]),
+        ("Next steps", [
+            "LLM mutation + judge pilot on 100 to 200 programs",
+            "Better seed sources",
+            "Metamorphic oracles"]),
+    ]
+    cw, gap = 5.8, 0.3
+    for i, (head, items) in enumerate(cards):
+        x = MARGIN + i * (cw + gap)
+        rect(s, x, 1.45, cw, 4.4, fill=LIGHT)
+        rect(s, x, 1.45, cw, 0.08, fill=ACCENT)
+        text(s, x + 0.2, 1.65, cw - 0.4, 0.5, head, size=22, bold=True, color=ACCENT)
+        text(s, x + 0.2, 2.45, cw - 0.4, 4.0, [("\u2022  " + t) for t in items], size=18, space=10)
+    notes(s, "Threats: differential testing cannot see bugs where both tools are wrong in the same way; in our calibration set that is 51 of 156 known bugs. "
+             "Most test-suite seeds yield known or intended differences. Results depend on pinned versions: ty 0.0.84, mypy 2.4.0, pyright 1.1.414 and Python 3.13, and some crashes are already fixed in newer releases. "
+             "Next steps: a pilot of LLM mutation plus the judge on 100 to 200 programs, better seed sources, and metamorphic oracles.")
+
+
+SLIDES = [slide_title, slide_problem, slide_motivation, slide_arch, slide_plan, slide_updates, slide_outcomes,
+          slide_outline, slide_setup, slide_results, slide_checks, slide_bugs_mypy,
+          slide_bugs_ty, slide_found, slide_eval1, slide_eval2]
 
 
 def main():

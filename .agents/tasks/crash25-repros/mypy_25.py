@@ -1,0 +1,3 @@
+from typing import Generic, ParamSpec, TypeVar, TypeVarTuple, Unpack
+T5 = TypeVar("T5", default="T5")
+class ClassE(Generic[T5]): ...
