@@ -309,6 +309,28 @@ Branch: `campaign/day2-p1` (local, not pushed).
 
 Target (> 50 %): not met on either set.
 
-Commit list: see the final message of the stage and `git log --oneline main..campaign/day2-p1`.
+Commit list (`git log --oneline main..campaign/day2-p1`, oldest at the bottom; the last commit adds this list to the report):
+
+```
+4055e85 docs: day-2 P1 final run report
+5c4a525 chore: add remaining campaign/tmp helper scripts and probe outputs
+1e860b7 docs: add reviewer verdicts and review docs for rounds 1-3, round-1 run markers
+528bd1a docs: log stage 3 round 3 ...
+d924841 feat: REVEAL-ERROR-RECOVERY also covers a gradual reveal through a name the same tool flagged at its binding
+a4147b3 fix: NameError on a flagged name is strong evidence in both code paths ...
+10dd9b1 fix: stale-alias guard for MYPY-13807, pyright-independent REVEAL-ERROR-RECOVERY negative, ...
+13aae01 docs: log stage 3 round 2 ...
+69f5ff6 fix: REVEAL-ERROR-RECOVERY never dismisses a statement CPython raised on (any exception type)
+ba8fbe0 feat: MYPY-13807-ALIASED-CONDITIONS KB entry
+1b708d4 fix: typenorm treats intersections, LiteralString, type[X] and Never as refinements
+9456642 feat: REVEAL-ERROR-RECOVERY KB entry
+c1d243b fix: close the constant-fold hole in assert_type retention, require pyright agreement, ...
+d479c03 docs: log stage 3 round 1 ...
+0cd8539 docs: cite the conformance suite's 'either is acceptable' note in ASSERT-TYPE-LITERAL-RETENTION
+fbf9b12 feat: KB entries for assert_type literal retention and mypy first-assignment typing; ...
+d171b92 fix: normalise bytes literal spelling and add literal-retention helper in typenorm
+b4bf9e8 docs: log stage 2 corpus run and split baselines
+7f2969d chore: stage 1 setup and day 1 run log
+```
 
 Report path: `/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day2-run-report.md`
