@@ -1,0 +1,12 @@
+findings 108 programs 61
+38 ('tainted', 'reveal_mismatch', 'no-raise') ty__exception__control_flow__89.py:L10 undef=['could_raise_returns_A', 'could_raise_returns_B', 'could_raise_returns_C']
+20 ('direct', 'only_mypy', 'no-raise') ty__scopes__class_implicit_attrs__1.py:L4 undef=['__firstlineno__']
+18 ('tainted', 'only_mypy', 'no-raise') ty__type_properties__constraints__72.py:L6 undef=['ConstraintSet']
+12 ('direct', 'only_ty', 'no-raise') pyright__typeCheckOnly1.py:L13 undef=['ellipsis', 'function']
+6 ('direct', 'reveal_mismatch', 'no-raise') ty__scopes__class_implicit_attrs__1.py:L4 undef=['__firstlineno__']
+4 ('tainted', 'only_ty', 'no-raise') mypy__check_newsemanal__testNewAnalyzerTypeVarForwardReferenceErrors.py:L7 undef=['asdf']
+4 ('direct', 'only_mypy', 'raised') ty__suppressions__blanket_ignore__3.py:L6 undef=['unresolved']
+3 ('direct', 'only_ty', 'raised') mypy__check_errorcodes__testErrorCodeIgnoreWithExtraSpace.py:L3 undef=['x', 'x2', 'x3']
+1 ('direct', 'concern_mismatch', 'no-raise') ty__suppressions__no_type_check__10.py:L8 undef=['x']
+1 ('tainted', 'concern_mismatch', 'raised') mypy__check_selftype__testSelfTypeTrickyExample.py:L11 undef=['Generic', 'TypeVar']
+1 ('tainted', 'concern_mismatch', 'no-raise') ty__bidirectional__74.py:L20 undef=['f']

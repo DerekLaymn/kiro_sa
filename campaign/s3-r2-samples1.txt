@@ -1,0 +1,204 @@
+######## gradual
+623 matches
+--- seeds/harvested/enums_literals/ty__enums__154.py D1 L7  runtime=success None
+    5: Big = Enum("Big", "A B", start=9223372036854775807)
+    6: 
+    7: reveal_type(Big.A.value)  # revealed: Literal[9223372036854775807]
+    mypy: L7 [None] Any
+    ty: L7 [revealed-type] Literal[9223372036854775807]
+    pyright: L7 [None] Literal[1]
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__call__type__83.py D3 L15  runtime=success None
+    13:     Reversed = type("Reversed", (Right, Left), {})  # error: [conflicting-metaclass]
+    14: 
+    15:     reveal_type(Combined.__class__)  # revealed: type[Unknown]
+    mypy: L15 [None] type[type]
+    ty: L15 [revealed-type] type[Unknown]
+    pyright: L15 [None] property
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/generics_variance/ty__generics__pep695__variables__23.py D1 L12  runtime=exception TypeError
+    10:     c: Positive[int],
+    11: ):
+    12:     reveal_type(a)  # revealed: Unknown
+    mypy: L12 [None] T
+    ty: L12 [revealed-type] Unknown
+    pyright: L12 [None] Unknown
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_classes__testSupportForwardUnionOfNewTypes.py D3 L5  runtime=exception NameError
+    3: from typing import Union, NewType
+    4: x: Node
+    5: reveal_type(x.x) # N: Revealed type is "builtins.int"
+    mypy: L5 [None] int
+    ty: L5 [revealed-type] Unknown
+    pyright: L5 [None] Unknown
+    pyright: L5 [reportUnboundVariable] "x" is unbound
+    pyright: L5 [reportAttributeAccessIssue] Cannot access attribute "x" for class "Unbound"
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_python312__testPEP695UpperBoundForwardReference2.py D3 L11  runtime=exception NameError
+    9: a: C[D]
+    10: b: C[E]
+    11: reveal_type(a)  # N: Revealed type is "__main__.C[__main__.D]"
+    mypy: L11 [None] case.C[case.D]
+    ty: L11 [revealed-type] Unknown
+    pyright: L11 [None] Unbound
+    pyright: L11 [reportUnboundVariable] "a" is unbound
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_python312__testPEP695UpperBoundForwardReference3.py D3 L14  runtime=exception NameError
+    12: a: C[D[X]]
+    13: b: C[E[X]]
+    14: reveal_type(a)  # N: Revealed type is "__main__.C[__main__.D[__main__.X]]"
+    mypy: L14 [None] case.C[case.D[case.X]]
+    ty: L14 [revealed-type] Unknown
+    pyright: L14 [None] Unbound
+    pyright: L14 [reportUnboundVariable] "a" is unbound
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/enums_literals/ty__enums__145.py D1 L8  runtime=success None
+    6:     Color = Enum("Color", "RED GREEN", start=n)
+    7: 
+    8:     reveal_type(Color.RED.value)  # revealed: int
+    mypy: L8 [None] Any
+    ty: L8 [revealed-type] int
+    pyright: L8 [None] Literal[1]
+    hints=['ORIGIN-ORACLE-REVEAL', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/typevartuple_unpack/ty__unpacking__75.py D3 L6  runtime=exception ValueError
+    4: a, b = "abc"
+    5: reveal_type(a)  # revealed: Unknown
+    6: reveal_type(b)  # revealed: Unknown
+    mypy: L6 [None] str
+    ty: L6 [revealed-type] Unknown
+    pyright: L6 [None] LiteralString
+    hints=['ORIGIN-ORACLE-NOTE']
+######## different
+558 matches
+--- seeds/harvested/constructors_metaclasses/ty__call__constructor__42.py D2 L13  runtime=exception NotImplementedError
+    11: 
+    12: # `__init__` is skipped because `__new__` never returns.
+    13: reveal_type(NewNeverReturns())  # revealed: Never
+    mypy: L13 [None] case.NewNeverReturns
+    ty: L13 [revealed-type] Never
+    pyright: L13 [None] Never
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__bidirectional__24.py D14 L22  runtime=success None
+    20: 
+    21: def _(x6: list[dict[str, list[int] | int] | dict[str, list[int]]]):
+    22:     x6.append(reveal_type({"b": 1}))  # revealed: dict[str, list[int] | int]
+    mypy: L22 [None] dict[str, int]
+    ty: L22 [revealed-type] dict[str, list[int] | int]
+    pyright: L22 [None] dict[str, list[int] | int]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/constructors_metaclasses/ty__call__constructor__76.py D4 L15  runtime=success None
+    13: class Child(Base): ...
+    14: 
+    15: reveal_type(Base(1))  # revealed: int
+    mypy: L15 [None] case.Base
+    ty: L15 [revealed-type] int
+    pyright: L15 [None] int
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__assignment__augmented__3.py D4 L9  runtime=success None
+    7: x = C()
+    8: x -= 1
+    9: reveal_type(x)  # revealed: str
+    mypy: L9 [None] case.C
+    ty: L9 [revealed-type] str
+    pyright: L9 [None] str
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__call__new_class__0.py D3 L15  runtime=success None
+    13: 
+    14: # With multiple base classes
+    15: reveal_type(types.new_class("Baz", (Base, Mixin)))  # revealed: <class 'Baz'>
+    mypy: L15 [None] type
+    ty: L15 [revealed-type] <class 'Baz'>
+    pyright: L15 [None] type
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/tuples_unpacking/ty__type_compendium__tuple__29.py D3 L8  runtime=success None
+    6: 
+    7: source = (*[(first := 1), first], (last := "two"), last)
+    8: reveal_type(source)  # revealed: tuple[Literal[1], Literal[1], Literal["two"], Literal["two"]]
+    mypy: L8 [None] tuple[object, ...]
+    ty: L8 [revealed-type] tuple[Literal[1], Literal[1], Literal["two"], Literal["two"]]
+    pyright: L8 [None] tuple[*tuple[int, ...], Literal['two'], Literal['two']]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__class__slots__5.py D1 L6  runtime=exception NameError
+    4:     __slots__ = ()
+    5: 
+    6: reveal_type(SlottedChild.__dict__)  # revealed: dict[str, Any]
+    mypy: L6 [None] types.MappingProxyType[str, Any]
+    ty: L6 [revealed-type] dict[str, Any] & Unknown
+    pyright: L6 [None] dict[str, Any]
+    hints=['ORIGIN-MISMATCH']
+--- seeds/harvested/enums_literals/ty__literal__string__10.py D5 L9  runtime=success None
+    7: reveal_type("a\ufe0f")  # revealed: Literal["a\ufe0f"]
+    8: reveal_type("a\U000e0100")  # revealed: Literal["a\U000e0100"]
+    9: reveal_type("a\u200b")  # revealed: Literal["a\u200b"]
+    mypy: L9 [None] Literal['a\u200b']?
+    ty: L9 [revealed-type] Literal["a\u{200b}"]
+    pyright: L9 [None] Literal['a​']
+    hints=['ORIGIN-MISMATCH']
+######## uncomparable
+444 matches
+--- seeds/harvested/gradual_any/ty__call__functools_partial__87.py D1 L9  runtime=success None
+    7: 
+    8: p = partial(f, b="hello", d=True)
+    9: reveal_type(p)  # revealed: partial[(a: int, *, b: str = "hello", c: float, d: bool = True) -> int]
+    mypy: L9 [None] functools.partial[int]
+    ty: L9 [revealed-type] partial[(a: int, *, b: str = "hello", c: float, d: bool = True) -> int]
+    pyright: L9 [None] partial[int]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/enums_literals/ty__enums__134.py D4 L8  runtime=success None
+    6:     # error: [mismatched-type-name]
+    7:     result = Enum(name.title(), "RED BLUE", module=__name__)
+    8:     reveal_type(result)  # revealed: type[Enum]
+    mypy: L8 [None] def (value: object) -> case.result@7
+    ty: L8 [revealed-type] type[Enum]
+    pyright: L8 [None] Enum
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/generics_variance/ty__generics__pep695__variables__21.py D3 L10  runtime=success None
+    8: 
+    9: def g[S]():
+    10:     reveal_type(S.__constraints__)  # revealed: tuple[()]
+    mypy: L10 [None] tuple[Any, ...]
+    ty: L10 [revealed-type] tuple[()]
+    pyright: L10 [None] tuple[Any, ...]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/callables/mypy__check_unions__testSimplifyUnionWithCallable.py D11 L21  runtime=exception NameError
+    19: # TODO: Test argument names and kinds once we have flexible callable types.
+    20: 
+    21: reveal_type(u(D_C, D_C)) # N: Revealed type is "def (__main__.D) -> __main__.C"
+    mypy: L21 [None] def (case.D) -> case.C
+    ty: L21 [revealed-type] Unknown
+    pyright: L21 [None] Unknown
+    pyright: L21 [reportUnboundVariable] "D_C" is unbound
+    pyright: L21 [reportUnboundVariable] "D_C" is unbound
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/generics_variance/mypy__check_classes__testGenericClassWithinFunction.py D1 L16  runtime=success None
+    14:             reveal_type(x.returns_int())  # N: Revealed type is "builtins.int"
+    15:             return foo
+    16:     reveal_type(Foo.bar)  # N: Revealed type is "def [T <: __main__.Foo@5] (self: __main__.Foo@5, foo: T`1) -> T`1"
+    mypy: L16 [None] def [T <: case.Foo@7] (self: case.Foo@7, foo: T) -> T
+    ty: L16 [revealed-type] def bar[T](self, foo: T) -> T
+    pyright: L16 [None] (self: Foo, foo: T@bar) -> T@bar
+    hints=['ORIGIN-MISMATCH']
+--- seeds/harvested/gradual_any/ty__class__super__8.py D3 L10  runtime=success None
+    8: 
+    9:     reveal_type(super(x, x))  # revealed: <super: Unknown, Unknown>
+    10:     reveal_type(super(A, x))  # revealed: <super: <class 'A'>, Unknown>
+    mypy: L10 [None] super
+    ty: L10 [revealed-type] <super: <class 'A'>, Unknown>
+    pyright: L10 [None] object
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__doc__public_type_undeclared_symbols__1.py D9 L54  runtime=success None
+    52: 
+    53: def check_final_typevar(response: type[TFinal]) -> None:
+    54:     reveal_type(response.response_class)  # revealed: <class 'Response'>
+    mypy: L54 [None] def () -> case.Response
+    ty: L54 [revealed-type] <class 'Response'>
+    pyright: L54 [None] type[Response]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/typevartuple_unpack/ty__generics__legacy__typevartuple__30.py D7 L21  runtime=exception TypeError
+    19: def forward(a: Callback[int, Q], b: Callback[str, Concatenate[int, Q]]) -> None:
+    20:     reveal_type(a.fn)  # revealed: (**Q@forward) -> tuple[int]
+    21:     reveal_type(b.fn)  # revealed: (int, /, *args: Q@forward.args, **kwargs: Q@forward.kwargs) -> tuple[str]
+    mypy: L21 [None] def (int, *Q.args, **Q.kwargs) -> tuple[str]
+    ty: L21 [revealed-type] (int, /, *args: Q@forward.args, **kwargs: Q@forward.kwargs) -> tuple[str]
+    pyright: L21 [None] (bool) -> tuple[str, Concatenate[int, Q@forward]]
+    hints=['ORIGIN-ORACLE-NOTE']

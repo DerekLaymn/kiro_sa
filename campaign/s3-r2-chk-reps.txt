@@ -1,0 +1,58 @@
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/tmp/r2rep/rec.py
+--- source
+     1	def f() -> None:
+     2	    x: int
+     3	    reveal_type(x)
+--- mypy
+case.py:3:17: note: Revealed type is "int"
+--- ty
+case.py:3:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:3:17: error[unresolved-reference] Name `x` used when not defined
+case.py:3:17: info[revealed-type] Revealed type: `Unknown`
+Found 3 diagnostics
+--- pyright
+/tmp/s3chk.16zANN/case.py
+  /tmp/s3chk.16zANN/case.py:3:17 - information: Type of "x" is "Unbound"
+  /tmp/s3chk.16zANN/case.py:3:17 - error: "x" is unbound (reportUnboundVariable)
+1 error, 0 warnings, 1 information
+--- cpython
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/tmp/r2rep/intlit.py
+--- source
+     1	a = 0
+     2	b: A
+     3	if int():
+     4	    b = 1
+     5	if int():
+     6	    a = 1
+     7	class A:
+     8	    pass
+--- mypy
+case.py:4:9: error: Incompatible types in assignment (expression has type "int", variable has type "A")  [assignment]
+--- ty
+case.py:2:4: error[unresolved-reference] Name `A` used when not defined
+Found 1 diagnostic
+--- pyright
+/tmp/s3chk.JrCTCv/case.py
+  /tmp/s3chk.JrCTCv/case.py:2:4 - error: "A" is not defined (reportUndefinedVariable)
+1 error, 0 warnings, 0 informations
+--- cpython
+  File "/tmp/s3chk.JrCTCv/case.py", line 2, in <module>
+    b: A
+       ^
+NameError: name 'A' is not defined. Did you mean: 'a'?
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/tmp/r2rep/tupcmp.py
+--- source
+     1	from typing import assert_type
+     2	
+     3	
+     4	def f(left: tuple[int, str], right: tuple[int, str]) -> None:
+     5	    assert_type(left < right, bool)
+     6	
+     7	
+     8	f((1, "a"), (2, "b"))
+--- mypy
+--- ty
+All checks passed!
+--- pyright
+0 errors, 0 warnings, 0 informations
+--- cpython

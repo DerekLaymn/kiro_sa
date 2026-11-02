@@ -1,0 +1,39 @@
+..............FF...                                                      [100%]
+=================================== FAILURES ===================================
+____________________ test_aliased_condition_positive_forms _____________________
+
+    def test_aliased_condition_positive_forms():
+>       assert ahit(*alias_case(ALIAS_SRC, 4, 21))
+
+tests/test_stage3_round2.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+src = 'def f(x: int | None) -> None:\n    is_none = x is None\n    if is_none:\n        reveal_type(x)\n'
+line = 4, col = 21, rel_name = 'ty_more_precise'
+
+    def alias_case(src, line, col, rel_name="ty_more_precise"):
+>       ty = Diagnostic(Tool.TY, line, col, Severity.INFO, "revealed-type", "", revealed_type="None")
+E       AttributeError: type object 'Severity' has no attribute 'INFO'
+
+tests/test_stage3_round2.py:244: AttributeError
+_______________________ test_aliased_condition_negatives _______________________
+
+    def test_aliased_condition_negatives():
+        # inline condition: no alias involved
+>       assert not ahit(*alias_case("def f(x: int | None) -> None:\n    if x is None:\n        reveal_type(x)\n", 3, 21))
+
+tests/test_stage3_round2.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+src = 'def f(x: int | None) -> None:\n    if x is None:\n        reveal_type(x)\n'
+line = 3, col = 21, rel_name = 'ty_more_precise'
+
+    def alias_case(src, line, col, rel_name="ty_more_precise"):
+>       ty = Diagnostic(Tool.TY, line, col, Severity.INFO, "revealed-type", "", revealed_type="None")
+E       AttributeError: type object 'Severity' has no attribute 'INFO'
+
+tests/test_stage3_round2.py:244: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_stage3_round2.py::test_aliased_condition_positive_forms - A...
+FAILED tests/test_stage3_round2.py::test_aliased_condition_negatives - Attrib...
+2 failed, 17 passed in 14.65s

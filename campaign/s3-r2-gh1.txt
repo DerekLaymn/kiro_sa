@@ -1,0 +1,28 @@
+### --repo python/mypy used-before-def annotation
+### --repo python/mypy variable annotated but never assigned no error
+### --repo python/mypy declared but not defined
+### --repo python/mypy x: int print(x) NameError
+open https://github.com/python/mypy/issues/17373 possibly-undefined false negative for variable annotation
+open https://github.com/python/mypy/issues/18525 Should a method name shadow outer names when quoted or with PEP563?
+open https://github.com/python/mypy/issues/18708 mypy reports no issues on access of conditionally available fields
+closed https://github.com/python/mypy/issues/1693 Document why having a union return type is often a problem
+closed https://github.com/python/mypy/issues/2608 Inner method discards type narrowing done in outer method
+closed https://github.com/python/mypy/issues/11342 False negative: "Name not defined" error should be reported when variable is declared with a type annotation but not assigned to before use
+closed https://github.com/python/mypy/issues/1174 Mypy errors with variable reuse with different types
+closed https://github.com/python/mypy/issues/3573 Incorrect scoping of variable in generator in Python 2
+### --repo python/mypy uninitialized variable
+open https://github.com/python/mypy/issues/15416 Mypy not reporting "undefined" variable.
+### --repo astral-sh/ty unresolved-reference annotation only declaration
+### --repo python/mypy possibly-undefined
+open https://github.com/python/mypy/issues/14310 [possibly-undefined] Track conditional assignment
+open https://github.com/python/mypy/issues/17373 possibly-undefined false negative for variable annotation
+open https://github.com/python/mypy/issues/16050 --possibly-undefined misses for-loop conditional definitions
+open https://github.com/python/mypy/issues/15838 `possibly-undefined` false positive with `global` statement inside `if`
+open https://github.com/python/mypy/issues/14830 Possibly-undefined: allow assertions on the lengths of sequences
+open https://github.com/python/mypy/issues/17387 possibly-undefined not catching unbound variable in try/finally block
+open https://github.com/python/mypy/issues/17664 False negative: Context manager which suppresses errors doesn't trigger `[possibly-undefined]`
+open https://github.com/python/mypy/issues/17837 False negative: potentially unbound instance attribute doesn't trigger `possibly-undefined` error
+open https://github.com/python/mypy/issues/16992 `possibly-undefined` false positive when assigning variable for every case in match statement for all possible values
+open https://github.com/python/mypy/issues/17895 Declaration-order-dependent possibly-undefined false positive with nested ifs/matches, decorated any functions and NoReturn
+open https://github.com/python/mypy/issues/20348 `--disable-error-code=unused-ignore` should override `enable_error_code = ["unused-ignore"]`
+open https://github.com/python/mypy/issues/13926 Detect exhaustiveness in partially-defined variable checks

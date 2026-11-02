@@ -1,0 +1,103 @@
+--- mypy default
+case.py:52:21: note: Revealed type is "int"
+case.py:53:13: error: Incompatible types in assignment (expression has type "A", variable has type "int")  [assignment]
+case.py:54:21: note: Revealed type is "int"
+case.py:56:21: note: Revealed type is "int"
+case.py:57:13: error: Incompatible types in assignment (expression has type "B", variable has type "int")  [assignment]
+case.py:58:21: note: Revealed type is "int"
+case.py:59:13: error: Incompatible types in assignment (expression has type "C", variable has type "int")  [assignment]
+case.py:60:21: note: Revealed type is "int"
+case.py:62:21: note: Revealed type is "int"
+case.py:63:13: error: Incompatible types in assignment (expression has type "D", variable has type "int")  [assignment]
+case.py:64:21: note: Revealed type is "int"
+case.py:65:13: error: Incompatible types in assignment (expression has type "E", variable has type "int")  [assignment]
+case.py:66:21: note: Revealed type is "int"
+case.py:68:21: note: Revealed type is "int"
+case.py:69:13: error: Incompatible types in assignment (expression has type "F", variable has type "int")  [assignment]
+case.py:70:21: note: Revealed type is "int"
+case.py:71:13: error: Incompatible types in assignment (expression has type "G", variable has type "int")  [assignment]
+case.py:72:21: note: Revealed type is "int"
+case.py:75:21: note: Revealed type is "int"
+case.py:77:21: note: Revealed type is "int"
+case.py:78:17: note: Revealed type is "int"
+case.py:80:17: note: Revealed type is "int"
+case.py:81:9: error: Incompatible types in assignment (expression has type "H", variable has type "int")  [assignment]
+case.py:82:17: note: Revealed type is "int"
+case.py:83:9: error: Incompatible types in assignment (expression has type "I", variable has type "int")  [assignment]
+case.py:84:17: note: Revealed type is "int"
+case.py:86:17: note: Revealed type is "int"
+case.py:87:9: error: Incompatible types in assignment (expression has type "J", variable has type "int")  [assignment]
+case.py:88:17: note: Revealed type is "int"
+case.py:89:9: error: Incompatible types in assignment (expression has type "K", variable has type "int")  [assignment]
+case.py:90:17: note: Revealed type is "int"
+case.py:93:17: note: Revealed type is "int"
+case.py:97:13: note: Revealed type is "int"
+--- mypy --allow-redefinition
+case.py:52:21: note: Revealed type is "int"
+case.py:54:21: note: Revealed type is "case.A"
+case.py:56:21: note: Revealed type is "int | case.A"
+case.py:58:21: note: Revealed type is "case.B"
+case.py:60:21: note: Revealed type is "case.C"
+case.py:62:21: note: Revealed type is "int | case.A"
+case.py:64:21: note: Revealed type is "case.D"
+case.py:66:21: note: Revealed type is "case.E"
+case.py:68:21: note: Revealed type is "case.A"
+case.py:70:21: note: Revealed type is "case.F"
+case.py:72:21: note: Revealed type is "case.G"
+case.py:75:21: note: Revealed type is "int | case.A | case.B | case.C | case.D | case.E | case.F | case.G"
+case.py:77:21: note: Revealed type is "int"
+case.py:78:17: note: Revealed type is "int"
+case.py:80:17: note: Revealed type is "int | case.A | case.B | case.C | case.D | case.E | case.F | case.G"
+case.py:82:17: note: Revealed type is "case.H"
+case.py:84:17: note: Revealed type is "case.I"
+case.py:86:17: note: Revealed type is "int"
+case.py:88:17: note: Revealed type is "case.J"
+case.py:90:17: note: Revealed type is "case.K"
+case.py:93:17: note: Revealed type is "int | case.A | case.B | case.C | case.D | case.E | case.F | case.G | case.H | case.I | case.J | case.K"
+case.py:97:13: note: Revealed type is "case.I | case.K"
+--- ty
+case.py:52:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:52:21: info[revealed-type] Revealed type: `Literal[1]`
+case.py:54:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:54:21: info[revealed-type] Revealed type: `A`
+case.py:56:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:56:21: info[revealed-type] Revealed type: `Literal[1] | A`
+case.py:58:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:58:21: info[revealed-type] Revealed type: `B`
+case.py:60:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:60:21: info[revealed-type] Revealed type: `C`
+case.py:62:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:62:21: info[revealed-type] Revealed type: `Literal[1] | A`
+case.py:64:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:64:21: info[revealed-type] Revealed type: `D`
+case.py:66:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:66:21: info[revealed-type] Revealed type: `E`
+case.py:68:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:68:21: info[revealed-type] Revealed type: `A`
+case.py:70:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:70:21: info[revealed-type] Revealed type: `F`
+case.py:72:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:72:21: info[revealed-type] Revealed type: `G`
+case.py:75:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:75:21: info[revealed-type] Revealed type: `C | E | G`
+case.py:77:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:77:21: info[revealed-type] Revealed type: `Literal[2]`
+case.py:78:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:78:17: info[revealed-type] Revealed type: `Literal[2]`
+case.py:80:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:80:17: info[revealed-type] Revealed type: `Literal[1, 2] | A | B | C | D | E | F | G`
+case.py:82:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:82:17: info[revealed-type] Revealed type: `H`
+case.py:84:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:84:17: info[revealed-type] Revealed type: `I`
+case.py:86:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:86:17: info[revealed-type] Revealed type: `Literal[2]`
+case.py:88:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:88:17: info[revealed-type] Revealed type: `J`
+case.py:90:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:90:17: info[revealed-type] Revealed type: `K`
+case.py:93:5: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:93:17: info[revealed-type] Revealed type: `I | K`
+case.py:97:1: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:97:13: info[revealed-type] Revealed type: `I | K`
+Found 44 diagnostics

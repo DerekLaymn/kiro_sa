@@ -1,0 +1,8 @@
+hits 25 of only_mypy live 2062
+10 ('assignment', 'no-raise') mypy__check_generic_subtyping__testSubtypingAndInheritingNonGenericTypeFromGenericType.py:L11 ['ad', 'b']
+4 ('arg-type', 'no-raise') mypy__check_generic_subtyping__testInheritanceFromGenericWithImplicitDynamic.py:L17 ['c']
+3 ('operator', 'no-raise') ty__bidirectional__114.py:L16 ['x']
+3 ('misc', 'no-raise') mypy__check_selftype__testSelfTypeMutuallyExclusiveRestrictions.py:L9 ['self']
+2 ('attr-defined', 'no-raise') mypy__check_abstract__testReadWriteAbstractProperty.py:L5 ['a']
+2 ('valid-type', 'no-raise') pyright__sentinel2.py:L56 ['value']
+1 ('func-returns-value', 'no-raise') ty__doc__public_type_undeclared_symbols__6.py:L12 ['w']

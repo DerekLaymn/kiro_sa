@@ -1,0 +1,61 @@
+total 444 distinct 361
+6 | mypy: def () | ty: () -> None | pyright: (() -> None) | mypy__check_literal__testLambdaTernaryDoubleIndirectAttribute.py:L21
+6 | mypy: TypedDict(case.Payload, {'value': int}) | Literal['missing'] | ty: Literal["missing"] | pyright: Payload | Literal['missing'] | ty__narrow__conditionals__in__27.py:L24
+6 | mypy: def () -> case.Response | ty: type[Response] | pyright: type[Response] | ty__doc__public_type_undeclared_symbols__1.py:L14
+5 | mypy: def (case.D) -> case.C | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyUnionWithCallable.py:L21
+5 | mypy: def () -> int | ty: () -> Literal[0] | pyright: () -> Literal[0] | ty__assignment__multi_target__1.py:L5
+4 | mypy: Overload(def (x: int) -> int, def (x: str) -> str) | ty: Overload[(x: int) -> int, (x: str) -> str] | pyright: Overload[(x: int) -> int, (x: str) -> str] | ty__public_types__16.py:L17
+4 | mypy: def () -> case.X | ty: <class 'X'> | pyright: type[X] | mypy__check_newsemanal__testNewAnalyzerShadowOuterDefinitionBasedOnOrderSinglePass.py:L7
+4 | mypy: Overload(def [_T] () -> list[_T], def [_T] (typing.Iterable[_T]) -> list[_T]) | ty: <class 'list[str]'> | pyright: type[list[Unknown]] | ty__bidirectional__64.py:L11
+3 | mypy: functools.partial[bool] | ty: partial[(b: str, *, c: float = ...) -> bool] | pyright: partial[bool] | ty__call__functools_partial__89.py:L10
+3 | mypy: tuple[Any, ...] | ty: tuple[()] | pyright: tuple[Any, ...] | ty__generics__pep695__variables__21.py:L10
+3 | mypy: TypedDict(case.Record, {'value': int}) | ty: Record | pyright: Record | ty__bidirectional__9.py:L11
+3 | mypy: Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int) | Overload(def (object: object =) -> str, def (object: _collections_abc.Buffer, encoding: str =, errors: str =) -> str) | ty: <class 'int'> | <class 'str'> | pyright: type[int] | type[str] | ty__narrow__issubclass__29.py:L10
+3 | mypy: def (cls: case.M, x: int) -> int | ty: def m(cls, x: int) -> int | pyright: (x: int) -> int | mypy__check_classes__testMetaclassMemberAccessViaType.py:L13
+3 | mypy: def () -> case.Response | ty: <class 'Response'> | pyright: type[Response] | ty__doc__public_type_undeclared_symbols__1.py:L26
+2 | mypy: functools.partial[bool] | ty: partial[(*args: str) -> bool] | pyright: partial[bool] | ty__call__functools_partial__9.py:L9
+2 | mypy: Any | ty: (...) -> Unknown | pyright: () -> Unknown | ty__annotations__callable__12.py:L12
+2 | mypy: functools.partial[bool] | ty: partial[(a: int, b: str) -> bool] | pyright: partial[bool] | ty__call__functools_partial__90.py:L10
+2 | mypy: def (*Any, **Any) -> tuple[Any, ...] | ty: (...) -> tuple[int] | pyright: (bool) -> tuple[int, str] | ty__generics__pep695__typevartuple__9.py:L8
+2 | mypy: def (*list[int], **list[int]) -> tuple[()] | ty: (...) -> tuple[()] | pyright: (bool) -> tuple[list[int]] | ty__generics__pep695__typevartuple__9.py:L9
+2 | mypy: def (str) -> tuple[int] | ty: (...) -> tuple[int, Unknown] | pyright: (bool) -> tuple[int, Unknown] | ty__generics__pep695__typevartuple__9.py:L11
+2 | mypy: def (*Any, **Any) -> tuple[()] | ty: (...) -> tuple[()] | pyright: (bool) -> tuple[...] | ty__generics__pep695__typevartuple__9.py:L12
+2 | mypy: def (*Q.args, **Q.kwargs) -> tuple[int] | ty: (**Q@forward) -> tuple[int] | pyright: (bool) -> tuple[int, Q@forward] | ty__generics__pep695__typevartuple__9.py:L15
+2 | mypy: def (int, *Q.args, **Q.kwargs) -> tuple[str] | ty: (int, /, *args: Q@forward.args, **kwargs: Q@forward.kwargs) -> tuple[str] | pyright: (bool) -> tuple[str, Concatenate[int, Q@forward]] | ty__generics__pep695__typevartuple__9.py:L16
+2 | mypy: type[def () -> case.Base] | ty: <class 'Meta'> | pyright: type[type[Base]] | ty__type_of__generics__20.py:L31
+2 | mypy: functools.partial[bool] | ty: partial[(a: int, *, b: str = "hello") -> bool] | pyright: partial[bool] | ty__call__functools_partial__8.py:L9
+2 | mypy: super | ty: <super: <class 'bool'>, bool> | pyright: int | ty__class__super__10.py:L5
+2 | mypy: def (self: case.Outer.Inner) -> int | ty: def make_int(self) -> int | pyright: (self: Inner) -> int | mypy__check_classes__testAliasNestedClass.py:L9
+2 | mypy: def () -> int | ty: bound method B[int].meth() -> int | pyright: () -> int | mypy__check_generics__testGenericInnerClass.py:L9
+2 | mypy: types.ModuleType | ty: <module 'sys'> | pyright: Module("sys") | Module("typing") | ty__narrow__conditionals__eq__66.py:L10
+2 | mypy: types.ModuleType | ty: <module 'typing'> | pyright: Module("sys") | Module("typing") | ty__narrow__conditionals__eq__66.py:L12
+2 | mypy: functools.partial[None] | ty: partial[(*, distributions: Sequence[Literal["sdist", "wheel", "editable"]] = ...) -> None] | pyright: partial[None] | ty__call__functools_partial__50.py:L12
+2 | mypy: int | ty: def f() -> Unknown | pyright: () -> None | ty__shadowing__function__3.py:L8
+2 | mypy: int | ty: (def foo(param=...) -> Unknown) | <class 'Bar'> | pyright: ((param: A = could_raise_returns_A()) -> None) | type[Bar] | ty__exception__control_flow__94.py:L57
+2 | mypy: def (value: Any) -> Any | ty: (value: int) -> int | pyright: (value: Unknown) -> Unknown | ty__assignment__multi_target__5.py:L8
+2 | mypy: functools.partial[int] | ty: partial[() -> int] | pyright: partial[int] | ty__call__functools_partial__23.py:L9
+2 | mypy: Overload(def [_T] () -> list[_T], def [_T] (typing.Iterable[_T]) -> list[_T]) | ty: <class 'list'> | pyright: type[list[Unknown]] | ty__bidirectional__64.py:L24
+2 | mypy: def [Self] (cls: type[Self]) -> Self | ty: def __new__[Self](cls) -> Self | pyright: (cls: type[Self@object]) -> Self@object | ty__call__methods__84.py:L5
+2 | mypy: Overload(def [Self <: int] (type[Self], str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> Self, def [Self <: int] (type[Self], str | bytes | bytearray, base: typing.SupportsIndex) -> Self) | ty: Overload[[Self](cls, x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -> Self, [Self](cls, x: str | bytes | bytearray, /, base: SupportsIndex) -> Self] | pyright: Overload[(cls: type[Self@int], x: str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc = 0, /) -> Self@int, (cls: type[Self@int], x: str | bytes | bytearray, /, base: SupportsIndex) -> Self@int] | ty__call__methods__84.py:L8
+2 | mypy: def () | ty: Unknown | pyright: Unknown | mypy__check_super__testSuperWithAny.py:L7
+2 | mypy: functools.partial[bool] | ty: partial[(b: str) -> bool] | pyright: partial[bool] | ty__call__functools_partial__97.py:L10
+2 | mypy: TypedDict(case.Payload, {'value': int}) | Literal['missing'] | ty: Payload | Literal["missing"] | pyright: Payload | Literal['missing'] | ty__narrow__conditionals__in__31.py:L19
+2 | mypy: def (x: Any) -> Any | ty: (x) -> Unknown | pyright: (x: Unknown) -> Unknown | mypy__check_inference_context__testLambdaWithoutContext.py:L3
+2 | mypy: type[def (int) -> str] | ty: type[Unknown] | pyright: Unknown | ty__annotations__callable__49.py:L12
+2 | mypy: Any | ty: dict[str, list[(...) -> Unknown]] | pyright: Unknown | ty__bidirectional__62.py:L8
+2 | mypy: Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int) | Overload(def (object: object =) -> str, def (object: _collections_abc.Buffer, encoding: str =, errors: str =) -> str) | Overload(def (typing.Iterable[typing.SupportsIndex] | typing.SupportsIndex | typing.SupportsBytes | _collections_abc.Buffer) -> bytes, def (str, encoding: str, errors: str =) -> bytes, def () -> bytes) | ty: <class 'str'> | pyright: type[str] | ty__narrow__issubclass__5.py:L11
+2 | mypy: def (*Any, **Any) -> Any | ty: (...) -> Unknown | pyright: (...) -> Unknown | ty__annotations__callable__46.py:L9
+2 | mypy: Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int) | Overload(def (object: object =) -> str, def (object: _collections_abc.Buffer, encoding: str =, errors: str =) -> str) | Overload(def (typing.Iterable[typing.SupportsIndex] | typing.SupportsIndex | typing.SupportsBytes | _collections_abc.Buffer) -> bytes, def (str, encoding: str, errors: str =) -> bytes, def () -> bytes) | ty: <class 'int'> | pyright: type[int] | ty__narrow__issubclass__1.py:L7
+2 | mypy: Overload(def (str | _collections_abc.Buffer | typing.SupportsInt | typing.SupportsIndex | _typeshed.SupportsTrunc =) -> int, def (str | bytes | bytearray, base: typing.SupportsIndex) -> int) | Overload(def (object: object =) -> str, def (object: _collections_abc.Buffer, encoding: str =, errors: str =) -> str) | ty: <class 'str'> | pyright: type[<subclass of str and bytes>] | type[str] | ty__narrow__issubclass__0.py:L15
+2 | mypy: <Deleted 'e'> | ty: None | pyright: Unbound | None | ty__exception__basic__12.py:L24
+2 | mypy: def (str) -> str | ty: (x: str) -> str | pyright: (x: str) -> str | ty__bidirectional__86.py:L23
+2 | mypy: Literal[0] | bool | Literal[''] | Literal[b''] | None | tuple[()] | ty: Literal[0, False, "", b""] | None | tuple[()] | pyright: tuple[()] | Literal[0, False, '', b""] | None | ty__narrow__truthiness__1.py:L11
+2 | mypy: Literal[0] | Literal[-1] | bool | Literal[''] | Literal['foo'] | Literal[b''] | Literal[b'bar'] | None | tuple[()] | ty: Literal[0, -1, "", "foo", b"", b"bar"] | bool | None | tuple[()] | pyright: tuple[()] | bool | Literal[0, '', b"", -1, 'foo', b"bar"] | None | ty__narrow__truthiness__1.py:L24
+2 | mypy: Literal[0] | Literal[-1] | bool | Literal[''] | Literal['foo'] | Literal[b''] | Literal[b'bar'] | None | tuple[()] | ty: Literal[-1, 0, "foo", "", b"bar", b""] | bool | None | tuple[()] | pyright: tuple[()] | bool | Literal[-1, 'foo', b"bar", 0, '', b""] | None | ty__narrow__truthiness__1.py:L36
+1 | mypy: TypedDict(case.Record, {'values': list[float]}) | ty: Record | pyright: Record | ty__bidirectional__8.py:L11
+1 | mypy: def () -> case.InstanceResponse | ty: type[InstanceResponse] | pyright: type[InstanceResponse] | ty__doc__public_type_undeclared_symbols__2.py:L9
+1 | mypy: functools.partial[tuple[int, int]] | ty: partial[(b: int) -> tuple[int, int]] | pyright: partial[tuple[Any, Any]] | ty__call__functools_partial__27.py:L12
+1 | mypy: def (x: int) | ty: bound method C.f(x: int) -> None | pyright: (x: int) -> None | mypy__check_final__testFinalDefiningMeth.py:L8
+1 | mypy: Overload(def [T, S] (x: int, y: S) -> case.C[case.Int[S]], def [T, S] (x: str, y: S) -> case.C[case.Str[S]]) | ty: <class 'C'> | pyright: type[C[Unknown]] | mypy__check_generics__testOverloadedGenericInit.py:L19
+1 | mypy: (def (case.D) -> case.C) | (def (Any) -> case.C) | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyUnionWithCallable.py:L23
+1 | mypy: (def (Any) -> case.C) | (def (case.D) -> case.C) | ty: Unknown | pyright: Unknown | mypy__check_unions__testSimplifyUnionWithCallable.py:L24

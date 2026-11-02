@@ -1,0 +1,115 @@
+===== kb:REVEAL-ERROR-RECOVERY total 151 {'tuning': 113, 'holdout': 38} families {'mypy': 79, 'ty': 72}
+  raised-at-statement: 0  strong-bug-evidence: 0  runtime: {'exception:NameError': 70, 'success:None': 52, 'exception:TypeError': 12, 'exception:ValueError': 7, 'exception:AttributeError': 5}
+  - mypy__check_type_aliases__testNestedClassOnAliasAsType.py L19 [exception:NameError] 'reveal_type(x)  # N: Revealed type is "__main__.Out.In.Inner"'
+      ty='Unknown' mypy='case.Out.In.Inner' rel=gradual
+  - ty__exception__control_flow__56.py L15 [success:None] 'reveal_type(state)  # revealed: Literal[0, 1]'
+      ty='Literal[0, 1]' mypy='Any' rel=gradual
+  - mypy__check_classes__testOperatorDoubleUnionNoRelationship2.py L18 [exception:NameError] 'reveal_type(a + b)  # N: Revealed type is "__main__.Foo | __main__.Bar"'
+      ty='Unknown' mypy='case.Foo | case.Bar' rel=gradual
+  - mypy__check_overloading__testOverloadInferUnionReturnMultipleArguments.py L26 [exception:NameError] 'reveal_type(f2(arg1, C()))'
+      ty='Unknown' mypy='case.B | case.D' rel=gradual
+  - ty__unpacking__19.py L12 [exception:ValueError] 'reveal_type(a)  # revealed: int'
+      ty='int' mypy='Any' rel=gradual
+  - ty__subscript__class__1.py L7 [success:None] 'reveal_type(Identity[0])  # revealed: str'
+      ty='str' mypy='Any' rel=gradual
+  - mypy__check_classes__testOperatorDoubleUnionStandardSubtyping.py L17 [exception:NameError] 'reveal_type(a + a)  # N: Revealed type is "__main__.Parent"'
+      ty='Unknown' mypy='case.Parent' rel=gradual
+  - mypy__check_python312__testPEP695UpperBoundForwardReference1.py L8 [exception:NameError] 'reveal_type(b)  # N: Revealed type is "__main__.C[__main__.E]"'
+      ty='Unknown' mypy='case.C[case.E]' rel=gradual
+  - mypy__check_classes__testSupportForwardUnionOfNewTypes.py L5 [exception:NameError] 'reveal_type(x.x) # N: Revealed type is "builtins.int"'
+      ty='Unknown' mypy='int' rel=gradual
+  - ty__scopes__dunder_class__0.py L5 [success:None] "reveal_type(__class__)  # revealed: <class 'C'>"
+      ty="<class 'C'>" mypy='Any' rel=gradual
+  - ty__subscript__class__3.py L13 [success:None] 'reveal_type(UnionClassGetItem[0])  # revealed: str | int'
+      ty='str | int' mypy='Any' rel=gradual
+  - mypy__check_newsemanal__testNewAnalyzerClassInFunction.py L9 [success:None] 'reveal_type(x.x)  # N: Revealed type is "__main__.A@8"'
+      ty='Unknown' mypy='case.A@10' rel=gradual
+  - ty__exception__control_flow__57.py L12 [success:None] 'reveal_type(state)  # revealed: Literal[0, 1]'
+      ty='Literal[0, 1]' mypy='Any' rel=gradual
+  - ty__subscript__class__7.py L9 [success:None] 'reveal_type(WithMeta[0])  # revealed: str'
+      ty='str' mypy='Any' rel=gradual
+  - mypy__check_final__testFinalDefiningNoRhs.py L12 [exception:NameError] 'reveal_type(y)  # N: Revealed type is "builtins.int"'
+      ty='Unknown' mypy='int' rel=gradual
+  - ty__diagnostics__semantic_syntax_errors__13.py L38 [exception:SyntaxError] 'reveal_type(x)  # revealed: Unknown'
+      ty='Unknown' mypy='int' rel=gradual
+  - ty__exception__control_flow__54.py L13 [success:None] 'reveal_type(state)  # revealed: Literal["before", 1]'
+      ty='Literal["before", 1]' mypy='Any' rel=gradual
+  - mypy__check_unions__testSimplifyingUnionWithTypeTypes2.py L25 [exception:NameError] 'reveal_type(u(t_s, t_o)) # N: Revealed type is "type[builtins.object]"'
+      ty='Unknown' mypy='type[object]' rel=gradual
+===== kb:MYPY-13807-ALIASED-CONDITIONS total 38 {'tuning': 32, 'holdout': 6} families {'ty': 38}
+  raised-at-statement: 0  strong-bug-evidence: 0  runtime: {'success:None': 38}
+  - ty__narrow__aliased_conditions__0.py L8 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__32.py L20 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__29.py L7 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__6.py L8 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__0.py L15 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__4.py L11 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__7.py L8 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__8.py L9 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='str | int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__24.py L13 [success:None] 'reveal_type(cached)  # revealed: str'
+      ty='str' mypy='int | str' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__21.py L10 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__11.py L8 [success:None] 'reveal_type(l[0])  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__7.py L6 [success:None] 'reveal_type(x)  # revealed: int'
+      ty='int' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__3.py L8 [success:None] 'reveal_type(x)  # revealed: Literal[1]'
+      ty='Literal[1]' mypy='Literal[1] | Literal[2]' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__8.py L7 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='str | int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__0.py L6 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__1.py L8 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__21.py L12 [success:None] 'reveal_type(x)  # revealed: None'
+      ty='None' mypy='int | None' rel=ty_more_precise
+  - ty__narrow__aliased_conditions__22.py L13 [success:None] 'reveal_type(x)  # revealed: str'
+      ty='str' mypy='int | str' rel=ty_more_precise
+===== kb:ASSERT-TYPE-LITERAL-RETENTION total 64 {'tuning': 64} families {'pyright': 37, 'typeshed': 17, 'conformance': 10}
+  raised-at-statement: 0  strong-bug-evidence: 0  runtime: {'success:None': 60, 'exception:TypeError': 4}
+  bool-literal rows: 0  rows with pyright diag on statement object: 24
+  - conformance__generics_scoping.py L55 [success:None] 'assert_type(x.method(0, b"abc"), bytes)  # E[method-bytes]'
+      ty='Type `Literal[b"abc"]` does not match asserted type `bytes`' mypy='None' rel=None
+  - pyright__lambda19.py L26 [success:None] 'assert_type(none_default(), Literal[0])'
+      ty='None' mypy='Expression is of type "int", not "Literal[0]"' rel=None
+  - pyright__tupleLiteralInference1.py L11 [success:None] 'assert_type(value[0], tuple[Literal[1], Literal["a"]])'
+      ty='None' mypy='Expression is of type "tuple[int, str]", not "tuple[Literal[1], Litera' rel=None
+  - pyright__lambda19.py L25 [success:None] 'assert_type(broader_standard(), Literal[0])'
+      ty='None' mypy='Expression is of type "int", not "Literal[0]"' rel=None
+  - pyright__tupleLiteralInference7.py L24 [success:None] 'assert_type(selected, tuple[int])'
+      ty='Type `tuple[Literal[0]] | tuple[Literal[1]]` does not match asserted t' mypy='None' rel=None
+  - typeshed__builtins__check_slice.py L52 [success:None] 'assert_type(slice(1234, None, None), "slice[int, Any, Any]")'
+      ty='Type `slice[Literal[1234], Any, Any]` does not match asserted type `sl' mypy='None' rel=None
+  - conformance__generics_scoping.py L21 [success:None] 'assert_type(fun_2("a"), str)  # E[fun2]'
+      ty='Type `Literal["a"]` does not match asserted type `str`' mypy='None' rel=None
+  - pyright__tupleComparisonResults21.py L176 [success:None] 'assert_type(custom[0], Literal[7])'
+      ty='Type `int` does not match asserted type `Literal[7]`' mypy='None' rel=None
+  - typeshed__builtins__check_sum.py L34 [exception:TypeError] 'assert_type(sum(literal_list), int)'
+      ty='None' mypy='Expression is of type "Literal[0, 1]", not "int"' rel=None
+  - pyright__tupleLiteralInference5.py L81 [success:None] 'assert_type(rows, list[tuple[Literal["b"]]])'
+      ty='Type `list[tuple[str]]` does not match asserted type `list[tuple[Liter' mypy='None' rel=None
+  - typeshed__builtins__check_slice.py L47 [success:None] 'assert_type(slice(1234, None), "slice[int, Any, Any]")'
+      ty='Type `slice[Literal[1234], Any, Any]` does not match asserted type `sl' mypy='None' rel=None
+  - conformance__generics_scoping.py L22 [success:None] 'assert_type(fun_2("a"), Literal["a"])  # E[fun2]'
+      ty='None' mypy='Expression is of type "str", not "Literal[\'a\']"' rel=None
+  - pyright__tupleLiteralInference1.py L53 [success:None] 'assert_type(identity(value), tuple[tuple[Literal[1], Literal["a"]]])'
+      ty='None' mypy='Expression is of type "tuple[tuple[int, str]]", not "tuple[tuple[Liter' rel=None
+  - pyright__tupleLiteralInference7.py L45 [success:None] 'assert_type(choices[index], tuple[Literal[0]])'
+      ty='None' mypy='Expression is of type "tuple[int]", not "tuple[Literal[0]]"' rel=None
+  - pyright__sentinel1.py L125 [exception:TypeError] 'assert_type(identity("text"), str)'
+      ty='Type `Literal["text"]` does not match asserted type `str`' mypy='None' rel=None
+  - typeshed__builtins__check_slice.py L54 [success:None] 'assert_type(slice(1234, 5678, 9012), "slice[int, int, int]")'
+      ty='Type `slice[Literal[1234], Literal[5678], Literal[9012]]` does not mat' mypy='None' rel=None
+  - pyright__tupleLiteralInference6.py L36 [success:None] 'assert_type(rows, list[tuple[Literal[1]]])'
+      ty='Type `list[tuple[int]]` does not match asserted type `list[tuple[Liter' mypy='None' rel=None
+  - pyright__tupleLiteralInference7.py L28 [success:None] 'assert_type(choices[-1], tuple[Literal[1]])'
+      ty='None' mypy='Expression is of type "tuple[int]", not "tuple[Literal[1]]"' rel=None

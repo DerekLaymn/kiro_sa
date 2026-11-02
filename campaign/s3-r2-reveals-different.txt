@@ -1,0 +1,61 @@
+total 558 distinct 432
+8 | mypy: int | ty: str | pyright: str | ty__exception__control_flow__80.py:L11
+8 | mypy: str | ty: LiteralString | pyright: LiteralString | ty__comparison__intersections__1.py:L5
+5 | mypy: int | ty: Literal[1] | Unknown | pyright: Unknown | Literal[1] | ty__exception__control_flow__89.py:L10
+5 | mypy: int | ty: Literal[1] | str | pyright: str | Literal[1] | ty__exception__control_flow__80.py:L13
+5 | mypy: int | ty: A | pyright: A | ty__exception__control_flow__93.py:L54
+4 | mypy: int | ty: Literal[1] | A | pyright: A | Literal[1] | ty__exception__control_flow__93.py:L56
+4 | mypy: tuple[Any, int] | tuple[Any, str] | tuple[Any, bytes] | ty: tuple[Unknown, int] | tuple[Unknown, str] | tuple[Unknown, bytes] | pyright: tuple[Unknown, int] | tuple[Unknown, str] | tuple[Unknown, bytes] | ty__narrow__complex_target__11.py:L14
+4 | mypy: type | ty: <class 'Foo'> | pyright: type[Foo] | ty__call__type__10.py:L7
+4 | mypy: dict[str, int] | ty: dict[str, int | str] | pyright: dict[Unknown, Unknown] | ty__bidirectional__136.py:L6
+4 | mypy: tuple[Any, int] | tuple[Any, str] | ty: tuple[Unknown, int] | tuple[Unknown, str] | pyright: tuple[Unknown, int] | tuple[Unknown, str] | ty__narrow__complex_target__8.py:L5
+4 | mypy: case.Comparable | ty: Never | pyright: Comparable | ty__boolean__short_circuit__20.py:L9
+4 | mypy: list[int] | ty: list[int | str] | pyright: list[Unknown] | ty__bidirectional__118.py:L6
+4 | mypy: int | None | ty: list[int | None] | pyright: list[Unknown] | ty__bidirectional__67.py:L20
+3 | mypy: int | ty: Never | pyright: int | ty__boolean__short_circuit__19.py:L5
+3 | mypy: int | ty: B | pyright: B | ty__exception__control_flow__93.py:L58
+3 | mypy: int | ty: C | pyright: C | ty__exception__control_flow__93.py:L60
+3 | mypy: int | ty: D | pyright: D | ty__exception__control_flow__93.py:L64
+3 | mypy: int | ty: E | pyright: E | ty__exception__control_flow__93.py:L66
+3 | mypy: type[object] | ty: type | pyright: type[object] | ty__type_of__generics__20.py:L9
+3 | mypy: type | ty: <class 'X'> | pyright: type[X] | ty__call__type__60.py:L6
+3 | mypy: Literal[False] | ty: Never | pyright: None | ty__narrow__conditionals__in__5.py:L15
+3 | mypy: None | ty: Unknown & None | pyright: None | ty__comparison__intersections__13.py:L5
+3 | mypy: str | ty: str & ~AlwaysFalsy | pyright: str | ty__narrow__truthiness__18.py:L8
+3 | mypy: str | ty: str & ~Literal["a"] | pyright: str | ty__narrow__conditionals__eq__70.py:L7
+3 | mypy: case.B | ty: B & ~A | pyright: B | ty__narrow__conditionals__boolean__2.py:L10
+2 | mypy: list[str] | ty: list[LiteralString] | pyright: list[LiteralString] | ty__bidirectional__17.py:L50
+2 | mypy: bool | ty: bool & Unknown | pyright: bool | ty__comparison__intersections__20.py:L10
+2 | mypy: case.C | ty: C & ~A & ~B | pyright: C | ty__narrow__conditionals__boolean__5.py:L11
+2 | mypy: case.Foo@4 | ty: float | str | pyright: int | float | ty__assignment__augmented__8.py:L17
+2 | mypy: int | ty: str | Literal[2] | pyright: str | Literal[2] | ty__exception__control_flow__80.py:L17
+2 | mypy: int | ty: I | K | pyright: K | I | ty__exception__control_flow__93.py:L93
+2 | mypy: str | ty: Never | pyright: str | ty__comparison__intersections__9.py:L20
+2 | mypy: bytes | ty: Never | pyright: bytes | ty__comparison__intersections__9.py:L21
+2 | mypy: types.MappingProxyType[str, Any] | ty: dict[str, Any] | pyright: dict[str, Any] | ty__class__slots__4.py:L6
+2 | mypy: int | ty: str | pyright: Literal[''] | ty__comprehensions__basic__8.py:L4
+2 | mypy: tuple[int, ...] | ty: tuple[*tuple[int, ...], Literal[3], Literal[4]] | pyright: tuple[*tuple[int, ...], Literal[3], Literal[4]] | ty__binary__tuples__1.py:L7
+2 | mypy: str | ty: bool | pyright: int | ty__comparison__intersections__26.py:L15
+2 | mypy: tuple[Any, ...] | ty: tuple[int, int, int] | pyright: tuple[int, int, int] | ty__struct_unpack__3.py:L7
+2 | mypy: case.E[int] | ty: int | pyright: int | ty__call__constructor__67.py:L20
+2 | mypy: str | ty: str & ~Literal["a"] & ~Literal["b"] & ~Literal["c"] | pyright: str | ty__narrow__conditionals__in__1.py:L7
+2 | mypy: typing.Mapping[str, list[int | None]] | typing.Mapping[str, list[str | None]] | ty: dict[str, list[str | None]] | pyright: dict[str, list[str | None]] | ty__bidirectional__24.py:L19
+2 | mypy: dict[str, int] | ty: dict[str, list[int] | int] | pyright: dict[str, list[int] | int] | ty__bidirectional__24.py:L22
+2 | mypy: str | ty: Literal["before"] | int | pyright: Literal['before', 1] | ty__exception__control_flow__65.py:L8
+2 | mypy: type[int] | ty: type[T@constrained] | pyright: type[T@constrained] | ty__type_of__generics__5.py:L4
+2 | mypy: tuple[Any, Any] | tuple[Any] | ty: tuple[Unknown, Unknown] | tuple[Unknown] | pyright: tuple[Unknown, Unknown] | tuple[Unknown] | ty__narrow__complex_target__15.py:L7
+2 | mypy: int | ty: MemberDescriptorType | pyright: int | ty__class__slots__35.py:L16
+2 | mypy: bool | ty: Never | pyright: bool | ty__comparison__intersections__16.py:L16
+2 | mypy: case.A | ty: B | D | pyright: B | D | ty__exception__control_flow__94.py:L42
+2 | mypy: int | ty: Unknown | Literal[1] | pyright: int | mypy__check_classvar__testClassVarBareAnnotation.py:L9
+2 | mypy: case.Bar | ty: Foo | pyright: Foo | ty__call__constructor__49.py:L20
+2 | mypy: str | ty: Never | pyright: Literal['a'] | ty__narrow__conditionals__eq__63.py:L8
+2 | mypy: set[int] | ty: set[int | str] | pyright: set[Unknown] | ty__bidirectional__118.py:L11
+2 | mypy: Never | ty: B | pyright: B | mypy__check_classes__testOverloadedNewAndInitNoReturn.py:L44
+2 | mypy: Never | ty: C | pyright: C | mypy__check_classes__testOverloadedNewAndInitNoReturn.py:L48
+2 | mypy: case.B | case.C | ty: (B & ~A) | (C & ~A) | pyright: B | C | ty__narrow__conditionals__boolean__6.py:L14
+2 | mypy: case.X[object] | None | ty: A[object] | pyright: A[object] | ty__bidirectional__61.py:L20
+2 | mypy: type[Literal[case.Answer.YES]?] | ty: <class 'Answer'> | pyright: type[Answer] | ty__enums__108.py:L9
+2 | mypy: type[Literal[case.Answer.NO]] | ty: <class 'Answer'> | pyright: type[Answer] | ty__enums__108.py:L21
+2 | mypy: int | ty: int & ~Literal[1] & ~Literal[True] & ~Literal[2] & ~Literal[3] | pyright: int | ty__narrow__conditionals__elif_else__0.py:L9
+2 | mypy: tuple[Any, Any] | tuple[str, Any] | tuple[Any, Any] | ty: tuple[Unknown, Unknown] | tuple[str, Unknown] | pyright: tuple[Unknown, Unknown] | tuple[str, Unknown] | ty__narrow__complex_target__12.py:L5

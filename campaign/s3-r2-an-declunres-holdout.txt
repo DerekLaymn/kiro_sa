@@ -1,0 +1,3 @@
+hits 4 of only_mypy live 483
+3 ('assignment', 'no-raise') mypy__check_expressions__testStrLiteral.py:L6 ['b']
+1 ('misc', 'no-raise') mypy__check_abstract__testDynamicallyTypedReadOnlyAbstractPropertyForwardRef.py:L6 ['a']

@@ -1,0 +1,24 @@
+### --repo python/mypy aliased conditions
+open https://github.com/python/mypy/issues/13807 Add support for control flow analysis of aliased conditions
+### --repo python/mypy narrowing walrus alias condition
+### --repo python/mypy assert_type tuple comparison
+### --repo astral-sh/ty tuple comparison
+closed https://github.com/astral-sh/ty/issues/2140 assume in narrowing that tuple subclasses don't override `__eq__`
+### --repo astral-sh/ty Unknown unresolved-reference reveal
+### --repo python/mypy allow-redefinition
+open https://github.com/python/mypy/issues/22221 [mypyc] Invalid C for an int-annotated parameter rebound via nonlocal with --allow-redefinition-new
+open https://github.com/python/mypy/issues/7314 PEP 572: Test interaction with `--allow-redefinition`
+open https://github.com/python/mypy/issues/10765 allow_redefinition ignored for functions
+open https://github.com/python/mypy/issues/15988 Allow Redefinitions of For Loop Iteration Variables
+open https://github.com/python/mypy/issues/6229 Unmangle names consistently when using --allow-redefinition
+open https://github.com/python/mypy/issues/11967 `allow-redefinition` should perform exhaustive branch analysis
+open https://github.com/python/mypy/issues/18752 False positive: Incompatible types in capture pattern (pattern captures type "Exception", variable has type <deleted>)
+open https://github.com/python/mypy/issues/21532 redefinition-new does not apply type narrowing on cast-like function calls
+### --repo astral-sh/ty __lt__ tuple subclass
+### --repo astral-sh/ty constant folding
+### --repo astral-sh/ruff tuple comparison ty
+### --repo microsoft/pyright tuple comparison
+open https://github.com/microsoft/pyright/issues/11339 A specific enum can lead to errors in inferring tuples
+closed https://github.com/microsoft/pyright/issues/7733 Incorrect `reportOperatorIssue` error when comparing tuples
+closed https://github.com/microsoft/pyright/issues/7132 Wrong code dimming when asserting comparisons of sys.version_info and tuples
+closed https://github.com/microsoft/pyright/issues/3864 Tuple comparison false negative

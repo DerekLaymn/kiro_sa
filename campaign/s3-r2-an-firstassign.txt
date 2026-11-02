@@ -1,0 +1,2 @@
+tuning programs with a dismissed first-assignment: 35 {('reveal_mismatch', 'different'): 74, ('only_mypy', 'other'): 29, ('only_ty', 'other'): 19, ('reveal_mismatch', 'mypy_more_precise'): 8, ('reveal_mismatch', 'uncomparable'): 8, ('reveal_mismatch', 'other'): 6, ('reveal_mismatch', 'gradual'): 5, ('concern_mismatch', 'other'): 5}
+holdout programs with a dismissed first-assignment: 1 {('reveal_mismatch', 'other'): 2, ('reveal_mismatch', 'different'): 1, ('only_ty', 'other'): 1}

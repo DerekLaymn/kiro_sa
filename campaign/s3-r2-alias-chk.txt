@@ -1,0 +1,46 @@
+===== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/tmp/r2rep/alias_alias.py
+--- source
+     1	def f(x: int | None) -> None:
+     2	    is_none = x is None
+     3	    if is_none:
+     4	        reveal_type(x)
+     5	    else:
+     6	        reveal_type(x)
+     7	
+     8	
+     9	def g(x: int | None) -> None:
+    10	    if x is None:
+    11	        reveal_type(x)
+    12	    else:
+    13	        reveal_type(x)
+    14	
+    15	
+    16	f(None)
+    17	g(None)
+--- mypy
+case.py:4:21: note: Revealed type is "int | None"
+case.py:6:21: note: Revealed type is "int | None"
+case.py:11:21: note: Revealed type is "None"
+case.py:13:21: note: Revealed type is "int"
+--- ty
+case.py:4:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:4:21: info[revealed-type] Revealed type: `None`
+case.py:6:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:6:21: info[revealed-type] Revealed type: `int`
+case.py:11:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:11:21: info[revealed-type] Revealed type: `None`
+case.py:13:9: warning[undefined-reveal] `reveal_type` used without importing it
+case.py:13:21: info[revealed-type] Revealed type: `int`
+Found 8 diagnostics
+--- pyright
+/tmp/s3chk.4ddUEi/case.py
+  /tmp/s3chk.4ddUEi/case.py:4:21 - information: Type of "x" is "None"
+  /tmp/s3chk.4ddUEi/case.py:6:21 - information: Type of "x" is "int"
+  /tmp/s3chk.4ddUEi/case.py:11:21 - information: Type of "x" is "None"
+  /tmp/s3chk.4ddUEi/case.py:13:21 - information: Type of "x" is "int"
+0 errors, 0 warnings, 4 informations
+--- cpython
+  File "/tmp/s3chk.4ddUEi/case.py", line 4, in f
+    reveal_type(x)
+    ^^^^^^^^^^^
+NameError: name 'reveal_type' is not defined

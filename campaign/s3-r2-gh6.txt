@@ -1,0 +1,47 @@
+#13807 OPEN labels=["feature"] Add support for control flow analysis of aliased conditions
+**Feature**
+
+I think it would be great if mypy supported control flow analysis of aliased conditions like, e.g., introduced in [TypeScript v4.4](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html#control-flow-analysis-of-aliased-conditions-and-discriminants).
+
+Currently, mypy works as follows:
+
+```python
+from typing import Sequence, Union
+
+def f(value: Union[str, Sequence[str]]):
+    is_string = isinstance(value, str)
+    if is_string:
+        reveal_type(value)  # Revealed type is "Union[builtins.str, typing.Sequence[builtins.str]]"
+    else:
+        reveal_type(value)  # Revealed type is "Union[builtins.str, typing.Sequence[builtins.str]]"
+```
+
+But it would be nice if it could infer the type of `value` correctly in the condition:
+
+```python
+from typing import Sequence, Union
+
+def f(value: Union[str, Sequence[str]]):
+    is_string = isinstance(value, str)
+    if is_string:
+        reveal_type(value)  # Revealed type is "builtins.str"
+    else:
+        reveal_type(value)  # Revealed type is "typing.Sequence[builtins.str]"
+```
+
+**Pitch**
+
+See, e.g., https://github.com/copier-org/copier/pull/812:
+
+```python
+def _execute_tasks(self, tasks: Sequence[Task]) -> None:
+    # ...
+    for i, task in enumerate(tasks):
+        task_cmd = task.cmd
+        if isinstance(task_cmd, str):
+            task_cmd = self._render_string(task_cmd)
+            use_shell = True
+        else:
+            task_cmd = [self._render_str
+--comments--
+For the record, [pyright appears to do it](https://pyright-playground.decorator-factory.su/?gzip=H4sIAAzHbWMC_0srys9VKKksyMxLV8jMLcgvKlEITi0sTc1LTtVRCM3LzM_j4kpJTVNI0yhLzClNtYKIRReXFOnAFYJ4sbGaVlwKQJBZHA_kgoyzBbIz84pLEoFKILp1FIBSmhBlaQiVEI0gUJRalpqYEw90D1QHRHFqTnEqPkUAl2U2z8UAAAA%3D).

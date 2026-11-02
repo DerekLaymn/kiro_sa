@@ -1,0 +1,46 @@
+total 61 distinct 45
+6 | mypy: int | ty: int | str | pyright: int | str | ty__loops__while_loop__49.py:L10
+3 | mypy: int | ty: str | int | pyright: str | int | ty__narrow__complex_target__25.py:L10
+3 | mypy: str | ty: str | int | pyright: str | int | ty__narrow__complex_target__25.py:L12
+2 | mypy: str | ty: str | int | pyright: int | mypy__check_classes__testReverseOperatorOrderingCase6.py:L12
+2 | mypy: case.A | ty: A | B | pyright: A | B | ty__public_types__0.py:L11
+2 | mypy: int | ty: int | tuple[Divergent] | tuple[int | tuple[Divergent]] | pyright: int | tuple[int | tuple[int | tuple[int]]] | ty__loops__while_loop__50.py:L10
+2 | mypy: case.Real | ty: Real | str | pyright: str | mypy__check_classes__testReverseOperatorTypeVar2b.py:L10
+2 | mypy: Literal['child'] | ty: Literal["child", "base"] | pyright: Literal['base'] | ty__binary__instances__10.py:L22
+2 | mypy: str | ty: str | None | pyright: str | None | ty__narrow__conditionals__nested__15.py:L22
+2 | mypy: Literal['x'] | ty: Literal["x", 1] | pyright: Literal['x', 1] | ty__narrow__conditionals__eq__68.py:L18
+1 | mypy: int | ty: int | str | pyright: str | int | ty__narrow__type_guards__42.py:L18
+1 | mypy: type | ty: type | int | pyright: int | type[MyClass] | ty__call__type__89.py:L12
+1 | mypy: int | ty: int | str | pyright: object | ty__narrow__conditionals__is__13.py:L10
+1 | mypy: case.Right | ty: Right | None | pyright: Right | None | ty__narrow__conditionals__eq__67.py:L13
+1 | mypy: int | ty: int | None | pyright: int | None | mypy__check_optional__testOptionalBackwards3.py:L19
+1 | mypy: Literal[1] | ty: Token | Literal[1] | pyright: Token | Literal[1] | ty__narrow__conditionals__in__35.py:L24
+1 | mypy: str | ty: str | Literal[1] | pyright: str | ty__unpacking__53.py:L6
+1 | mypy: str | ty: str | Literal[1] | pyright: Unknown | ty__unpacking__53.py:L11
+1 | mypy: int | ty: float | pyright: float | ty__assignment__augmented__0.py:L9
+1 | mypy: T | ty: object | pyright: object | ty__narrow__conditionals__is__11.py:L10
+1 | mypy: Literal[True] | Literal[False] | Literal[True] | Literal[17] | ty: bool | Literal[17] | pyright: bool | Literal[17] | ty__union_types__6.py:L16
+1 | mypy: Literal['right'] | ty: Literal["right", "left"] | pyright: Literal['left'] | ty__binary__instances__8.py:L16
+1 | mypy: Literal['base'] | ty: Literal["child", "base"] | pyright: Literal['base'] | ty__binary__instances__10.py:L16
+1 | mypy: None | ty: Literal[1] | None | pyright: Literal[1] | None | ty__narrow__conditionals__in__31.py:L27
+1 | mypy: str | ty: str | None | pyright: str | ty__public_types__10.py:L14
+1 | mypy: str | ty: str | tuple[str | int, ...] | pyright: tuple[str | int, ...] | ty__binary__tuples__4.py:L12
+1 | mypy: int | ty: int | None | pyright: Unbound | mypy__check_inference__testNarrowInFunctionDefer.py:L11
+1 | mypy: case.A[int] | ty: A[int] | B | pyright: A[int] | ty__narrow__type__12.py:L9
+1 | mypy: str | ty: int | str | pyright: int | str | ty__narrow__complex_target__17.py:L9
+1 | mypy: int | ty: int | str | pyright: Unknown | ty__bidirectional__78.py:L71
+1 | mypy: str | ty: str | bytes | pyright: bytes | ty__call__dunder__13.py:L14
+1 | mypy: str | ty: str | bytes | pyright: str | bytes | ty__call__dunder__13.py:L27
+1 | mypy: None | ty: None | Literal[1] | pyright: int | None | ty__public_types__8.py:L8
+1 | mypy: tuple[Any, bytes] | ty: tuple[Any, bytes] | tuple[Literal[False], str] | pyright: tuple[Any, bytes] | tuple[Literal[False], str] | ty__narrow__complex_target__28.py:L11
+1 | mypy: str | ty: str | int | pyright: str | ty__narrow__type__10.py:L6
+1 | mypy: None | ty: None | <class 'Bar'> | pyright: type[Bar] | ty__loops__while_loop__17.py:L10
+1 | mypy: int | ty: Literal["f2"] | int | pyright: int | ty__scopes__nonlocal__43.py:L16
+1 | mypy: tuple[int | str, bytes] | ty: tuple[int | str, bytes] | tuple[str, int] | pyright: tuple[int | str, bytes] | tuple[str, int] | ty__narrow__complex_target__23.py:L7
+1 | mypy: case.AlwaysEqual | ty: AlwaysEqual | None | pyright: AlwaysEqual | None | ty__narrow__conditionals__eq__69.py:L57
+1 | mypy: tuple[str, ...] | ty: tuple[str, ...] | tuple[int, int] | pyright: tuple[str, ...] | tuple[int, int] | ty__narrow__complex_target__30.py:L5
+1 | mypy: tuple[int, int] | ty: tuple[str, ...] | tuple[int, int] | pyright: tuple[str, ...] | tuple[int, int] | ty__narrow__complex_target__30.py:L7
+1 | mypy: list[str] | ty: list[str] | tuple[int, int] | pyright: list[str] | tuple[int, int] | ty__narrow__complex_target__29.py:L5
+1 | mypy: tuple[int, int] | ty: list[str] | tuple[int, int] | pyright: list[str] | tuple[int, int] | ty__narrow__complex_target__29.py:L7
+1 | mypy: int | None | ty: None | float | pyright: int | float | None | ty__assignment__augmented__13.py:L10
+1 | mypy: Literal[1]? | Literal[2]? | ty: Literal[1, 2, "left", "right"] | pyright: Literal[1, 2, 'left', 'right'] | ty__enums__105.py:L18

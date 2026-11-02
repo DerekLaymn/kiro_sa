@@ -1,0 +1,110 @@
+######## ty_more_precise
+189 matches
+--- seeds/harvested/narrowing_builtin/ty__narrow__truthiness__1.py D8 L17  runtime=success None
+    14:     if not x:
+    15:         reveal_type(x)  # revealed: Literal[0, False, "", b""] | None | tuple[()]
+    16:     else:
+    17:         reveal_type(x)  # revealed: Literal[-1, True, "foo", b"bar"]
+    mypy: L17 [None] Literal[-1] | bool | Literal['foo'] | Literal[b'bar']
+    ty: L17 [revealed-type] Literal[-1, True, "foo", b"bar"]
+    pyright: L17 [None] Literal[-1, True, 'foo', b"bar"]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__aliased_conditions__29.py D3 L7  runtime=success None
+    4:     is_none = x is None
+    5: 
+    6:     if is_none:
+    7:         reveal_type(x)  # revealed: None
+    mypy: L7 [None] int | None
+    ty: L7 [revealed-type] None
+    pyright: L7 [None] None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__bidirectional__67.py D22 L46  runtime=success None
+    43:     reveal_type(x1)  # revealed: int
+    44: 
+    45:     x2: int | str = f(lst(a))
+    46:     reveal_type(x2)  # revealed: int
+    mypy: L46 [None] int | str
+    ty: L46 [revealed-type] int
+    pyright: L46 [None] int
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__len__0.py D1 L7  runtime=success None
+    4: 
+    5: def _(x: Literal["foo", ""]):
+    6:     if len(x):
+    7:         reveal_type(x)  # revealed: Literal["foo"]
+    mypy: L7 [None] Literal['foo'] | Literal['']
+    ty: L7 [revealed-type] Literal["foo"]
+    pyright: L7 [None] Literal['foo', '']
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__post_if_statement__19.py D1 L10  runtime=success None
+    7:         if 1 + 1 == 2:
+    8:             return
+    9: 
+    10:     reveal_type(x)  # revealed: int
+    mypy: L10 [None] int | None
+    ty: L10 [revealed-type] int
+    pyright: L10 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__conditionals__in__54.py D1 L9  runtime=success None
+    6:     if x in ("auto", "required"):
+    7:         reveal_type(x)  # revealed: Literal["auto", "required"]
+    8:     else:
+    9:         reveal_type(x)  # revealed: Literal["none"] | tuple[list[str], Literal["auto", "required"]]
+    mypy: L9 [None] Literal['none'] | Literal['auto'] | Literal['required'] | tuple[list[str], Literal['auto'] | Literal['required']]
+    ty: L9 [revealed-type] Literal["none"] | tuple[list[str], Literal["auto", "required"]]
+    pyright: L9 [None] tuple[list[str], Literal['auto', 'required']] | Literal['none']
+    hints=['TY-STRICT-EQUALITY', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/mypy__check_unions__testUnionSimplificationWithDuplicateItems.py D3 L14  runtime=exception NameError
+    11: 
+    12: a: Any
+    13: 
+    14: reveal_type(u(1, 1, 1))  # N: Revealed type is "builtins.int"
+    mypy: L14 [None] int
+    ty: L14 [revealed-type] Literal[1]
+    pyright: L14 [None] int
+    hints=['LITERAL-WIDENING', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/gradual_any/ty__exception__control_flow__24.py D1 L9  runtime=success None
+    6:             may_raise()
+    7:             may_raise()
+    8:     except:
+    9:         reveal_type(value)  # revealed: int
+    mypy: L9 [None] int | None
+    ty: L9 [revealed-type] int
+    pyright: L9 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__complex_target__55.py D2 L8  runtime=success None
+    5:         reveal_type(x[True][-1])  # revealed: int
+    6: 
+    7:     if x[False][0] is not None:
+    8:         reveal_type(x[False][0])  # revealed: int
+    mypy: L8 [None] int | None
+    ty: L8 [revealed-type] int
+    pyright: L8 [None] int | None
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/protocols/mypy__check_protocols__testProtocolGenericInferenceCovariant.py D1 L18  runtime=success None
+    15: 
+    16: def fun4(x: U, y: P[U, U]) -> U:
+    17:     pass
+    18: reveal_type(fun4('a', C())) # N: Revealed type is "builtins.object"
+    mypy: L18 [None] object
+    ty: L18 [revealed-type] Literal["a"] | int
+    pyright: L18 [None] str | int
+    hints=['JOIN-VS-UNION', 'ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/narrowing_builtin/ty__narrow__truthiness__1.py D5 L9  runtime=success None
+    6: 
+    7: def _(x: X):
+    8:     if x:
+    9:         reveal_type(x)  # revealed: Literal[-1, True, "foo", b"bar"]
+    mypy: L9 [None] Literal[-1] | bool | Literal['foo'] | Literal[b'bar']
+    ty: L9 [revealed-type] Literal[-1, True, "foo", b"bar"]
+    pyright: L9 [None] Literal[-1, True, 'foo', b"bar"]
+    hints=['ORIGIN-ORACLE-NOTE']
+--- seeds/harvested/enums_literals/ty__literal__collections__generator_expressions__5.py D1 L9  runtime=success None
+    6: async def filter_values() -> None:
+    7:     values: list[int] = [1, 2, 3]
+    8:     generator = (value for value in values if await is_even(value))
+    9:     reveal_type(generator)  # revealed: AsyncGeneratorType[int, None]
+    mypy: L9 [None] typing.AsyncGenerator[int, None]
+    ty: L9 [revealed-type] AsyncGeneratorType[int, None]
+    pyright: L9 [None] AsyncGenerator[int, None]
+    hints=['ORIGIN-ORACLE-NOTE']

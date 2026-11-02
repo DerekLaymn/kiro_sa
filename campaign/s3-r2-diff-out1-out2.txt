@@ -1,0 +1,12 @@
+findings only in B: 0
+38 ('holdout', 'live->dismissed', 'gate', 'kb:REVEAL-ERROR-RECOVERY') programs= 21
+6 ('holdout', 'live->dismissed', 'gate', 'kb:MYPY-13807-ALIASED-CONDITIONS') programs= 4
+4 ('holdout', 'dismissed->live', 'kb:INFERENCE-DOWNSTREAM', 'gate') programs= 1
+4 ('holdout', 'dismissed->live', 'kb:ASSERT-TYPE-LITERAL-RETENTION', 'gate') programs= 3
+113 ('tuning', 'live->dismissed', 'gate', 'kb:REVEAL-ERROR-RECOVERY') programs= 73
+62 ('tuning', 'dismissed->live', 'kb:ASSERT-TYPE-LITERAL-RETENTION', 'gate') programs= 8
+32 ('tuning', 'live->dismissed', 'gate', 'kb:MYPY-13807-ALIASED-CONDITIONS') programs= 16
+6 ('tuning', 'dismissed->live', 'kb:INFERENCE-DOWNSTREAM', 'gate') programs= 3
+4 ('tuning', 'disappeared', 'review', 'gate') programs= 0
+3 ('tuning', 'live->dismissed', 'gate', 'kb:PRECISION-RUNTIME-CONSISTENT') programs= 2
+1 ('tuning', 'dismissed->live', 'rule:cascade-of:D2', 'gate') programs= 1
