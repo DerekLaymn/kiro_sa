@@ -36,7 +36,7 @@ from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceT
 from .parsers import classify_exception
 from .selfparam import has_self_typed_state
 from .state import CaseState
-from .typenorm import gradual_diff, is_join_vs_union, is_literal_widening, normalize
+from .typenorm import gradual_diff, is_join_vs_union, is_literal_retention, is_literal_widening, normalize
 
 K = DiscrepancyKind
 TY_DOCS = "https://docs.astral.sh/ty"
@@ -483,6 +483,7 @@ def _scope_bindings(scope: ast.AST, name: str):
 
 
 _TY_UNDEF = re.compile(r"Name `(?P<n>\w+)` used when not defined")
+_PYRIGHT_UNBOUND = re.compile(r'"(?P<n>\w+)" is (?:unbound|not defined)')
 
 
 def m_annotation_only_read(s, d):
@@ -492,17 +493,27 @@ def m_annotation_only_read(s, d):
         return False
     if not all(x.code == "unresolved-reference" for x in d.ty):
         return False
-    names = {m["n"] for x in d.ty if (m := _TY_UNDEF.search(x.message))}
-    if len(names) != 1 or not any("unbound" in x.message or "not defined" in x.message for x in d.pyright):
+    hits = [(m["n"], x.line) for x in d.ty if (m := _TY_UNDEF.search(x.message))]
+    names = {n for n, _ in hits}
+    if not names or len(hits) != len(d.ty):
         return False
-    name = next(iter(names))
+    if len(names) == 1:
+        if not any("unbound" in x.message or "not defined" in x.message for x in d.pyright):
+            return False
+    else:  # several names on one statement (`u(D_C, A_C)`): pyright must name every one of them
+        pr = {m["n"] for x in d.pyright if (m := _PYRIGHT_UNBOUND.search(x.message))}
+        if not names <= pr:
+            return False
     chain = s.amap.enclosing_nodes(d.anchor)
     scope = next((n for n in reversed(chain[:-1]) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))),
                  s.amap.tree)
     if isinstance(scope, ast.ClassDef):
         return False
-    bare, other = _scope_bindings(scope, name)
-    return bool(bare) and not other and min(bare) < d.ty[0].line
+    for name in names:  # every name must be declared-only in this scope, before its (first) flagged use
+        bare, other = _scope_bindings(scope, name)
+        if not (bare and not other and min(bare) < min(line for n, line in hits if n == name)):
+            return False
+    return True
 
 
 _TODO_SHOULD_ERROR = re.compile(r"#\s*TODO\b.*should\s+(?:\w+\s+)?error", re.I)
@@ -1229,6 +1240,130 @@ ENTRIES.extend([
         "installed version does not reproduce it: the installed version differs from the suite's, the mdtest python-version "
         "was not honoured, or the harvest broke the program. A pipeline/harvest issue, not evidence of a tool bug.",
         (K.REVEAL_MISMATCH,), m_origin_mismatch,
+    ),
+])
+_TY_ASSERT = re.compile(r"^Type `(?P<actual>.+)` does not match asserted type `(?P<asserted>.+)`$")
+_MYPY_ASSERT = re.compile(r'^Expression is of type "(?P<actual>.+)", not "(?P<asserted>.+)"$')
+
+
+def _declared_names(tree: ast.AST) -> set[str]:
+    """Names that carry a declared type somewhere in the file: `x: T`, an annotated parameter."""
+    out: set[str] = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name):
+            out.add(n.target.id)
+        elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+            a = n.args
+            out |= {p.arg for p in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg]
+                    if p is not None and getattr(p, "annotation", None) is not None}
+    return out
+
+
+def m_assert_type_literal_retention(s, d):
+    """assert_type() compares INFERRED types; the failing tool's type is exactly the asserted type with its Literal parts
+    kept (or widened), the other tool is silent. The spec leaves literal retention of inferred types open (literal.rst:
+    "should the inferred type of x be str or Literal['blue']?"). Narrow: only assert_type diagnostics (every diagnostic on
+    the statement), one-sided literal retention only, no spec narrowing construct around the call, and the asserted
+    expression is not a bare name with a declared type (a declared type that a tool ignores is a real bug)."""
+    if d.kind not in (K.ONLY_TY, K.ONLY_MYPY) or s.amap.tree is None:
+        return False
+    diags, rx, code = (d.ty, _TY_ASSERT, "type-assertion-failure") if d.kind == K.ONLY_TY else (d.mypy, _MYPY_ASSERT, "assert-type")
+    if not diags or any(x.code != code for x in diags):
+        return False
+    for x in diags:
+        m = rx.match(x.message)
+        a, b = (normalize(m["actual"], s.module), normalize(m["asserted"], s.module)) if m else (None, None)
+        if not (a and b and is_literal_retention(a, b)):
+            return False
+    if _chain_tags(s, d) & _SPEC_NARROWING:
+        return False  # narrowing results are (partly) specified: a different literal/non-literal answer there needs a judge
+    node = _stmt_node(s, d)
+    declared = _declared_names(s.amap.tree)
+    calls = [c for c in ast.walk(node) if isinstance(c, ast.Call) and c.args
+             and getattr(c.func, "id", getattr(c.func, "attr", None)) == "assert_type"] if node is not None else []
+    if not calls:
+        return False
+    return not any(isinstance(c.args[0], ast.Name) and c.args[0].id in declared for c in calls)
+
+
+def _name_declared_in_scope(scope: ast.AST, name: str) -> bool:
+    """True if ``name`` is declared (annotation, any parameter, global/nonlocal) directly in ``scope``."""
+    if isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        a = scope.args
+        if any(p.arg == name for p in [*a.posonlyargs, *a.args, *a.kwonlyargs, a.vararg, a.kwarg] if p is not None):
+            return True
+    todo = list(ast.iter_child_nodes(scope))
+    while todo:
+        n = todo.pop()
+        if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name) and n.target.id == name:
+            return True
+        if isinstance(n, (ast.Global, ast.Nonlocal)) and name in n.names:
+            return True
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if n.name == name:
+                return True  # a def/class binding is not an inferred variable
+            continue
+        if isinstance(n, ast.Lambda):
+            continue
+        if isinstance(n, (ast.Import, ast.ImportFrom)) and any((a.asname or a.name.split(".")[0]) == name for a in n.names):
+            return True
+        todo.extend(ast.iter_child_nodes(n))
+    return False
+
+
+def m_first_assignment_type(s, d):
+    """mypy [assignment] on a re-bound, UNDECLARED variable: mypy fixes the variable's type at its first binding (its
+    docs: "each name within a function only has a single 'declared' type"), ty and pyright infer a union of the bound
+    types. Narrow: every mypy diagnostic is an `Incompatible types in assignment (expression has type ..., variable
+    has type ...)` on a plain Assign/AugAssign to Name targets that have no declaration (annotation, parameter,
+    global/nonlocal, def/class/import) in their scope; ty and pyright report nothing on the statement. The entry is
+    verify-gated: it only dismisses when `mypy --allow-redefinition` makes the error disappear."""
+    if d.kind != K.ONLY_MYPY or not d.mypy or s.amap.tree is None:
+        return False
+    if not all(x.code == "assignment" and x.message.startswith("Incompatible types in assignment (expression has type")
+               and "base class" not in x.message for x in d.mypy):
+        return False
+    if any(x.is_problem and d.anchor <= s.amap.anchor(x.line) <= d.anchor_end for x in s.diags.get(Tool.PYRIGHT, [])):
+        return False  # pyright also objects: the variable is declared or the assignment is genuinely wrong
+    node = _stmt_node(s, d)
+    if not isinstance(node, (ast.Assign, ast.AugAssign)):
+        return False
+    targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+    if not targets or not all(isinstance(t, ast.Name) for t in targets):
+        return False
+    chain = s.amap.enclosing_nodes(d.anchor)
+    scope = next((n for n in reversed(chain[:-1]) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))),
+                 s.amap.tree)
+    return not any(_name_declared_in_scope(scope, t.id) for t in targets)
+
+
+ENTRIES.extend([
+    KBEntry(
+        "ASSERT-TYPE-LITERAL-RETENTION", "assert_type fails only because one tool keeps (or widens) inferred Literal types",
+        Dismissal.DESIGN_DIVERGENCE, "https://typing.python.org/en/latest/spec/literal.html",
+        "assert_type(val, T) asks whether the INFERRED type of val is equivalent to T (directives.rst). Whether the "
+        "inferred type of an unannotated value keeps its Literal parts is left open by the spec (literal.rst, 'should the "
+        "inferred type of x be str or Literal[\"blue\"]?'; mypy documents the context-sensitive `Literal[19]?` it keeps "
+        "for Final names). The suite the assertion came from encodes ONE checker's choice, so another checker that "
+        "answers with the literal-widened (or literal-keeping) type fails the assertion without any unsoundness. Fires "
+        "only for assert_type diagnostics where the failing tool's type is exactly the asserted type with Literal parts "
+        "kept or widened (nested too), the other tool is silent, no narrowing construct surrounds the call and the "
+        "asserted expression is not a declared name. A runtime exception at the statement keeps it in review.",
+        (K.ONLY_TY, K.ONLY_MYPY), m_assert_type_literal_retention, auto=True, runtime_override=True,
+        example="from typing import Any, assert_type\n\nassert_type(slice(1234, None), \"slice[int, Any, Any]\")\n",
+    ),
+    KBEntry(
+        "MYPY-FIRST-ASSIGNMENT-TYPE", "mypy fixes an undeclared variable's type at its first assignment; ty and pyright infer a union",
+        Dismissal.DESIGN_DIVERGENCE, "https://mypy.readthedocs.io/en/stable/common_issues.html#redefinitions-with-incompatible-types",
+        "mypy: 'Each name within a function only has a single declared type' - `n = 1; n = 'x'` is an [assignment] error "
+        "unless `--allow-redefinition` (command_line.rst) is on. ty and pyright treat an unannotated variable's type as "
+        "the union of its assigned types, so the later assignment is accepted. Documented mypy behaviour, not a ty "
+        "false negative. Fires only for [assignment] on a plain Assign/AugAssign to undeclared Name targets with pyright "
+        "silent, and only after re-running mypy with --allow-redefinition makes the discrepancy disappear. Declared "
+        "variables (`x: int = 1; x = 's'`, annotated parameters) are NOT covered: ty reports those too.",
+        (K.ONLY_MYPY,), m_first_assignment_type, auto=True, runtime_override=True,
+        verify=_toggle(Tool.MYPY, ["--allow-redefinition"]),
+        example="def f(flag: bool) -> None:\n    y = 1\n    if flag:\n        y = \"s\"\n    print(y)\n",
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation
