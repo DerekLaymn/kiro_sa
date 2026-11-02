@@ -1,0 +1,7 @@
+conformance: kept 136 of 145 programs -> seeds/harvested
+ty: kept 2682 of 3575 programs -> seeds/harvested
+mypy: kept 1210 of 1770 programs -> seeds/harvested
+pyright: kept 1045 of 1446 programs -> seeds/harvested
+typeshed: kept 56 of 74 programs -> seeds/harvested
+ty mdtest skipped by env: {'python-platform': 60, 'python-version=3.10': 197, 'python-version=3.11': 251, 'python-version=3.12': 803, 'python-version=3.14': 138, 'python-version=3.15': 28, 'python-version=3.8': 1, 'python-version=3.9': 28}
+exit=0
