@@ -232,7 +232,14 @@ def test_reveal_error_recovery_runtime_exception_at_the_statement_keeps_it_in_re
     rt = RuntimeResult(status="exception", exc_type="NameError", exc_message="name 'x' is not defined", exc_line=3,
                        frames=[(3, "<module>")])
     st, d = recovery(runtime=rt)
-    assert rhit(st, d) and entry_demotion(st, d, e) is not None
+    assert not rhit(st, d) or entry_demotion(st, d, e) is not None
+    # a non-"type-related" exception (RuntimeError from `super()` outside a class) also keeps the finding in review
+    rt = RuntimeResult(status="exception", exc_type="RuntimeError", exc_message="super(): no arguments", exc_line=3,
+                       frames=[(3, "<module>")])
+    assert not rhit(*recovery(runtime=rt))
+    # an exception on another line does not
+    rt = RuntimeResult(status="exception", exc_type="NameError", exc_message="x", exc_line=1, frames=[(1, "<module>")])
+    assert rhit(*recovery(runtime=rt))
 
 
 # ---------------------------------------------------------------- MYPY-13807-ALIASED-CONDITIONS

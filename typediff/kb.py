@@ -1393,6 +1393,9 @@ def m_reveal_error_recovery(s, d):
     lost. Narrow: the error position must lie inside the revealed argument."""
     if d.kind != K.REVEAL_MISMATCH or len(d.ty) != 1 or len(d.mypy) != 1:
         return False
+    rt = s.runtime
+    if rt.status == "exception" and d.anchor in {s.amap.anchor(ln) for ln, _ in rt.frames}:
+        return False  # ANY CPython exception on this statement (also RuntimeError etc.) keeps the finding in review
     for tool, gradual, mine, other in ((Tool.TY, "Unknown", d.ty[0], d.mypy[0]), (Tool.MYPY, "Any", d.mypy[0], d.ty[0])):
         if (mine.revealed_type or "").strip() != gradual or not other.revealed_type:
             continue
