@@ -1,0 +1,19 @@
+{
+  "approved": false,
+  "issues": [
+    "Plan target not met (blocking, confirmed): review queue shrank 7.19% overall (7841 -> 7277), 7.54% on tuning (6300 -> 5825), 5.78% on hold-out (1541 -> 1452); needs more than 50% on both (<= 3149 tuning, <= 770 hold-out). Recounted independently from runs/day2/out3. Do not approve to end the loop; do not invent dismissals (Plan 7).",
+    "Loop cannot converge on the current approach (blocking, confirmed): rounds 1-2 together removed 6.25% of the queue and round 3 removed 1.01% more; the coder's Plan 7 note says the remaining patterns have no deterministic oracle. Get a user decision: keep the >50% target, restate it, or stop the loop with the current numbers and the documented pivot options.",
+    "REVEAL-ERROR-RECOVERY binding clause does not check causality (possible, no false dismissal found in 76): _error_at_binding_of_reveal_arg accepts any ERROR-severity diagnostic on an earlier statement binding a name read in the reveal argument. Add a negative test where the earlier error is unrelated to the binding's type (e.g. an argument error on a call with an unannotated return), or restrict to error codes that produce a recovery type.",
+    "Chained dismissal (likely, minor): some of the 76 (e.g. testNarrowingFromObjectToOptional D2, testSelfTypeGenericClassNoClashInstanceMethod D3) are closed because ty flagged a binding whose error is itself dismissed by ANNOTATION-ONLY-READ. Record the chain in the finding notes so the tracked mypy limitation stays visible.",
+    "kbloop_sample.py cannot list dismissed findings (confirmed, tooling): it skips tier == dismissed, so auditing a dismissal rule needs a custom script. Add a --dismissed-by ENTRY option so the Plan's audit step is reproducible.",
+    "attach_runtime_evidence NameError branch records strong bug evidence with blame='unknown' when both tools have diagnostics on the row (possible, minor): add a test for that branch or avoid emitting strong bug evidence without a blamed tool.",
+    "Biggest remaining tuning patterns for the next round: reveal gradual 456, uncomparable 444, different 403, ty_more_precise 299, only_mypy [assignment] 197, only_mypy [assert-type] 197, only_ty [type-assertion-failure] 157, only_ty [unresolved-reference] 129 (145 of 163 mypy-silent rows are true mypy false negatives: file them as candidates after a playground check), only_mypy [arg-type] 118, concern_mismatch [assignment] 114. Ranked options from the log: per-construct reasons for the 'clean' gradual rows; hint-only ORIGIN-MISMATCH for assert_type rows; reveal-level first-assignment entry (watch the tuning/hold-out gap)."
+  ],
+  "reviewDoc": "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day2-review-round-3.md",
+  "queue": {
+    "baseline": {"overall": 7841, "tuning": 6300, "holdout": 1541},
+    "after": {"overall": 7277, "tuning": 5825, "holdout": 1452},
+    "tuning_pct": 7.54,
+    "holdout_pct": 5.78
+  }
+}
