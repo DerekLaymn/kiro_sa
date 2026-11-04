@@ -1044,9 +1044,199 @@ def _unquoted_forward_ref(s, d) -> bool:
     return True
 
 
+def _stmt_exprs(node: ast.AST | None) -> list[ast.AST]:
+    """The expressions that belong to the statement itself (compound statements: header only, not their bodies)."""
+    if node is None:
+        return []
+    if isinstance(node, (ast.If, ast.While)):
+        return [node.test]
+    if isinstance(node, (ast.For, ast.AsyncFor)):
+        return [node.iter]
+    if isinstance(node, (ast.With, ast.AsyncWith)):
+        return [i.context_expr for i in node.items]
+    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Try, ast.Match)):
+        return []
+    return [node]
+
+
+def _stmt_walk(s: CaseState, d: Discrepancy) -> list[ast.AST]:
+    return [n for e in _stmt_exprs(_stmt_node(s, d)) for n in ast.walk(e)]
+
+
+def _generic_typeddict_typevar_call(s, d) -> bool:
+    """astral-sh/ty#4884: the statement calls a function whose parameter is a SUBSCRIPTED GENERIC TypedDict
+    (Generic[..] base or PEP 695 parameters) over one of the function's own type variables, so the result type comes from
+    solving that variable against the TypedDict argument (ty leaves it Unknown). An ordinary generic class, a
+    TypedDict without a solved variable, or a statement without such a call do not match."""
+    from . import crash_upstream as cu
+
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    tds = {c.name for c in cu._classes(tree) if any(cu._head(b) == "TypedDict" for b in c.bases)
+           and (cu._type_params(c) or any(cu._head(b) == "Generic" and isinstance(b, ast.Subscript) for b in c.bases))}
+    if not tds:
+        return False
+    module_tv = set(cu._module_calls(tree, "TypeVar"))
+    solving = set()
+    for fn in cu._functions(tree):
+        tvs = module_tv | {t.name for t in cu._type_params(fn, ast.TypeVar)}
+        for p in cu._params(fn):
+            if p.annotation is None:
+                continue
+            ann = cu._resolve(p.annotation)  # the TypedDict must be the parameter itself, not nested (that is ty#4803)
+            if isinstance(ann, ast.Subscript) and cu._head(ann.value) in tds and cu._names(ann.slice) & tvs:
+                solving.add(fn.name)
+    return any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id in solving for n in _stmt_walk(s, d))
+
+
+_BACKTICK_GENERIC = re.compile(r"`(\w+)\[")
+
+
+def _callable_attr_contravariance(s, d) -> bool:
+    """python/mypy#22339: mypy infers a PEP 695 class contravariant in T although it stores a mutable (non-Final, not
+    underscore-private) Callable[[..T..], R] attribute (class-level annotation or `self.x = param`). The class is named
+    in ty's message. Final attributes, methods and classes with other attribute shapes do not match."""
+    from . import crash_upstream as cu
+
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    named = {m.group(1) for x in d.ty for m in _BACKTICK_GENERIC.finditer(x.message)}
+
+    def contra_callable(ann, tps) -> bool:
+        for sub in cu._subs(cu._resolve(ann), "Callable"):
+            elts = cu._slice_elts(sub)
+            if len(elts) == 2 and isinstance(elts[0], ast.List) and cu._names(elts[0]) & tps \
+                    and not cu._names(elts[1]) & tps:
+                return True
+        return False
+
+    for c in cu._classes(tree):
+        tps = {t.name for t in cu._type_params(c, ast.TypeVar)}
+        if c.name not in named or not tps:
+            continue
+        for st in c.body:
+            if (isinstance(st, ast.AnnAssign) and isinstance(st.target, ast.Name) and not st.target.id.startswith("_")
+                    and cu._head(st.annotation) != "Final" and contra_callable(st.annotation, tps)):
+                return True
+        for fn in cu._methods(c):
+            ann = {p.arg: p.annotation for p in cu._params(fn) if p.annotation is not None}
+            for n in ast.walk(fn):
+                if (isinstance(n, ast.Assign) and isinstance(n.value, ast.Name) and n.value.id in ann
+                        and contra_callable(ann[n.value.id], tps)
+                        and any(isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name) and t.value.id == "self"
+                                and not t.attr.startswith("_") for t in n.targets)):
+                    return True
+    return False
+
+
+def _stale_index_narrowing(s, d) -> bool:
+    """python/mypy#20969: mypy keeps the narrowing of a constant-index subscript (`xs[0] is not None`,
+    `isinstance(t[0], int)`) after an ASSIGNMENT to that very subscript; the reported statement uses the subscript after
+    the assignment. Attribute narrowing (mypy resets), non-constant indices and `del` are not covered."""
+    from . import crash_upstream as cu
+
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    fns = [f for f in cu._functions(tree) if f.lineno <= d.anchor <= (f.end_lineno or f.lineno)]
+    scope = min(fns, key=lambda f: (f.end_lineno or 0) - f.lineno) if fns else tree
+
+    def key(n) -> str | None:
+        return ast.unparse(n) if (isinstance(n, ast.Subscript) and isinstance(n.value, ast.Name)
+                                  and isinstance(n.slice, ast.Constant)) else None
+
+    narrowed: dict[str, int] = {}
+    for n in ast.walk(scope):
+        if isinstance(n, (ast.If, ast.While, ast.Assert)):
+            for t in ast.walk(n.test):
+                k = None
+                if isinstance(t, ast.Compare) and all(isinstance(o, (ast.Is, ast.IsNot, ast.Eq, ast.NotEq)) for o in t.ops):
+                    k = key(t.left)
+                elif isinstance(t, ast.Call) and cu._head(t.func) == "isinstance" and t.args:
+                    k = key(t.args[0])
+                if k is not None:
+                    narrowed[k] = min(narrowed.get(k, n.lineno), n.lineno)
+    used = {key(n) for n in _stmt_walk(s, d)} - {None}
+    for n in ast.walk(scope):
+        if isinstance(n, ast.Assign):
+            for t in n.targets:
+                k = key(t)
+                if k in narrowed and k in used and narrowed[k] < n.lineno < d.anchor:
+                    return True
+    return False
+
+
+def _flag_classes(tree: ast.AST) -> set[str]:
+    from . import crash_upstream as cu
+
+    return {c.name for c in cu._classes(tree) if any(cu._head(b) in ("Flag", "IntFlag") for b in c.bases)}
+
+
+def _flag_is_chain(s, d) -> bool:
+    """python/mypy#21937 (same root cause: a Flag is expanded into its members): the statement sits in the final
+    `else` of an `if x is F.A: .. elif x is F.B: ..` (or `==`) chain over members of an enum.Flag / IntFlag subclass. The
+    same chain over a plain Enum is not covered (mypy is right there)."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    flags = _flag_classes(tree)
+    if not flags:
+        return False
+
+    def member_test(t) -> bool:
+        return (isinstance(t, ast.Compare) and len(t.ops) == 1 and isinstance(t.ops[0], (ast.Is, ast.Eq))
+                and isinstance(t.comparators[0], ast.Attribute) and isinstance(t.comparators[0].value, ast.Name)
+                and t.comparators[0].value.id in flags)
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.If):
+            continue
+        chain, cur = [node], node
+        while len(cur.orelse) == 1 and isinstance(cur.orelse[0], ast.If):
+            cur = cur.orelse[0]
+            chain.append(cur)
+        if len(chain) < 2 or not cur.orelse or not all(member_test(c.test) for c in chain):
+            continue
+        if cur.orelse[0].lineno <= d.anchor <= max(x.end_lineno or x.lineno for x in cur.orelse):
+            return True
+    return False
+
+
+def _flag_member_op(s, d) -> bool:
+    """astral-sh/ty#876 (checklist item: enum expansion must not be performed for enum.Flag): the statement uses
+    a bitwise combination of two members of a Flag / IntFlag subclass, directly or through a variable assigned from one."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    flags = _flag_classes(tree)
+    if not flags:
+        return False
+
+    def member(n) -> bool:
+        return isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.value.id in flags
+
+    def combo(n) -> bool:
+        return (isinstance(n, ast.BinOp) and isinstance(n.op, (ast.BitOr, ast.BitAnd, ast.BitXor))
+                and member(n.left) and member(n.right))
+
+    nodes = _stmt_walk(s, d)
+    if any(combo(n) for n in nodes):
+        return True
+    names = {n.id for n in nodes if isinstance(n, ast.Name)}
+    return any(isinstance(a, ast.Assign) and combo(a.value)
+               and any(isinstance(t, ast.Name) and t.id in names for t in a.targets) for a in ast.walk(tree))
+
+
 _REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs,
              "rebound_inferred_lambda": _rebound_inferred_lambda,
-             "unquoted_forward_ref": _unquoted_forward_ref}
+             "unquoted_forward_ref": _unquoted_forward_ref,
+             "generic_typeddict_typevar_call": _generic_typeddict_typevar_call,
+             "callable_attr_contravariance": _callable_attr_contravariance,
+             "stale_index_narrowing": _stale_index_narrowing,
+             "flag_is_chain": _flag_is_chain,
+             "flag_member_op": _flag_member_op}
 
 
 def _upstream_entries() -> list[KBEntry]:

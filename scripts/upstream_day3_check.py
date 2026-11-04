@@ -49,6 +49,28 @@ EXPECT: dict[str, dict[str, str | None]] = {
     "A3": {}, "A8": {}, "A10": {},
     "A7": {"crash:mypy": None},  # mypy crash of unconfirmed relation to #22361: stays live
     "A9": {"crash:pyright": None},  # unrelated pyright crash: stays live
+    "ty_TA_depth24": {"crash:ty": "TY-4883"},  # ~150 s on ty 0.0.84: exceeds the 120 s runner timeout
+    "ty_TA_nested_tuple_compare": {},  # depth 20 finishes in ~10 s: no crash, nothing to close
+    "mypy_B_typealias_hang": {"crash:mypy": None},  # a different hang (mypy:timeout): stays live
+    "pyright_11960_growing_alias": {"crash:pyright": "PYRIGHT-11960"},
+    # discrepancy entries / priors (finding ids as the pipeline numbers them)
+    "bug-01-narrowing-mypy-stale-index-narrowing": {"disc:D1": "MYPY-20969", "disc:D2": "MYPY-20969-REVEAL"},
+    "bug-02-enums-ty-flag-or-literal-union": {"disc:D1": "TY-876"},
+    "bug-02-ty-flag-or-assert-type": {"disc:D1": "TY-876-ASSERT"},
+    "bug-03-generics-mypy-callable-attr-contravariant": {"disc:D1": "MYPY-22339", "disc:D2": None},
+    "bug-04-dataclasses-mypy-initvar-default-class-attr": {"disc:D1": None, "disc:D2": None},  # priors only cap CONFIRMED/CANDIDATE; the gate already holds these at REVIEW
+    "bug-05-typeddict-ty-generic-typeddict-typevar-unknown": {"disc:D1": "TY-4884", "disc:D2": "TY-4884",
+                                                              "disc:D3": "TY-4884-REVEAL"},
+    "bug-05-ty-generic-typeddict-crash-witness": {"disc:D1": "TY-4884", "disc:D2": None},
+    "bug-06-enums-mypy-flag-is-narrowing-else-unreachable": {"disc:D1": "MYPY-21937"},
+    "probe-bug01-index-variants": {"disc:D1": "MYPY-20969-REVEAL", "disc:D2": "MYPY-20969-REVEAL",
+                                   "disc:D3": "MYPY-20969-REVEAL", "disc:D4": None},
+    "probe-bug02-flag-operators": {"disc:D1": "TY-876", "disc:D2": "TY-876", "disc:D3": "TY-876", "disc:D4": "TY-876",
+                                   "disc:D5": None, "disc:D6": None},
+    "probe-bug03-variance-variants": {"disc:D1": "MYPY-22339", "disc:D2": "MYPY-22339"},
+    "probe-bug05-typeddict-variants": {"disc:D1": "TY-4884-ASSERT", "disc:D2": "TY-4884-ASSERT"},
+    "probe-bug06-flag-param-and-local": {"disc:D1": "MYPY-21937", "disc:D2": None, "disc:D3": "TY-876"},
+    "probe-bug02-bug05-runtime-and-assignability": {},
     "pyright_init_attr": {"crash:pyright": "PYRIGHT-11961"},
     "pyright_new_attr": {"crash:pyright": "PYRIGHT-11961"},
     "pyright_call_metaclass": {"crash:pyright": "PYRIGHT-11961"},
@@ -75,9 +97,13 @@ def run_one(name: str) -> dict:
         for f in d["findings"]:
             c = crashes.get(f["discrepancy_id"])
             key = f"crash:{c['tool']}" if c and f["discrepancy_id"].startswith("C") else f"disc:{f['discrepancy_id']}"
-            note = next((n for n in f.get("review_notes", []) if "DUPLICATE of" in n or "PRIOR-STANCE" in n), "")
+            note = next((n for n in f.get("review_notes", []) if "DUPLICATE of" in n), "")
+            closed = _closing_id(note)
+            if closed is None and f["decided_by"].startswith("kb:UPSTREAM-"):
+                closed = f["decided_by"][len("kb:UPSTREAM-"):]
+            priors = [n for n in f.get("review_notes", []) if n.startswith("PRIOR-STANCE:")]
             rows.append({"key": key, "signature": f.get("signature"), "tier": f["tier"], "dismissal": f.get("dismissal"),
-                         "decided_by": f["decided_by"], "closed_by": _closing_id(note)})
+                         "decided_by": f["decided_by"], "closed_by": closed, "priors": priors})
     shutil.rmtree(tmp, ignore_errors=True)
     return {"name": name, "rows": rows}
 
@@ -112,6 +138,8 @@ def main() -> int:
             row = seen.get(key)
             if want is None:
                 ok = row is not None and row["tier"] != "dismissed"
+            elif want.startswith("PRIOR:"):  # capped at REVIEW by a prior stance, not dismissed
+                ok = row is not None and row["tier"] == "review" and any(want[6:] in n for n in row["priors"])
             else:
                 ok = row is not None and row["tier"] == "dismissed" and row["closed_by"] == want
             if not ok:

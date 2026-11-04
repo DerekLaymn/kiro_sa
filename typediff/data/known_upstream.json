@@ -182,6 +182,101 @@
    "stance": "open",
    "url": "https://github.com/microsoft/pyright/issues/11960",
    "note": "closed as completed on 2026-11-03 (a maintainer comment points at PR #11968), but the pinned pyright 1.1.414 still hangs (no output after 60 s) on type GrowingList[T] = list[GrowingList[T | GrowingList[T]]] once the alias is specialised in an annotation; kept as an entry because the pinned version reproduces. The declaration alone does not hang."
+  },
+  {
+   "id": "TY-4884",
+   "kind": "only_mypy",
+   "codes": ["assignment"],
+   "message": "Incompatible types in assignment",
+   "requires": "generic_typeddict_typevar_call",
+   "dismissal": "DUPLICATE",
+   "example": "from typing import Generic, TypedDict, TypeVar\n\nT = TypeVar(\"T\")\n\n\nclass Resp(TypedDict, Generic[T]):\n    data: T\n\n\ndef first(r: Resp[T]) -> T:\n    return r[\"data\"]\n\n\na: Resp[int] = {\"data\": 1}\ny: str = first(a)\n",
+   "url": "https://github.com/astral-sh/ty/issues/4884",
+   "note": "closed as completed on 2026-11-02, fixed by astral-sh/ruff#29903, but ty 0.0.84 still reproduces (state as of 2026-11-04): ty cannot solve a TypeVar from a generic TypedDict argument (Resp[int] passed to Resp[T] leaves T Unknown), so a bad assignment of the call result is silently accepted; mypy and pyright report it. Narrow AST matcher: the statement calls a function with a parameter Resp[T] over a generic TypedDict. Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-4884-REVEAL",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type: `Unknown`",
+   "requires": "generic_typeddict_typevar_call",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/4884",
+   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903, still reproduces on ty 0.0.84): reveal_type of the call result is Unknown on ty and int on mypy/pyright."
+  },
+  {
+   "id": "TY-4884-ASSERT",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["type-assertion-failure"],
+   "message": "Type `Unknown` does not match asserted type",
+   "requires": "generic_typeddict_typevar_call",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/4884",
+   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903, still reproduces on ty 0.0.84): assert_type of the call result sees Unknown because ty could not solve the TypeVar from the generic TypedDict."
+  },
+  {
+   "id": "MYPY-22339",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["invalid-argument-type", "invalid-assignment"],
+   "message": "`\\w+\\[[^`]*\\]`.*`\\w+\\[[^`]*\\]`",
+   "requires": "callable_attr_contravariance",
+   "dismissal": "DUPLICATE",
+   "example": "from collections.abc import Callable\n\n\nclass Handler[T]:\n    def __init__(self, cb: Callable[[T], None]) -> None:\n        self.cb = cb\n\n\ndef use(h: Handler[int]) -> None:\n    h.cb = lambda v: print(v.bit_length())\n\n\nhf = Handler[float](lambda x: print(x.is_integer()))\nuse(hf)\n",
+   "url": "https://github.com/python/mypy/issues/22339",
+   "note": "open mypy bug (state as of 2026-11-04): PEP 695 variance inference treats a writable Callable[[T], None] attribute as contravariant, so Handler[float] is accepted as Handler[int] and the later callback reassignment fails at runtime; ty and pyright infer invariant and reject. Narrow AST matcher: the class named in ty's message is PEP 695 and stores a non-Final, non-underscore Callable[[..T..], R] attribute (class annotation or self.x = param); Final attributes and methods are not covered. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-20969",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["unsupported-operator", "invalid-argument-type", "invalid-return-type", "invalid-assignment", "unresolved-attribute"],
+   "requires": "stale_index_narrowing",
+   "dismissal": "DUPLICATE",
+   "example": "def a(xs: list[int | None]) -> int:\n    if xs[0] is not None:\n        xs[0] = None\n        return xs[0] + 1\n    return 0\n",
+   "url": "https://github.com/python/mypy/issues/20969",
+   "note": "open mypy bug (bug, priority-0-high, topic-type-narrowing; state as of 2026-11-04): mypy keeps the narrowing of a constant-index subscript (xs[0] is not None, isinstance(t[0], int)) after an assignment to that same subscript, so later uses see the stale type and ty/pyright's diagnostic is missing. Narrow AST matcher: constant subscript narrowed, assigned, then used in the reported statement; attribute narrowing (mypy resets it), variable indices and del are not covered. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-20969-REVEAL",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type",
+   "requires": "stale_index_narrowing",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/python/mypy/issues/20969",
+   "note": "same root cause as MYPY-20969 (open; state as of 2026-11-04): reveal_type of the subscript after the assignment shows mypy's stale narrowed type (int) where ty and pyright show the assigned type."
+  },
+  {
+   "id": "MYPY-21937",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["unsupported-operator", "invalid-argument-type", "invalid-return-type", "invalid-assignment", "unresolved-attribute"],
+   "requires": "flag_is_chain",
+   "dismissal": "DUPLICATE",
+   "example": "import enum\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\ndef h(x: F) -> str:\n    if x is F.R:\n        return \"R\"\n    elif x is F.W:\n        return \"W\"\n    else:\n        return 1 + \"bad\"\n",
+   "url": "https://github.com/python/mypy/issues/21937",
+   "note": "open mypy bug (bug, topic-enum, topic-type-narrowing; reopened; state as of 2026-11-04): mypy narrows an enum.Flag like a plain Enum, expanding it into its members, although the typing spec exempts Flag because members combine arbitrarily. The issue shows the == form; the same root cause makes the final else of an `x is F.A / elif x is F.B` chain look unreachable, so errors there are never reported (ty and pyright report them). Narrow AST matcher: the statement is in the final else of such a chain over a Flag/IntFlag subclass; the same chain over a plain Enum is not covered. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "TY-876",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type: `Literal\\[",
+   "requires": "flag_member_op",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/876",
+   "note": "open ty umbrella issue 'Enums: advanced features' (state as of 2026-11-04), unchecked item 'Handling of enum.Flag (enum expansion may not be performed for subclasses of enum.Flag)': ty reveals F.R | F.W as Literal[F.R, F.W] where mypy and pyright reveal F, although the runtime value <F.R|W: 3> is neither member. Narrow AST matcher: the statement uses a bitwise combination of two Flag/IntFlag members (directly or through a variable assigned from one). Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-876-ASSERT",
+   "kind": "only_ty",
+   "silent_tool": "mypy",
+   "codes": ["type-assertion-failure"],
+   "message": "Type `Literal\\[.*` does not match asserted type",
+   "requires": "flag_member_op",
+   "dismissal": "DUPLICATE",
+   "example": "import enum\nfrom typing import assert_type\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\nv = F.R | F.W\nassert_type(v, F)\n",
+   "url": "https://github.com/astral-sh/ty/issues/876",
+   "note": "same unchecked item of the open umbrella issue ty#876 (state as of 2026-11-04): assert_type(F.R | F.W, F) is rejected by ty because it expands a Flag combination to Literal[F.R, F.W]; mypy and pyright accept it. Verified on ty 0.0.84."
   }
  ],
  "prior_stances": [
@@ -217,6 +312,25 @@
    "kinds": ["only_mypy", "reveal_mismatch"],
    "tags": ["self"],
    "note": "open (bug label): the earlier design discussion of the same example, including the 'reveal_type contradicts the accepted call' observation. Its body text contains the Node/Leaf add(c: Self) program, so a title search would not find it"
-  }
- ]
+  },
+  {
+   "id": "MYPY-19889",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/19889",
+   "kinds": ["only_mypy"],
+   "codes": ["attr-defined"],
+   "message": "has no attribute",
+   "source": "InitVar\\[",
+   "note": "open mypy bug (bug, topic-dataclasses, topic-runtime-semantics; state as of 2026-11-04): mypy reports attr-defined for class access of an InitVar field that has a default (Sub.extra), which CPython allows (dataclasses leaves the default as a class attribute); pyright rejects the same access, so the expected behaviour is contested. Treated as an unconfirmed design question: caps at REVIEW, never dismisses."
+  },
+  {
+   "id": "TY-3765",
+   "stance": "duplicate-of",
+   "url": "https://github.com/astral-sh/ty/issues/3765",
+   "kinds": ["reveal_mismatch", "only_ty", "concern_mismatch"],
+   "message": ".",
+   "statement": "[&|^]",
+   "source": "\\bIntFlag\\b",
+   "note": "closed as a duplicate on 2026-06-17 (state as of 2026-11-04); the maintainer comment points at ty#876 (ty does not support enum.Flag yet). The issue itself is about `int() & Flags.A` narrowed to Literal[Flags.A] for an IntFlag, a related but different operand than a Flag|Flag combination. Related prior only: caps at REVIEW, never dismisses."
+  } ]
 }
