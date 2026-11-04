@@ -12,6 +12,3 @@
 ## Day 3 (P2+P3)
 
 [Plan §3 daily loop / setup] Checked out existing branch campaign/day3-p2, confirmed tree clean apart from allowed untracked items, created runs/day3/{inbox,gen,out,replay} and .agents/tasks, removed stale gate files (day3-morning-review.json, day3-gen-status.json); command: git checkout + mkdir -p + rm -f; result: ok
-## Day 3 (P2+P3)
-
-[Plan §3 daily loop / setup] Checked out existing branch campaign/day3-p2, confirmed tree clean apart from allowed untracked items, created runs/day3/{inbox,gen,out,replay} and .agents/tasks, removed stale gate files (day3-morning-review.json, day3-gen-status.json); command: git checkout + mkdir -p + rm -f; result: ok
