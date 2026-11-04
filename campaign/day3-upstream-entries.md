@@ -32,13 +32,13 @@ codes/message into a REVIEW cap on unrelated findings (their precision lives in 
 | MYPY-22344 | https://github.com/python/mypy/issues/22344 | open | entry (crash) | mypy segv + `T = TypeVar("T", default="T")` and `Generic[T]` class | mypy_E, mypy_25 close | 1 |
 | MYPY-22360 | https://github.com/python/mypy/issues/22360 | open | entry (crash) | mypy segv + contravariant `Z`, `N(Generic[Z])`, `C(N[N["..C.."]])`, annotation using `N[..]` outside C | B1, B4, D1, D7, D9, D10, D11 close; B3, B5, B6, D4, D8 stay | 0 |
 | MYPY-22361 | https://github.com/python/mypy/issues/22361 | open | entry (crash) | mypy segv + `__call__: C` / `Self` / union with either, and `C()()` or a `C`-typed name called | A1, A2, A4, A5, A6 close; A3, A8, A9, A10 stay; A7 (decorated `__get__`) also segfaults mypy but relation unproven, left live | 0 |
-| PYRIGHT-11961 | https://github.com/microsoft/pyright/issues/11961 | open | entry (crash) | pyright `pyright:internal(:RangeError)?` + `__init__`/`__new__`/metaclass `__call__` declared `type["C"]` and `C()` called | pyright_init_attr, new_attr, call_metaclass close; A9 (unrelated pyright RangeError) stays | 0 |
+| PYRIGHT-11961 | https://github.com/microsoft/pyright/issues/11961 | open | entry (crash) | pyright `pyright:internal:RangeError` + `__init__`/`__new__`/metaclass `__call__` declared `type["C"]` and `C()` called | pyright_init_attr, new_attr, call_metaclass close; A9 (unrelated pyright RangeError) stays | 0 |
 | PYRIGHT-11960 | https://github.com/microsoft/pyright/issues/11960 | **closed completed** (task text said open; PR #11968), pinned 1.1.414 still hangs (no output after 60 s) | entry (crash) | pyright `pyright:timeout` + growing PEP 695 alias specialised in an annotation | e2e `pyright_11960_growing_alias` closes | 0 |
 | MYPY-20969 (+`-REVEAL`) | https://github.com/python/mypy/issues/20969 | open | entry x2 | only_ty (5 diagnostic codes) / reveal_mismatch; constant-index subscript narrowed, assigned, then used in the statement. Covers list index, dict key, isinstance form | bug-01, probe list/dict/isinstance; controls: attribute, variable index, `del`, narrowed-not-assigned, other function; kb-selftest example | 0 |
 | MYPY-21937 | https://github.com/python/mypy/issues/21937 | open (reopened) | entry | only_ty in the final `else` of an `x is F.A / elif x is F.B` chain (>= 2 tests) over a Flag/IntFlag subclass | bug-06, probe-bug06 `h`; controls: plain Enum, statement inside the chain, single test; kb-selftest example | 0 |
 | TY-876 (+`-ASSERT`) | https://github.com/astral-sh/ty/issues/876 | open (umbrella, Flag item unchecked) | entry x2 | reveal_mismatch ``Revealed type: `Literal[`` / only_ty assert_type failure with `Literal[..]`; statement uses a bitwise combination of two Flag/IntFlag members (directly or via variable) | bug-02, probe operators (R\|W, R&W, R^R, IntFlag), assert witness; control: plain Enum; kb-selftest example (ASSERT) | 0 |
 | MYPY-19889 | https://github.com/python/mypy/issues/19889 | open | prior_stance | only_mypy `attr-defined` "has no attribute" in a program with `InitVar[` | bug-04 gets the prior and is not in `matching_entries` | 0 |
-| TY-3765 | https://github.com/astral-sh/ty/issues/3765 | closed duplicate (target ty#876 per maintainer comment) | prior_stance | reveal_mismatch/only_ty/concern_mismatch, statement with `& \| ^`, program with `IntFlag` | IntFlag program gets it; IntEnum does not; never in `matching_entries` | 0 |
+| TY-3765 | https://github.com/astral-sh/ty/issues/3765 | closed duplicate (target ty#876 per maintainer comment) | prior_stance | reveal_mismatch/only_ty/concern_mismatch, statement with an operator `& \| ^` between operands whose right operand is a dotted attribute (`A.B`), program with `IntFlag` | IntFlag program gets it; IntEnum does not; never in `matching_entries` | 0 |
 | TY-4656 | https://github.com/astral-sh/ty/issues/4656 | closed not planned (re-verified) | existing prior, unchanged | not duplicated | `test_prior_ty4656_unchanged_and_not_duplicated` | 0 |
 | pyright#11851 | https://github.com/microsoft/pyright/issues/11851 | open | not representable | pyright false negative; discrepancies only come from mypy-vs-ty differences, an entry would close an `only_mypy` finding and could hide a real ty false negative | none | 0 |
 | pyright#11859 | https://github.com/microsoft/pyright/issues/11859 | open | not representable | same reason | none | 0 |
@@ -60,8 +60,7 @@ Totals: 20 new `entries` (11 crash + 9 discrepancy: TY-4884 x3, MYPY-22339, MYPY
 - `del xs[0]` stale narrowing (probe D4) is not covered by MYPY-20969 (the issue is about assignment).
 - Priors only cap CONFIRMED/CANDIDATE findings; the bug-04 findings are already held at REVIEW by the gate, so the prior
   is verified by unit test (`find_priors`), not by the e2e run.
-- `stance: "open"` on the crash entries (e.g. PYRIGHT-11960, TY-4883, which are closed upstream) is not read for crash
-  findings; the real status is in each note. Left unchanged to avoid touching the priors path.
+- `stance` was removed from the closed crash entries TY-4883 and PYRIGHT-11960 in review iteration 2 (the field is not read for crash entries; the real status is in each note). Other crash entries keep `stance: "open"`.
 
 ## Replay of Day-2 outputs (`runs/day2/out3`)
 
@@ -322,3 +321,5 @@ new dismissed: ['kb-ASSERT-TYPE-LITERAL-RETENTION', 'kb-MYPY-13807-ALIASED-CONDI
 - MYPY-21937 note now documents that the matcher does not check chain exhaustiveness.
 - Calibration re-run on this tree (`scripts/kbloop_calib_subset.py /tmp/calib-r2 <194 ids> --negatives`): 227 rows, outcomes kept 120 / invisible 62 / dismissed 38 / excluded 5 / live 2; the dismissed set is identical to the list above (no newly dismissed known-real bug, none lost).
 - Day-2 replay not re-run in this iteration (runs/day3 absent, 14 min); the counts above are from iteration 1. The changes only add SIGKILL to TY-4899 and narrow PYRIGHT-11961 / TY-3765, so none of the earlier closed findings can be lost by narrowing except possibly a PYRIGHT-11961 bare-internal one (none of the 4 listed were pyright).
+
+Final verdict: reviewer approved after iteration 2 (4 non-blocking notes). The Day-2 replay was run once (iteration 1) and not re-run after iteration 2; a reviewer scan of `runs/day2/out3` found the same 4 closures.
