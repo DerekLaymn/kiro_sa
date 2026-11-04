@@ -25,7 +25,7 @@ codes/message into a REVIEW cap on unrelated findings (their precision lives in 
 | TY-4883 | https://github.com/astral-sh/ty/issues/4883 | closed completed (ruff#29933 per team); pinned still slow | entry (crash) | ty `ty:timeout` + chain of >= 12 `type Tn = tuple[Tm, Tm]` aliases + function comparing two params of the top alias. Depth 20 takes 9.5 s (no timeout, nothing to close), depth 24 takes 148 s > 120 s runner timeout | depth24 closes (unit + e2e); depth20 stays no-finding | 2 |
 | TY-4884 (+`-REVEAL`, `-ASSERT`) | https://github.com/astral-sh/ty/issues/4884 | closed completed (ruff#29903); pinned still reproduces | entry x3 | only_mypy `assignment` / reveal_mismatch ``Revealed type: `Unknown` `` / only_ty `type-assertion-failure` with `Unknown`; requires: statement calls a function whose parameter is itself a subscripted generic TypedDict over a function TypeVar | bug-05 (+witness), probe-bug05; controls: `Box[T]`, nested TypedDict (ty#4803 shape), `takes_int(c)`, `z: Resp[int] = c`; kb-selftest example | 0 |
 | TY-4898 | https://github.com/astral-sh/ty/issues/4898 | open | entry (crash) | ty stack overflow + `def F[**P, R](c: Callable[P, R])` (or old-style) with `F(F)` | C1, C3 close; C4, C5, C6 stay | 0 |
-| TY-4899 | https://github.com/astral-sh/ty/issues/4899 | open | entry (crash) | ty `(?:SIGABRT\|panic@.*\|timeout)` + class with `__init__(self: Callable[P,T])` and `__call__` with an extra named param, `U()` called. On the pinned tool the abort is seen as `ty:timeout` (E1/E2/E6/E10) and the plain-method case as the salsa panic (E8) | E1, E2, E6, E8, E10 close; E3, E4, E5, E7, E9 stay | 0 |
+| TY-4899 | https://github.com/astral-sh/ty/issues/4899 | open | entry (crash) | ty `(?:SIGABRT\|SIGKILL\|panic@.*\|timeout)` + class with `__init__(self: Callable[P,T])` and `__call__` with an extra named param, `U()` called. On the pinned tool the memory-blow-up abort is seen as `ty:timeout` or `ty:signal-SIGKILL` depending on host memory (E1/E2/E6/E10) and the plain-method case as the salsa panic (E8) | E1, E2, E6, E8, E10 close; E3, E4, E5, E7, E9 stay | 0 |
 | TY-4900 | https://github.com/astral-sh/ty/issues/4900 | open | entry (crash) | ty stack overflow + `class C(Generic[X], N[N["C[C[X]]"]])`, N uses its parameter (PEP 695 N must mention it; old-style N not covariant), annotation `N[C[..]]` outside C | D1, D7, D10, D11 close; D4, D8, A1 stay; mypy's crash on the same program is MYPY-22360 | 0 |
 | MYPY-22339 | https://github.com/python/mypy/issues/22339 | open | entry | only_ty `invalid-argument-type`/`invalid-assignment` on a generic named in ty's message whose PEP 695 class stores a non-Final, non-underscore `Callable[[..T..], R]` attribute | bug-03, probe CbInit, CbAnn; controls CbFinal, CbMethod, Plain, Producer; kb-selftest example | 0 |
 | MYPY-22343 | https://github.com/python/mypy/issues/22343 | open | entry (crash) | mypy `SIGSEGV\|RecursionError@..` + `type X = M[..X..]` with `type M[T] = type[T]` (RHS of M a subscript) | mypy_A closes; mypy_B (`type Id[T] = T`, hangs, `mypy:timeout`) stays | 0 |
@@ -98,10 +98,10 @@ Commands: `scripts/kbloop_calib_subset.py <out> <all ids from calibration/positi
 ```
 ........................................................................ [ 20%]
 ........................................................................ [ 40%]
-........................................................................ [ 61%]
+........................................................................ [ 60%]
 ........................................................................ [ 81%]
-................................................................         [100%]
-352 passed in 71.92s (0:01:11)
+...................................................................      [100%]
+355 passed in 128.86s (0:02:08)
 ```
 
 ### `typediff --python-version 3.13 kb-selftest` (all PASS; 20 entries incl. 5 new examples, baseline 15)
@@ -132,7 +132,7 @@ exit=0
 
 ### Each reproducer and control through the real pipeline (`TYPEDIFF_LLM=null`, one fresh `--out` per file; `scripts/upstream_day3_check.py`)
 
-Crash rows: `closed_by` is the upstream id that dismissed the crash (`tier=confirmed` = stays live). Rows for E1/E2/E6/E10 show `ty:timeout` because the pinned ty aborts after memory blow-up and the runner records a timeout.
+Crash rows: `closed_by` is the upstream id that dismissed the crash (`tier=confirmed` = stays live). The TY-4899 memory blow-up (E1/E2/E6/E10) is recorded by the pipeline as `ty:timeout` or `ty:signal-SIGKILL` depending on host memory; both close with TY-4899 (rerun of review iteration 1).
 
 ```
 == ty_TB_protocol_stack_overflow
@@ -160,7 +160,7 @@ Crash rows: `closed_by` is the upstream id that dismissed the crash (`tier=confi
 == E8
    crash:ty       tier=dismissed  dismissal=DUPLICATE decided_by=rule:crash:panic closed_by=TY-4899 sig=ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9
 == E10
-   crash:ty       tier=dismissed  dismissal=DUPLICATE decided_by=rule:crash:timeout closed_by=TY-4899 sig=ty:timeout
+   crash:ty       tier=dismissed  dismissal=DUPLICATE decided_by=rule:crash:signal closed_by=TY-4899 sig=ty:signal-SIGKILL
 == E3
    disc:D1        tier=review     dismissal=None decided_by=gate closed_by=None sig=None
    disc:D2        tier=review     dismissal=None decided_by=gate closed_by=None sig=None
@@ -312,3 +312,13 @@ base outcomes Counter({'kept': 121, 'invisible': 62, 'dismissed': 32, 'excluded'
 new outcomes Counter({'kept': 120, 'invisible': 62, 'dismissed': 38, 'excluded': 5, 'live': 2})
 new dismissed: ['kb-ASSERT-TYPE-LITERAL-RETENTION', 'kb-MYPY-13807-ALIASED-CONDITIONS', 'kb-MYPY-FIRST-ASSIGNMENT-TYPE', 'kb-MYPY-SUITE-ALLOW-EMPTY-BODIES', 'kb-PYRIGHT-REVEAL-EXPECTED-KWARG', 'kb-REVEAL-ERROR-RECOVERY', 'kb-TY-CALLABLE-DUNDER', 'kb-TY-REDECLARATION', 'kb-TY-SELF-UPPER-BOUND', 'kb-TY-STRICT-EQUALITY', 'kb-UPSTREAM-MYPY-20969', 'kb-UPSTREAM-MYPY-21937', 'kb-UPSTREAM-MYPY-22339', 'kb-UPSTREAM-MYPY-948', 'kb-UPSTREAM-TY-4884', 'kb-UPSTREAM-TY-876-ASSERT', 'mypy-4554', 'mypy-5289', 'mypy-6079', 'mypy-7984', 'neg-assert_type_literal_retention', 'neg-assignment_narrowing', 'neg-join_vs_union', 'neg-literal_widening', 'neg-mypy_aliased_condition', 'neg-mypy_first_assignment', 'neg-reveal_error_recovery', 'neg-suppression_codes', 'neg-unknown_attribute', 'neg-unreachable_reveal', 'ty-1090', 'ty-1172', 'ty-4713', 'ty-4786', 'ty-4817', 'ty-4835', 'ty-4872', 'ty-4882']
 ```
+
+### Review iteration 2 changes and re-verification
+
+- TY-4899 signature now also accepts `ty:signal-SIGKILL` (host-memory dependent form of the memory blow-up; shape gate `paramspec_self_callable_init` unchanged; no other ty entry accepts SIGKILL). Tests: E6 with SIGKILL and timeout, SIGKILL negatives on other ty shapes and on control E3.
+- PYRIGHT-11961 signature tightened to exactly `pyright:internal:RangeError` (bare `pyright:internal` no longer matches; test added).
+- `stance: open` removed from the closed crash entries TY-4883 and PYRIGHT-11960 (field is not read for crash entries).
+- Prior TY-3765 statement regex tightened to `[\w)\]]\s*[&|^]\s*\w+\.\w+` (an operator between operands, right operand an attribute); union annotations such as `int | None` no longer get the note; test added.
+- MYPY-21937 note now documents that the matcher does not check chain exhaustiveness.
+- Calibration re-run on this tree (`scripts/kbloop_calib_subset.py /tmp/calib-r2 <194 ids> --negatives`): 227 rows, outcomes kept 120 / invisible 62 / dismissed 38 / excluded 5 / live 2; the dismissed set is identical to the list above (no newly dismissed known-real bug, none lost).
+- Day-2 replay not re-run in this iteration (runs/day3 absent, 14 min); the counts above are from iteration 1. The changes only add SIGKILL to TY-4899 and narrow PYRIGHT-11961 / TY-3765, so none of the earlier closed findings can be lost by narrowing except possibly a PYRIGHT-11961 bare-internal one (none of the 4 listed were pyright).
