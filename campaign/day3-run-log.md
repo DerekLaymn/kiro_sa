@@ -12,3 +12,5 @@
 ## Day 3 (P2+P3)
 
 [Plan §3 daily loop / setup] Checked out existing branch campaign/day3-p2, confirmed tree clean apart from allowed untracked items, created runs/day3/{inbox,gen,out,replay} and .agents/tasks, removed stale gate files (day3-morning-review.json, day3-gen-status.json); command: git checkout + mkdir -p + rm -f; result: ok
+
+[OFF-PLAN pipeline defect fix] generate variant collapse: `typediff generate --n 3 --llm file:<tmp>` wrote 1 distinct prompt (before) because the prompt/seed did not depend on k. Fix: generator.generate(..., seed=0) passes seed to complete_json; cmd_generate passes seed=k; output filename uses sha1(src)[:8] instead of hash(). Tests: tests/test_generate_variants.py. Result: 3 distinct prompts (after); pytest 357 passed; kb-selftest 20 PASS / 0 FAIL.

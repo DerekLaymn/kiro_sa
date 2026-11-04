@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -160,12 +161,12 @@ def cmd_generate(args) -> int:
             if args.max_llm_calls and llm.calls >= args.max_llm_calls:
                 print(f"stopping: LLM call budget reached ({llm.calls})")
                 return 0
-            src, meta = generate(llm, area, brief, mutations, previous, [], args.python_version)
+            src, meta = generate(llm, area, brief, mutations, previous, [], args.python_version, seed=k)
             if not src:
                 print(f"  failed ({area}): {meta.get('preflight') or meta.get('error')}")
                 continue
             name = (origin.stem + f"__mut{k}") if origin else f"gen{k}"
-            dest = out / area / f"{name}_{abs(hash(src)) % 10**6:06d}.py"
+            dest = out / area / f"{name}_{hashlib.sha1(src.encode()).hexdigest()[:8]}.py"
             dest.parent.mkdir(parents=True, exist_ok=True)
             header = f"# area: {area}\n# hypothesis: {meta.get('hypothesis', '').strip()}\n# origin: {origin or 'llm'}\n"
             dest.write_text(header + src)

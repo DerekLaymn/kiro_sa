@@ -72,13 +72,13 @@ def blocking(problems: list[str]) -> bool:
 
 
 def generate(llm, area: str, brief: str, mutations: list, previous: str, avoid: list[str], target_python: str = "3.12",
-             retries: int = 1) -> tuple[str | None, dict]:
+             retries: int = 1, seed: int = 0) -> tuple[str | None, dict]:
     system = prompts.GENERATOR_SYSTEM.format(target_python=target_python, avoid="; ".join(avoid) or "(none)")
     user = prompts.GENERATOR_USER.format(area=area, brief=brief, mutations=mutations or "(none)", previous=previous or "")
     meta: dict = {}
     for _ in range(retries + 1):
         obj = complete_json(llm, system, user, lambda o: [] if isinstance(o, dict) and isinstance(o.get("source"), str) else ["need 'source'"],
-                            temperature=0.8, max_tokens=3000)
+                            temperature=0.8, max_tokens=3000, seed=seed)
         if obj.get("_null") or obj.get("_invalid"):
             return None, {"error": "generator unavailable"}
         src = obj["source"]
