@@ -26,7 +26,8 @@ from .dataset import Dataset, signature
 from .discrepancy import find_discrepancies
 from .experiments import ExperimentRunner
 from .llm import CachedLLM, from_env
-from .models import CaseReport, Crash, Dismissal, RuntimeResult, Tier, Tool, Verdict
+from .crash_upstream import match_crash
+from .models import CaseReport, Crash, Dismissal, RuntimeResult, Symptom, Tier, Tool, Verdict
 from .parsers import classify_exception, parse_mypy, parse_pyright, parse_runtime, parse_ty
 from .priors import apply_prior_cap, find_priors
 from .reducer import Reducer, _norm_msg
@@ -140,6 +141,12 @@ class Pipeline:
                 d = by_id.get(f.discrepancy_id)
                 sig = signature(f, d)
                 f.signature = sig
+                if f.symptom == Symptom.CRASH:
+                    hit = match_crash(state.source, f.faulty_tool, sig)
+                    if hit:
+                        f.tier, f.dismissal = Tier.DISMISSED, Dismissal(hit["dismissal"])
+                        f.review_notes.append(f"DUPLICATE of {hit['url']} ({hit['id']}): {hit['note']}")
+                        continue
                 # before anything is reported: has the tracker already taken a stance on something like this?
                 # (known_upstream.json; a near-match by signature or feature tags caps the finding at REVIEW)
                 if apply_prior_cap(f, find_priors(state.source, d)):

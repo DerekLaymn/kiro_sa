@@ -1,5 +1,5 @@
 {
- "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles.",
+ "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles. CRASH entries (kind \"crash\", matched in typediff/crash_upstream.py from the pipeline because crash findings have no discrepancy): fields id, kind, tool (mypy|ty|pyright; one entry per tool, the same program can crash two tools with two different issues), signature (regex, re.fullmatch against the crash signature, e.g. ty:signal-SIGABRT:stack-overflow, mypy:signal-SIGSEGV, pyright:internal:RangeError, <tool>:timeout), requires (MANDATORY name in crash_upstream._CRASH_REQUIRES, a pure function of the parsed program: a crash is dismissed only when tool AND signature AND source shape all match, never on tool + signature alone), dismissal (DUPLICATE), stance, url, note. Crash entries build no KB entry and have no kb-selftest example.",
  "entries": [
   {
    "id": "TY-1090",
@@ -61,6 +61,127 @@
    "example": "# origin: python/mypy check-classes.test [case testX]\nclass A:\n    def f(self, other: A) -> None: ...\n",
    "url": "https://github.com/python/mypy/issues/948",
    "note": "HONEST STATUS: #948 is an open FEATURE REQUEST, not a statement that mypy is right; this dismissal is KNOWN_LIMITATION (a tracked, unimplemented mypy check), and ty's report is arguably correct (the code raises NameError on 3.13 without a future import). The silent tool is mypy. Issue opened and read: open mypy enhancement request, opened and read (title: 'Detect if required string literal escapes are missing from a type'; body: 'Mypy should complain about code that isn't using string literal escaped when they are required', example `def (self) -> A: ...  # Should be an error; string literal escape required`): mypy does not report a missing string-literal escape for a forward reference in an annotation, which raises NameError at runtime when annotations are evaluated eagerly (Python < 3.14 without `from __future__ import annotations`); the duplicate python/mypy#3088 was closed in its favour. Narrow AST matcher: unquoted name inside an annotation of the same statement, naming a class of the file defined later or enclosing the statement, no future import, ty and pyright agree it is undefined. Many harvested mypy .test files rely on this leniency."
+  },
+  {
+   "id": "TY-4882",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "ty:signal-SIGABRT:stack-overflow",
+   "requires": "protocol_selfref_pair",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4882",
+   "note": "open (bug, fatal, protocols; state as of 2026-11-04): ty aborts with a stack overflow on two generic protocols where P1.a takes P1[T2] and P2.a takes P1[T2] | P2[T2]; no call needed (origin: mypy check-protocols.test testTwoUncomfortablyIncompatibleProtocolsWithoutRunningInIssue9771). Verified on ty 0.0.84 (ty_TB, t20a, ty_20 reproducers)."
+  },
+  {
+   "id": "TY-4883",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "ty:timeout",
+   "requires": "nested_tuple_alias_compare",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4883",
+   "note": "closed as completed on 2026-11-03 (performance; fix referenced by the team as astral-sh/ruff#29933, not verified by us), but ty 0.0.84 still shows it: comparing two values of the same deeply nested tuple alias (type Tn = tuple[T(n-1), T(n-1)], depth >= 12) takes exponential time, seen by the pipeline only as a runner timeout (depth 20 takes ~9.5 s on 0.84, depth 24 exceeds the 120 s default). Kept as an entry because the pinned version still reproduces."
+  },
+  {
+   "id": "TY-4898",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "ty:signal-SIGABRT:stack-overflow",
+   "requires": "paramspec_self_application",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4898",
+   "note": "open (bug, fatal, paramspec; state as of 2026-11-04): stack overflow when a function generic over Callable[P, R] (ParamSpec plus a separate return TypeVar) is called with itself, id(id). Callable[[T], T], Callable[P, int] and id(g) do not crash. Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-4899",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "(?:ty:signal-SIGABRT|ty:panic@.*|ty:timeout)",
+   "requires": "paramspec_self_callable_init",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4899",
+   "note": "open (bug, fatal, cycles, paramspec; state as of 2026-11-04): a class whose __init__ types self as Callable[P, T] plus a __call__ typed over Callable[P, T] with one more named parameter makes ty run out of memory and abort (classmethod __call__) or panic 'too many cycle iterations' (plain method). Needs the extra parameter and a U() call. Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-4900",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "ty:signal-SIGABRT:stack-overflow",
+   "requires": "expanding_generic_base",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4900",
+   "note": "open (bug, fatal, generics, cycles; state as of 2026-11-04): stack overflow when a generic class C has base N[N['C[C[X]]']] (C expanding inside its own argument) and N[C[int]] is then checked. The non-expanding base N[N['C[X]']] and a program without the N[C[..]] use do not crash. Verified on ty 0.0.84. The mypy crash on the same program is MYPY-22360, a different entry."
+  },
+  {
+   "id": "MYPY-22343",
+   "kind": "crash",
+   "tool": "mypy",
+   "signature": "mypy:signal-SIGSEGV|mypy:RecursionError@.*",
+   "requires": "alias_via_generic_alias",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/22343",
+   "note": "open (crash; state as of 2026-11-04): compiled mypy segfaults (uncompiled: RecursionError) on type X = Meta[X] with type Meta[T] = type[T], a self-reference through another generic alias. type A = A and type X = type[X] are rejected cleanly. The bare-parameter variant type Id[T] = T; type X = Id[X] hangs instead (different symptom, not matched). Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-22344",
+   "kind": "crash",
+   "tool": "mypy",
+   "signature": "mypy:signal-SIGSEGV|mypy:RecursionError@.*",
+   "requires": "typevar_default_self",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/22344",
+   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault on a class parameterised by T = TypeVar('T', default='T'). The bare TypeVar and def f(x: T) do not crash. Verified on mypy 2.4.0."
+  },
+  {
+   "id": "MYPY-22360",
+   "kind": "crash",
+   "tool": "mypy",
+   "signature": "mypy:signal-SIGSEGV|mypy:RecursionError@.*",
+   "requires": "contravariant_selfref_base",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/22360",
+   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault checking C against N[C] where N is contravariant and class C(N[N['C']]) refers back to C; the class definitions alone, and invariant or covariant Z, do not crash. Verified on mypy 2.4.0. The ty crash on the same program is TY-4900, a different entry."
+  },
+  {
+   "id": "MYPY-22361",
+   "kind": "crash",
+   "tool": "mypy",
+   "signature": "mypy:signal-SIGSEGV|mypy:RecursionError@.*",
+   "requires": "call_attr_own_type",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/22361",
+   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault when an instance is called and its class declares __call__ as an attribute annotated with the class itself, Self | None or C | None. The declaration alone, __get__: C and __call__: int do not crash. Verified on mypy 2.4.0. The decorated-__get__ program (A7) also crashes mypy 2.4.0 but its relation to this issue is unconfirmed, so it is not matched."
+  },
+  {
+   "id": "PYRIGHT-11961",
+   "kind": "crash",
+   "tool": "pyright",
+   "signature": "pyright:internal(?::RangeError)?",
+   "requires": "ctor_annotated_own_class",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/microsoft/pyright/issues/11961",
+   "note": "open (bug; state as of 2026-11-04): RangeError 'Maximum call stack size exceeded' when __init__ or __new__ (or a metaclass __call__) is declared as type['C'] of its own class and the class is instantiated. Verified on pyright 1.1.414."
+  },
+  {
+   "id": "PYRIGHT-11960",
+   "kind": "crash",
+   "tool": "pyright",
+   "signature": "pyright:timeout",
+   "requires": "growing_recursive_alias",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/microsoft/pyright/issues/11960",
+   "note": "closed as completed on 2026-11-03 (a maintainer comment points at PR #11968), but the pinned pyright 1.1.414 still hangs (no output after 60 s) on type GrowingList[T] = list[GrowingList[T | GrowingList[T]]] once the alias is specialised in an annotation; kept as an entry because the pinned version reproduces. The declaration alone does not hang."
   }
  ],
  "prior_stances": [

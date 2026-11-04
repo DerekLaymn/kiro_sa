@@ -1055,6 +1055,8 @@ def _upstream_entries() -> list[KBEntry]:
         return []
     out = []
     for e in json.loads(path.read_text()).get("entries", []):
+        if e["kind"] == "crash":
+            continue  # crash entries are matched from the pipeline (typediff/crash_upstream.py), not as KB entries
         kind = K(e["kind"])
 
         def matcher(s, d, e=e):
