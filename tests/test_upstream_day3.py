@@ -41,6 +41,8 @@ def crashes_as(tool: str, sig: str, name: str) -> str | None:
     ("E1", "ty", "ty:signal-SIGABRT", "TY-4899"),
     ("E2", "ty", "ty:signal-SIGABRT", "TY-4899"),
     ("E6", "ty", "ty:signal-SIGABRT", "TY-4899"),
+    ("E6", "ty", "ty:signal-SIGKILL", "TY-4899"),
+    ("E6", "ty", "ty:timeout", "TY-4899"),
     ("E8", "ty", "ty:panic@crates/ty_python_semantic/src/x.rs:1:1", "TY-4899"),
     ("E10", "ty", "ty:signal-SIGABRT", "TY-4899"),
     ("D1", "ty", TY_SO, "TY-4900"),
@@ -110,6 +112,12 @@ def test_signature_gate():
     assert crashes_as("ty", "ty:exit2", "ty_TB_protocol_stack_overflow") is None
     assert crashes_as("mypy", "mypy:exit2", "A2") is None
     assert crashes_as("ty", "ty:signal-SIGABRT", "C1") is None  # memory abort is not the #4898 stack overflow
+    # SIGKILL belongs to TY-4899 only (E6 memory blow-up); no other ty entry accepts it
+    for name in ("ty_TB_protocol_stack_overflow", "C1", "D1", "ty_TA_depth24"):
+        assert crashes_as("ty", "ty:signal-SIGKILL", name) is None
+    assert crashes_as("ty", "ty:signal-SIGKILL", "E3") is None  # control for the TY-4899 shape
+    # bare pyright:internal (not the RangeError) is not PYRIGHT-11961
+    assert crashes_as("pyright", "pyright:internal", "pyright_init_attr") is None
 
 
 def test_broken_source_is_no_match():
@@ -327,6 +335,12 @@ def test_prior_mypy19889_caps_but_never_dismisses():
     plain = "class A:\n    x: int = 0\n\n\nA.y\n"
     st, d = disc(plain, "A.y", K.ONLY_MYPY, mypy=[("attr-defined", '"type[A]" has no attribute "y"')])
     assert "MYPY-19889" not in {p.id for p in find_priors(plain, d)}
+
+
+def test_prior_ty3765_ignores_union_annotations():
+    s = "import enum\n\n\nclass I(enum.IntFlag):\n    A = 1\n\n\nx: int | None = None\nreveal_type(x)\n"
+    st, d = disc(s, "x: int | None = None", K.REVEAL_MISMATCH, ty=[(None, "x")])
+    assert "TY-3765" not in {p.id for p in find_priors(s, d)}
 
 
 def test_prior_ty3765_intflag_is_related_only():

@@ -80,7 +80,6 @@
    "signature": "ty:timeout",
    "requires": "nested_tuple_alias_compare",
    "dismissal": "DUPLICATE",
-   "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4883",
    "note": "closed as completed on 2026-11-03 (performance; fix referenced by the team as astral-sh/ruff#29933, not verified by us), but ty 0.0.84 still shows it: comparing two values of the same deeply nested tuple alias (type Tn = tuple[T(n-1), T(n-1)], depth >= 12) takes exponential time, seen by the pipeline only as a runner timeout (depth 20 takes ~9.5 s on 0.84, depth 24 exceeds the 120 s default). Kept as an entry because the pinned version still reproduces."
   },
@@ -99,12 +98,12 @@
    "id": "TY-4899",
    "kind": "crash",
    "tool": "ty",
-   "signature": "(?:ty:signal-SIGABRT|ty:panic@.*|ty:timeout)",
+   "signature": "(?:ty:signal-SIGABRT|ty:signal-SIGKILL|ty:panic@.*|ty:timeout)",
    "requires": "paramspec_self_callable_init",
    "dismissal": "DUPLICATE",
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4899",
-   "note": "open (bug, fatal, cycles, paramspec; state as of 2026-11-04): a class whose __init__ types self as Callable[P, T] plus a __call__ typed over Callable[P, T] with one more named parameter makes ty run out of memory and abort (classmethod __call__) or panic 'too many cycle iterations' (plain method). Needs the extra parameter and a U() call. Verified on ty 0.0.84."
+   "note": "open (bug, fatal, cycles, paramspec; state as of 2026-11-04): a class whose __init__ types self as Callable[P, T] plus a __call__ typed over Callable[P, T] with one more named parameter makes ty run out of memory and abort (classmethod __call__; the pipeline sees the abort as ty:timeout or ty:signal-SIGKILL depending on host memory) or panic 'too many cycle iterations' (plain method). Needs the extra parameter and a U() call. Verified on ty 0.0.84."
   },
   {
    "id": "TY-4900",
@@ -165,7 +164,7 @@
    "id": "PYRIGHT-11961",
    "kind": "crash",
    "tool": "pyright",
-   "signature": "pyright:internal(?::RangeError)?",
+   "signature": "pyright:internal:RangeError",
    "requires": "ctor_annotated_own_class",
    "dismissal": "DUPLICATE",
    "stance": "open",
@@ -179,7 +178,6 @@
    "signature": "pyright:timeout",
    "requires": "growing_recursive_alias",
    "dismissal": "DUPLICATE",
-   "stance": "open",
    "url": "https://github.com/microsoft/pyright/issues/11960",
    "note": "closed as completed on 2026-11-03 (a maintainer comment points at PR #11968), but the pinned pyright 1.1.414 still hangs (no output after 60 s) on type GrowingList[T] = list[GrowingList[T | GrowingList[T]]] once the alias is specialised in an annotation; kept as an entry because the pinned version reproduces. The declaration alone does not hang."
   },
@@ -255,7 +253,7 @@
    "dismissal": "DUPLICATE",
    "example": "import enum\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\ndef h(x: F) -> str:\n    if x is F.R:\n        return \"R\"\n    elif x is F.W:\n        return \"W\"\n    else:\n        return 1 + \"bad\"\n",
    "url": "https://github.com/python/mypy/issues/21937",
-   "note": "open mypy bug (bug, topic-enum, topic-type-narrowing; reopened; state as of 2026-11-04): mypy narrows an enum.Flag like a plain Enum, expanding it into its members, although the typing spec exempts Flag because members combine arbitrarily. The issue shows the == form; the same root cause makes the final else of an `x is F.A / elif x is F.B` chain look unreachable, so errors there are never reported (ty and pyright report them). Narrow AST matcher: the statement is in the final else of such a chain over a Flag/IntFlag subclass; the same chain over a plain Enum is not covered. Verified on mypy 2.4.0."
+   "note": "open mypy bug (bug, topic-enum, topic-type-narrowing; reopened; state as of 2026-11-04): mypy narrows an enum.Flag like a plain Enum, expanding it into its members, although the typing spec exempts Flag because members combine arbitrarily. The issue shows the == form; the same root cause makes the final else of an `x is F.A / elif x is F.B` chain look unreachable, so errors there are never reported (ty and pyright report them). Narrow AST matcher: the statement is in the final else of such a chain over a Flag/IntFlag subclass; the same chain over a plain Enum is not covered. Known limit: the matcher does not check that the chain tests every member, so a partial chain could be over-matched. Verified on mypy 2.4.0."
   },
   {
    "id": "TY-876",
@@ -329,7 +327,7 @@
    "url": "https://github.com/astral-sh/ty/issues/3765",
    "kinds": ["reveal_mismatch", "only_ty", "concern_mismatch"],
    "message": ".",
-   "statement": "[&|^]",
+   "statement": "[\\w)\\]]\\s*[&|^]\\s*\\w+\\.\\w+",
    "source": "\\bIntFlag\\b",
    "note": "closed as a duplicate on 2026-06-17 (state as of 2026-11-04); the maintainer comment points at ty#876 (ty does not support enum.Flag yet). The issue itself is about `int() & Flags.A` narrowed to Literal[Flags.A] for an IntFlag, a related but different operand than a Flag|Flag combination. Related prior only: caps at REVIEW, never dismisses."
   } ]
