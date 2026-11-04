@@ -218,6 +218,14 @@ the draft starts with the stance, the url and a "check the body text on the trac
 ever lowers a tier and has no network access. Searching the tracker and discuss.python.org stays a
 manual step (FUZZING_PLAN.md §6): title searches miss duplicates whose example sits in the body.
 
+**Crash entries.** Crash findings have no discrepancy, so the KB matcher never sees them. `known_upstream.json`
+entries with `kind: "crash"` are matched instead by `crash_upstream.match_crash` from `Pipeline._judge` and close the
+finding as DUPLICATE. A crash is dismissed only when the crashing tool equals the entry's `tool`, the crash signature
+fully matches the entry's regex, and the entry's mandatory `requires` function accepts the parsed program. The
+`requires` shape is what separates different bugs that share a signature (ty reports `ty:signal-SIGABRT:stack-overflow`
+for ty#4882, #4898, #4900 and for an unfiled self-call case). Crash entries build no KB entry and have no
+kb-selftest example; tests/test_upstream_day3.py covers them with real reproducers and controls.
+
 **Runtime evidence and reduction.** When a CPython exception is attached as evidence, the note lists
 the constructs in the raising statement's dependency set that could be responsible (`causes.py`). The
 reducer's predicate keeps the same exception class, the same message and the same raising statement.
@@ -330,7 +338,7 @@ The only real bug found was the *printed* signature `bound method Leaf.add(c: Le
 | a printed reveal is not a call-checking fact | `SELF_CONTRADICTION` is demoted to weak when the revealed bound method / callable has `Self` or a TypeVar parameter; weak items never reach CANDIDATE/CONFIRMED |
 | the spec may define the behaviour by desugaring | `spec_desugar` experiment; unchanged answer → hint toward SPEC_AMBIGUITY |
 | the other tool's reading may itself be unsound | `lsp_probe` experiment; both calls accepted → CONSENSUS-downgrade note |
-| it may already be discussed | prior-stance check in `known_upstream.json` caps at REVIEW and attaches the url |
+| it may already be discussed | prior-stance check in `known_upstream.json` caps at REVIEW and attaches the url; `kind: crash` entries close known crashes by tool + signature + program shape |
 | a crash has a cause | runtime evidence lists responsible constructs; reduction must keep the same failure or say so |
 | the specific pattern | KB entry `TY-SELF-UPPER-BOUND`, dismisses only after the desugar probe, steps aside when `Self`-typed state crashes |
 

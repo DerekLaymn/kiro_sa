@@ -214,7 +214,8 @@ This is the checklist the `Self` report (ty#4656) should have gone through:
 7. **File one issue per root cause.** Include the minimal repro, actual vs expected output, the
    spec rule, variants, links to related issues and the playground link.
 8. **Record it:** add an entry to `typediff/data/known_upstream.json` with the issue URL, so later
-   runs dismiss it as DUPLICATE.
+   runs dismiss it as DUPLICATE. Crashes and hangs are recorded as `kind: "crash"` entries (tool, signature
+   regex and a mandatory `requires` program-shape matcher in `typediff/crash_upstream.py`).
 
 ---
 
