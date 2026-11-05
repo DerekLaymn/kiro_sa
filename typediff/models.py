@@ -226,6 +226,7 @@ class Finding:
     review_notes: list[str] = field(default_factory=list)  # skeptic / advocate output
     reduced_source: str | None = None
     signature: str | None = None
+    closed_by: str | None = None  # why a crash finding was auto-closed: "<entry id> <url> signature=<sig> requires=<fn>"
 
 
 @dataclass

@@ -73,7 +73,7 @@ class Dataset:
                     "verdict": f.verdict.value, "faulty_tool": f.faulty_tool,
                     "symptom": f.symptom.value if f.symptom else None,
                     "dismissal": f.dismissal.value if f.dismissal else None, "confidence": f.confidence,
-                    "decided_by": f.decided_by, "kind": d.kind.value if d else "crash",
+                    "decided_by": f.decided_by, "closed_by": f.closed_by, "kind": d.kind.value if d else "crash",
                     "statement": d.statement if d else "", "anchor": d.anchor if d else None,
                     "codes": sorted({x.code or "" for x in (d.mypy + d.ty if d else [])}),
                     "features": d.features if d else [], "kb_hits": d.kb_hits if d else [],

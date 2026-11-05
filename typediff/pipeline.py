@@ -145,14 +145,22 @@ class Pipeline:
                     hit = match_crash(state.source, f.faulty_tool, sig)
                     if hit:
                         f.tier, f.dismissal = Tier.DISMISSED, Dismissal(hit["dismissal"])
+                        f.closed_by = f"{hit['id']} {hit['url']} signature={sig} requires={hit.get('requires')}"
                         f.review_notes.append(f"DUPLICATE of {hit['url']} ({hit['id']}): {hit['note']}")
                         continue
+                    # A crash is closed ONLY by a known_upstream crash entry (above); `closed_by` records which one.
+                    # The dataset's same-signature shortcut below never closes a crash: several different bugs share
+                    # one signature (e.g. ty:signal-SIGABRT:stack-overflow).
                 # before anything is reported: has the tracker already taken a stance on something like this?
                 # (known_upstream.json; a near-match by signature or feature tags caps the finding at REVIEW)
                 if apply_prior_cap(f, find_priors(state.source, d)):
                     continue
                 dup = self.dataset.duplicate_of(sig) if self.dataset else None
-                if dup:
+                if dup and f.symptom == Symptom.CRASH:
+                    f.review_notes.append(
+                        f"SAME-SIGNATURE-AS {dup}: NOT closed (no known_upstream crash entry matched this program); "
+                        "compare the programs before treating it as a duplicate")
+                elif dup:
                     f.tier, f.dismissal = Tier.DISMISSED, Dismissal.DUPLICATE
                     f.review_notes.append(f"DUPLICATE of {dup}")
                     continue
