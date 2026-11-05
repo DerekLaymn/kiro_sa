@@ -1,0 +1,650 @@
+
+##### day3 seed-61524ebfb287
+  -> D1 reveal_mismatch L21 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  6 from typing import reveal_type
+  9 class A:
+ 10     def __init__(self, x: int | None) -> None:
+ 11         self.x = x
+ 13     def clear(self) -> None:
+ 14         self.x = None
+ 17 def f(a: A) -> int:
+ 18     is_none = a.x is None
+ 19     a.clear()
+ 20     if not is_none:
+ 21         reveal_type(a.x)
+ 22         return 1
+ 23     return 0
+ 26 def loop(a: A) -> int:
+ 27     total = 0
+ 28     for _ in range(2):
+ 29         stale = a.x is None
+ 30         a.x = 5 if stale else None
+ 31         if (fresh := a.x is None) is False:
+ 32             total += 1
+ 33     return total
+ 36 assert f(A(3)) == 1
+ 37 assert f(A(None)) == 0
+ 38 assert loop(A(None)) == 1
+
+##### day3 seed-e1e14ede1dfc
+  -> D1 only_ty L23 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  6 from typing import Literal, NamedTuple, assert_type
+  9 class Restricted(tuple[Literal[1]]):
+ 10     def __lt__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 11         return True
+ 14 class Pair(NamedTuple):
+ 15     a: int
+ 16     b: int
+ 18     def __lt__(self, other: tuple[int, ...], /) -> bool:
+ 19         return False
+ 22 r = Restricted((1,)) < (1,)
+ 23 assert_type(r, bool)
+ 24 assert r is True
+ 25 p = Pair(1, 2) < (3, 4)
+ 26 assert p is False
+
+##### day4 seed-086d9e1c2b9a
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  4 from typing import reveal_type
+  7 class A:
+  8     def __init__(self, x: int | None) -> None:
+  9         self.x = x
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def f(a: A) -> int:
+ 16     is_none = a.x is None
+ 17     a.clear()
+ 18     if not is_none:
+ 19         reveal_type(a.x)
+ 20         return 1
+ 21     return 0
+ 24 def loop(a: A) -> int:
+ 25     total = 0
+ 26     for _ in range(2):
+ 27         stale = a.x is None
+ 28         a.x = 5 if stale else None
+ 29         if (fresh := a.x is None) is False:
+ 30             total += 1
+ 31     return total
+ 34 witness = (f(A(3)), f(A(None)), loop(A(None)))
+ 35 assert witness == (1, 0, 1)
+ 36 print(witness)
+
+##### day4 seed-20e909d57566
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  4 from typing import reveal_type
+  7 class A:
+  8     def __init__(self, x: int | None) -> None:
+  9         self.x = x
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def stale_then_call(a: A) -> int:
+ 16     is_none = a.x is None
+ 17     a.clear()
+ 18     if not is_none:
+ 19         reveal_type(a.x)
+ 20         return 1
+ 21     return 0
+ 24 def loop_alias(a: A) -> int:
+ 25     total = 0
+ 26     for _ in range(2):
+ 27         stale = a.x is None
+ 28         a.x = 5 if stale else None
+ 29         if (fresh := a.x is None) is False:
+ 30             total += 1
+ 31     return total
+ 34 def while_isinstance(v: object) -> str:
+ 35     is_str = isinstance(v, str)
+ 36     count = 0
+ 37     while count < 1 and is_str:
+ 38         reveal_type(v)
+ 39         count += 1
+ 40     return "done"
+ 43 print(stale_then_call(A(3)), stale_then_call(A(None)))
+ 44 print(loop_alias(A(None)), while_isinstance("s"), while_isinstance(1))
+
+##### day4 seed-49d34f313d36
+  -> D2 reveal_mismatch L16 'reveal_type(r)' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  4 from typing import Literal, assert_type, reveal_type
+  7 class Restricted(tuple[Literal[1]]):
+  8     def __eq__(self, other: object, /) -> bool:
+  9         return True
+ 11     def __ne__(self, other: object, /) -> bool:
+ 12         return False
+ 15 r = Restricted((1,)) == (2,)
+ 16 reveal_type(r)
+ 17 assert r is True
+ 18 assert_type(r, bool)
+ 20 witnesses = (
+ 21     r,
+ 22     Restricted((1,)) != (2,),
+ 23     (2,) == Restricted((1,)),
+ 24 )
+ 25 assert witnesses == (True, False, True)
+ 26 print(witnesses)
+
+##### day4 seed-522ffbdc730d
+  -> D1 only_ty L19 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  6 from typing import Literal, assert_type
+  9 class Pair(tuple[Literal[3], Literal[4]]):
+ 10     def __ge__(self, other: object, /) -> bool:
+ 11         return True
+ 14 r = Pair((3, 4)) >= (9, 9)
+ 15 if r is not True:
+ 16     print("not true")
+ 17 else:
+ 18     print("true branch")
+ 19 assert_type(r, bool)
+ 20 print(r)
+
+##### day4 seed-52fd7a6f2fb5
+  -> D1 only_mypy L36 'c.readonly = 5  # expect-error' kb:UPSTREAM-TY-2792-READONLY (before: gate) rel=None ty=[] mypy=['Property "readonly" defined in "C" is read-only']
+  -> D2 reveal_mismatch L32 'reveal_type(c.n)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Never`'] mypy=['Revealed type is "int"']
+  6 from typing import reveal_type
+  9 class Tag:
+ 10     def __get__(self, obj: object | None, objtype: type | None = None) -> int:
+ 11         return 5
+ 14 class C:
+ 15     tag = Tag()
+ 17     def __init__(self, n: int) -> None:
+ 18         self.n = n
+ 20     @property
+ 21     def readonly(self) -> int:
+ 22         return self.n
+ 24     def reset(self) -> None:
+ 25         self.n = 99
+ 28 def g(c: C) -> str:
+ 29     assert c.n == 8
+ 30     c.reset()
+ 31     assert c.n == 99
+ 32     reveal_type(c.n)
+ 33     c.__dict__["tag"] = 42
+ 34     print("tag", c.tag)
+ 35     try:
+ 36         c.readonly = 5  # expect-error
+ 37     except AttributeError:
+ 38         return "read-only"
+ 39     return "written"
+ 42 print(g(C(8)))
+
+##### day4 seed-58fbe6a474ad
+  -> D1 reveal_mismatch L19 'reveal_type(r)' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  6 from typing import Literal, reveal_type
+  9 class Pair2(tuple[Literal[1], Literal[2]]):
+ 10     def __eq__(self, other: object, /) -> bool:
+ 11         return True
+ 13     def __ne__(self, other: object, /) -> bool:
+ 14         return True
+ 17 p = Pair2((1, 2))
+ 18 r = p == (3, 4)
+ 19 reveal_type(r)
+ 20 print(r, p != (3, 4), (3, 4) == p)
+
+##### day4 seed-8081ab5109c0
+  -> D1 reveal_mismatch L21 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal["a"]`'] mypy=['Revealed type is "str | None"']
+  4 from typing import reveal_type
+  7 class A:
+  8     x: str | None = None
+ 10     def update_x(self, value: str | None) -> None:
+ 11         self.x = value
+ 14 a = A()
+ 15 a.x = "a"
+ 16 a.update_x("b")
+ 19 class D:
+ 20     first = a.x
+ 21     reveal_type(a.x)
+ 24 def use_alias(obj: A) -> str:
+ 25     alias = obj.x
+ 26     obj.update_x("c")
+ 27     if isinstance(alias, str):
+ 28         reveal_type(alias)
+ 29         return alias
+ 30     return "none"
+ 33 items = [A()]
+ 34 items[0].x = "z"
+ 35 items[0].update_x("q")
+ 36 print(D.first, [a.x for _ in range(1)], (lambda: a.x)(), use_alias(A()), [it.x for it in items])
+
+##### day4 seed-861a63ed4154
+  -> D1 reveal_mismatch L21 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  6 from typing import reveal_type
+  9 class A:
+ 10     def __init__(self, x: int | None) -> None:
+ 11         self.x = x
+ 13     def clear(self) -> None:
+ 14         self.x = None
+ 17 def f(a: A) -> str:
+ 18     is_none = a.x is None
+ 19     a.clear()
+ 20     if not is_none:
+ 21         reveal_type(a.x)
+ 22         return "stale alias says a.x was set"
+ 23     return "stale alias says a.x was None"
+ 26 print(f(A(3)))
+ 27 print(f(A(None)))
+
+##### day4 seed-91e12b19d512
+  -> D2 reveal_mismatch L29 'reveal_type(c.n)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Never`'] mypy=['Revealed type is "int"']
+  6 from typing import reveal_type
+  9 class C:
+ 10     def __init__(self, n: int) -> None:
+ 11         self.n = n
+ 13     @property
+ 14     def readonly(self) -> int:
+ 15         return self.n
+ 17     def bump(self) -> None:
+ 18         self.n = 99
+ 21 def set_helper(c: C, v: int) -> None:
+ 22     c.n = v
+ 25 def f(c: C) -> None:
+ 26     assert c.n == 8
+ 27     c.bump()
+ 28     assert c.n == 99
+ 29     reveal_type(c.n)
+ 30     set_helper(c, 3)
+ 31     print("after helper", c.n)
+ 32     c.n = 8
+ 33     print("direct", c.n)
+ 34     try:
+ 35         c.readonly = 5  # expect-error
+ 36     except AttributeError:
+ 37         print("no setter")
+ 40 f(C(8))
+
+##### day4 seed-b813318f5770
+  -> D2 only_ty L32 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  4 from typing import Literal, NamedTuple, assert_type
+  7 class Restricted(tuple[Literal[1]]):
+  8     def __lt__(self, other: tuple[Literal[1], ...], /) -> bool:
+  9         return True
+ 11     def __eq__(self, other: object, /) -> bool:
+ 12         return True
+ 14     def __add__(self, other: tuple[Literal[1], ...], /) -> tuple[Literal[1], ...]:
+ 15         return (1,)
+ 17     def __getitem__(self, index: int, /) -> Literal[1]:
+ 18         return 1
+ 21 class Pair(NamedTuple):
+ 22     a: int
+ 23     b: int
+ 26 class Named(Pair):
+ 27     def __lt__(self, other: tuple[int, ...], /) -> bool:
+ 28         return True
+ 31 r = Restricted((1,)) < (1,)
+ 32 assert_type(r, bool)
+ 33 print(r, Restricted((1,)) == (2,), Restricted((1,)) + (2,), Restricted((1,))[0])
+ 34 n = Named(1, 2)
+ 35 print(n < (3, 4), n[0])
+
+##### day4 seed-cf5db6f596fa
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  4 from typing import reveal_type
+  7 class A:
+  8     def __init__(self, x: int | None) -> None:
+  9         self.x = x
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def stale_branch(a: A) -> int:
+ 16     was_set = a.x is not None
+ 17     a.clear()
+ 18     if was_set:
+ 19         reveal_type(a.x)
+ 20         return 1
+ 21     return 0
+ 24 def loop(a: A) -> int:
+ 25     total = 0
+ 26     for _ in range(2):
+ 27         stale = a.x is None
+ 28         a.x = 5 if stale else None
+ 29         if not stale:
+ 30             total += 1
+ 31     return total
+ 34 assert stale_branch(A(3)) == 1
+ 35 assert stale_branch(A(None)) == 0
+ 36 assert loop(A(None)) == 1
+
+##### day4 seed-d88aa4a1e9b5
+  -> D1 only_mypy L25 'c.view = 5  # expect-error' kb:UPSTREAM-TY-2792-READONLY (before: gate) rel=None ty=[] mypy=['Property "view" defined in "Counter" is read-only']
+  6 class Counter:
+  7     def __init__(self, n: int) -> None:
+  8         self.n = n
+ 10     @property
+ 11     def view(self) -> int:
+ 12         return self.n
+ 14     def reset(self) -> None:
+ 15         self.n = 99
+ 18 def check(c: Counter) -> str:
+ 19     if c.n != 8:
+ 20         raise AssertionError("start")
+ 21     c.reset()
+ 22     if c.n != 99:
+ 23         raise AssertionError("after reset")
+ 24     try:
+ 25         c.view = 5  # expect-error
+ 26     except AttributeError as exc:
+ 27         return f"AttributeError {type(exc).__name__}"
+ 28     return "no error"
+ 31 print(check(Counter(8)))
+
+##### day4 seed-ddbbfc9e20c1
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  4 from typing import reveal_type
+  7 class A:
+  8     def __init__(self) -> None:
+  9         self.x: int | None = 3
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def f(a: A) -> None:
+ 16     is_none = a.x is None
+ 17     a.clear()
+ 18     if not is_none:
+ 19         reveal_type(a.x)
+ 20         print(a.x)
+ 21     else:
+ 22         print("cleared")
+ 25 def g(a: A) -> None:
+ 26     if present := a.x is not None:
+ 27         a.clear()
+ 28         if present:
+ 29             reveal_type(a.x)
+ 30             print(a.x)
+ 31     print("walrus done")
+ 34 def h(items: list[A]) -> None:
+ 35     flag = items[0].x is None
+ 36     for item in items:
+ 37         item.clear()
+ 38         if not flag:
+ 39             reveal_type(item.x)
+ 40         flag = item.x is None
+ 41     print("loop done")
+ 44 f(A())
+ 45 g(A())
+ 46 h([A(), A()])
+
+##### day4 seed-e9979d89d3d5
+  -> D1 reveal_mismatch L36 'reveal_type(x < (1,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  -> D2 reveal_mismatch L37 'reveal_type(x == (2,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  -> D3 reveal_mismatch L38 'reveal_type(x != (2,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[True]`'] mypy=['Revealed type is "bool"']
+  -> D4 reveal_mismatch L39 'reveal_type(x <= (1,))' kb:UPSTREAM-TY-2171 (before: kb:LITERAL-WIDENING) rel=ty_more_precise ty=['Revealed type: `Literal[True]`'] mypy=['Revealed type is "bool"']
+  -> D5 reveal_mismatch L40 'reveal_type((1,) > x)' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  4 from typing import Literal, NamedTuple, reveal_type
+  7 class Restricted(tuple[Literal[1]]):
+  8     def __lt__(self, other: tuple[Literal[1], ...], /) -> bool:
+  9         return True
+ 11     def __eq__(self, other: object, /) -> bool:
+ 12         return True
+ 14     def __ne__(self, other: object, /) -> bool:
+ 15         return False
+ 17     def __le__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 18         return True
+ 20     def __gt__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 21         return False
+ 24 class Pair(NamedTuple):
+ 25     a: int
+ 26     b: int
+ 29 class PairView(Pair):
+ 30     def __lt__(self, other: tuple[int, ...], /) -> bool:
+ 31         return True
+ 34 x = Restricted((1,))
+ 35 reveal_type(x.__lt__((1,)))
+ 36 reveal_type(x < (1,))
+ 37 reveal_type(x == (2,))
+ 38 reveal_type(x != (2,))
+ 39 reveal_type(x <= (1,))
+ 40 reveal_type((1,) > x)
+ 41 print(x < (1,), x == (2,), x != (2,), x <= (1,), (1,) > x)
+ 42 pv = PairView(1, 2)
+ 43 print(pv < (3, 4), pv.__lt__((3, 4)))
+
+##### day4 seed-f3e4c7f51c96
+  -> D1 reveal_mismatch L33 'reveal_type(obj.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal["a"]`'] mypy=['Revealed type is "str"']
+  4 from typing import reveal_type
+  7 class A:
+  8     x: str | None = None
+ 10     def update_x(self, value: str | None) -> None:
+ 11         self.x = value
+ 14 class B:
+ 15     def __init__(self) -> None:
+ 16         self._x: str | None = None
+ 18     @property
+ 19     def x(self) -> str | None:
+ 20         return self._x
+ 22     @x.setter
+ 23     def x(self, value: str | None) -> None:
+ 24         self._x = value
+ 26     def update_x(self, value: str | None) -> None:
+ 27         self._x = value
+ 30 def body(obj: A) -> str:
+ 31     obj.x = "a"
+ 32     obj.update_x("b")
+ 33     reveal_type(obj.x)
+ 34     return str(obj.x)
+ 37 a = A()
+ 38 a.x = "a"
+ 39 a.update_x("b")
+ 40 b = B()
+ 41 b.x = "a"
+ 42 b.update_x("b")
+ 45 class D:
+ 46     first = a.x
+ 49 reveal_type([a.x for _ in range(1)])
+ 50 print([a.x for _ in range(1)], (lambda: a.x)(), D.first, body(A()), b.x, [b.x for _ in range(1)])
+
+##### day5 seed-0c3419564a03
+  -> D2 reveal_mismatch L20 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  5 from typing import reveal_type
+  8 class A:
+  9     def __init__(self, x: int | None) -> None:
+ 10         self.x = x
+ 12     def clear(self) -> None:
+ 13         self.x = None
+ 16 def f(a: A) -> int:
+ 17     has_int = isinstance(a.x, int)
+ 18     a.clear()
+ 19     if has_int:
+ 20         reveal_type(a.x)
+ 21         return a.x + 1  # expect-error
+ 22     return 0
+ 25 try:
+ 26     print(f(A(3)))
+ 27 except TypeError as exc:
+ 28     print('TypeError:', exc)
+
+##### day5 seed-12bbb70a148b
+  -> D1 reveal_mismatch L18 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal["a"]`'] mypy=['Revealed type is "str"']
+  5 from typing import reveal_type
+  8 class A:
+  9     x: str | None = None
+ 11     def update_x(self, value: str | None) -> None:
+ 12         self.x = value
+ 15 def probe(a: A) -> None:
+ 16     a.x = 'a'
+ 17     a.update_x('b')
+ 18     reveal_type(a.x)
+ 19     print(a.x)
+ 22 a = A()
+ 23 probe(a)
+ 24 print([a.x for _ in range(1)])
+
+##### day5 seed-228c00441bc7
+  -> D1 reveal_mismatch L18 'reveal_type(x == (2,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  -> D2 reveal_mismatch L19 'reveal_type(x != (2,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[True]`'] mypy=['Revealed type is "bool"']
+  5 from typing import Literal, reveal_type
+  8 class Restricted(tuple[Literal[1]]):
+  9     def __eq__(self, other: object, /) -> bool:
+ 10         return True
+ 12     def __ne__(self, other: object, /) -> bool:
+ 13         return False
+ 16 x = Restricted((1,))
+ 17 reveal_type(x.__eq__((2,)))
+ 18 reveal_type(x == (2,))
+ 19 reveal_type(x != (2,))
+ 20 print(x == (2,), x != (2,), x.__eq__((2,)))
+
+##### day5 seed-95565efe2d4b
+  -> D3 reveal_mismatch L20 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  5 from typing import reveal_type
+  8 class A:
+  9     def __init__(self, x: int | None) -> None:
+ 10         self.x = x
+ 12     def clear(self) -> None:
+ 13         self.x = None
+ 16 def f(a: A) -> int:
+ 17     is_none = a.x is None
+ 18     a.clear()
+ 19     if not is_none:
+ 20         reveal_type(a.x)
+ 21         return a.x + 1  # expect-error
+ 22     return 0
+ 25 def loop(a: A) -> int:
+ 26     total = 0
+ 27     n = 0
+ 28     while n < 2:
+ 29         ok = a.x is not None
+ 30         if ok:
+ 31             total += a.x  # expect-error
+ 32         a.x = None
+ 33         n += 1
+ 34     return total
+ 37 print(loop(A(4)))
+ 38 try:
+ 39     print(f(A(3)))
+ 40 except TypeError as exc:
+ 41     print('TypeError:', exc)
+
+##### day5 seed-964e3b58e60d
+  -> D1 only_ty L18 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  5 from typing import Literal, assert_type
+  8 class Restricted(tuple[Literal[1]]):
+  9     def __eq__(self, other: object, /) -> bool:
+ 10         return True
+ 13 r = Restricted((1,)) == (2,)
+ 14 if r is True:
+ 15     print("taken")
+ 16 else:
+ 17     print("skipped")
+ 18 assert_type(r, bool)
+
+##### day5 seed-b962e0072c1a
+  -> D1 reveal_mismatch L20 'reveal_type(x != (1,))' kb:UPSTREAM-TY-2171 (before: gate) rel=ty_more_precise ty=['Revealed type: `Literal[False]`'] mypy=['Revealed type is "bool"']
+  -> D2 reveal_mismatch L21 'reveal_type(x <= (1,))' kb:UPSTREAM-TY-2171 (before: kb:LITERAL-WIDENING) rel=ty_more_precise ty=['Revealed type: `Literal[True]`'] mypy=['Revealed type is "bool"']
+  5 from typing import Literal, reveal_type
+  8 class Restricted(tuple[Literal[1]]):
+  9     def __ne__(self, other: object, /) -> bool:
+ 10         return True
+ 12     def __le__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 13         return True
+ 15     def __gt__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 16         return True
+ 19 x = Restricted((1,))
+ 20 reveal_type(x != (1,))
+ 21 reveal_type(x <= (1,))
+ 22 print(x != (1,), x <= (1,), (1,) < x)
+
+##### day5 seed-bd98b562f194
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  5 from typing import reveal_type
+  8 class A:
+  9     x: int | None
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def f(a: A) -> None:
+ 16     is_int = isinstance(a.x, int)
+ 17     a.clear()
+ 18     if is_int:
+ 19         reveal_type(a.x)
+ 20     print(a.x)
+ 23 a = A()
+ 24 a.x = 3
+ 25 f(a)
+
+##### day5 seed-ceb0c19d6bf2
+  -> D2 only_ty L18 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  5 from typing import Literal, assert_type
+  8 class Restricted(tuple[Literal[1]]):
+  9     def __eq__(self, other: object, /) -> bool:
+ 10         return True
+ 12     def __len__(self) -> int:
+ 13         return 5
+ 16 r = Restricted((1,)) == (2,)
+ 17 print(r, len(Restricted((1,))))
+ 18 assert_type(r, bool)
+
+##### day5 seed-dc7c67cf7365
+  -> D3 reveal_mismatch L20 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  5 from typing import reveal_type
+  8 class A:
+  9     def __init__(self, x: int | None) -> None:
+ 10         self.x = x
+ 12     def clear(self) -> None:
+ 13         self.x = None
+ 16 def f(a: A) -> int:
+ 17     has_value = isinstance(a.x, int)
+ 18     a.clear()
+ 19     if has_value:
+ 20         reveal_type(a.x)
+ 21         return a.x + 1  # expect-error
+ 22     return 0
+ 25 def loop(a: A) -> int:
+ 26     n = 0
+ 27     total = 0
+ 28     while n < 2:
+ 29         ok = a.x is not None
+ 30         if ok:
+ 31             total += a.x  # expect-error
+ 32         a.x = None
+ 33         n += 1
+ 34     return total
+ 37 try:
+ 38     print(f(A(3)))
+ 39 except TypeError as exc:
+ 40     print('TypeError:', exc)
+ 41 print(loop(A(3)))
+
+##### day5 seed-e1e7f7da5c5f
+  -> D2 only_ty L20 'assert_type(r, bool)' kb:UPSTREAM-TY-2171-ASSERT (before: gate) rel=None ty=['Type `Literal[False]` does not match asserted type'] mypy=[]
+  5 from typing import Literal, assert_type
+  8 class Restricted(tuple[Literal[1]]):
+  9     def __lt__(self, other: tuple[Literal[1], ...], /) -> bool:
+ 10         return True
+ 13 class Pair(tuple[int, int]):
+ 14     def __add__(self, other: tuple[int, ...], /) -> tuple[int, ...]:
+ 15         return (0,)
+ 18 r = Restricted((1,)) < (1,)
+ 19 print(r)
+ 20 assert_type(r, bool)
+ 21 p = Pair((1, 2)) + (3,)
+ 22 print(p)
+
+##### day5 seed-e60cadd3ca1b
+  -> D1 reveal_mismatch L19 'reveal_type(a.x)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `int`'] mypy=['Revealed type is "int | None"']
+  5 from typing import reveal_type
+  8 class A:
+  9     x: int | None = 1
+ 11     def clear(self) -> None:
+ 12         self.x = None
+ 15 def f(a: A) -> None:
+ 16     is_none = a.x is None
+ 17     a.clear()
+ 18     if not is_none:
+ 19         reveal_type(a.x)
+ 20     print("runtime x:", a.x)
+ 23 a = A()
+ 24 f(a)
+
+##### day5 seed-fdca88caad43
+  -> D1 reveal_mismatch L20 'reveal_type(c.n)' kb:UPSTREAM-TY-2792 (before: gate) rel=ty_more_precise ty=['Revealed type: `Never`'] mypy=['Revealed type is "int"']
+  5 from typing import reveal_type
+  8 class C:
+  9     def __init__(self, n: int) -> None:
+ 10         self.n = n
+ 12     def bump(self) -> None:
+ 13         self.n = 99
+ 16 def f(c: C) -> None:
+ 17     assert c.n == 8
+ 18     c.bump()
+ 19     assert c.n == 99
+ 20     reveal_type(c.n)
+ 21     print(c.n)
+ 24 f(C(8))
+
+TOTAL closed rows by the new ids: 36

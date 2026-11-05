@@ -1,0 +1,154 @@
+seed-086d9e1c2b9a D1 reveal_mismatch L19 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d4p_narrowing_stale_alias_loop.py
+seed-0cae9d448950 D1 reveal_unpaired L24 'reveal_type(c)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d4v_ty_flag_or_else_never.py
+seed-0cae9d448950 D6 reveal_mismatch L43 'reveal_type(~F.R)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-876
+    # origin: runs/hits/d4v_ty_flag_or_else_never.py
+seed-125fdfa5bfd4 D1 reveal_unpaired L24 'reveal_type(c)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d4v_ty_flag_or_else_never.py
+seed-13ae8bc04894 C1 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_self_classmethods_self_call_union.py
+seed-13ae8bc04894 C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_self_classmethods_self_call_union.py
+seed-20e909d57566 D1 reveal_mismatch L19 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d4p_narrowing_stale_alias_loop.py
+seed-44343b8f4618 D1 only_mypy L40 'assert_never(v)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4p_enums_intenum_true_alias_one.py
+seed-44343b8f4618 D2 reveal_mismatch L20 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d4p_enums_intenum_true_alias_one.py
+seed-49d34f313d36 D2 reveal_mismatch L16 'reveal_type(r)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4p_tuples_fold_subclass_eq.py
+seed-522ffbdc730d D1 only_ty L19 'assert_type(r, bool)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171-ASSERT
+    # origin: runs/hits/d4p_tuples_fold_subclass_eq.py
+seed-52fd7a6f2fb5 D1 only_mypy L36 'c.readonly = 5  # expect-error'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792-READONLY
+    # origin: runs/hits/d4v_ty_attr_eq_narrow_unreachable.py
+seed-52fd7a6f2fb5 D2 reveal_mismatch L32 'reveal_type(c.n)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d4v_ty_attr_eq_narrow_unreachable.py
+seed-58fbe6a474ad D1 reveal_mismatch L19 'reveal_type(r)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4p_tuples_fold_subclass_eq.py
+seed-663dce9766d5 D1 reveal_unpaired L24 'reveal_type(x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d3p_enums_flag_is_narrowing_else.py
+seed-663dce9766d5 D2 reveal_unpaired L34 'reveal_type(x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d3p_enums_flag_is_narrowing_else.py
+seed-663dce9766d5 D4 reveal_unpaired L59 'reveal_type(x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d3p_enums_flag_is_narrowing_else.py
+seed-6e1aafbae77b C1 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d4v_callables_mutual_call_attr.py
+seed-6e1aafbae77b C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d4v_callables_mutual_call_attr.py
+seed-724932985804 D1 only_mypy L14 'x: Literal[E.A] = E.B'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-724932985804 D2 only_mypy L15 'assert_type(E.B, Literal[E.A])'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-724932985804 D3 only_mypy L24 'assert_never(e)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-8081ab5109c0 D1 reveal_mismatch L21 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d3p_narrowing_user_attr_narrowing_kept_after_method_call.py
+seed-82ea6861fa5f D1 reveal_mismatch L28 'reveal_type(Integer.TRUE.value)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-82ea6861fa5f D2 reveal_mismatch L29 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-861a63ed4154 D1 reveal_mismatch L21 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d3p_narrowing_builtin_stale_alias_condition.py
+seed-8de20175c69f D1 only_mypy L16 'x: Literal[E.A] = E.B'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-8de20175c69f D2 only_mypy L17 'assert_type(E.B, Literal[E.A])'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-8de20175c69f D3 only_mypy L26 'assert_never(e)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-8dfa9c7a00e0 D1 only_mypy L19 'assert_never(c)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-91e12b19d512 D2 reveal_mismatch L29 'reveal_type(c.n)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d4v_ty_attr_eq_narrow_unreachable.py
+seed-973143feb3c4 D1 only_mypy L19 'x: Literal[E.A] = E.B'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-973143feb3c4 D2 only_mypy L20 'assert_type(E.B, Literal[E.A])'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-973143feb3c4 D3 only_mypy L29 'assert_never(e)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4v_enum_value_alias.py
+seed-9c244afdc643 D1 reveal_unpaired L19 'reveal_type(x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-21937-REVEAL
+    # origin: runs/hits/d3p_enums_flag_is_narrowing_else.py
+seed-af03d17b4585 D1 reveal_mismatch L19 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-b813318f5770 D2 only_ty L32 'assert_type(r, bool)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171-ASSERT
+    # origin: runs/hits/d3p_tuples_unpacking_constant_fold_subclass.py
+seed-be9b0a56ebb2 D1 only_mypy L43 'assert_never(v)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830
+    # origin: runs/hits/d4p_enums_intenum_true_alias_one.py
+seed-be9b0a56ebb2 D3 reveal_mismatch L46 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d4p_enums_intenum_true_alias_one.py
+seed-bf0eb5293b88 C1 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d4v_callables_mutual_call_attr.py
+seed-bf0eb5293b88 C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d4v_callables_mutual_call_attr.py
+seed-cf5db6f596fa D1 reveal_mismatch L19 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d4p_narrowing_stale_alias_loop.py
+seed-d88aa4a1e9b5 D1 only_mypy L25 'c.view = 5  # expect-error'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792-READONLY
+    # origin: runs/hits/d4v_ty_attr_eq_narrow_unreachable.py
+seed-ddbbfc9e20c1 D1 reveal_mismatch L19 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d3p_narrowing_builtin_stale_alias_condition.py
+seed-e9979d89d3d5 D1 reveal_mismatch L36 'reveal_type(x < (1,))'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4v_ty_tuple_subclass_dunder_fold.py
+seed-e9979d89d3d5 D2 reveal_mismatch L37 'reveal_type(x == (2,))'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4v_ty_tuple_subclass_dunder_fold.py
+seed-e9979d89d3d5 D3 reveal_mismatch L38 'reveal_type(x != (2,))'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4v_ty_tuple_subclass_dunder_fold.py
+seed-e9979d89d3d5 D4 reveal_mismatch L39 'reveal_type(x <= (1,))'
+    dismissed/DESIGN_DIVERGENCE/kb:LITERAL-WIDENING -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4v_ty_tuple_subclass_dunder_fold.py
+seed-e9979d89d3d5 D5 reveal_mismatch L40 'reveal_type((1,) > x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171
+    # origin: runs/hits/d4v_ty_tuple_subclass_dunder_fold.py
+seed-f3e4c7f51c96 D1 reveal_mismatch L33 'reveal_type(obj.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d3p_narrowing_user_attr_narrowing_kept_after_method_call.py
+
+findings compared: 215; changed: 50
+new decided_by: {'kb:UPSTREAM-TY-2792': 9, 'kb:UPSTREAM-MYPY-21937-REVEAL': 6, 'kb:UPSTREAM-TY-876': 1, 'rule:crash:signal': 6, 'kb:UPSTREAM-MYPY-16830': 12, 'kb:UPSTREAM-MYPY-16830-REVEAL': 5, 'kb:UPSTREAM-TY-2171': 7, 'kb:UPSTREAM-TY-2171-ASSERT': 2, 'kb:UPSTREAM-TY-2792-READONLY': 2}
+old decided_by: {'gate': 43, 'rule:crash:signal': 6, 'kb:LITERAL-WIDENING': 1}

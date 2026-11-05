@@ -1,0 +1,7 @@
+d4v_ty_alias_loop_backedge.py [('D1', 'only_mypy', 'review', 'gate')]
+d4p_narrowing_stale_alias_loop.py [('D1', 'reveal_mismatch', 'dismissed', 'kb:UPSTREAM-TY-2792')]
+d4v_ty_attr_eq_narrow_unreachable.py [('D1', 'only_mypy', 'dismissed', 'kb:UPSTREAM-TY-2792-READONLY'), ('D2', 'reveal_mismatch', 'review', 'gate')]
+d4p_descriptors_readonly_prop_never.py [('D1', 'only_mypy', 'review', 'gate')]
+d3p_tuples_unpacking_constant_fold_subclass.py [('D1', 'only_ty', 'dismissed', 'kb:UPSTREAM-TY-2171-ASSERT')]
+d3p_narrowing_user_attr_narrowing_kept_after_method_call.py [('D1', 'reveal_mismatch', 'dismissed', 'kb:UPSTREAM-TY-2792')]
+d3p_narrowing_builtin_stale_alias_condition.py [('D1', 'reveal_mismatch', 'dismissed', 'kb:UPSTREAM-TY-2792')]

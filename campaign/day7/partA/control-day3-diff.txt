@@ -1,0 +1,40 @@
+seed-0032056ba741 C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_callables_self_call_attr.py
+seed-0de4710c02b5 D1 reveal_mismatch L21 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-3e7d6fb5688c C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_self_classmethods_self_call_union.py
+seed-61524ebfb287 D1 reveal_mismatch L21 'reveal_type(a.x)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792
+    # origin: runs/hits/d3p_narrowing_builtin_stale_alias_condition.py
+seed-6cb04c1e6fbc C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_callables_self_call_attr.py
+seed-8410097f1820 D1 only_ty L27 'feed(fs, 2)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-22339
+    # origin: runs/hits/d3p_generics_callable_attr_contravariant.py
+seed-887c42f07fb0 C2 crash LNone ''
+    confirmed/None/rule:crash:signal -> dismissed/DUPLICATE/rule:crash:signal
+    # origin: runs/hits/d3p_self_classmethods_self_call_union.py
+seed-bad41408425c D1 reveal_mismatch L21 'reveal_type(Integer.TRUE.value)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-bad41408425c D2 reveal_mismatch L22 'reveal_type(Integer.TRUE)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-d3d8e30a11a4 D1 reveal_mismatch L22 'reveal_type(Level.HIGH)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-MYPY-16830-REVEAL
+    # origin: runs/hits/d3p_enums_literals_intenum_true_aliases_one.py
+seed-e1e14ede1dfc D1 only_ty L23 'assert_type(r, bool)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2171-ASSERT
+    # origin: runs/hits/d3p_tuples_unpacking_constant_fold_subclass.py
+seed-e4277cc03f53 D1 only_mypy L32 'assert only_r(combined) == 1  # expect-error'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-876-ARGTYPE
+    # origin: runs/hits/d3p_enums_flag_or_literal_union.py
+
+findings compared: 68; changed: 12
+new decided_by: {'rule:crash:signal': 4, 'kb:UPSTREAM-MYPY-16830-REVEAL': 4, 'kb:UPSTREAM-TY-2792': 1, 'kb:UPSTREAM-MYPY-22339': 1, 'kb:UPSTREAM-TY-2171-ASSERT': 1, 'kb:UPSTREAM-TY-876-ARGTYPE': 1}
+old decided_by: {'rule:crash:signal': 4, 'gate': 8}
