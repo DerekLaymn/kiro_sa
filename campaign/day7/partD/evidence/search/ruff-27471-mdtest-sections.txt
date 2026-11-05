@@ -1,0 +1,86 @@
++Earlier context managers have already entered when a later manager raises:
++
++```py
++from typing import Literal
++
++class FirstManager:
++    def __enter__(self) -> Literal[1]:
++        return 1
++
++    def __exit__(self, *_):
++        pass
++
++def multiple_context_managers(first: FirstManager, second) -> None:
++    state = 0
++    try:
++        with first as state, second:
++            state = 2
++    except:
++        reveal_type(state)  # revealed: Literal[0, 1, 2]
++```
++
++## Unpacking can raise
++
++Unpacking can fail before the assignments following it run:
++
++```py
++from collections.abc import Iterable
++
++def unpacking(values: Iterable[int]) -> None:
++    state = 0
++    try:
++        first, second = values
++        state = 1
++    except:
++        reveal_type(state)  # revealed: Literal[0]
++```
++
++## Awaiting and yielding can raise
++
++Awaiting can raise when a coroutine resumes:
++
++```py
++from collections.abc import Awaitable, Iterable
++
++async def awaiting(value: Awaitable[int]) -> None:
++    state = 0
++    try:
++        state = 1
++        await value
++    except:
++        reveal_type(state)  # revealed: Literal[1]
++```
++
++Delegating to another iterable can raise while the generator is resumed:
++
++```py
++def yielding_from(values: Iterable[int]):
++    state = 0
++    try:
++        state = 1
++        yield from values
+----- assignment section
+1075:+## Operations that cannot raise
+1113:+## Looking up an undefined name
+1170:+## Undefined attribute and subscript receivers
+1197:+## Function arguments are evaluated before the call
+1211:+## Failed imports do not create bindings
+1234:+## Explicit raises and failing assertions
+1268:+## Attribute access and subscripting
+1295:+## Repeated potentially raising operations
+1371:+## Operators and augmented assignments
+1416:+## Conditions can raise
+1483:+## Pattern matching can raise
+1557:+## Iteration can raise
+1603:+## Context-manager entry and exit can raise
+1661:+## Unpacking can raise
+1677:+## Awaiting and yielding can raise
+1717:+## Immediately and lazily evaluated scopes
+1906:+## Assignments in comprehensions
+1937:+## Assignments in lazy generator expressions
+1955:+## Nested comprehension assignments
+1970:+## Module and global assignments in comprehensions
+1997:+## Assignments in asynchronous comprehensions
+2013:+## Exceptions passing through a `finally` clause
+2091:+## Nested exception handlers
+2209:+## Invalid handler syntax does not create an exception path

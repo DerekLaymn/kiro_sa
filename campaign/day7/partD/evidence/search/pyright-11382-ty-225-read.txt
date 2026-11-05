@@ -1,0 +1,113 @@
+=================== microsoft/pyright#11382
+class-level descriptor access has incorrect type when descriptor set on instance | OPEN | created 2026-04-13T22:12:21Z
+I have a descriptor class that evaluates to itself when accessed on the class and a value when accessed on an instance. The descriptor has a __getitem__ implementation to allow class access to the field to be indexed. When doing this I get an error saying the type of instance value does not have this method. The descriptor __get__ method is overloaded to indicate class access returns the descriptor and instance access the generic type of the descriptor. I believe the error is incorrect in this situation since pyright has enough information to know __get__ will return the descriptor class and not the generic type. I have been using mypy and it correctly handles this case so I believe it is an issue with pyright and not the code it is checking.
+While creating this minimal reproduction I noticed that the error only occurs when the initializer for the class with the descriptor field actually sets the value for the descriptor. If the initializer does not set the value the 
+type of the class level descriptor field access is revealed to be the descriptor type and not a union of that and the descriptor generic type.
+
+```python
+from __future__ import annotations
+from typing import Self, overload, reveal_type
+
+class Descriptor[T]:
+    def __init__(self, attr: str, default: T) -> None:
+        self.__attr = attr
+        self.default = default
+
+    # The presence of these overloads has no bearing on pyright behavior, but mypy
+    # will report a similar error to the one reported in this bug if they are omitted. I
+    # believe they are necessary to properly determine whether Descriptor[int] or int
+    # is returned based on whether the descriptor is accessed on a class or instance.
+    @overload
+    def __get__(self, instance: None, owner: type) -> Self: ...
+
+    @overload
+    def __get__(self, instance: object, owner: type) -> T: ...
+
+    def __get__(self, instance: object|None, owner: type) -> T|Self:
+        if instance is None:
+            return self
+        return getattr
+--- comments: 1
+[h3har] I can confirm this remains reproducible in Pyright 1.1.411. It is not limited to assignments in `__init__`; an assignment from any instance method appears to contaminate the inferred class-access type:
+```python
+class Foo:
+    field = Descriptor[float](...)
+
+    def set_field(self, value: float):
+        self.field = value
+        reveal_type(type(self).field)
+        # Descriptor[float] | float
+
+        type(self).field.descriptor_method()
+        # Error: method unavailable on float
+```
+Since `Descriptor` defines `__set__`, it is a data descriptor. At runtime, `self.field = value` invokes `Descriptor.__set__` and does not assign a float to either `Foo.field` or the instance dictionary. I w
+=================== astral-sh/ty#225
+Control flow modelling error in `try` ... `else` | CLOSED | created 2024-12-11T11:06:23Z
+https://github.com/astral-sh/ty/issues/233 mentions a problem with `finally` suites, but it looks like we also don't model `try` … `else` control flow correctly in all cases.
+
+We currently infer `Literal[1, 2, 3]` here, but it should be `Literal[1, 3]`?
+
+```py
+def may_raise() -> None: ...
+def flag() -> bool: ...
+
+x = 1
+
+try:
+    may_raise()
+    x = 2
+except KeyError:
+    pass
+else:
+    x = 3
+
+reveal_type(x)  # revealed: Literal[1, 2, 3]
+```
+--- comments: 5
+[AlexWaygood] I spent a while thinking that this had something to do with the fact that we don't yet model the fact that simple statements like `x = 2` cannot ever raise exceptions (except for `KeyboardInterrupt`). But it doesn't actually have anything to do with that, I don't think. So let's use this example, which doesn't confuse the two issues in the same way ;)
+
+```py
+from typing import Literal
+
+def may_raise() -> Literal[2]:
+    return 2
+
+x = 1
+    
+try:
+    may_raise()
+    x = may_raise()
+except:
+    pass
+else:
+    x = 3
+    
+reveal_type(x)  # revealed: Literal[1, 2, 3]
+```
+
+Like your example, we reve
+~~
+[AlexWaygood] In fact, even for assignments that are created via statements rather than assignment expressions, simply looking at whether the assignment occurs in "the last statement" of the `try` suite would be too simplistic. In this snippet, the reassignment to `x` occurs in "the last statement" of the `try` suite (which is a `StmtIf` node), but it's clearly possible for us to jump to the `except` suite after `x` has been successfully reassigned to `2`, since other statements occur after the reassignment that are also substatements of "the last statement" of the `try` suite:
+
+```py
+def may_raise(): ...
+
+
+~~
+[carljm] Great analysis! I don't think we'd have to do anything recursive, though; it should be sufficient to just check if the assignment statement is the last statement in the body of the current try block. 
+~~
+[sharkdp] Another case that came up in a real world project (modified here to make it a standalone example):
+```py
+def _(x: int | str):
+    if isinstance(x, str):
+        try:
+            x = int(x)
+        except ValueError:
+            reveal_type(x)  # can only be `str`, but we infer `str | int`
+```
+(https://play.ty.dev/19d16684-ccb8-41c3-942f-60ce61e090ee)
+
+The only statement that can raise the exception is `x = int(x)` (either during the call, or theoretically during the assignment), and if that *does* raise, the type of `x` should still be `str`. However, ty infers `str | int`, because we do not r
+~~
+[charliermarsh] Looks like this is fixed by https://github.com/astral-sh/ruff/pull/27471.

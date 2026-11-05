@@ -1,0 +1,79 @@
+##### [issues] microsoft/pyright :: Maximum call stack size exceeded
+11961	open	Crash (RangeError: Maximum call stack size exceeded) when a constructor method is annotated with its own class and the class is instantiated
+9283	closed	RangeError: Maximum call stack size exceeded
+9740	closed	Stack overflow found in Pylance telemetry
+6178	closed	Error telemetry: Max call stack size exceeded.
+6783	closed	Stack overflow in `typeEvaluator`
+5139	closed	RangeError: Maximum call stack size exceeded when using exclude config
+4798	closed	Recursion error - RangeError: Maximum call stack size exceeded
+5090	closed	Stack overflow found in telemetry
+5213	closed	Stack overflow found in telemetry (70 hits or so)
+5129	closed	"Debug Failure. False expression." on pyright 1.1.309
+##### [prs] microsoft/pyright :: Maximum call stack size exceeded
+11965	open	Prevent recursion through class-valued constructor methods
+11786	open	Don't report abstract instantiation when __new__ returns other classes
+7912	merged	Fixed bug that results in incorrect type evaluation behavior within c…
+84	closed	Output error description on analysis errors
+##### [issues] microsoft/pyright :: RangeError
+11961	open	Crash (RangeError: Maximum call stack size exceeded) when a constructor method is annotated with its own class and the class is instantiated
+9283	closed	RangeError: Maximum call stack size exceeded
+9740	closed	Stack overflow found in Pylance telemetry
+6116	closed	Pyright crashes with RangeError
+6178	closed	Error telemetry: Max call stack size exceeded.
+6783	closed	Stack overflow in `typeEvaluator`
+5139	closed	RangeError: Maximum call stack size exceeded when using exclude config
+4798	closed	Recursion error - RangeError: Maximum call stack size exceeded
+5129	closed	"Debug Failure. False expression." on pyright 1.1.309
+5090	closed	Stack overflow found in telemetry
+##### [prs] microsoft/pyright :: RangeError
+11965	open	Prevent recursion through class-valued constructor methods
+11786	open	Don't report abstract instantiation when __new__ returns other classes
+11459	closed	Bump uuid and jest-junit in /packages/pyright-internal
+10742	merged	Bump axios from 1.10.0 to 1.11.0
+7912	merged	Fixed bug that results in incorrect type evaluation behavior within c…
+84	closed	Output error description on analysis errors
+##### [issues] microsoft/pyright :: descriptor decorated __get__
+8366	closed	Unable to detect inherited function in highlighting or IntelliSense when using Enum member/nonmember decorators
+8342	closed	Inconsistent syntax-dependent incompatible override error when implementing callable property on ABC/Protocol with callable descriptor
+7740	closed	Regression:  property of complex decorator fails.
+5865	closed	Inference of `cls` type on a custom `classmethod`
+5778	closed	Inferred Unknown in descriptor
+5434	closed	Generic descriptor parametrized by synthesized generic `self` type results in type errors in subclasses
+3937	closed	`@classmethod` does not type check with decorated methods
+3486	closed	dataclass_transform decorator causes class-level descriptor access to not honor the descriptor
+3291	closed	Better textDocument/hover support for property-like descriptors
+2506	closed	Decorating a method with a function that returns a `Callable` non-descriptor object is not flagged as an error
+##### [prs] microsoft/pyright :: descriptor decorated __get__
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+##### [issues] microsoft/pyright :: decorator __get__ descriptor
+11969	open	Supporting Descriptors that override Implicit Receiver Parameter Type
+11941	closed	classmethod/staticmethod evaluated as bound method/function rather than classmethod/staticmethod objects themselves
+11204	closed	Incompatible types in assignment with dynamic `__setattr__` and `__init_subclass__` for custom data types
+9460	closed	Handle Type Symmetry in Overloaded Descriptor Methods Based on `instance` Type
+9108	closed	Pyright doesn't seem to handle staticmethod and classmethod decorators correctly
+8750	closed	Is it possible to support dataclass init signature inference with descriptor-typed fields?
+8342	closed	Inconsistent syntax-dependent incompatible override error when implementing callable property on ABC/Protocol with callable descriptor
+8366	closed	Unable to detect inherited function in highlighting or IntelliSense when using Enum member/nonmember decorators
+7740	closed	Regression:  property of complex decorator fails.
+7533	closed	Descriptor __get__ fails to match Coroutine methods as (...) -> Awaitable[R]
+##### [prs] microsoft/pyright :: decorator __get__ descriptor
+11875	open	Fix binding for callable protocol method decorators
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+##### [issues] microsoft/pyright :: retainTypeAlias
+##### [prs] microsoft/pyright :: retainTypeAlias
+##### [issues] microsoft/pyright :: stack overflow descriptor
+##### [prs] microsoft/pyright :: stack overflow descriptor
+##### [issues] microsoft/pyright :: infinite recursion descriptor
+11233	closed	Support Type Narrowing In the Same Scope as an Assignment to an Asymmetric Descriptor
+##### [prs] microsoft/pyright :: infinite recursion descriptor
+##### [issues] microsoft/pyright :: crash decorated method self
+##### [prs] microsoft/pyright :: crash decorated method self
+##### [issues] microsoft/pyright :: decorator without self class body
+6965	closed	False positive "calling abstract method"
+6624	closed	`AbstractContextManager.__enter__`'s return type is `_T_co` when it returns `Self` at runtime
+3886	closed	Class members don't exist at runtime but pyright allows reference to them without an error
+##### [prs] microsoft/pyright :: decorator without self class body
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11643	merged	Report illegal zero-argument super() in nested functions and lambdas
+11597	merged	Support complete enum literal union equivalence
+FINISHED

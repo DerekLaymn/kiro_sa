@@ -1,0 +1,46 @@
+##### /tmp/d7/w/c1.py
+--- cpython
+Runtime type is 'str'
+--- ty 0.0.97 (.venv)
+info[revealed-type]: Revealed type
+ --> c1.py:7:21
+  |
+7 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+Found 1 diagnostic
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+info[revealed-type]: Revealed type
+ --> c1.py:7:21
+  |
+7 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+Found 1 diagnostic
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+info[revealed-type]: Revealed type
+ --> c1.py:7:21
+  |
+7 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+Found 1 diagnostic
+--- mypy 2.4.0 (.venv)
+c1.py:7: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- mypy 2.4.1 (latest)
+c1.py:7: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- mypy master
+c1.py:7: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- pyright (.venv)
+/tmp/d7/w/c1.py
+  /tmp/d7/w/c1.py:7:21 - information: Type of "value" is "Literal[1]"
+0 errors, 0 warnings, 1 information
+--- pyright (latest)
+pyright 1.1.414
+/tmp/d7/w/c1.py
+  /tmp/d7/w/c1.py:7:21 - information: Type of "value" is "Literal[1]"
+0 errors, 0 warnings, 1 information

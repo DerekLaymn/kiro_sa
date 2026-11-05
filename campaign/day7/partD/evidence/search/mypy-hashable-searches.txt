@@ -1,0 +1,155 @@
+##### [issues] python/mypy :: Hashable
+22342	open	False positive `list-item`: `list` literal checked against `list[bool]` when the union also contains `Hashable`
+21813	open	`Iterator[int]` not recognised as `Hashable`
+19232	open	Non-hashable tuple should not be accepted as `Hashable`
+11463	open	`dataclass` is not `Hashable`
+11470	open	`type[Any]` not considered `Hashable`
+14674	open	dict_keys is identified as hashable
+20442	open	Inconsistent behaviour with / without a dummy type variable
+20236	open	Assigning an iterator to the type hint `collections.abc.Hashable` gets error even though an iterator is hashable
+20409	open	The result of `type(TypeVar)` is not hashable
+15790	open	[overload][intersection-types] undetected LSP violation in multiple inheritance
+18962	open	dataclasses with generated __hash__ subclassing Hashable are considered abstract
+11465	open	no error when unhashable object in dict
+4266	open	`__hash__ = None` generates an error
+11097	open	Ior assignment operator is flagged while equivalent __ior__() method call is not
+2455	open	MyPy does not enforce Hashability
+##### [issues] python/mypy :: Hashable __eq__
+##### [issues] python/mypy :: Hashable __hash__
+14674	open	dict_keys is identified as hashable
+15790	open	[overload][intersection-types] undetected LSP violation in multiple inheritance
+18962	open	dataclasses with generated __hash__ subclassing Hashable are considered abstract
+12774	open	Supporting attrs extensions with different default arguments for decorators.
+20227	closed	Segfault on recursive type
+18454	closed	Crash on schemathesis with `--cache-dir=/dev/null`
+16127	closed	Passed function argument name must match function parameters
+12506	closed	Odd interaction of Generic, Mapping, Hashable
+12846	closed	bound TypeVar messes with argument type resolving
+13805	closed	Hashable and None have overlapping type in mypy >= 0.981
+3027	closed	Strange errors when modules are not in the same directory (they are in PYTHONPATH)
+4945	closed	"pip install -U ." fails when daemon is running with pip 10.0.1
+6764	closed	Collection of Hashable doesn't work properly
+6708	closed	Unable to use typehint for hashlib.sha256()
+7329	closed	Dict[str, Callable[...]] Not Handled Properly
+##### [issues] python/mypy :: unhashable
+20230	open	Hashing of unhashable objects is not detected
+11465	open	no error when unhashable object in dict
+4266	open	`__hash__ = None` generates an error
+21447	open	Python 3.15 tracking issue
+2455	open	MyPy does not enforce Hashability
+11470	open	`type[Any]` not considered `Hashable`
+11463	open	`dataclass` is not `Hashable`
+15997	closed	Incorrect mypy behavor when "type unpacking".
+12993	closed	Type[object] isn't hashable, and can't be asserted to be Hashable
+11799	closed	Reachability check seems to consider isinstance(obj, Hashable) as always True
+5653	closed	Crash on definition of TypedDict method
+11548	closed	Crash with SQLAlchemy plugin
+4563	closed	Crash with --linecoverage-report on comment after decorator use
+8150	closed	Mypy doesn't catch unhashable literals in hashdependant literals.
+##### [issues] python/mypy :: __hash__ None
+4266	open	`__hash__ = None` generates an error
+11495	open	`@dataclass` does not handle `__hash__: None` special case
+22342	open	False positive `list-item`: `list` literal checked against `list[bool]` when the union also contains `Hashable`
+20230	open	Hashing of unhashable objects is not detected
+11465	open	no error when unhashable object in dict
+11463	open	`dataclass` is not `Hashable`
+11097	open	Ior assignment operator is flagged while equivalent __ior__() method call is not
+8414	open	Is it possible to define a subscriptable class which can take type arguments and ellipses?
+15814	open	Input argument in new method incorrectly reports that its type is not defined even though it was imported
+19711	closed	Odd behavior in DEV version of mypy on `pandas-stubs`
+8767	closed	Please consider making Tuple[Hashable, ...] a subtype of Hashable
+7328	closed	Hashable and List are considered overlapping
+16954	closed	`__hash__ = None` in class definition should not emit assignment error 
+16550	closed	False negative: attrs classes and hashability
+13805	closed	Hashable and None have overlapping type in mypy >= 0.981
+##### [issues] python/mypy :: __hash__ = None
+4266	open	`__hash__ = None` generates an error
+11495	open	`@dataclass` does not handle `__hash__: None` special case
+22342	open	False positive `list-item`: `list` literal checked against `list[bool]` when the union also contains `Hashable`
+20230	open	Hashing of unhashable objects is not detected
+11465	open	no error when unhashable object in dict
+11463	open	`dataclass` is not `Hashable`
+11097	open	Ior assignment operator is flagged while equivalent __ior__() method call is not
+8414	open	Is it possible to define a subscriptable class which can take type arguments and ellipses?
+15814	open	Input argument in new method incorrectly reports that its type is not defined even though it was imported
+19711	closed	Odd behavior in DEV version of mypy on `pandas-stubs`
+8767	closed	Please consider making Tuple[Hashable, ...] a subtype of Hashable
+7328	closed	Hashable and List are considered overlapping
+16954	closed	`__hash__ = None` in class definition should not emit assignment error 
+16550	closed	False negative: attrs classes and hashability
+13805	closed	Hashable and None have overlapping type in mypy >= 0.981
+##### [issues] python/mypy :: implicit __hash__
+11463	open	`dataclass` is not `Hashable`
+##### [issues] python/mypy :: __eq__ without __hash__
+##### [issues] python/mypy :: hashable protocol
+14674	open	dict_keys is identified as hashable
+20236	open	Assigning an iterator to the type hint `collections.abc.Hashable` gets error even though an iterator is hashable
+4266	open	`__hash__ = None` generates an error
+8150	closed	Mypy doesn't catch unhashable literals in hashdependant literals.
+##### [issues] python/mypy :: unhashable type
+2455	open	MyPy does not enforce Hashability
+11470	open	`type[Any]` not considered `Hashable`
+15997	closed	Incorrect mypy behavor when "type unpacking".
+11799	closed	Reachability check seems to consider isinstance(obj, Hashable) as always True
+11548	closed	Crash with SQLAlchemy plugin
+##### [issues] python/mypy :: Hashable dataclass
+11463	open	`dataclass` is not `Hashable`
+18962	open	dataclasses with generated __hash__ subclassing Hashable are considered abstract
+8853	closed	Mypy doesn't understand `dataclass` assigned to a different name
+##### [issues] python/mypy :: hash() unhashable
+20230	open	Hashing of unhashable objects is not detected
+##### [issues] python/mypy :: set of unhashable
+##### [issues] python/mypy :: dict key unhashable
+##### [issues] python/mypy :: mutable dataclass hashable
+##### [issues] python/mypy :: __eq__ unhashable
+##### [issues] python/mypy :: defines __eq__ but not __hash__
+4266	open	`__hash__ = None` generates an error
+11470	open	`type[Any]` not considered `Hashable`
+##### [issues] python/mypy :: eq=True hashable
+##### [prs] python/mypy :: Hashable
+21837	open	Recognize Iterator as Hashable
+20541	open	Fix inconsistent type resolution with unused type variables
+22347	merged	[mypyc] Allow class with only non-eq comparison methods to be hashable
+19168	open	Handle `__hash__ = None` in somewhat more intuitive fashion
+22366	closed	Fix subclassing member with type and list literal context false positive
+17123	open	Allow self binding for generic ParamSpec
+19043	open	Generate dataclasses `__hash__` according to runtime semantics
+18871	open	Do not overuse current_node_deferred flag
+22372	merged	Sync typeshed
+19651	open	Rework starargs with union argument
+12556	open	Change error message for incompatible type assignment when using Generics
+22250	merged	Sync typeshed
+18347	open	Disallow assignment of protocol or abstract classes to Callable
+16366	open	Interpret `type` annotations as `type[Any]` annotations
+12901	open	Enable `--check-untyped-defs` by default
+##### [prs] python/mypy :: __hash__
+13187	open	Adds `__hash__` method to `@dataclasses.dataclass`
+19043	open	Generate dataclasses `__hash__` according to runtime semantics
+19168	open	Handle `__hash__ = None` in somewhat more intuitive fashion
+18347	open	Disallow assignment of protocol or abstract classes to Callable
+22320	merged	[mypyc] Propagate errors in dict helpers
+15889	open	Make `None` compatible with `SupportsBool` protocol
+22347	merged	[mypyc] Allow class with only non-eq comparison methods to be hashable
+21837	open	Recognize Iterator as Hashable
+12659	open	make_simplified_union: add caching and reduce allocations
+19432	open	Add functools.lru_cache plugin support Fixes #16261
+22059	merged	Make expression cache robust for nested generic calls
+16366	open	Interpret `type` annotations as `type[Any]` annotations
+18094	open	Remove TypeType exception for abstract instantiation
+20423	merged	Optimise LiteralType.__eq__ and __hash__
+19635	merged	Fix `--strict-equality` for iteratively visited code
+##### [prs] python/mypy :: unhashable
+22347	merged	[mypyc] Allow class with only non-eq comparison methods to be hashable
+19168	open	Handle `__hash__ = None` in somewhat more intuitive fashion
+21837	open	Recognize Iterator as Hashable
+17016	merged	attrs: Fix emulating hash method logic
+16556	merged	Improve attrs hashability detection
+14849	merged	Add signature for dataclasses.replace
+11478	closed	Enhance `is_subtype` for `TypeType`
+4898	merged	Restore dict based typesafe caching
+4899	merged	Fix unhashable list lib_path in stubgen
+##### [prs] python/mypy :: __eq__ __hash__
+7000	merged	Generalize reachability checks to support enums
+##### [prs] python/mypy :: hashable protocol
+16366	open	Interpret `type` annotations as `type[Any]` annotations
+10308	merged	Fix function `is_protocol_implementation` for quite similar protocol classes

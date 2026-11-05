@@ -1,0 +1,403 @@
+=================== python/mypy#2455
+MyPy does not enforce Hashability | OPEN | created 2016-11-15T02:48:58Z closed null
+For example, the following code is illegal in Python 3 (implementing `__eq__` shadows your `__hash__` implementation with `None` in Python 3)
+
+```python
+class Foo(object):
+  def __init__(self, x):
+    self.x = x
+  def __eq__(self, other):
+    if not isinstance(other, Foo):
+      return NotImplemented
+    return self.x == other.x
+
+set_of_foo = {Foo(1), Foo(2)}
+```
+
+Poking around the code, AFAICT `mypy` doesn't do any `Hashable` checks.  I don't see any other Protocols being checked in `checker.py`.  Is there any existing tickets around supporting Protocols in mypy?
+
+--- comments: 4
+[gvanrossum] Other than https://github.com/python/typing/issues/11, not that I know.
+
+~~
+[ilevkivskyi] Another example appeared in https://github.com/python/mypy/issues/8150. Also I think it makes to raise priority to normal as this is relatively common cause of confusion.
+~~
+[erictraut] Pyright recently added support for this feature. It wouldn't have been possible without some significant modifications to typeshed stubs. See [this](https://github.com/python/typeshed/pull/10425), [this](https://github.com/python/typeshed/pull/10426), and [this](https://github.com/python/typeshed/pull/10464) for details. Now that these changes are in typeshed, it should be relatively easy to add this check to mypy.
+~~
+[finite-state-machine] In case it's useful to have gists/tests for this:
+
+With [regular objects](https://mypy-play.net/?mypy=latest&python=3.11&gist=e0737249b9f8acb24d64d93bb4dce9f2):
+```python3
+from __future__ import annotations
+from typing import *
+from typing_extensions import (
+        reveal_type,
+        )
+
+class SomeClass:
+
+    def __eq__(self, other: object) -> bool:
+        # defining '__eq__()' without defining '__hash__()' implicitly
+        # makes instances of this class unhashable, and sets '__hash__'
+        # to 'None'
+        return super().__eq__(other)
+
+instance = SomeClass()
+
+
+=================== python/mypy#11465
+no error when unhashable object in dict | OPEN | created 2021-11-05T02:37:47Z closed null
+```py
+from typing import Hashable
+
+
+class SomeDClass:
+    __hash__: None = None  # type: ignore
+
+d = {
+    [1]: 1,  # SUS ALERT! fails at runtime
+    SomeDClass(): 2,  # SUS ALERT! fails at runtime
+}
+```
+
+Is this an issue with the stubs?
+--- comments: 2
+[KotlinIsland] https://github.com/python/typeshed/issues/3884
+~~
+[srittau] I believe, type checkers should special case `__hash__: None` to be valid, no matter what the stubs say. After all, `object.__hash__()` has some [weird rules](https://docs.python.org/3/reference/datamodel.html#object.__hash__) around it that can't be represented in the stubs. Writing `__hash__: None` in stubs is the current way to signal that a class is not hashable and requires a `# type: ignore` currently.
+=================== python/mypy#11463
+`dataclass` is not `Hashable` | OPEN | created 2021-11-05T02:01:03Z closed null
+```py
+from dataclasses import dataclass
+from typing import Hashable
+
+
+@dataclass
+class SusDataclass:
+    b = "AMONGUS"
+
+
+h: Hashable = SusDataclass()  # SUS ALERT!
+
+d = {
+    SusDataclass(): 1  # SUS ALERT! fails at runtime
+}
+```
+--- comments: 5
+[sobolevn] This happens because `unsafe_hash` is not taken into an account in `plugins/dataclasses.py`: https://github.com/python/mypy/blob/2db0511451ecf511f00dbfc7515cb6fc0d25119c/mypy/plugins/dataclasses.py#L123-L128
+
+This should still be `Hashable`:
+
+```python
+from dataclasses import dataclass
+
+@dataclass(unsafe_hash=True)
+class Some:
+    x: int
+
+print(hash(Some(1)))  # ok
+```
+
+I will send a fix today. Thanks for the report! 👍 
+~~
+[sobolevn] By the way, here's a note from the docs:
+
+> If __hash__() is not explicitly defined, or if it is set to None, then dataclass() may add an implicit __hash__() method. Although not recommended, you can force dataclass() to create a __hash__() method with unsafe_hash=True. This might be the case if your class is logically immutable but can nonetheless be mutated. This is a specialized use case and should be considered carefully.
+
+https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass
+
+So, it still might be hashable even without `unsafe_hash`. I will research it further.
+~~
+[sobolevn] > unsafe_hash: If False (the default), a __hash__() method is generated according to how eq and frozen are set.
+
+```
+# __hash__
+
+#    +------------------- unsafe_hash= parameter
+#    |       +----------- eq= parameter
+#    |       |       +--- frozen= parameter
+#    |       |       |
+#    v       v       v    |        |        |
+#                         |   no   |  yes   |  <--- class has explicitly defined __hash__
+# +=======+=======+=======+========+========+
+# | False | False | False |        |        | No __eq__, use the base class __hash__
+# +-------+-------+-------+--------
+~~
+[sobolevn] I will send a PR after https://github.com/python/mypy/pull/11483 is merged. I don't want to solve merge conflicts.
+~~
+[tmke8] Aren't the docs quite clear about this?
+
+> By default, `dataclass()` will not implicitly add a `__hash__()` method unless it is safe to do so. [...] Here are the rules governing implicit creation of a `__hash__()` method. [...] If `eq` and `frozen` are both true, by default `dataclass()` will generate a `__hash__()` method for you. If `eq` is true and `frozen` is false, `__hash__()` will be set to `None`, marking it unhashable (which it is, since it is mutable). If `eq` is false, `__hash__()` will be left untouched meaning the `__hash__()` method of the superclass will be used (if the superc
+=================== python/mypy#20230
+Hashing of unhashable objects is not detected | OPEN | created 2025-11-12T23:17:25Z closed null
+**Bug Report**
+
+False negatives for hashing unhashable objects
+
+**To Reproduce**
+
+```python
+class Unhashable1:
+    def __eq__(self, other: object) -> bool:
+        return False
+
+
+class Unhashable2:
+    __hash__ = None  
+
+
+for obj in Unhashable1(), Unhashable2():
+    try:
+        hash(obj)
+    except TypeError:
+        pass
+    else:
+        raise AssertionError(f"{obj} should be unhashable")
+
+    try:
+        obj in set()
+    except TypeError:
+        pass
+    else:
+        raise AssertionError(f"{obj} should be unhashable")
+
+    try:
+        obj in {}
+    except TypeError:
+        pass
+    else:
+        raise AssertionError(f"{obj} should be unhashable")
+
+    try:
+        s = {obj}  
+    except TypeError:
+        pass
+    else:
+        raise AssertionError(f"{obj} should be unhashable")
+
+    try:
+        d = {obj: "value"}
+    except TypeError:
+        pass
+    else:
+        raise AssertionError(f"{obj} should be unhashable")
+```
+
+**Expected Behavior**
+
+5 errors to be reported
+
+**Actual Behavior**
+
+No errors reported (other than the [`__hash__ = None`](https://github.com/python/mypy/issues/4266) false positive)
+
+**Your Environment**
+
+- Mypy version used: 1.18.2
+- Python version used: 3.12
+--- comments: 0
+
+=================== python/mypy#18622
+Incorrect inference for types with `__eq__`  and no `__hash__` | OPEN | created 2025-02-06T18:57:15Z closed null
+# problem
+
+```py
+class A:
+    def __eq__(self, o: object, /) -> bool:
+        return self is o
+
+reveal_type(A().__hash__)  # def () -> builtins.int
+```
+
+https://mypy-play.net/?mypy=latest&python=3.13&flags=strict%2Clocal-partial-types&gist=2b23624b1df772175b70c08e36a6e912
+
+yet 
+
+```pycon
+>>> class A:
+...     def __eq__(self, o: object, /) -> bool:
+...         return self is o
+...         
+>>> type(A.__hash__)
+<class 'NoneType'>
+```
+
+# solution
+
+iff. class `A`, and only class `A` (i.e. excluding any base classes)
+
+- implements `__eq__`, and 
+- does not implement `__hash__`
+
+infer `A.__hash__: ClassVar[None]` 
+
+--- comments: 0
+
+=================== python/mypy#19232
+Non-hashable tuple should not be accepted as `Hashable` | OPEN | created 2025-06-04T11:47:44Z closed null
+**Bug Report**
+
+I'd expect to get a type error when trying to pass a `tuple` to a `Hashable` bound if that tuple contains any non-hashable element type.
+
+**To Reproduce**
+
+```py
+from typing import Hashable, TypeVar
+
+T = TypeVar("T", bound=Hashable)
+
+def f(x: T) -> T:
+    print(hash(x))
+    return x
+    
+def usage1(x: tuple[dict[str, str], ...]):
+    f(x)
+
+def usage2(x: tuple[dict[str, str], int, int]):
+    f(x)
+
+def usage3(x: tuple[int, int, dict[str, str]]):
+    f(x)
+```
+
+**Expected Behavior**
+
+Type error in all `f(x)` lines, rejecting the non-hashable type.
+
+**Actual Behavior**
+
+The type check passes despite the unsound typing.
+
+**Your Environment**
+
+- Mypy version used: 1.16.0
+- Mypy command-line flags:
+- Mypy configuration options from `mypy.ini` (and other config files):
+- Python version used: 3.12
+
+
+--- comments: 0
+
+=================== python/mypy#16550
+False negative: attrs classes and hashability | CLOSED | created 2023-11-24T01:44:27Z closed 2023-12-12T20:08:15Z
+Looks like non-frozen attrs classes are considered hashable by default. But they aren't.
+
+The following snippet type-checks but explodes at runtime:
+
+```python
+from collections.abc import Hashable
+
+from attrs import define
+
+
+@define
+class A:
+    a: int
+
+
+def my_func(c: Hashable) -> None:
+    {c}
+
+
+my_func(A(1))
+```
+
+(The behavior can be [customized](https://www.attrs.org/en/stable/hashing.html).)
+
+This might be an easy one to fix. I can grab it when I have time, or it may be an easy first issue for someone?
+--- comments: 0
+
+=================== python/mypy#11495
+`@dataclass` does not handle `__hash__: None` special case | OPEN | created 2021-11-08T14:49:32Z closed null
+While working on https://github.com/python/mypy/issues/11463 I found that adding `__hash__: None` annotations does not work correctly.
+
+Mypy says:
+
+```python
+from dataclasses import dataclass
+
+@dataclass(unsafe_hash=False, eq=True, frozen=False)
+class SecondCase2:
+    x: int
+    __hash__: None  # E: Incompatible types in assignment (expression has type "None", base class "object" defined the type as "Callable[[object], int]")
+print(SecondCase2(1).__hash__)  # N: Revealed type is "None" \
+                                                      # E: Missing positional argument "__hash__" in call to "SecondCase2"
+```
+
+It looks like `__hash__` is added to `fields` and `__init__`. While runtime version works just fine:
+
+```
+» python out/ex.py
+SecondCase2(x=1, __hash__=<slot wrapper '__hash__' of 'object' objects>)
+```
+
+I will fix it in the same PR as https://github.com/python/mypy/issues/11463
+--- comments: 0
+
+=================== python/mypy#4266
+`__hash__ = None` generates an error | OPEN | created 2017-11-19T12:38:58Z closed null
+In mypy 0.550 with `--strict-optional`, defining an unhashable class like so:
+```python
+class Foo:
+    __hash__ = None
+```
+gives
+```
+hash.py:2: error: Incompatible types in assignment (expression has type "None", base class "object" defined the type as "Callable[[object], int]")
+```
+--- comments: 13
+[gvanrossum] Is this a regression? Have you tried it with earlier versions? Or are you just mentioning 0.550 to indicate you're up to date?
+~~
+[bmerry] I hadn't tried earlier versions - just indicating that I'm up-to-date.
+
+I've now tested with 0.521, 0.530 and 0.540 and get the same behaviour - so it's not a regression, or at least not a recent one.
+~~
+[elazarg] Doesn't `__hash__ = None  # type: ignore` do the trick?
+~~
+[bmerry] Sure, that suppresses the error, but it seems like mypy (or possibly typeshed) has the wrong model of `__hash__` if considers the type to be `Callable[[object], int]` rather than `Optional[Callable[[object], int]]` since hashability is optional.
+
+Should I file this against typeshed instead?
+~~
+[elazarg] No, this is not the wrong idea. Hashability is optional by convention, but as far as substitutability goes, once you define `__hash__` once (and it is defined in `object`) subclasses must adhere to this protocol:
+
+```python
+def f(x: object) -> Dict[object, int]:  # return type is valid
+    return {x: 5}  # must be valid
+```
+
+This is especially true when `strict-optional` exists, where it would otherwise force everyone to check for hashability before using `hash` which is of course unacceptable. For a purist, the fact that `__hash__` is defined in object is unfortunate, but this is how t
+~~
+[bmerry] If you're happy that mypy is working as designed then you can close this. However, it seems like `typing.Hashable` can't possibly work in strict-optional mode, even if it is re-implemented in terms of `typing_extensions.Protocol`. For example:
+
+```
+#!/usr/bin/env python3
+from typing_extensions import Protocol
+
+class Hashable(Protocol):
+    def __hash__(object) -> int: ...
+
+class Foo:
+    __hash__ = None   # type: ignore
+
+def print_hash(obj: Hashable):
+    print(hash(obj))
+
+print_hash(3)
+print_hash(Foo())
+```
+
+fails to identify that `print_hash(Foo())` is malformed. On the ot
+=================== PR python/mypy#19168
+Handle `__hash__ = None` in somewhat more intuitive fashion | OPEN
+Fixes #4266. Fixes #18622. Refs #2455.
+
+This is the first step towards checking hashability of dict keys (and `Hashable` compatibility in general). This PR implements the following rules:
+
+* `__hash__ = None` is only allowed on classes who inherited `__hash__` directly from `object` (no redefinitions in MRO)
+* `def __hash__` is allowed on subclasses whose parents declare `__hash__ = None` - it is a relatively common solution to derive a hashable subclass, and LSP violation only means `assert SomeCls.__hash__ is None` will not pass for subclasses. This sounds safe enough.
+* Classes defining `__eq__` without `__hash__` get their `__hash__` assigned to `None` to match runtime semantics. Protocols are exempt from this as defining `__eq__` on protocol just requires classes that support `__eq__`, not necessarily unhashable ones.
+
+Refs #19043.
+=================== PR python/mypy#19043
+Generate dataclasses `__hash__` according to runtime semantics | OPEN
+Fixes #18962

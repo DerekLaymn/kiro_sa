@@ -1,0 +1,8 @@
+c2min pyright 1.1.414 exit=2 first-line: An internal error occurred while type checking file "/tmp/d7/w/c2min.py": RangeError: Maximum call stack size exceeded
+r6 pyright 1.1.414 exit=2 first-line: An internal error occurred while type checking file "/tmp/d7/w/r6.py": RangeError: Maximum call stack size exceeded
+r8 pyright 1.1.414 exit=2 first-line: An internal error occurred while type checking file "/tmp/d7/w/r8.py": RangeError: Maximum call stack size exceeded
+r4 pyright 1.1.414 exit=2 first-line: An internal error occurred while type checking file "/tmp/d7/w/r4.py": RangeError: Maximum call stack size exceeded
+--- node version / stack size
+cli.py
+dist
+errors.py

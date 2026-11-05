@@ -1,0 +1,104 @@
+##### /tmp/d7/w/a1.py
+--- cpython
+fixed
+other
+--- ty 0.0.97 (.venv)
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:29:12
+   |
+29 | print(load(Fixed()))  # runtime ok (virtual subclass)
+   |            ^^^^^^^ Expected `Source`, found `Fixed`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:30:12
+   |
+30 | print(load(Other()))  # no register: not a Source
+   |            ^^^^^^^ Expected `Source`, found `Other`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+Found 2 diagnostics
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:29:12
+   |
+29 | print(load(Fixed()))  # runtime ok (virtual subclass)
+   |            ^^^^^^^ Expected `Source`, found `Fixed`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:30:12
+   |
+30 | print(load(Other()))  # no register: not a Source
+   |            ^^^^^^^ Expected `Source`, found `Other`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+Found 2 diagnostics
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:29:12
+   |
+29 | print(load(Fixed()))  # runtime ok (virtual subclass)
+   |            ^^^^^^^ Expected `Source`, found `Fixed`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `load` is incorrect
+  --> a1.py:30:12
+   |
+30 | print(load(Other()))  # no register: not a Source
+   |            ^^^^^^^ Expected `Source`, found `Other`
+info: Function defined here
+  --> a1.py:25:5
+   |
+25 | def load(src: Source) -> str:
+   |     ^^^^ ----------- Parameter declared here
+
+Found 2 diagnostics
+--- mypy 2.4.0 (.venv)
+a1.py:29: error: Argument 1 to "load" has incompatible type "Fixed"; expected "Source"  [arg-type]
+a1.py:30: error: Argument 1 to "load" has incompatible type "Other"; expected "Source"  [arg-type]
+Found 2 errors in 1 file (checked 1 source file)
+--- mypy 2.4.1 (latest)
+a1.py:29: error: Argument 1 to "load" has incompatible type "Fixed"; expected "Source"  [arg-type]
+a1.py:30: error: Argument 1 to "load" has incompatible type "Other"; expected "Source"  [arg-type]
+Found 2 errors in 1 file (checked 1 source file)
+--- mypy master
+a1.py:29: error: Argument 1 to "load" has incompatible type "Fixed"; expected "Source"  [arg-type]
+a1.py:30: error: Argument 1 to "load" has incompatible type "Other"; expected "Source"  [arg-type]
+Found 2 errors in 1 file (checked 1 source file)
+--- pyright (.venv)
+/tmp/d7/w/a1.py
+  /tmp/d7/w/a1.py:29:12 - error: Argument of type "Fixed" cannot be assigned to parameter "src" of type "Source" in function "load"
+    "Fixed" is not assignable to "Source" (reportArgumentType)
+  /tmp/d7/w/a1.py:30:12 - error: Argument of type "Other" cannot be assigned to parameter "src" of type "Source" in function "load"
+    "Other" is not assignable to "Source" (reportArgumentType)
+2 errors, 0 warnings, 0 informations
+--- pyright (latest)
+pyright 1.1.414
+/tmp/d7/w/a1.py
+  /tmp/d7/w/a1.py:29:12 - error: Argument of type "Fixed" cannot be assigned to parameter "src" of type "Source" in function "load"
+    "Fixed" is not assignable to "Source" (reportArgumentType)
+  /tmp/d7/w/a1.py:30:12 - error: Argument of type "Other" cannot be assigned to parameter "src" of type "Source" in function "load"
+    "Other" is not assignable to "Source" (reportArgumentType)
+2 errors, 0 warnings, 0 informations

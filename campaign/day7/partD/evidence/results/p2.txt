@@ -1,0 +1,45 @@
+##### /tmp/d7/w/p2.py
+--- cpython
+3 3
+--- ty 0.0.97 (.venv)
+error[unsupported-operator]: Unsupported `+` operation
+  --> p2.py:12:20
+   |
+12 |             return a + b
+   |                    -^^^-
+   |                    |
+   |                    Both operands have type `object`
+
+Found 1 diagnostic
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+error[unsupported-operator]: Unsupported `+` operation
+  --> p2.py:12:20
+   |
+12 |             return a + b
+   |                    -^^^-
+   |                    |
+   |                    Both operands have type `object`
+
+Found 1 diagnostic
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+error[unsupported-operator]: Unsupported `+` operation
+  --> p2.py:12:20
+   |
+12 |             return a + b
+   |                    -^^^-
+   |                    |
+   |                    Both operands have type `object`
+
+Found 1 diagnostic
+--- mypy 2.4.0 (.venv)
+Success: no issues found in 1 source file
+--- mypy 2.4.1 (latest)
+Success: no issues found in 1 source file
+--- mypy master
+Success: no issues found in 1 source file
+--- pyright (.venv)
+0 errors, 0 warnings, 0 informations
+--- pyright (latest)
+pyright 1.1.414
+0 errors, 0 warnings, 0 informations

@@ -1,0 +1,386 @@
+##### [issues] astral-sh/ty :: try except assignment
+4665	open	False positive on global variable narrowing
+1585	open	support try/except imports of typing special forms
+2096	open	special-case try/except ImportError if all imports resolve
+4816	open	Different assignment diagnostics in warm and cold LSP sessions after creating an open .pyi
+1889	open	Type system feature overview
+1018	open	dedicated support for Django
+216	open	`AlwaysTruthy | bool` is equivalent to `AlwaysTruthy | Literal[False]`
+708	closed	Ty does not support conditional imports
+225	closed	Control flow modelling error in `try` ... `else`
+4293	closed	Regression: assignment in exception handler ignores explicitly annotated variable type
+##### [prs] astral-sh/ty :: try except assignment
+##### [issues] astral-sh/ty :: except narrowing assignment
+4665	open	False positive on global variable narrowing
+1889	open	Type system feature overview
+3053	closed	Declared type `list[T] | list[U]` inferred as type `list[T]` for no apparent reason.
+887	closed	Advanced pattern matching support
+##### [prs] astral-sh/ty :: except narrowing assignment
+##### [issues] astral-sh/ty :: exception handler flow
+233	open	Properly model control flow through `finally` suites
+4293	closed	Regression: assignment in exception handler ignores explicitly annotated variable type
+225	closed	Control flow modelling error in `try` ... `else`
+1652	closed	Publish diagnostics for all open files
+##### [prs] astral-sh/ty :: exception handler flow
+##### [issues] astral-sh/ty :: unpack ValueError
+##### [prs] astral-sh/ty :: unpack ValueError
+4890	merged	Bump msgpack from 1.2.1 to 1.2.3
+##### [issues] astral-sh/ty :: binding try block
+4293	closed	Regression: assignment in exception handler ignores explicitly annotated variable type
+2438	closed	A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
+500	closed	induct into return types of Callable for typevar solving
+##### [prs] astral-sh/ty :: binding try block
+##### [issues] astral-sh/ty :: try block reachability
+3312	open	Server markes `assert_never` in exhaustive match statements as unnecessary
+4076	closed	File-order dependent checking reports Django mutable_list assignments
+2438	closed	A global try-except block preceding a shadowing import causes incorrect type inference (Module | Object) in local scope
+627	closed	Freeze when checking project
+##### [prs] astral-sh/ty :: try block reachability
+##### [issues] astral-sh/ty :: raise during assignment
+4789	closed	language server cancels requests on changes to excluded files
+225	closed	Control flow modelling error in `try` ... `else`
+3870	closed	`extra-paths` stubs directory does not override submodules of first-party packages resolved via editable install or `environment.root`
+185	closed	Duplicate diagnostics in unpacking targets
+##### [prs] astral-sh/ty :: raise during assignment
+##### [issues] astral-sh/ty :: definition in try block
+2100	open	ty not working with Marimo's VSCode extension
+2769	open	Avoid indexing the entire home directory for standalone files
+2096	open	special-case try/except ImportError if all imports resolve
+3748	open	list(x) infers wrong element type when iterable has conflicting Sequence bases from multiple inheritance
+4816	open	Different assignment diagnostics in warm and cold LSP sessions after creating an open .pyi
+2391	open	Feat: support `collections.abc.<Class>.register`
+160	open	Multi-platform checking
+3312	open	Server markes `assert_never` in exhaustive match statements as unnecessary
+2967	open	Show package name in hover
+3413	closed	Support precise tuple addition (assume that tuple subclasses don't override `__add__` oddly)
+##### [prs] astral-sh/ty :: definition in try block
+##### [issues] astral-sh/ty :: except clause
+4730	open	Add FAQ on dealing with conditional imports
+3723	closed	`(x for x in xs if await ..)` not detected as an async generator
+3432	closed	Loss of narrowing when argument to `except ...:` is `type[X] | tuple[type[X], ...]`
+3653	closed	Unreproducible panic (index out of bounds) from `ruff_db\src\parsed.rs` when hovering over a certain symbol
+762	closed	Unbinding behavior of `except` statement not modeled by ty
+##### [prs] astral-sh/ty :: except clause
+##### [issues] astral-sh/ty :: try statement
+487	open	improve diagnostics for C extension modules without stubs
+3180	open	Dismal performance when some complex expressions exist in the code
+3913	open	Detect unreachable code when if-test calls a function returning `NoReturn`
+4540	open	Add setting to enable strict checking of non-strict Pydantic models
+3967	open	Forward reference in plain assignment in stub is not accepted
+4665	open	False positive on global variable narrowing
+3312	open	Server markes `assert_never` in exhaustive match statements as unnecessary
+406	open	allow guarded access of possibly-undefined local after `locals()` containment check
+2096	open	special-case try/except ImportError if all imports resolve
+1889	open	Type system feature overview
+##### [prs] astral-sh/ty :: try statement
+335	merged	Edit the module and editor sections of the docs
+##### [issues] astral-sh/ruff :: try except assignment
+29422	open	A few more: missed reports vs flake8/pylint, plus two fix bugs (B012, F402, F823, SIM102, SIM401, PLW1641, PLR1736, PLW0406, N801, UP034)
+25097	open	`F821` and `F841` false negatives with capturing exceptions occurred in except clause
+16053	open	PLC2801 fix ignores the expression’s syntactic context
+6254	open	Clean up unused variables after fixes
+16839	open	F821 (E0601): Catch possibly undefined names in except clauses
+970	open	Implement Pylint
+21004	open	Enabling UP047 and UP049 simultaneously leads to fixes introducing breaking changes with `--target-version=py314`, `from __future__ import annotations`, or on a `.pyi` file 
+3845	open	Ruleset Suggestion: wemake-python-styleguide
+4595	open	Possibility to implement flake8-length into ruff
+4935	open	Feature: Port Sonar's Python scanner checks
+##### [prs] astral-sh/ruff :: try except assignment
+29553	open	[ty] Stabilize lambda inference with finite signatures
+27661	open	[ty] Resolve deferred references from current and future bindings
+29027	open	[ty] Add existential quantification nodes
+30018	merged	[ty] Preserve exception types after tuple truthiness checks
+23993	open	fix(F841): mark except-handler binding fix as unsafe
+23700	open	[ty] [playground] Support external package resolution
+18159	open	Fix name resolution in package __init__.py
+23136	open	[ty] improve reachability analysis for with statement
+23514	open	[ty] Stricter handling of calls to instances of `type`
+27735	merged	[ty] Treat generator-expression exceptions as eagerly evaluated
+##### [issues] astral-sh/ruff :: except narrowing assignment
+27177	closed	Please remove all rules without an automated fix from default rules
+13710	closed	[red-knot] red-knot panics by looking at certain Python files within ruff's repo
+##### [prs] astral-sh/ruff :: except narrowing assignment
+30018	merged	[ty] Preserve exception types after tuple truthiness checks
+23684	closed	[ty] Split implicit-alias type-expression inference from value inference
+27598	open	[ty] Fix `invalid-yield` false negatives by using constraint sets to infer the yield, send and return types of a generator function
+28843	merged	[ty] Represent uninhabited truthiness explicitly
+29342	merged	[ty] Preserve shared structure in ambiguous overload return types
+27703	merged	[ty] Deduplicate exception checkpoints across equivalent branches
+29200	merged	[ty] Infer implicit aliases from their definition as type expressions
+17371	closed	[ty] infer function's return type
+27219	merged	[ty] Model exception-suppressing context managers
+28034	merged	[ty] Add rules to detect always-truthy and always-falsy conditions
+##### [issues] astral-sh/ruff :: exception handler flow
+17065	open	Support control flow in Ruff
+23150	open	BLE001 should be allowed if function returns NoReturn
+18528	open	New rule: Avoid `try-except StopIteration` where `next(..., default)` can be used
+4935	open	Feature: Port Sonar's Python scanner checks
+10844	closed	New Rule: Disallow uncaught and unchecked exceptions
+5006	closed	B018: false positive
+##### [prs] astral-sh/ruff :: exception handler flow
+28741	open	[flake8-async] Implement `await-in-finally-or-cancelled` (`ASYNC102`)
+28166	open	[`flake8-async`] Implement cancellation-exception-without-reraise (ASYNC103)
+28713	open	[ty] Make implicit submodule bindings flow-sensitive
+17281	open	Add Rule to check for singular `yield` in `@contextlib.{async}contextmanager` decorated functions (RUF062)
+28731	open	[ty] Emit `unused-awaitable` on more expressions
+28242	closed	[ty] Track attribute presence through flow checkpoints
+29960	merged	[ty] Rename `unresolved-import` to `import-not-found`
+27817	merged	[ty] Preserve declared types in exception handlers
+27735	merged	[ty] Treat generator-expression exceptions as eagerly evaluated
+27703	merged	[ty] Deduplicate exception checkpoints across equivalent branches
+##### [issues] astral-sh/ruff :: unpack ValueError
+27010	open	[`ruff`] Extend RUF059 to flag unpackings where every target is unused
+23125	closed	except* formatting broken for exception unpacking with tuples
+15796	closed	C417 false positive when not exactly 1 lambda parameter
+7455	closed	Pack of fuzzer Autofix/Infinite loop errors
+389	closed	Implement flake8-bugbear
+##### [prs] astral-sh/ruff :: unpack ValueError
+10317	open	[`pylint`] Implement `class-variable-slots-conflict` (`PLE0242`)
+26030	closed	[ty] Preserve constrained TypeVar correlations in match patterns
+25840	merged	[ty] Restrict length narrowing to types that encode their length
+25966	merged	[ty] Diagnose zero-step slices on lists
+12839	closed	F841: Stabilize unpacking support
+28129	merged	[ty] Add a new `disjoint-cast` rule
+29236	merged	[ty] Infer union parameters through call-wide constraints
+28034	merged	[ty] Add rules to detect always-truthy and always-falsy conditions
+22601	merged	[ty] Make `NamedTuple(...)` and `namedtuple(...)` calls stricter
+14148	closed	Prefer breaking return-type over parameters
+##### [issues] astral-sh/ruff :: binding try block
+16537	open	F841 treats `except` bindings differently from all other bindings
+22554	open	[`pyflakes`] `F401` cannot detect unused import
+4421	open	Rules/Request:  Airflow DAGs checks
+6878	open	F841 "Undefined name" false positive in exception-nested-closure
+13208	open	[flake8-type-checking] Missing rules, autofix strategies, overlapping rules and more
+970	open	Implement Pylint
+659	open	Expose Ruff's public API as a Python library
+16886	open	Types assigned to a type alias should be moved under type checking block
+283	open	Meta issue: plugin system
+17292	closed	RET504 breaks code when value is used in finally
+##### [prs] astral-sh/ruff :: binding try block
+28561	open	[ty] Preserve type alias docstrings in hover
+23993	open	fix(F841): mark except-handler binding fix as unsafe
+29750	merged	[ty] Reuse exception checkpoints when a new place is read
+28329	open	[ty] Compute edits for Python file renames
+28983	closed	[ty] Avoid inference cycles for invalid context managers
+24550	open	[ty] Validate metaclass `__new__`/`__prepare__`/`__init__`, and meta-metaclass `__call__`, as well as `__init_subclass__`
+13965	open	[pyflakes] Fix check of unused imports
+11769	closed	Implement  `ForVariableUsedAfterBlock` (based on `wemake_python_styleguide` `ControlVarUsedAfterBlockViolation` `WPS441`)
+27703	merged	[ty] Deduplicate exception checkpoints across equivalent branches
+28375	merged	[ty] Avoid storing constraint nodes twice
+##### [issues] astral-sh/ruff :: try block reachability
+##### [prs] astral-sh/ruff :: try block reachability
+25021	open	[ty] Re-infer binary operator arguments with type context
+25634	open	[ty] Rescope still-generic typevars in return callables
+28329	open	[ty] Compute edits for Python file renames
+27703	merged	[ty] Deduplicate exception checkpoints across equivalent branches
+27042	closed	[ty] Cache protocol assignability checks
+28375	merged	[ty] Avoid storing constraint nodes twice
+28318	closed	[ty] Track completion of boolean tests
+28708	merged	[ty] Preserve call narrowing during cyclic inference
+28783	open	[ty] Enable `disjoint-cast` by default; move invariant specializations to `disjoint-cast-strict`
+29344	merged	[ty] Filter incompatible union members during union inference
+##### [issues] astral-sh/ruff :: raise during assignment
+4935	open	Feature: Port Sonar's Python scanner checks
+283	open	Meta issue: plugin system
+13778	closed	[red-knot] support invalid syntax without panics
+11846	closed	[QA] Should Ruff be able to fix indentation errors (E999) ?
+3676	closed	[Autofix Error] noqa Removed
+##### [prs] astral-sh/ruff :: raise during assignment
+29803	open	[ty] Preserve type structure during typevar freshening
+29989	merged	[ty] Preserve narrowed type variables in union inference
+28089	open	[ty] Use target type context for unpacked assignments
+29341	open	[ty] Preserve receiver checks for aliased methods
+28462	merged	[ty] Reject reassignment of enum members
+29345	merged	[ty] Fix attribute writes through type variables
+24024	open	[ty] Fix Top materialization to respect TypeVar bounds and ignore defaults
+29014	merged	[ty] Validate inferred solutions against declared upper bounds
+29331	merged	[ty] Preserve minimum lengths of unpacked tuple unions
+29396	merged	[ty] Preserve bound receivers for strict signature checks
+##### [issues] astral-sh/ruff :: definition in try block
+8451	open	Implement flake8-async rules
+15584	open	Document fix safety
+20782	open	`UP037` causes runtime errors in Python 3.14
+13309	open	Pattern in `lint.isort.sections` overrides detected `first-party` 
+14140	open	False-positive TCH002 for runtime-required type annotations
+3845	open	Ruleset Suggestion: wemake-python-styleguide
+458	open	Implement rules in `darglint`
+7684	open	Formatter: Keep right-hanging comments aligned
+7368	open	Formatter undocumented deviation: comment on function arguments forces wrapping
+8360	open	Formatter: Specify indentation for function parameters
+##### [prs] astral-sh/ruff :: definition in try block
+26627	open	feat: Add extend-type-form-callables setting
+28329	open	[ty] Compute edits for Python file renames
+27109	open	[`ruff`] Flag `Literal[True/False]` annotations in `FBT001` in preview
+25021	open	[ty] Re-infer binary operator arguments with type context
+29750	merged	[ty] Reuse exception checkpoints when a new place is read
+24550	open	[ty] Validate metaclass `__new__`/`__prepare__`/`__init__`, and meta-metaclass `__call__`, as well as `__init_subclass__`
+25634	open	[ty] Rescope still-generic typevars in return callables
+28609	open	[ty] Propagate constraint bounds without recursive substitution
+29341	open	[ty] Preserve receiver checks for aliased methods
+25383	open	[ty] preserve type aliases during union type building
+##### [issues] astral-sh/ruff :: except clause
+25097	open	`F821` and `F841` false negatives with capturing exceptions occurred in except clause
+16839	open	F821 (E0601): Catch possibly undefined names in except clauses
+29811	closed	`useless-try-except` not useless with `else` clauses
+25025	open	new rule - useless `from` clause in `raise` statement
+29422	open	A few more: missed reports vs flake8/pylint, plus two fix bugs (B012, F402, F823, SIM102, SIM401, PLW1641, PLR1736, PLW0406, N801, UP034)
+17065	open	Support control flow in Ruff
+22325	open	SIM107 documentation example may be misleading
+28928	closed	ruff format --target-version py314 unparenthesizes multi-exception except clauses, producing invalid syntax on every Python version except 3.14
+14257	open	If a with statement’s target is a global variable that was assigned before, a false “redefinition of unused variable” is reported.
+14147	open	DJ006 doesn't detect ModelForm.exclude on inherited forms
+##### [prs] astral-sh/ruff :: except clause
+26973	open	DOC: fix misleading SIM107 example (#22325)
+29548	closed	[flake8-bugbear] Detect jump statements in nested clauses in `finally` (`B012`)
+17281	open	Add Rule to check for singular `yield` in `@contextlib.{async}contextmanager` decorated functions (RUF062)
+16981	open	[`flake8-type-checking`] Treat type statement value as typing references
+23993	open	fix(F841): mark except-handler binding fix as unsafe
+27404	merged	[`ruff_python_ast`] Fix double visit / missing elif visit
+27598	open	[ty] Fix `invalid-yield` false negatives by using constraint sets to infer the yield, send and return types of a generator function
+25440	merged	[`pylint`] Narrow diagnostic range and exclude cases without exception handlers (`PLW0717`)
+23970	merged	[`pylint`] Implement `too-many-try-statements` (`W0717`)
+24165	merged	[`ruff`] New rule `useless-finally` (`RUF072`)
+##### [issues] astral-sh/ruff :: try statement
+29422	open	A few more: missed reports vs flake8/pylint, plus two fix bugs (B012, F402, F823, SIM102, SIM401, PLW1641, PLR1736, PLW0406, N801, UP034)
+17065	open	Support control flow in Ruff
+24404	open	Implement flake8-match
+27011	open	Review rule names
+27998	open	PLR0911 (too-many-return-statements) shouldn’t trigger for `match` statements
+16973	open	Request: Autofix for `stub-body-multiple-statements (PYI048)` with elipsis / pass
+25025	open	new rule - useless `from` clause in `raise` statement
+4789	open	Implement `perflint`
+25167	open	TRY300 & RET508 Conflict
+27317	open	Do not remove empty lines before the first comment in a new code block.
+##### [prs] astral-sh/ruff :: try statement
+29671	open	[ruff] Honor `noqa` suppressions for `needless-else` (`RUF047`)
+29692	open	[ty] Experiment: Receiver refinements
+29894	open	[ty] Reuse type arguments inferred from the same call evidence
+27708	open	[flake8-pyi] Share autofix for unnecessary placeholder in stubs (`stub-body-multiple-statements`, `PYI048`)
+29553	open	[ty] Stabilize lambda inference with finite signatures
+28712	open	[ty] Preserve return inference for dataclass transforms
+28697	open	[ty] Construct recursive type solutions from recursive constraints (v2)
+27712	open	[ty] Use reaching definitions for find references
+29583	closed	[flake8-bugbear] Check jump statements in elif, else, and except branches within finally (B012) (#29422)
+29791	open	[ty] Factor out a `PlaceLoadResolver` interface to encapsulate evaluation of place load sources.
+##### [issues] microsoft/pyright :: try except assignment
+11688	closed	decorator does not satisfy ReportAbstractUsage's analysis of a Protocol; neither does in-line function containing definition
+11751	closed	Degraded performance in versions `>=1.1.412`, worse with multiple threads
+8551	closed	Addition of Literal[T] is assigned to LiteralString in loop
+6280	closed	Pyright gets stuck in analysis on specific file
+4902	closed	TypeGuard is considered a subtype of bool
+4409	closed	Shadowing enum generates NoReturn
+3896	closed	Unused `tuple`, `dict`, `set` and `list`  literals are not reported per `reportUnusedExpression`
+2648	closed	Invalid type in except clause
+2036	closed	Pyright does not handle guarded access involving AttributeError
+2298	closed	Infinite processing with 1.1.167 (never ends)
+##### [prs] microsoft/pyright :: try except assignment
+11662	open	Fix reflected operator priority when the right operand is a subclass
+11963	open	Fix class namespace lookup in PEP 695 type aliases
+11180	closed	Fix Type Narrowing for Asymmetric Attributes After Assignment
+11372	merged	Fix 1.1.405 regressions
+7339	closed	pull-pylance-with-pyright-1.1.283
+##### [issues] microsoft/pyright :: except narrowing assignment
+5887	closed	Literal dict typed with union drops all union members except the first
+5254	closed	Type hint incorrect on TypedDict.update?
+2199	closed	Persist type checks across later conditional blocks with the same condition
+2904	closed	Loss of implicit literal typing in classes
+##### [prs] microsoft/pyright :: except narrowing assignment
+11800	open	Fix position-only parameter mismatch expected and received (fixes #11774)
+11838	open	Fix __slots__ handling for method-only protocols
+11564	merged	Fix narrowing of walrus RHS under is/is not None
+11578	merged	Fix TypedDict narrowing for literal key unions
+11180	closed	Fix Type Narrowing for Asymmetric Attributes After Assignment
+##### [issues] microsoft/pyright :: exception handler flow
+7399	closed	Dictionary KeyError when using try/except with a decorator 
+5008	closed	Unbound variables in try blocks
+1363	closed	except NameError: error: "var" is possibly unbound
+##### [prs] microsoft/pyright :: exception handler flow
+11800	open	Fix position-only parameter mismatch expected and received (fixes #11774)
+11797	merged	Preserve exception target types past the declaration limit
+11806	open	Exclude unreachable antecedents from code flow complexity
+##### [issues] microsoft/pyright :: unpack ValueError
+11183	closed	Pyright does not notice conflicting protocols
+10640	closed	kwargs.pop doesnt infer the type correctly for required option of a unpacked typed dict type
+9891	closed	Type annotation in the for loop causes Unknown return values on method calls
+8290	closed	Unpacking of iterables with unknown/wrong length
+6108	closed	No error is given when a caller incorrectly attempts to unpack a tuple from a function that doesn't return a tuple
+2649	closed	False negative for an unbound variable when unpacking in `with` statement
+2423	closed	Pyright doesn't understand tuple assignment to NamedTuple self
+627	closed	unpack tuple with asterisk cause Tuple size mismatch error
+1209	closed	PyLance false positive on unused imports
+##### [prs] microsoft/pyright :: unpack ValueError
+##### [issues] microsoft/pyright :: binding try block
+11233	closed	Support Type Narrowing In the Same Scope as an Assignment to an Asymmetric Descriptor
+1725	closed	Enters infinite loop when home folder contains cyclic symlinks
+##### [prs] microsoft/pyright :: binding try block
+11662	open	Fix reflected operator priority when the right operand is a subclass
+##### [issues] microsoft/pyright :: try block reachability
+##### [prs] microsoft/pyright :: try block reachability
+11520	merged	Evaluate truthiness of literals in static boolean expressions
+##### [issues] microsoft/pyright :: raise during assignment
+10481	closed	Incorrect return type inference when generic function is passed non-union value
+9663	closed	Protocol method only considers the first overload of the matched method, ignoring all others
+6538	closed	Uppercase constant cannot be redefined during first assignment
+3852	closed	Undefined variables are not reported when the target and value are of same name and an annotation is provided
+2779	closed	(Unsafe) type cast not taken into account for fields
+##### [prs] microsoft/pyright :: raise during assignment
+11827	open	Reject direct attribute mutation through builtin super
+11973	open	Fix hang in cyclic protocol matching with growing type args
+11717	open	Allow tuple ordering without losing inferred tuple shape
+11971	merged	Fix recursive TypedDict hang (~500x faster on repro)
+11614	closed	Disallow assignment expressions in function default parameter values
+11654	closed	Reject callable assignment when dest keyword form is incompatible
+11699	closed	Bump axios from 1.18.1 to 1.19.0
+11579	merged	Fix false positive reportOverlappingOverload for recursive TypeVar lower bounds
+##### [issues] microsoft/pyright :: definition in try block
+11233	closed	Support Type Narrowing In the Same Scope as an Assignment to an Asymmetric Descriptor
+1118	closed	reportUnusedVariable ignore pattern
+10772	closed	Feature request: Safer TYPE_CHECKING behavior
+1825	closed	Ignore type-checking only imports in cycle detection
+7433	closed	Refining of type parameters in the case of lists
+4706	closed	Regression with default match pattern for Never type on 1.1.296
+4905	closed	Unexpected errors with reportImplicitOverride 
+5194	closed	Overload error should appear when defining the function, not when calling the function
+3788	closed	No inference for TypeVar in Callable (aka unable to annotate decorator factory)
+2193	closed	typing_extensions.TypedDict no longer recognised
+##### [prs] microsoft/pyright :: definition in try block
+##### [issues] microsoft/pyright :: except clause
+11899	open	`reportUnusedExcept` produces false positives due to default arguments
+11186	closed	Pyright fails to flag illegal generic exception in except clause
+10546	closed	Add support for Python 3.14 multi-exception syntax
+10383	closed	Unable to satisfy Pyright in an `except (Base)ExceptionGroup` clause
+10047	closed	Incorrect labelling of unreachable code
+9562	closed	Two diagnostics issued for invalid type in exception handler where one would suffice
+9413	closed	Add syntax error check for control flow within `except*` block
+2648	closed	Invalid type in except clause
+3106	closed	Invalid type in except clause with return in try body
+3270	closed	False positive for "except clause unreachable" when excepting variable annotated as `Union[Type[Exception], tuple[Type[Exception], ...]]`
+##### [prs] microsoft/pyright :: except clause
+11901	open	Fix type inference when default argument value is a concrete class
+11571	merged	Fix except* type inference for BaseException subclasses
+11606	merged	Report a specific diagnostic for walrus in a comprehension iterable expression
+10561	merged	Added support for PEP 758, which allows Python 3.14 and newer to supp…
+9419	merged	Added checks for `except*` clause to report invalid usage that is fla…
+##### [issues] microsoft/pyright :: try statement
+11576	open	Match-case on type() is not well interpreted
+11272	open	Pyright hangs/fails opaquely on large codebase
+10941	open	Type Annotation are not allowed for enum members when using nonmember
+11149	open	Re-exported submodule results in "Import could not be resolved from source"
+10910	open	Pyright fails on files that are too large
+4803	closed	Type annotation ignored when type is partially unknown
+9793	closed	deprecateTypingAliases incorrectly reports Optional as deprecated
+11240	closed	Warn about indented blocks that contain a `pass` statement and have further statements, just like with `return`
+3378	closed	import could not be resolved
+11174	closed	Incomplete diagnostic message
+##### [prs] microsoft/pyright :: try statement
+11733	merged	Allow equivalent generic function redeclarations
+11734	closed	Fix equivalent generic redeclarations in try/except branches
+11971	merged	Fix recursive TypedDict hang (~500x faster on repro)
+11617	merged	Expand conditional TypedDict test coverage
+11372	merged	Fix 1.1.405 regressions
+8702	merged	Fix fileInfo null error
+6155	merged	Set `isThirdPartyImport` and `isThirdPartyPyTypedPresent` for interim files
+6519	merged	Change all file paths to use a new `URI` class.
+5031	merged	Idea for copy on write
+4796	merged	fixed missing imports inside try/catch blocks when createTypeStub comm…
+FINISHED

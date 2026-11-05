@@ -1,0 +1,86 @@
+##### /tmp/d7/w/c3r.py
+--- cpython
+Runtime type is 'int'
+Runtime type is 'int'
+via_descriptor AttributeError: property 'readonly' of 'Thing' object has no setter
+via_method AttributeError: property 'readonly' of 'Thing' object has no setter
+--- ty 0.0.97 (.venv)
+info[revealed-type]: Revealed type
+  --> c3r.py:27:17
+   |
+27 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+info[revealed-type]: Revealed type
+  --> c3r.py:36:17
+   |
+36 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+Found 2 diagnostics
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+info[revealed-type]: Revealed type
+  --> c3r.py:27:17
+   |
+27 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+info[revealed-type]: Revealed type
+  --> c3r.py:36:17
+   |
+36 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+Found 2 diagnostics
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+info[revealed-type]: Revealed type
+  --> c3r.py:27:17
+   |
+27 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+info[revealed-type]: Revealed type
+  --> c3r.py:36:17
+   |
+36 |     reveal_type(t.base)
+   |                 ^^^^^^ `Literal[4]`
+
+Found 2 diagnostics
+--- mypy 2.4.0 (.venv)
+c3r.py:27: note: Revealed type is "int"
+c3r.py:29: error: Property "readonly" defined in "Thing" is read-only  [misc]
+c3r.py:36: note: Revealed type is "int"
+c3r.py:38: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 2 errors in 1 file (checked 1 source file)
+--- mypy 2.4.1 (latest)
+c3r.py:27: note: Revealed type is "int"
+c3r.py:29: error: Property "readonly" defined in "Thing" is read-only  [misc]
+c3r.py:36: note: Revealed type is "int"
+c3r.py:38: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 2 errors in 1 file (checked 1 source file)
+--- mypy master
+c3r.py:27: note: Revealed type is "int"
+c3r.py:29: error: Property "readonly" defined in "Thing" is read-only  [misc]
+c3r.py:36: note: Revealed type is "int"
+c3r.py:38: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 2 errors in 1 file (checked 1 source file)
+--- pyright (.venv)
+/tmp/d7/w/c3r.py
+  /tmp/d7/w/c3r.py:27:17 - information: Type of "t.base" is "Literal[4]"
+  /tmp/d7/w/c3r.py:29:18 - error: Cannot assign to attribute "readonly" for class "Thing"
+    "Literal[5]" is not assignable to "property" (reportAttributeAccessIssue)
+  /tmp/d7/w/c3r.py:36:17 - information: Type of "t.base" is "Literal[4]"
+  /tmp/d7/w/c3r.py:38:18 - error: Cannot assign to attribute "readonly" for class "Thing"
+    "Literal[5]" is not assignable to "property" (reportAttributeAccessIssue)
+2 errors, 0 warnings, 2 informations
+--- pyright (latest)
+pyright 1.1.414
+/tmp/d7/w/c3r.py
+  /tmp/d7/w/c3r.py:27:17 - information: Type of "t.base" is "Literal[4]"
+  /tmp/d7/w/c3r.py:29:18 - error: Cannot assign to attribute "readonly" for class "Thing"
+    "Literal[5]" is not assignable to "property" (reportAttributeAccessIssue)
+  /tmp/d7/w/c3r.py:36:17 - information: Type of "t.base" is "Literal[4]"
+  /tmp/d7/w/c3r.py:38:18 - error: Cannot assign to attribute "readonly" for class "Thing"
+    "Literal[5]" is not assignable to "property" (reportAttributeAccessIssue)
+2 errors, 0 warnings, 2 informations

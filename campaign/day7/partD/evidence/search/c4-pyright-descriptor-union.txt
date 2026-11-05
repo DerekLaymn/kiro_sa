@@ -1,0 +1,96 @@
+##### [issues] microsoft/pyright :: descriptor __set__ inferred type
+11382	open	class-level descriptor access has incorrect type when descriptor set on instance
+10249	closed	Setting a value of a descriptor in a class method does not report type errors and expands the attribute's type
+7039	closed	Type inference on `owner` argument to `__set_name__`
+5843	closed	Data Descriptor Type Overridden by Object Variable
+2698	closed	Descriptor changing its class return type when object sets something to it
+4024	closed	__set__ value type ignored when assigning to self.attribute
+1045	closed	Cannot assign same type object to explicitly-typed generic descriptor
+##### [prs] microsoft/pyright :: descriptor __set__ inferred type
+11936	open	Fix circular inference for member accesses
+11499	merged	Fix #11478: Support overloads on property setters
+##### [issues] microsoft/pyright :: descriptor class access union
+11382	open	class-level descriptor access has incorrect type when descriptor set on instance
+11039	closed	Incorrect type narrowing with subclassed descriptors
+8342	closed	Inconsistent syntax-dependent incompatible override error when implementing callable property on ABC/Protocol with callable descriptor
+1814	closed	Data descriptor type is changed after assignment
+2698	closed	Descriptor changing its class return type when object sets something to it
+5778	closed	Inferred Unknown in descriptor
+5535	closed	Cannot access member in descriptor for some type annotations
+5434	closed	Generic descriptor parametrized by synthesized generic `self` type results in type errors in subclasses
+3486	closed	dataclass_transform decorator causes class-level descriptor access to not honor the descriptor
+2371	closed	Protocols with read-only properties cannot be assigned objects with read/write properties
+##### [prs] microsoft/pyright :: descriptor class access union
+11837	open	Fix parameter loss when assigning lambda to property setter typed as Callable (#11833)
+11662	open	Fix reflected operator priority when the right operand is a subclass
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11953	merged	Preserve bound receivers during contextual return inference
+11560	merged	Fix false positive when assigning to an attribute of a union with divergent member types
+11499	merged	Fix #11478: Support overloads on property setters
+##### [issues] microsoft/pyright :: descriptor assignment __init__ inferred
+11382	open	class-level descriptor access has incorrect type when descriptor set on instance
+10277	closed	The typing of dataclass field's default_factory replaces explicit typing in strict mode
+2698	closed	Descriptor changing its class return type when object sets something to it
+1045	closed	Cannot assign same type object to explicitly-typed generic descriptor
+##### [prs] microsoft/pyright :: descriptor assignment __init__ inferred
+11662	open	Fix reflected operator priority when the right operand is a subclass
+11953	merged	Preserve bound receivers during contextual return inference
+##### [issues] microsoft/pyright :: overload __get__ instance None class access
+11382	open	class-level descriptor access has incorrect type when descriptor set on instance
+11039	closed	Incorrect type narrowing with subclassed descriptors
+10370	closed	Assigning descriptor instance to a class defining `__slots__` causes undesired type narrowing
+9460	closed	Handle Type Symmetry in Overloaded Descriptor Methods Based on `instance` Type
+9108	closed	Pyright doesn't seem to handle staticmethod and classmethod decorators correctly
+8342	closed	Inconsistent syntax-dependent incompatible override error when implementing callable property on ABC/Protocol with callable descriptor
+7533	closed	Descriptor __get__ fails to match Coroutine methods as (...) -> Awaitable[R]
+7039	closed	Type inference on `owner` argument to `__set_name__`
+2698	closed	Descriptor changing its class return type when object sets something to it
+1814	closed	Data descriptor type is changed after assignment
+##### [prs] microsoft/pyright :: overload __get__ instance None class access
+11875	open	Fix binding for callable protocol method decorators
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11953	merged	Preserve bound receivers during contextual return inference
+11915	merged	Update typeshed to 7030b265d887eeacee07e47aa2cca412b07950c4
+11180	closed	Fix Type Narrowing for Asymmetric Attributes After Assignment
+8477	closed	Added the distinction between "external" versus "internal" type varia…
+5343	merged	Support PEP 712's new attribute assignment conversion
+##### [issues] microsoft/pyright :: descriptor declared type inference
+9011	closed	Cannot assign `cls.some_dict: [Hashable, t.Self]` in `__init_subclass__`
+5843	closed	Data Descriptor Type Overridden by Object Variable
+2698	closed	Descriptor changing its class return type when object sets something to it
+2136	closed	Pyright should not report "obscured def" errors for conditionally defined functions
+4024	closed	__set__ value type ignored when assigning to self.attribute
+1045	closed	Cannot assign same type object to explicitly-typed generic descriptor
+##### [prs] microsoft/pyright :: descriptor declared type inference
+11953	merged	Preserve bound receivers during contextual return inference
+11839	open	Fix override checks for overloads, annotated self and return TypeVars
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11662	open	Fix reflected operator priority when the right operand is a subclass
+11560	merged	Fix false positive when assigning to an attribute of a union with divergent member types
+##### [issues] microsoft/pyright :: descriptor self assignment inferred type
+11382	open	class-level descriptor access has incorrect type when descriptor set on instance
+10277	closed	The typing of dataclass field's default_factory replaces explicit typing in strict mode
+10249	closed	Setting a value of a descriptor in a class method does not report type errors and expands the attribute's type
+5843	closed	Data Descriptor Type Overridden by Object Variable
+2698	closed	Descriptor changing its class return type when object sets something to it
+4837	closed	Classes methods break descriptors
+2136	closed	Pyright should not report "obscured def" errors for conditionally defined functions
+4024	closed	__set__ value type ignored when assigning to self.attribute
+1045	closed	Cannot assign same type object to explicitly-typed generic descriptor
+##### [prs] microsoft/pyright :: descriptor self assignment inferred type
+11936	open	Fix circular inference for member accesses
+11662	open	Fix reflected operator priority when the right operand is a subclass
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11953	merged	Preserve bound receivers during contextual return inference
+11499	merged	Fix #11478: Support overloads on property setters
+##### [issues] microsoft/pyright :: data descriptor class variable union
+11204	closed	Incompatible types in assignment with dynamic `__setattr__` and `__init_subclass__` for custom data types
+5843	closed	Data Descriptor Type Overridden by Object Variable
+2698	closed	Descriptor changing its class return type when object sets something to it
+3486	closed	dataclass_transform decorator causes class-level descriptor access to not honor the descriptor
+2371	closed	Protocols with read-only properties cannot be assigned objects with read/write properties
+##### [prs] microsoft/pyright :: data descriptor class variable union
+11829	open	Report invalid __bool__ calls in conditional operands
+11942	merged	Preserve raw classmethod and staticmethod descriptor types
+11953	merged	Preserve bound receivers during contextual return inference
+FINISHED

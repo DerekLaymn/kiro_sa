@@ -1,0 +1,94 @@
+##### /tmp/d7/w/c1b.py
+--- cpython
+Runtime type is 'str'
+Runtime type is 'str'
+Runtime type is 'str'
+--- ty 0.0.97 (.venv)
+info[revealed-type]: Revealed type
+ --> c1b.py:9:21
+  |
+9 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:17:21
+   |
+17 |         reveal_type(value)
+   |                     ^^^^^ `Literal["bad"]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:25:21
+   |
+25 |         reveal_type(value)
+   |                     ^^^^^ `Literal[1, "bad"]`
+
+Found 3 diagnostics
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+info[revealed-type]: Revealed type
+ --> c1b.py:9:21
+  |
+9 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:17:21
+   |
+17 |         reveal_type(value)
+   |                     ^^^^^ `Literal["bad"]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:25:21
+   |
+25 |         reveal_type(value)
+   |                     ^^^^^ `Literal[1, "bad"]`
+
+Found 3 diagnostics
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+info[revealed-type]: Revealed type
+ --> c1b.py:9:21
+  |
+9 |         reveal_type(value)
+  |                     ^^^^^ `Literal[1]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:17:21
+   |
+17 |         reveal_type(value)
+   |                     ^^^^^ `Literal["bad"]`
+
+info[revealed-type]: Revealed type
+  --> c1b.py:25:21
+   |
+25 |         reveal_type(value)
+   |                     ^^^^^ `Literal[1, "bad"]`
+
+Found 3 diagnostics
+--- mypy 2.4.0 (.venv)
+c1b.py:9: note: Revealed type is "int | str"
+c1b.py:17: note: Revealed type is "int | str"
+c1b.py:25: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- mypy 2.4.1 (latest)
+c1b.py:9: note: Revealed type is "int | str"
+c1b.py:17: note: Revealed type is "int | str"
+c1b.py:25: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- mypy master
+c1b.py:9: note: Revealed type is "int | str"
+c1b.py:17: note: Revealed type is "int | str"
+c1b.py:25: note: Revealed type is "int | str"
+Success: no issues found in 1 source file
+--- pyright (.venv)
+/tmp/d7/w/c1b.py
+  /tmp/d7/w/c1b.py:9:21 - information: Type of "value" is "Literal[1]"
+  /tmp/d7/w/c1b.py:17:21 - information: Type of "value" is "Literal[1]"
+  /tmp/d7/w/c1b.py:25:21 - information: Type of "value" is "Literal[1]"
+0 errors, 0 warnings, 3 informations
+--- pyright (latest)
+pyright 1.1.414
+/tmp/d7/w/c1b.py
+  /tmp/d7/w/c1b.py:9:21 - information: Type of "value" is "Literal[1]"
+  /tmp/d7/w/c1b.py:17:21 - information: Type of "value" is "Literal[1]"
+  /tmp/d7/w/c1b.py:25:21 - information: Type of "value" is "Literal[1]"
+0 errors, 0 warnings, 3 informations

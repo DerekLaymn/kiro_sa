@@ -1,0 +1,140 @@
+##### /tmp/d7/w/c2.py
+--- cpython
+Runtime type is 'list'
+Runtime type is 'list'
+Runtime type is 'list'
+[7] ['n'] [2.5]
+--- ty 0.0.97 (.venv)
+error[invalid-argument-type]: Argument to function `Box.keep` is incorrect
+  --> c2.py:18:5
+   |
+18 |     @keep
+   |     ^^^^^ Argument type `def __get__(self, obj: object, owner: type | None = None) -> list[T@Box]` does not satisfy upper bound `Box[T@Box]` of type variable `Self`
+
+info[revealed-type]: Revealed type
+  --> c2.py:29:13
+   |
+29 | reveal_type(h.ints)  # list[int]
+   |             ^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c2.py:30:13
+   |
+30 | reveal_type(h.names)  # list[str]
+   |             ^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c2.py:31:13
+   |
+31 | reveal_type(Box.__get__(Box(1), None, Host))  # list[int]
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Unknown`
+
+Found 4 diagnostics
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+error[invalid-argument-type]: Argument to function `Box.keep` is incorrect
+  --> c2.py:18:5
+   |
+18 |     @keep
+   |     ^^^^^ Argument type `def __get__(self, obj: object, owner: type | None = None) -> list[T@Box]` does not satisfy upper bound `Box[T@Box]` of type variable `Self`
+
+info[revealed-type]: Revealed type
+  --> c2.py:29:13
+   |
+29 | reveal_type(h.ints)  # list[int]
+   |             ^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c2.py:30:13
+   |
+30 | reveal_type(h.names)  # list[str]
+   |             ^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c2.py:31:13
+   |
+31 | reveal_type(Box.__get__(Box(1), None, Host))  # list[int]
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `Unknown`
+
+Found 4 diagnostics
+--- mypy 2.4.0 (.venv)
+c2.py:18: error: Argument 1 to "keep" has incompatible type "Callable[[Box[T], object, type | None], list[T]]"; expected "Box[T]"  [arg-type]
+c2.py:29: note: Revealed type is "Any"
+c2.py:30: note: Revealed type is "Any"
+c2.py:31: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+--- mypy 2.4.1 (latest)
+c2.py:18: error: Argument 1 to "keep" has incompatible type "Callable[[Box[T], object, type | None], list[T]]"; expected "Box[T]"  [arg-type]
+c2.py:29: note: Revealed type is "Any"
+c2.py:30: note: Revealed type is "Any"
+c2.py:31: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+--- mypy master
+c2.py:18: error: Argument 1 to "keep" has incompatible type "Callable[[Box[T], object, type | None], list[T]]"; expected "Box[T]"  [arg-type]
+c2.py:29: note: Revealed type is "Any"
+c2.py:30: note: Revealed type is "Any"
+c2.py:31: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+--- pyright (.venv)
+An internal error occurred while type checking file "/tmp/d7/w/c2.py": RangeError: Maximum call stack size exceeded
+    at V (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:2193:17)
+    at A (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1510:22)
+    at z (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:2004:41)
+    at z.next (<anonymous>)
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1832:31)
+    at M.next (<anonymous>)
+    at E (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1791:22)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6623:26)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+--- pyright (latest)
+pyright 1.1.414
+An internal error occurred while type checking file "/tmp/d7/w/c2.py": RangeError: Maximum call stack size exceeded
+    at V (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:2193:17)
+    at A (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1510:22)
+    at z (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:2004:41)
+    at z.next (<anonymous>)
+    at M (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1832:31)
+    at M.next (<anonymous>)
+    at E (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1791:22)
+    at tO (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6623:26)
+    at eQ (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/tmp/d3v-latest/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)

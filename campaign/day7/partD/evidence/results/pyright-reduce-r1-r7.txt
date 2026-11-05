@@ -1,0 +1,56 @@
+################ r1
+-- cpython
+42
+-- pyright 1.1.414
+An internal error occurred while type checking file "/tmp/d7/w/r1.py": RangeError: Maximum call stack size exceeded
+    at z (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1985:18)
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1830:26)
+    at M.next (<anonymous>)
+################ r2
+-- cpython
+set 5
+-- pyright 1.1.414
+/tmp/d7/w/r2.py
+  /tmp/d7/w/r2.py:2:14 - warning: Instance methods should take a "self" parameter (reportSelfClsParameterName)
+  /tmp/d7/w/r2.py:5:6 - error: Argument of type "(self: Self@Desc, obj: object, value: int) -> None" cannot be assigned to parameter "fn" of type "Self@Desc" in function "deco"
+    Type "(self: Self@Desc, obj: object, value: int) -> None" is not assignable to type "Self@Desc" (reportArgumentType)
+################ r3
+-- cpython
+42
+-- pyright 1.1.414
+/tmp/d7/w/r3.py
+  /tmp/d7/w/r3.py:2:14 - warning: Instance methods should take a "self" parameter (reportSelfClsParameterName)
+  /tmp/d7/w/r3.py:5:6 - error: Argument of type "(self: Self@Plain) -> int" cannot be assigned to parameter "fn" of type "Self@Plain" in function "deco"
+    Type "(self: Self@Plain) -> int" is not assignable to type "Self@Plain" (reportArgumentType)
+################ r4
+-- cpython
+42
+-- pyright 1.1.414
+An internal error occurred while type checking file "/tmp/d7/w/r4.py": RangeError: Maximum call stack size exceeded
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1804:18)
+    at E (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1789:23)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6623:26)
+################ r5
+-- cpython
+-- pyright 1.1.414
+/tmp/d7/w/r5.py
+  /tmp/d7/w/r5.py:2:14 - warning: Instance methods should take a "self" parameter (reportSelfClsParameterName)
+  /tmp/d7/w/r5.py:5:6 - error: Argument of type "(self: Self@Desc, obj: object, owner: type | None = None) -> int" cannot be assigned to parameter "fn" of type "Self@Desc" in function "deco"
+    Type "(self: Self@Desc, obj: object, owner: type | None = None) -> int" is not assignable to type "Self@Desc" (reportArgumentType)
+################ r6
+-- cpython
+42
+-- pyright 1.1.414
+An internal error occurred while type checking file "/tmp/d7/w/r6.py": RangeError: Maximum call stack size exceeded
+    at z (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1985:18)
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1830:26)
+    at M.next (<anonymous>)
+################ r7
+-- cpython
+    ^^^^^^^^^^^
+NameError: name 'reveal_type' is not defined
+-- pyright 1.1.414
+An internal error occurred while type checking file "/tmp/d7/w/r7.py": RangeError: Maximum call stack size exceeded
+    at z (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1985:18)
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1830:26)
+    at M.next (<anonymous>)

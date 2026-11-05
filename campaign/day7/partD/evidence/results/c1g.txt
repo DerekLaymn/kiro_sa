@@ -1,0 +1,70 @@
+##### /tmp/d7/w/c1g.py
+--- cpython
+Runtime type is 'int'
+Runtime type is 'int'
+--- ty 0.0.97 (.venv)
+info[revealed-type]: Revealed type
+  --> c1g.py:12:21
+   |
+12 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+info[revealed-type]: Revealed type
+  --> c1g.py:21:21
+   |
+21 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+Found 2 diagnostics
+--- ty latest (/tmp/d3v-latest)
+ty 0.0.97
+info[revealed-type]: Revealed type
+  --> c1g.py:12:21
+   |
+12 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+info[revealed-type]: Revealed type
+  --> c1g.py:21:21
+   |
+21 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+Found 2 diagnostics
+--- ty 0.0.98 (/tmp/d7pd/ty98)
+info[revealed-type]: Revealed type
+  --> c1g.py:12:21
+   |
+12 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+info[revealed-type]: Revealed type
+  --> c1g.py:21:21
+   |
+21 |         reveal_type(state)
+   |                     ^^^^^ `Literal[0]`
+
+Found 2 diagnostics
+--- mypy 2.4.0 (.venv)
+c1g.py:12: note: Revealed type is "int"
+c1g.py:21: note: Revealed type is "int"
+Success: no issues found in 1 source file
+--- mypy 2.4.1 (latest)
+c1g.py:12: note: Revealed type is "int"
+c1g.py:21: note: Revealed type is "int"
+Success: no issues found in 1 source file
+--- mypy master
+c1g.py:12: note: Revealed type is "int"
+c1g.py:21: note: Revealed type is "int"
+Success: no issues found in 1 source file
+--- pyright (.venv)
+/tmp/d7/w/c1g.py
+  /tmp/d7/w/c1g.py:12:21 - information: Type of "state" is "Literal[0]"
+  /tmp/d7/w/c1g.py:21:21 - information: Type of "state" is "Literal[0]"
+0 errors, 0 warnings, 2 informations
+--- pyright (latest)
+pyright 1.1.414
+/tmp/d7/w/c1g.py
+  /tmp/d7/w/c1g.py:12:21 - information: Type of "state" is "Literal[0]"
+  /tmp/d7/w/c1g.py:21:21 - information: Type of "state" is "Literal[0]"
+0 errors, 0 warnings, 2 informations
