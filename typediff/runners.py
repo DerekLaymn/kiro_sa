@@ -11,6 +11,7 @@ import json
 import os
 import shlex
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -94,13 +95,25 @@ class Runners:
     def _exec(self, cmd: list[str], workdir: str, timeout: int) -> tuple[str, str, int | None, float]:
         t0 = time.monotonic()
         try:
-            p = subprocess.run(cmd, cwd=workdir, env=self._env(workdir), capture_output=True, text=True, timeout=timeout)
-            return p.stdout, p.stderr, p.returncode, time.monotonic() - t0
-        except subprocess.TimeoutExpired as exc:
-            out = exc.stdout.decode() if isinstance(exc.stdout, bytes) else (exc.stdout or "")
-            return out, f"TIMEOUT after {timeout}s", None, time.monotonic() - t0
+            # Own session so a timeout can kill the whole process group: `pyright` is a launcher that spawns a node child, and
+            # killing only the launcher left that node process spinning at 100% CPU / ~600 MB forever (observed: 16 orphans).
+            p = subprocess.Popen(cmd, cwd=workdir, env=self._env(workdir), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                                 start_new_session=True)
         except FileNotFoundError as exc:
             return "", f"NOT INSTALLED: {exc}", 127, 0.0
+        try:
+            out, err = p.communicate(timeout=timeout)
+            return out, err, p.returncode, time.monotonic() - t0
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(p.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                p.kill()
+            try:
+                out, _ = p.communicate(timeout=10)
+            except subprocess.TimeoutExpired:
+                out = ""
+            return out or "", f"TIMEOUT after {timeout}s", None, time.monotonic() - t0
 
     def available(self, tool: Tool) -> bool:
         return self.version(tool) is not None
