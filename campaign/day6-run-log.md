@@ -20,3 +20,16 @@ Shell note: fish garbles stdout, so every command ran as `bash script.sh > out.t
 
 - ty `main` and the playgrounds were not used (placeholders `<PLAYGROUND LINK>` remain in drafts 3, 4, 5).
 - No KB entry was added for the Callback finding (triage owner's decision).
+
+
+# Day 6 run log (Part B: generation, judge, decisions)
+
+Branch `campaign/day6-p2`, local only. First iteration: `.agents/tasks/day6-review.json` did not exist. Report: `campaign/day6-report.md`; raw outputs and helper scripts: `campaign/day6/partB/`.
+
+1. `mk_groups.sh`: A 9, C 2, M 4, P 5, R 29 (49 hits). `gen_pass.sh 0` wrote 250 prompts (`pending=250 written=0`). I added the gate file `day6-gen-status.json` and an `inbox_check.py` call to `gen_pass.sh`.
+2. Generator stand-in: `kiro-cli chat --model claude-haiku-5.5 --effort medium` only works with `--agent-engine v3` (the default engine reports `failed to set model ... Method not found` and falls back to the unavailable global default `minimax-2.1`). `campaign/day6/gen_worker.sh` answers a batch of 5 prompts per session with read and write tools only; `answer_pending.sh` runs 4 sessions at once. 250 answers in about 10 minutes. `gen_pass.sh 1`: `pending=0 written=250`; `inbox_check`: 250 prompts, 250 answers, 0 orphans, 0 malformed.
+3. Judge `kbloop_run.py ... --jobs 14`: 250 ok in 71 s; lowest available memory 9954 MB; one memguard cgroup kill of `mypy.real`; no oomd.
+4. Stats: discrepancies 259, crashes 62, live 218, dismissed 103. Triage written to `campaign/day6-triage.txt`.
+5. Decisions: read ty#2171, ty#2792, ty#4756, ty#4882, ty#4746, ty#4683, mypy#2008, mypy#20230, mypy#22361 (read-only `gh`). Wrote dismissals for ty#2171/#2792 with AST predicates and tests; replay closed 17 more findings; pytest then failed 3 tests (must-stay-live calibration programs and an extra prior); reverted them, kept TY-4756 (dismissal) and TY-2171 (prior stance). Final replay: live 212, dismissed 109, `verify-sample 30/30 identical`.
+6. Parents: promoted 2 ty-overflow mutants, retired 2 tuple-fold parents (moved 2 more out and back). `check_hits.py 0.80`: 49 files, 0 problems.
+7. Checks: pytest 426 passed; `kb-selftest` 20 PASS, 0 FAIL; `inbox_check` exit 0.
