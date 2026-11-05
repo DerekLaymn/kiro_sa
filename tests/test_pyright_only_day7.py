@@ -201,3 +201,25 @@ def test_signature_separates_pyright_only_findings_by_rule():
 
     assert signature(f(a), a) != signature(f(b), b)
     assert signature(f(a), a) == signature(f(a), a)
+
+
+def _load_stats():
+    import importlib.util
+    from pathlib import Path
+    p = Path(__file__).resolve().parent.parent / "scripts" / "kbloop_stats.py"
+    spec = importlib.util.spec_from_file_location("kbloop_stats_under_test", p)
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def test_stats_report_live_counts_without_only_pyright():
+    """A run judged with --pyright-only stays comparable with Days 1 to 6: the stats give the live count without the new kind."""
+    report = {
+        "discrepancies": [{"id": "D1", "kind": "only_pyright"}, {"id": "D2", "kind": "only_mypy"}],
+        "findings": [{"discrepancy_id": "D1", "tier": "review"}, {"discrepancy_id": "D2", "tier": "review"}],
+    }
+    only = {"discrepancies": [{"id": "D1", "kind": "only_pyright"}], "findings": [{"discrepancy_id": "D1", "tier": "review"}]}
+    s = _load_stats().summarize([report, only])
+    assert s["live"] == 3 and s["programs_with_live"] == 2
+    assert s["live_wo_only_pyright"] == 1 and s["programs_with_live_wo_only_pyright"] == 1

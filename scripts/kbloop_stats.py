@@ -40,13 +40,14 @@ def closing_ref(f) -> str:
 def summarize(reports) -> dict:
     s = {"programs": 0, "discrepancies": 0, "live": 0, "dismissed": 0, "crash_findings": 0,
          "dismissed_by_category": Counter(), "dismissed_by_entry": Counter(), "live_by_kind": Counter(),
-         "programs_with_live": 0, "tool_crashes": 0, "crash_closed_by": Counter()}
+         "programs_with_live": 0, "tool_crashes": 0, "crash_closed_by": Counter(),
+         "live_wo_only_pyright": 0, "programs_with_live_wo_only_pyright": 0}
     for r in reports:
         s["programs"] += 1
         s["discrepancies"] += len(r["discrepancies"])
         s["tool_crashes"] += len(r.get("crashes", []))
         ds = {d["id"]: d for d in r["discrepancies"]}
-        live = 0
+        live = live_wo = 0
         for f in r["findings"]:
             d = ds.get(f["discrepancy_id"])
             if f["tier"] == "dismissed":
@@ -61,7 +62,11 @@ def summarize(reports) -> dict:
                 if d is None:
                     s["crash_findings"] += 1
                 s["live_by_kind"][d["kind"] if d else "crash"] += 1
+                if not d or d["kind"] != "only_pyright":
+                    live_wo += 1
         s["programs_with_live"] += bool(live)
+        s["live_wo_only_pyright"] += live_wo
+        s["programs_with_live_wo_only_pyright"] += bool(live_wo)
     return s
 
 
@@ -88,6 +93,9 @@ def main() -> None:
         print(f"   dismissed by entry: {dict(s['dismissed_by_entry'].most_common())}")
         print(f"   crash closures by closing reference: {dict(s['crash_closed_by'].most_common())}")
         print(f"   live by kind: {dict(s['live_by_kind'])}")
+        if s["live_by_kind"].get("only_pyright"):  # runs judged with --pyright-only: the number comparable with Days 1 to 6
+            print(f"   live without only_pyright: {s['live_wo_only_pyright']} "
+                  f"(programs with such live={s['programs_with_live_wo_only_pyright']})")
     print(f"rejected/failed: {dict(out['rejected_or_failed'])}")
     if a.json:
         Path(a.json).write_text(json.dumps(out, indent=1, default=dict))
