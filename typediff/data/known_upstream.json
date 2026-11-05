@@ -103,7 +103,7 @@
    "dismissal": "DUPLICATE",
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4148",
-   "note": "open (bug, fatal, attributes, callables, cycles; state as of 2026-11-05): ty overflows its stack when an instance is called and its class declares __call__ as an attribute annotated with the class itself (class C: __call__: 'C'; C()()), also with Self or a union holding C or Self. The issue shows the exact two-line program; a fix attempt (ruff#28691) was closed unmerged. Verified on ty 0.0.84 and 0.0.97. Same shape as MYPY-22361 (the mypy crash on the same programs). Mutually recursive pairs (A.__call__: B, B.__call__: A) crash the same way but are NOT matched by this entry."
+   "note": "open (bug, fatal, attributes, callables, cycles; state as of 2026-11-05): ty overflows its stack when an instance is called and its class declares __call__ as an attribute annotated with the class itself (class C: __call__: 'C'; C()()), also with Self or a union holding C or Self. The issue shows the exact two-line program; a fix attempt (ruff#28691) was closed unmerged. Verified on ty 0.0.84 and 0.0.97. Same shape as MYPY-22361 (the mypy crash on the same programs). Since Day 5 the matcher (call_attr_own_type) also covers every __call__ attribute type that leads back to its class and is then called, verified on ty 0.0.84 and 0.0.97 in campaign/day4/verify-v1.md section 4: mutually recursive pairs (A.__call__: B, B.__call__: A), a three-class chain, ClassVar[...], 'B | None' pairs, subclass instances, and a call through a union-typed parameter (obj: C | Other). __call__: int, an unrelated class, list[C] and a __call__ method do not crash and are not matched."
   },
   {
    "id": "TY-4899",
@@ -169,7 +169,7 @@
    "dismissal": "DUPLICATE",
    "stance": "open",
    "url": "https://github.com/python/mypy/issues/22361",
-   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault when an instance is called and its class declares __call__ as an attribute annotated with the class itself, Self | None or C | None. The declaration alone, __get__: C and __call__: int do not crash. Verified on mypy 2.4.0. The decorated-__get__ program (A7) also crashes mypy 2.4.0 but its relation to this issue is unconfirmed, so it is not matched."
+   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault when an instance is called and its class declares __call__ as an attribute annotated with the class itself, Self | None or C | None. The declaration alone, __get__: C and __call__: int do not crash. Verified on mypy 2.4.0. Since Day 5 the matcher also covers the other __call__ attribute types that lead back to their class (mutual pairs, chains, ClassVar, subclass instances, calls through a union-typed parameter; campaign/day4/verify-v1.md section 4), same as TY-4148. The decorated-__get__ program (A7) also crashes mypy 2.4.0 but its relation to this issue is unconfirmed, so it is not matched."
   },
   {
    "id": "PYRIGHT-11961",

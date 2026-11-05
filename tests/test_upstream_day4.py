@@ -72,8 +72,7 @@ def test_ty4148_needs_the_call_and_the_self_typed_attribute():
 def test_ty4148_does_not_swallow_other_stack_overflows():
     # a NEW ty bug (protocol flatten, d4v C2) with the same signature must stay live
     assert crash_id("ty", TY_SO, src("ty4148_control_protocol_flatten_new_bug")) is None
-    # mutually recursive pair: same root cause, deliberately not matched (conservative)
-    assert crash_id("ty", TY_SO, src("ty4148_control_mutual_pair")) is None
+    # (the mutually recursive pair is the same root cause and has matched TY-4148 since Day 5, see test_pipeline_day5.py)
     # the older entries still win on their own programs
     assert crash_id("ty", TY_SO, src("ty_TB_protocol_stack_overflow", DATA3)) == "TY-4882"
     assert crash_id("ty", TY_SO, src("D7", DATA3)) == "TY-4900"

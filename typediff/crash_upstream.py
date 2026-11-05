@@ -324,37 +324,73 @@ def contravariant_selfref_base(tree: ast.Module) -> bool:
     return False
 
 
-def call_attr_own_type(tree: ast.Module) -> bool:
-    """mypy#22361: class C with ``__call__: C`` / ``Self`` / a union containing either, and an instance call
-    (``C()()`` or a name annotated ``C`` that is called)."""
-    def leaves(n: ast.AST) -> Iterator[ast.AST]:
-        if isinstance(n, ast.BinOp) and isinstance(n.op, ast.BitOr):
-            yield from leaves(n.left)
-            yield from leaves(n.right)
-        else:
-            yield n
+def _type_leaves(n: ast.AST) -> Iterator[ast.AST]:
+    """Members of a (resolved) annotation: ``A | B``, ``Union[A, B]``, ``Optional[A]`` and ``ClassVar[A]`` / ``Final[A]``
+    are looked through; anything else (``tuple[..]``, ``Callable[..]``) is one opaque leaf."""
+    if isinstance(n, ast.BinOp) and isinstance(n.op, ast.BitOr):
+        yield from _type_leaves(n.left)
+        yield from _type_leaves(n.right)
+    elif isinstance(n, ast.Subscript) and _head(n.value) in ("Union", "Optional", "ClassVar", "Final"):
+        for e in _slice_elts(n):
+            yield from _type_leaves(e)
+    else:
+        yield n
 
-    for c in _classes(tree):
-        ok = False
+
+def call_attr_own_type(tree: ast.Module) -> bool:
+    """ty#4148 / mypy#22361: a class whose ``__call__`` is declared as an ATTRIBUTE whose type leads back to the class
+    (``__call__: C``, ``Self``, a union / ``Optional`` / ``ClassVar`` of those, or a cycle through other classes:
+    ``A.__call__: B`` and ``B.__call__: A``, a chain of three), and an instance of that class, or of a subclass, being
+    called (``C()()``, or a name annotated with the class or with a union containing it, e.g. ``obj: C | Other``).
+    campaign/day4/verify-v1.md section 4: mutual pair, three-class chain, ``ClassVar``, ``"B | None"`` pairs and subclass
+    instances all crash ty and mypy; ``__call__: int``, an unrelated class or ``list[C]`` do not (no cycle)."""
+    classes = {c.name: c for c in _classes(tree)}
+    edges: dict[str, set[str]] = {}
+    for c in classes.values():
         for st in c.body:
-            if (isinstance(st, ast.AnnAssign) and isinstance(st.target, ast.Name) and st.target.id == "__call__"
-                    and any(isinstance(x, ast.Name) and x.id in (c.name, "Self") for x in leaves(_resolve(st.annotation)))):
-                ok = True
-        if not ok:
-            continue
-        typed = set()
-        for n in ast.walk(tree):
-            if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name) and _is_name(_resolve(n.annotation), c.name):
-                typed.add(n.target.id)
-            elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                typed |= {p.arg for p in _params(n) if p.annotation is not None and _is_name(_resolve(p.annotation), c.name)}
-        for n in ast.walk(tree):
-            if isinstance(n, ast.Call):
-                f = n.func
-                if isinstance(f, ast.Call) and isinstance(f.func, ast.Name) and f.func.id == c.name:
-                    return True
-                if isinstance(f, ast.Name) and f.id in typed:
-                    return True
+            if isinstance(st, ast.AnnAssign) and isinstance(st.target, ast.Name) and st.target.id == "__call__":
+                for x in _type_leaves(_resolve(st.annotation)):
+                    if isinstance(x, ast.Name) and (x.id == "Self" or x.id in classes):
+                        edges.setdefault(c.name, set()).add(c.name if x.id == "Self" else x.id)
+
+    def reaches_self(start: str) -> bool:
+        seen, todo = set(), list(edges.get(start, ()))
+        while todo:
+            n = todo.pop()
+            if n == start:
+                return True
+            if n not in seen:
+                seen.add(n)
+                todo.extend(edges.get(n, ()))
+        return False
+
+    family = {n for n in edges if reaches_self(n)}  # classes whose __call__ attribute leads back to themselves
+    if not family:
+        return False
+    grew = True
+    while grew:  # a subclass inherits the attribute
+        grew = False
+        for c in classes.values():
+            if c.name not in family and any(_head(b) in family for b in c.bases):
+                family.add(c.name)
+                grew = True
+
+    def in_family(ann: ast.AST | None) -> bool:
+        return ann is not None and any(isinstance(x, ast.Name) and x.id in family for x in _type_leaves(_resolve(ann)))
+
+    typed = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name) and in_family(n.annotation):
+            typed.add(n.target.id)
+        elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            typed |= {p.arg for p in _params(n) if in_family(p.annotation)}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call):
+            f = n.func
+            if isinstance(f, ast.Call) and isinstance(f.func, ast.Name) and f.func.id in family:
+                return True
+            if isinstance(f, ast.Name) and f.id in typed:
+                return True
     return False
 
 
