@@ -54,6 +54,37 @@ class FileLLM:
         return answer.read_text(encoding="utf-8") if answer.exists() else json.dumps({"_null": True, "_prompt": key})
 
 
+_KEY = re.compile(r"[0-9a-f]{16}")
+
+
+def _one_edit_apart(a: str, b: str) -> bool:
+    if a == b or abs(len(a) - len(b)) > 1:
+        return False
+    if len(a) == len(b):
+        return sum(x != y for x, y in zip(a, b)) == 1
+    short, long_ = sorted((a, b), key=len)
+    return any(long_[:i] + long_[i + 1:] == short for i in range(len(long_)))
+
+
+def inbox_status(directory: str | Path) -> dict[str, Any]:
+    """Account for a ``file:<dir>`` bridge directory. FileLLM reads only ``<16-hex key>.answer.json``; an answer whose key
+    was mistyped is silently ignored and its prompt stays pending (Day 4: ``e6673866643ecc8`` instead of
+    ``e66738668643ecc8`` left 271 answers for 270 prompts).
+
+    ``orphan_answers`` maps each answer without a prompt to the prompt keys one edit away (the likely intended keys,
+    answered or not)."""
+    d = Path(directory)
+    prompts = {p.name[: -len(".prompt.md")] for p in d.glob("*.prompt.md")}
+    answers = {p.name[: -len(".answer.json")] for p in d.glob("*.answer.json")}
+    retry = [k for k in prompts if "rejected by the preflight lint" in (d / f"{k}.prompt.md").read_text(encoding="utf-8")]
+    return {
+        "prompts": len(prompts), "answers": len(answers), "answered": len(prompts & answers),
+        "pending": sorted(prompts - answers), "retry_prompts": len(retry),
+        "orphan_answers": {k: sorted(p for p in prompts if _one_edit_apart(k, p)) for k in sorted(answers - prompts)},
+        "malformed_keys": sorted(k for k in prompts | answers if not _KEY.fullmatch(k)),
+    }
+
+
 class _HTTP:
     name = "http"
 
