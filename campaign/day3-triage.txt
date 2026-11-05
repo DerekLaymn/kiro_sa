@@ -1,0 +1,206 @@
+
+##   12 findings (7 with strong bug evidence)  reveal_mismatch | different
+     * 3p_enums_literals_intenum_true_aliases_one__mut1_2f2cf71e.py  D1 L21: reveal_type(Integer.TRUE)
+         mypy: reveal Literal[case.Integer.TRUE]?
+         ty:   reveal Literal[Integer.ONE]
+         [RUNTIME/strong, supports bug] runtime value '<Integer.ONE: 1>' of type __main__.Integer does NOT inhabit mypy's revealed type Literal[Integer.TRUE]
+         full report: runs/day3/out/seed-0de4710c02b5.md
+     * etaclasses_reflected_operator_on_metaclass__mut0_848753c0.py  D1 L25: reveal_type(A * B)
+         mypy: reveal Literal['left']
+         ty:   reveal Literal["right"]
+         [RUNTIME/strong, supports bug] runtime value "'right'" of type builtins.str does NOT inhabit mypy's revealed type Literal["left"]
+         full report: runs/day3/out/seed-229f1d38c10b.md
+     * rash_mypy_segv_recursive_tvt_default_alias__mut0_9fca6f47.py  D1 L20: reveal_type(sample)
+         mypy: reveal tuple[int, tuple[str, ...]] | None
+         ty:   reveal tuple[Literal[1], tuple[Literal["a"], tuple[Literal[2], tuple[Literal["b"], None]]]]
+         [RUNTIME/strong, supports bug] runtime value "(1, ('a', (2, ('b', None))))" of type builtins.tuple does NOT inhabit mypy's revealed type tuple[int, tuple[str, ...]] | None
+         full report: runs/day3/out/seed-4d6aa9e30260.md
+
+##    5 findings (5 with strong bug evidence)  crash | ty:signal-SIGABRT:stack-overflow
+     * gen/callables/d3p_callables_self_call_attr__mut0_2e173b54.py  C2 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (356334) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day3/out/seed-0032056ba741.md
+     * hods/d3p_self_classmethods_self_call_union__mut0_99c51718.py  C2 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (379412) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day3/out/seed-3e7d6fb5688c.md
+     * gen/callables/d3p_callables_self_call_attr__mut0_eae572b3.py  C2 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (356911) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day3/out/seed-6cb04c1e6fbc.md
+
+##    2 findings (2 with strong bug evidence)  reveal_mismatch | ty_more_precise
+     * 3p_narrowing_builtin_stale_alias_condition__mut1_71417fc0.py  D1 L21: reveal_type(a.x)
+         mypy: reveal int | None
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value 'None' of type builtins.NoneType does NOT inhabit ty's revealed type int
+         full report: runs/day3/out/seed-61524ebfb287.md
+     * 3p_narrowing_builtin_stale_alias_condition__mut0_7429471b.py  D1 L25: reveal_type(a.x)
+         mypy: reveal int | None
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value 'None' of type builtins.NoneType does NOT inhabit ty's revealed type int
+         full report: runs/day3/out/seed-e027e3604195.md
+
+##    6 findings (1 with strong bug evidence)  reveal_mismatch | uncomparable
+     * etaclasses_reflected_operator_on_metaclass__mut1_714d2273.py  D3 L25: reveal_type(A | B)
+         mypy: reveal Literal['left']
+         ty:   reveal <types.UnionType special-form 'A | B'>
+         [RUNTIME/strong, supports bug] runtime value "'right'" of type builtins.str does NOT inhabit mypy's revealed type Literal["left"]
+         full report: runs/day3/out/seed-83edc0d9bc6c.md
+       /d3p_callables_partial_too_many_positional__mut0_32b9dec6.py  D1 L15: reveal_type(double)
+         mypy: reveal functools.partial[int]
+         ty:   reveal partial[(value: int, *, factor: int = 2, offset: int = 0) -> int]
+         full report: runs/day3/out/seed-0b6509cd52e2.md
+       s/d3p_recursive_aliases_type_of_self_alias__mut0_ab30a2c6.py  D1 L20: reveal_type(ident_again)
+         mypy: reveal def (def (...) -> ...) -> def (...) -> ...
+         ty:   reveal (X, /) -> X
+         full report: runs/day3/out/seed-1fa918b75422.md
+
+##    2 findings (1 with strong bug evidence)  only_ty | ('type-assertion-failure',) | type _ does not match asserted type _
+     * 3p_tuples_unpacking_constant_fold_subclass__mut1_abe32df5.py  D1 L23: assert_type(r, bool)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Literal[False]` does not match asserted type `bool`
+         [RUNTIME/strong, supports bug] operand `r`: runtime type builtins.bool is outside ty's inferred type Literal[False]
+         full report: runs/day3/out/seed-e1e14ede1dfc.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut1_d83c6441.py  D1 L29: assert_type(value, Base)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Base | str` does not match asserted type `Base`
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day3/out/seed-a11689a72b0b.md
+
+##    1 findings (1 with strong bug evidence)  only_mypy | ('misc',) | property _ defined in _ is read-only
+     * seed runs/day3/gen/descriptors_properties/gen7_14eb1842.py  D1 L32: t.readonly = 5  # expect-error
+         mypy: [misc] Property "readonly" defined in "Thing" is read-only
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `t`: runtime type __main__.Thing is outside ty's inferred type Never
+         full report: runs/day3/out/seed-4aa8be0814f0.md
+
+##    1 findings (1 with strong bug evidence)  only_mypy | ('assert-type',) | expression is of type _, not _
+     * 3p_tuples_unpacking_constant_fold_subclass__mut0_fef00a03.py  D1 L16: assert_type(r, bool)
+         mypy: [assert-type] Expression is of type "Literal[True]", not "bool"
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `r`: runtime type builtins.bool is outside ty's inferred type Never
+         full report: runs/day3/out/seed-b25f9bf52142.md
+
+##    1 findings (1 with strong bug evidence)  crash | ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9
+     * d3p_crash_ty_panic_partial_or_none_in_loop__mut1_82a9fbe2.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] fatal[panic] Panicked at /root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9 when checking `/tmp/typediff-9xghn57j/case.py`: `infer_defi
+         full report: runs/day3/out/seed-c47eb01468dc.md
+
+##    1 findings (1 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ has incompatible type _; expected _
+     * s_literals/d3p_enums_flag_or_literal_union__mut0_41da72aa.py  D1 L32: assert only_r(combined) == 1  # expect-error
+         mypy: [arg-type] Argument 1 to "only_r" has incompatible type "F"; expected "Literal[F.R]"
+         ty:   (nothing)
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         [RUNTIME/strong, supports bug] operand `combined`: runtime type __main__.F is outside ty's inferred type Never
+         full report: runs/day3/out/seed-e4277cc03f53.md
+
+##    3 findings (0 with strong bug evidence)  reveal_mismatch | gradual
+       _protocols_generic_protocol_stack_overflow__mut0_a7f86b51.py  D1 L20: reveal_type(container)
+         mypy: reveal Any
+         ty:   reveal IntContainer
+         full report: runs/day3/out/seed-1d253e5f9fca.md
+       ructors_metaclasses_type_call_generic_base__mut0_f7f4a96d.py  D1 L16: reveal_type(item)
+         mypy: reveal Any
+         ty:   reveal Dynamic
+         full report: runs/day3/out/seed-aaacc7fab8ab.md
+       ructors_metaclasses_type_call_generic_base__mut0_f7f4a96d.py  D2 L17: reveal_type(item.extra)
+         mypy: reveal Any
+         ty:   reveal Literal[7]
+         full report: runs/day3/out/seed-aaacc7fab8ab.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('attr-defined',) | _ has no attribute _
+       tors_metaclasses_missing_kwonly_class_args__mut1_b21b83ca.py  D1 L9: cls.param1 = param1
+         mypy: [attr-defined] "type[Base]" has no attribute "param1"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: runs/day3/out/seed-c1e6a26ada00.md
+       tors_metaclasses_missing_kwonly_class_args__mut1_b21b83ca.py  D2 L10: cls.param2 = param2
+         mypy: [attr-defined] "type[Base]" has no attribute "param2"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: runs/day3/out/seed-c1e6a26ada00.md
+       tors_metaclasses_missing_kwonly_class_args__mut1_b21b83ca.py  D3 L29: print(Good.param1, Defaulted.param2, Good.param2 == "")
+         mypy: [attr-defined] "type[Good]" has no attribute "param1"; [attr-defined] "type[Defaulted]" has no attribute "param2"; [attr-defined] "type[Good]" has no attribute "param2"
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY, TY-CHECK-PARTIAL   decided by: gate
+         full report: runs/day3/out/seed-c1e6a26ada00.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to function _ is incorrect: expected _, found _
+       _generics_typevar_default_refers_to_itself__mut1_df4cd8b6.py  D1 L16: return len(r.args)
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `(int, str, /)`
+         full report: runs/day3/out/seed-3433615f3704.md
+       e/d3p_generics_callable_attr_contravariant__mut1_e0302f6c.py  D1 L27: feed(fs, 2)
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `feed` is incorrect: Expected `Sink[int]`, found `Sink[float]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day3/out/seed-8410097f1820.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('invalid-assignment',) | object of type _ is not assignable to attribute _ of type _
+       seed runs/day3/gen/descriptors_properties/gen4_9450365a.py  D1 L23: t.doubled = 42
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `Literal[42]` is not assignable to attribute `doubled` of type `Doubled`
+         full report: runs/day3/out/seed-50e4b7a84761.md
+       s_properties/d3p_descriptors_decorated_get__mut1_749cb204.py  D1 L36: acct.tag = "shadow"
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `Literal["shadow"]` is not assignable to attribute `tag` of type `Lazy`
+         full report: runs/day3/out/seed-64eef6e524e3.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('override',) | return type _ of _ incompatible with return type _ in supertype _
+       etaclasses_reflected_operator_on_metaclass__mut1_714d2273.py  D1 L10: def __or__(cls, other: object) -> Literal["left"]:
+         mypy: [override] Return type "Literal['left']" of "__or__" incompatible with return type "UnionType | LeftMeta" in supertype "builtins.type"
+         ty:   (nothing)
+         KB hints: STUB-SKEW   decided by: gate
+         full report: runs/day3/out/seed-83edc0d9bc6c.md
+       etaclasses_reflected_operator_on_metaclass__mut1_714d2273.py  D2 L15: def __ror__(cls, other: object) -> Literal["right"]:
+         mypy: [override] Return type "Literal['right']" of "__ror__" incompatible with return type "UnionType | RightMeta" in supertype "builtins.type"
+         ty:   (nothing)
+         KB hints: STUB-SKEW   decided by: gate
+         full report: runs/day3/out/seed-83edc0d9bc6c.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('override',) | signature of _ incompatible with supertype _
+       3p_tuples_unpacking_constant_fold_subclass__mut0_d55e7015.py  D1 L10: def __add__(self, other: tuple[int, ...]) -> tuple[int, ...]:
+         mypy: [override] Signature of "__add__" incompatible with supertype "builtins.tuple"
+         ty:   (nothing)
+         KB hints: STUB-SKEW   decided by: gate
+         full report: runs/day3/out/seed-5dd2abc4fc41.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('invalid-method-override',) | invalid override of method _: definition is incompatible with _
+       3p_tuples_unpacking_constant_fold_subclass__mut0_d364519d.py  D1 L15: def __len__(self) -> int:
+         mypy: (nothing)
+         ty:   [invalid-method-override] Invalid override of method `__len__`: Definition is incompatible with `tuple.__len__`
+         KB hints: STUB-SKEW   decided by: gate
+         full report: runs/day3/out/seed-641629216162.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('misc',) | signatures of _ of _ and _ of _ are unsafely overlapping
+       nheritance_mro_total_ordering_inherited_lt__mut0_07b9f403.py  D1 L33: class Swapped(Other):
+         mypy: [misc] Signatures of "__ge__" of "Swapped" and "__le__" of "Other" are unsafely overlapping
+         ty:   (nothing)
+         full report: runs/day3/out/seed-849ef83b73e1.md
+
+##    1 findings (0 with strong bug evidence)  reveal_unpaired | unpaired
+       _mro/d3p_inheritance_mro_hash_none_from_eq__mut1_fdf751d0.py  D1 L28: reveal_type(Keyed().__hash__())
+         mypy: (nothing)
+         ty:   reveal Never
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 28, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day3/out/seed-a43a619b6518.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('invalid-assignment',) | object of type _ is not assignable to _
+       /d3p_callables_partial_too_many_positional__mut1_00372410.py  D1 L26: scale: Scaler = partial(f, 10)
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `partial[(b: int = 0) -> int]` is not assignable to `Scaler`
+         KB hints: GRADUAL-OPERAND   decided by: gate
+         full report: runs/day3/out/seed-e35905ea869c.md
+
+48 findings in 19 patterns (* = strong verified bug evidence; triage those patterns first)
