@@ -277,6 +277,10 @@ and size limits.
 1. **Positives:** `calibrate --fetch` downloads *open*, maintainer-labelled bug reports with a
    stdlib-only repro (ty `bug`; mypy `bug`+`false-positive` and `crash`).
 2. **Negatives:** documented differences: `calibration/negatives/*.py` plus every KB example.
+   Two more program sets are checked by pytest: `calibration/known_duplicates/*.py` (real discrepancies that an open
+   upstream issue already tracks; each is closed by exactly the entry named in `tests/test_stage3_round2.py` /
+   `test_stage3_round3.py`) and `calibration/must_stay_live/*.py` (no dismissal may touch them; empty since Day 7,
+   when the two programs it held moved to `known_duplicates/` after the ty#2171 / ty#2792 entries were added).
 3. **Per-case outcome:**
    - `kept`: some finding is confirmed, candidate or review.
    - `dismissed`: everything was dismissed, so this is a candidate false dismissal.

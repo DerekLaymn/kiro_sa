@@ -80,11 +80,34 @@ def pipeline():
     return Pipeline(PipelineConfig(reduce=False, audit_rate=0.0, use_pyright=False), llm=CachedLLM(NullLLM()))
 
 
+STALE_ALIAS_PROGRAM = ROOT / "calibration" / "known_duplicates" / "mypy_stale_alias.py"
+
+
 @needs_tools
-def test_stale_alias_program_stays_in_review_with_real_tools():
-    src = (ROOT / "calibration" / "must_stay_live" / "mypy_stale_alias.py").read_text()
-    rep = pipeline().run_source(src, "stale-alias")
-    assert rep.findings and not any(f.tier == Tier.DISMISSED for f in rep.findings), [(f.decided_by, f.tier) for f in rep.findings]
+def test_stale_alias_program_is_closed_by_exactly_the_ty_2792_entry():
+    # Day 7 policy: this program (ty#2792, open) is a known duplicate. It was "must stay live" until Day 6. The
+    # stale-alias guard of MYPY-13807-ALIASED-CONDITIONS still rejects it, so exactly UPSTREAM-TY-2792 closes it.
+    rep = pipeline().run_source(STALE_ALIAS_PROGRAM.read_text(), "stale-alias")
+    assert rep.findings
+    assert [(f.tier, f.decided_by) for f in rep.findings] == [(Tier.DISMISSED, "kb:UPSTREAM-TY-2792")] * len(rep.findings), \
+        [(f.decided_by, f.tier) for f in rep.findings]
+    assert all(f.decided_by != f"kb:{AID}" for f in rep.findings)
+
+
+@needs_tools
+@pytest.mark.parametrize("name,old,new", [
+    ("call of a method that assigns another attribute", "        self.x = None\n", "        self.y = None\n"),
+    ("call that is not a method of the program", "    a.clear()\n", "    print(a)\n"),
+    ("call before the aliased condition", "    is_none = a.x is None\n    a.clear()\n", "    a.clear()\n    is_none = a.x is None\n"),
+])
+def test_stale_alias_near_misses_are_not_closed_by_the_ty_2792_entries(name, old, new):
+    # the same program without the trigger: what is still reported must not be closed by TY-2792 (the "before" variant
+    # is legitimately closed by MYPY-13807, which is the entry that explains it)
+    src = STALE_ALIAS_PROGRAM.read_text().replace(old, new)
+    assert src != STALE_ALIAS_PROGRAM.read_text(), name
+    rep = pipeline().run_source(src, "stale-alias-near-miss")
+    assert not any(f.decided_by in ("kb:UPSTREAM-TY-2792", "kb:UPSTREAM-TY-2792-READONLY") for f in rep.findings), \
+        (name, [(f.decided_by, f.tier) for f in rep.findings])
 
 
 # ---------------------------------------------------------------- calibration negatives that close without pyright
@@ -283,6 +306,9 @@ def test_opt_in_hint_never_closes_a_finding():
                    if f.discrepancy_id in {d.id for d in rep.discrepancies if HINT in d.kb_hits})
 
 
-def test_repo_must_stay_live_programs_are_discovered():
-    ids = {c["id"] for c in must_stay_live(ROOT / "calibration" / "must_stay_live")}
-    assert {"live-ty_constant_fold_tuple_subclass", "live-mypy_stale_alias"} <= ids
+def test_known_duplicate_programs_moved_out_of_must_stay_live():
+    # Day 7 decision: the two programs are known duplicates of open ty issues, closed by named entries (tests above and in
+    # test_stage3_round2.py). must_stay_live keeps its loader and classification (tests above) but holds no program now.
+    assert must_stay_live(ROOT / "calibration" / "must_stay_live") == []
+    names = {p.name for p in (ROOT / "calibration" / "known_duplicates").glob("*.py")}
+    assert names == {"ty_constant_fold_tuple_subclass.py", "mypy_stale_alias.py"}

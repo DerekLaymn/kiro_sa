@@ -134,6 +134,8 @@ seeds/            hand-written seed programs per feature area (+ status)
 scripts/harvest_seeds.py   seed harvester for upstream test suites
 calibration/
   negatives/      documented-difference programs (must be closed automatically)
+  known_duplicates/  real discrepancies that are already tracked upstream; each must be closed by exactly one named entry
+  must_stay_live/ programs no dismissal may touch (empty since Day 7; `calibrate` reports any that get dismissed)
   results/        per-case rows + summary of the last calibration run
   RESULTS.md      analysis of every dismissal
 ```

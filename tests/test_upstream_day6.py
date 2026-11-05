@@ -1,9 +1,9 @@
 """Day 6 morning: upstream entries added after reading the Day-6 reports (campaign/day6-report.md).
 
 * TY-4756  mypy reports a method without ``self``; ty is silent (open lint request). A dismissal (DUPLICATE).
-* TY-2171  ty folds comparisons of a tuple subclass that overrides a comparison dunder. A PRIOR STANCE only: the
-           calibration program ``must_stay_live/ty_constant_fold_tuple_subclass.py`` must not be dismissed, so no entry
-           in ``entries`` may close this shape.
+* TY-2171  ty folds comparisons of a tuple subclass that overrides a comparison dunder. A PRIOR STANCE (Day 6); since
+           Day 7 the narrow comparison-dunder shape is also closed by the dismissals TY-2171 / TY-2171-ASSERT
+           (tests/test_upstream_day7.py), the prior stance covers the rest (``__len__`` / ``__bool__``).
 
 Every positive has controls that must stay live."""
 from __future__ import annotations
@@ -65,20 +65,24 @@ T_TY = [("revealed-type", "Revealed type: `Literal[False]`", "Literal[False]")]
 T_ASSERT = [("type-assertion-failure", "Type `Literal[False]` does not match asserted type `bool`")]
 
 
-def test_tuple_subclass_override_has_prior_stance_but_is_not_dismissed():
-    assert "TY-2171" in priors(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
-    assert "TY-2171" in priors(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT)
+def test_tuple_subclass_override_has_prior_stance_and_the_comparison_shape_is_closed():
+    assert "TY-2171-PRIOR" in priors(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
+    assert "TY-2171-PRIOR" in priors(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT)
     named = TUPLE.replace("class Restricted(tuple[Literal[1], Literal[2]]):", "class Restricted(NamedTuple):\n    a: int\n")
-    assert "TY-2171" in priors(named, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
-    # policy: calibration/must_stay_live/ty_constant_fold_tuple_subclass.py must stay live, so no UPSTREAM entry closes it
-    assert not [i for i in ids(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY) if "2171" in i]
-    assert not [i for i in ids(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT) if "2171" in i]
+    assert "TY-2171-PRIOR" in priors(named, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
+    # Day 7 decision: the narrow comparison-dunder shape is ALSO closed by the dismissals TY-2171 / TY-2171-ASSERT
+    # (tests/test_upstream_day7.py); the prior stance stays for the shapes those dismissals do not match
+    assert [i for i in ids(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY) if "2171" in i] == ["UPSTREAM-TY-2171"]
+    assert [i for i in ids(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT) if "2171" in i] == ["UPSTREAM-TY-2171-ASSERT"]
+    len_only = TUPLE.replace("__eq__(self, other: object, /)", "__len__(self)")
+    assert "TY-2171-PRIOR" in priors(len_only, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
+    assert not [i for i in ids(len_only, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY) if "2171" in i]
 
 
 def test_tuple_subclass_prior_controls():
     no_override = TUPLE.replace("__eq__", "describe")
-    assert "TY-2171" not in priors(no_override, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
+    assert "TY-2171-PRIOR" not in priors(no_override, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
     not_tuple = TUPLE.replace("tuple[Literal[1], Literal[2]]", "list[int]")
-    assert "TY-2171" not in priors(not_tuple, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
+    assert "TY-2171-PRIOR" not in priors(not_tuple, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
     other_reveal = [("revealed-type", "Revealed type: `int`", "int")]
-    assert "TY-2171" not in priors(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=other_reveal)
+    assert "TY-2171-PRIOR" not in priors(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=other_reveal)

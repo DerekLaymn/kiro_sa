@@ -114,14 +114,38 @@ def test_pyright_other_error_or_other_answer_keeps_finding_visible():
 # ---------------------------------------------------------------- the reviewer's program through the real pipeline
 
 
+FOLD_PROGRAM = ROOT / "calibration" / "known_duplicates" / "ty_constant_fold_tuple_subclass.py"
+
+
+def _fold_pipeline():
+    return Pipeline(PipelineConfig(reduce=False, audit_rate=0.0, use_pyright=False), llm=CachedLLM(NullLLM()))
+
+
 @needs_tools
-def test_constant_fold_program_stays_in_review():
-    src = (ROOT / "calibration" / "must_stay_live" / "ty_constant_fold_tuple_subclass.py").read_text()
-    p = Pipeline(PipelineConfig(reduce=False, audit_rate=0.0, use_pyright=False), llm=CachedLLM(NullLLM()))
-    rep = p.run_source(src, "fold-hole")
-    assert rep.findings, "ty's Literal[False] vs CPython's True must still be reported"
-    assert not any(f.tier == Tier.DISMISSED for f in rep.findings), [(f.decided_by, f.tier) for f in rep.findings]
+def test_constant_fold_program_is_closed_by_exactly_the_ty_2171_assert_entry():
+    # Day 7 policy: this program (ty#2171, open) is a known duplicate. It was "must stay live" until Day 6. Exactly one
+    # entry closes it, and the literal-retention entry above must still NOT be the one (it excludes Literal[True/False]).
+    rep = _fold_pipeline().run_source(FOLD_PROGRAM.read_text(), "fold-hole")
+    assert rep.findings, "ty's Literal[False] vs CPython's True must still be seen by the pipeline"
+    assert [(f.tier, f.decided_by) for f in rep.findings] == [(Tier.DISMISSED, "kb:UPSTREAM-TY-2171-ASSERT")] * len(rep.findings), \
+        [(f.decided_by, f.tier) for f in rep.findings]
     assert all(f.decided_by != f"kb:{ID}" for f in rep.findings)
+
+
+@needs_tools
+@pytest.mark.parametrize("name,old,new", [
+    ("no override", "def __lt__(self, other: tuple[Literal[1], ...], /) -> bool:\n        return True",
+     "def describe(self) -> bool:\n        return True"),
+    ("override of a dunder the comparison does not call", "def __lt__(", "def __len__(self) -> int:\n        return 1\n\n    def __xx__("),
+    ("not a tuple subclass", "class Restricted(tuple[Literal[1]]):", "class Restricted(list[Literal[1]]):"),
+])
+def test_constant_fold_near_misses_are_not_closed_by_the_ty_2171_entries(name, old, new):
+    # the same program without the trigger: whatever is still reported must not be closed by TY-2171 / TY-2171-ASSERT
+    src = FOLD_PROGRAM.read_text().replace(old, new)
+    assert src != FOLD_PROGRAM.read_text(), name
+    rep = _fold_pipeline().run_source(src, "fold-near-miss")
+    assert not any(f.decided_by in ("kb:UPSTREAM-TY-2171", "kb:UPSTREAM-TY-2171-ASSERT") for f in rep.findings), \
+        (name, [(f.decided_by, f.tier) for f in rep.findings])
 
 
 @needs_tools

@@ -1315,7 +1315,273 @@ def _enum_value_alias(s, d) -> bool:
                for n in _stmt_walk(s, d))
 
 
-_REQUIRES = {"flag_combo_literal_arg": _flag_combo_literal_arg,
+_CMP_DUNDER = {ast.Eq: "__eq__", ast.NotEq: "__ne__", ast.Lt: "__lt__", ast.LtE: "__le__", ast.Gt: "__gt__", ast.GtE: "__ge__"}
+_CMP_REFLECTED = {ast.Eq: "__eq__", ast.NotEq: "__ne__", ast.Lt: "__gt__", ast.LtE: "__ge__", ast.Gt: "__lt__", ast.GtE: "__le__"}
+
+
+def _tuple_subclass_overrides(tree: ast.AST) -> dict[str, set[str]]:
+    """Classes of the program that derive from ``tuple[...]`` / ``tuple`` / ``Tuple[...]`` / ``NamedTuple`` (directly, or
+    through such a class of the program) -> the comparison dunders (__eq__ .. __ge__) they define or inherit from such a
+    class. Classes without an override are left out."""
+    from . import crash_upstream as cu
+
+    classes = {c.name: c for c in cu._classes(tree)}
+    own = {n: {f.name for f in cu._methods(c) if f.name in _CMP_DUNDER.values()} for n, c in classes.items()}
+    out: dict[str, set[str]] = {}
+    changed = True
+    while changed:
+        changed = False
+        for n, c in classes.items():
+            heads = [cu._head(b) for b in c.bases]
+            if not any(h in ("tuple", "Tuple", "NamedTuple") or h in out for h in heads):
+                continue
+            ops = set(own[n]).union(*(out[h] for h in heads if h in out))
+            if ops and out.get(n) != ops:
+                out[n], changed = ops, True
+    return out
+
+
+def _last_assigned_value(tree: ast.AST, name: str, before: int) -> ast.AST | None:
+    """Value of the last plain assignment to ``name`` that starts before line ``before`` (any scope: a name-level
+    approximation, enough to follow ``r = a == b`` and ``pair = Cls(..)``)."""
+    best = None
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Assign) and n.lineno < before and n.value is not None \
+                and any(isinstance(t, ast.Name) and t.id == name for t in n.targets):
+            if best is None or n.lineno >= best.lineno:
+                best = n
+    return best.value if best is not None else None
+
+
+def _tuple_subclass_comparison_fold(s, d) -> bool:
+    """astral-sh/ty#2171 (open; design recorded in the closed ty#2140): ty folds a comparison of a tuple to
+    ``Literal[True]`` / ``Literal[False]`` on the assumption that tuple subclasses do not override the comparison
+    dunders. The statement (a ``reveal_type`` / ``assert_type`` of the comparison, or of a variable assigned from one)
+    contains a comparison with an instance of a program class that derives from tuple / NamedTuple and DEFINES the
+    dunder that this comparison calls (for the reflected form: the reflected dunder). A tuple subclass without such an
+    override, a non-tuple class, an override of another dunder (``__len__``, ``__bool__`` are not covered), and a
+    comparison of two plain tuples do not match."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    subs = _tuple_subclass_overrides(tree)
+    if not subs:
+        return False
+
+    def instance_of(e: ast.AST, depth: int = 0) -> str | None:
+        if isinstance(e, ast.Call) and isinstance(e.func, ast.Name) and e.func.id in subs:
+            return e.func.id
+        if isinstance(e, ast.Name) and depth < 3:
+            v = _last_assigned_value(tree, e.id, d.anchor)
+            if v is not None:
+                return instance_of(v, depth + 1)
+            for p in ast.walk(tree):  # a parameter / variable annotated with the class
+                if isinstance(p, ast.arg) and p.arg == e.id and isinstance(p.annotation, ast.Name) and p.annotation.id in subs:
+                    return p.annotation.id
+                if isinstance(p, ast.AnnAssign) and isinstance(p.target, ast.Name) and p.target.id == e.id \
+                        and isinstance(p.annotation, ast.Name) and p.annotation.id in subs:
+                    return p.annotation.id
+        return None
+
+    def folds(cmp: ast.Compare) -> bool:
+        operands = [cmp.left, *cmp.comparators]
+        for i, op in enumerate(cmp.ops):
+            left, right = instance_of(operands[i]), instance_of(operands[i + 1])
+            if left and _CMP_DUNDER.get(type(op)) in subs[left]:
+                return True
+            if right and _CMP_REFLECTED.get(type(op)) in subs[right]:
+                return True
+        return False
+
+    todo = list(_stmt_walk(s, d))
+    seen: set[int] = set()
+    names_followed = 0
+    while todo:
+        n = todo.pop()
+        if id(n) in seen:
+            continue
+        seen.add(id(n))
+        if isinstance(n, ast.Compare) and folds(n):
+            return True
+        if isinstance(n, ast.Name) and names_followed < 6:  # `r = pair == (3, 4)` ... `reveal_type(r)`
+            v = _last_assigned_value(tree, n.id, d.anchor)
+            if v is not None:
+                names_followed += 1
+                todo.extend(ast.walk(v))
+    return False
+
+
+def _scope_walk(scope: ast.AST) -> list[ast.AST]:
+    """Nodes of ``scope`` itself: nested function, class and lambda bodies are not entered (comprehensions are)."""
+    out, todo = [], list(ast.iter_child_nodes(scope))
+    while todo:
+        n = todo.pop()
+        out.append(n)
+        if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)):
+            todo.extend(ast.iter_child_nodes(n))
+    return out
+
+
+def _self_stores(fn: ast.FunctionDef | ast.AsyncFunctionDef) -> set[str]:
+    """Attributes assigned on the first parameter of a method (``self.x = ..``, ``self.x += ..``, ``self.x: T = ..``)."""
+    if not fn.args.args:
+        return set()
+    me = fn.args.args[0].arg
+    return {n.attr for n in ast.walk(fn) if isinstance(n, ast.Attribute) and isinstance(n.ctx, ast.Store)
+            and isinstance(n.value, ast.Name) and n.value.id == me}
+
+
+def _mutating_methods(tree: ast.AST) -> dict[str, set[str]]:
+    """Method name -> attributes of ``self`` that methods of that name assign, over all classes of the program."""
+    from . import crash_upstream as cu
+
+    out: dict[str, set[str]] = {}
+    for c in cu._classes(tree):
+        for f in cu._methods(c):
+            stores = _self_stores(f)
+            if stores:
+                out.setdefault(f.name, set()).update(stores)
+    return out
+
+
+def _readonly_properties(tree: ast.AST) -> set[str]:
+    """Names of ``@property`` members of a program class that has no ``@<name>.setter`` for them."""
+    from . import crash_upstream as cu
+
+    out: set[str] = set()
+    for c in cu._classes(tree):
+        fns = cu._methods(c)
+        setters = {dec.value.id for f in fns for dec in f.decorator_list
+                   if isinstance(dec, ast.Attribute) and dec.attr == "setter" and isinstance(dec.value, ast.Name)}
+        out |= {f.name for f in fns if any(isinstance(x, ast.Name) and x.id == "property" for x in f.decorator_list)
+                and f.name not in setters}
+    return out
+
+
+def _end_line(n: ast.AST) -> int:
+    return getattr(n, "end_lineno", None) or getattr(n, "lineno", 0)
+
+
+def _attr_of(n: ast.AST, roots: set[str], attr: str | None = None) -> bool:
+    return (isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.value.id in roots
+            and (attr is None or n.attr == attr))
+
+
+def _narrowing_lines(nodes: list[ast.AST], roots: set[str], attr: str) -> list[int]:
+    """Lines (end of the test / assignment) where ``<root>.<attr>`` is narrowed: assigned, tested by an if / while /
+    assert / conditional expression, or stored in an alias that holds a condition (``is_none = a.x is None``,
+    ``has = isinstance(a.x, int)``)."""
+    out = []
+    for n in nodes:
+        if isinstance(n, (ast.If, ast.While, ast.Assert, ast.IfExp)):
+            if any(_attr_of(x, roots, attr) for x in ast.walk(n.test)):
+                out.append(_end_line(n.test))
+        elif isinstance(n, (ast.Assign, ast.AnnAssign)) and getattr(n, "value", None) is not None:
+            targets = n.targets if isinstance(n, ast.Assign) else [n.target]
+            if any(_attr_of(t, roots, attr) for t in targets):
+                out.append(_end_line(n))
+            elif isinstance(n.value, (ast.Compare, ast.BoolOp, ast.UnaryOp, ast.Call)) \
+                    and any(_attr_of(x, roots, attr) for x in ast.walk(n.value)) \
+                    and (not isinstance(n.value, ast.Call) or ast.unparse(n.value.func) == "isinstance"):
+                out.append(_end_line(n))
+    return out
+
+
+def _reset_between(nodes: list[ast.AST], roots: set[str], root: str, attr: str | None, lo: int, hi: int) -> bool:
+    """A store into ``<receiver>.<attr>`` (any attribute when ``attr`` is None; ``roots`` = the receiver and its aliases)
+    or a rebinding of the receiver name ``root`` on a line in ``lo < line < hi``: the narrowing is legitimately reset."""
+    for n in nodes:
+        line = getattr(n, "lineno", 0)
+        if not lo < line < hi:
+            continue
+        if isinstance(n, ast.Attribute) and isinstance(n.ctx, (ast.Store, ast.Del)) and _attr_of(n, roots, attr):
+            return True
+        if isinstance(n, ast.Name) and n.id == root and isinstance(n.ctx, (ast.Store, ast.Del)):
+            return True
+    return False
+
+
+def _stale_attr_context(s, d, root: str, attr: str | None, mutating_any: bool):
+    """Shared shape of ty#2792 for the receiver name ``root``: ``(nodes, receiver names, call lines)`` where the calls are
+    ``root.m(..)`` (``root`` or an alias ``alias = root``) before the statement, ``m`` a program method that assigns
+    ``self.attr`` (``mutating_any``: any ``self`` attribute). None when there is no such call, or when the statement sits
+    in a loop that also stores into the attribute / rebinds the receiver: that is the loop back edge (a different bug)."""
+    from . import crash_upstream as cu
+
+    tree = s.amap.tree
+    fns = [f for f in cu._functions(tree) if f.lineno <= d.anchor <= (f.end_lineno or f.lineno)]
+    scope = min(fns, key=lambda f: (f.end_lineno or 0) - f.lineno) if fns else tree
+    nodes = _scope_walk(scope)
+    methods = _mutating_methods(tree)
+    roots = {root} | {t.id for n in nodes if isinstance(n, ast.Assign) and isinstance(n.value, ast.Name) and n.value.id == root
+                      for t in n.targets if isinstance(t, ast.Name)}
+    for loop in nodes:
+        if isinstance(loop, (ast.For, ast.AsyncFor, ast.While)) and loop.lineno <= d.anchor <= _end_line(loop) \
+                and _reset_between([x for st in loop.body for x in ast.walk(st)], roots, root, attr, 0, 1 << 30):
+            return None
+    calls = [n.lineno for n in nodes
+             if isinstance(n, ast.Call) and _attr_of(n.func, roots) and n.func.attr in methods
+             and (mutating_any or attr in methods[n.func.attr]) and n.lineno < d.anchor]
+    return (nodes, roots, calls) if calls else None
+
+
+def _attr_kept_after_call(s, d) -> bool:
+    """astral-sh/ty#2792 (open): ty keeps the narrowing of ``obj.attr`` after a call ``obj.method()`` of a method that
+    assigns ``self.attr`` (the maintainers know all checkers narrow attributes this way; the issue tracks discarding the
+    narrowing for such a call). The reveal in the statement reads ``root.attr``; before it the attribute was narrowed
+    (assigned, tested, or captured in an aliased condition) and then ``root.method()`` was called, a program method that
+    assigns ``self.attr``, with no store into ``root.attr`` and no rebinding of ``root`` in between. A narrowing that
+    meets a direct store into the attribute (also at the end of an enclosing loop: the loop back edge is another bug),
+    a method that assigns other attributes only, and a call that comes before the narrowing do not match."""
+    if s.amap.tree is None or d.kind != K.REVEAL_MISMATCH:
+        return False
+    used = {(n.value.id, n.attr) for n in _stmt_walk(s, d)
+            if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and isinstance(n.ctx, ast.Load)}
+    for root, attr in used:
+        ctx = _stale_attr_context(s, d, root, attr, mutating_any=False)
+        if ctx is None:
+            continue
+        nodes, roots, calls = ctx
+        for call in calls:
+            if any(not _reset_between(nodes, roots, root, attr, n, d.anchor) for n in _narrowing_lines(nodes, roots, attr) if n < call):
+                return True
+    return False
+
+
+def _readonly_prop_after_stale_narrowing(s, d) -> bool:
+    """astral-sh/ty#2792 (same cause, the row where the stale narrowing ends in ``Never``): mypy rejects the assignment
+    ``obj.prop = v`` of a read-only property of the program and ty is silent, because ty narrowed an attribute of
+    ``obj`` (assert / if on ``obj.p``), kept that narrowing after a call ``obj.method()`` of a program method that assigns
+    ``self`` attributes, and the later use of ``obj.p`` before the statement contradicts it, so the statement is
+    unreachable for ty. Needs: a statement that assigns a read-only ``@property`` of the program through a name, a
+    narrowing of some ``obj.p``, then such a call, then a read of ``obj.p``, all before the statement, with no store into
+    ``obj.p`` and no rebinding of ``obj`` in between. Assigning a property that has a setter, no method call in between
+    and a call placed before the narrowing do not match."""
+    tree = s.amap.tree
+    node = _stmt_node(s, d)
+    if tree is None or not isinstance(node, ast.Assign) or len(node.targets) != 1:
+        return False
+    t = node.targets[0]
+    if not (isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name)) or t.attr not in _readonly_properties(tree):
+        return False
+    ctx = _stale_attr_context(s, d, t.value.id, None, mutating_any=True)
+    if ctx is None:
+        return False
+    nodes, roots, calls = ctx
+    root = t.value.id
+    for attr in {n.attr for n in nodes if _attr_of(n, roots) and isinstance(n.ctx, ast.Load)}:
+        reads = [x.lineno for x in nodes if _attr_of(x, roots, attr) and isinstance(x.ctx, ast.Load)]
+        for call in calls:
+            if any(not _reset_between(nodes, roots, root, attr, n, d.anchor) for n in _narrowing_lines(nodes, roots, attr) if n < call) \
+                    and any(call < r < d.anchor for r in reads):
+                return True
+    return False
+
+
+_REQUIRES = {"tuple_subclass_comparison_fold": _tuple_subclass_comparison_fold,
+             "attr_kept_after_call": _attr_kept_after_call,
+             "readonly_prop_after_stale_narrowing": _readonly_prop_after_stale_narrowing,
+             "flag_combo_literal_arg": _flag_combo_literal_arg,
              "enum_value_alias": _enum_value_alias,
              "open_typeddict_kwargs": _open_typeddict_kwargs,
              "rebound_inferred_lambda": _rebound_inferred_lambda,

@@ -339,11 +339,50 @@
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4756",
    "note": "open (lint; state as of 2026-11-05, 'no error when instance method has no `self` parameter'): mypy reports [misc] on a function defined in a class body without a self parameter (and not a staticmethod), e.g. a helper used as a decorator inside the class body; pyright reports it too (reportSelfClsParameterName), ty reports nothing at the definition. A maintainer in the issue is unsure it should be a ty error (ty already rejects calling it on an instance) and suggests a ruff rule. Verified on mypy 2.4.0, pyright 1.1.414 and ty 0.0.97 (Day-6 seeds 49c0a3858dbb, 3eb405b1e819, 853fdc9fd282)."
+  },
+  {
+   "id": "TY-2171",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type: `Literal\\[(?:True|False)\\]`",
+   "requires": "tuple_subclass_comparison_fold",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/2171",
+   "note": "open (unsoundness, diagnostics; state as of 2026-11-05; the design is recorded in the closed ty#2140, 'assume in narrowing that tuple subclasses don't override __eq__', closed 2025-12-22): ty folds a comparison of a tuple type to Literal[True] / Literal[False] on the assumption that tuple subclasses do not override __eq__, __ne__, __lt__ ...; ty#2171 asks for a diagnostic on such overrides (the maintainers discussed a tuple-specific rule, e.g. `unsafe-tuple-subclass`, probably a warning). Here ty reveals a Literal bool for a comparison with an instance of a tuple / NamedTuple subclass of the program that defines the dunder the comparison calls (for a reflected comparison, the reflected dunder), while mypy and pyright reveal bool and CPython runs the override. Narrow AST matcher; __len__ and __bool__ overrides (also named in the issue) are not covered, nor a subclass without an override, a non-tuple class, or a comparison of plain tuples. The Day-2 calibration program calibration/known_duplicates/ty_constant_fold_tuple_subclass.py is this shape and is closed by TY-2171-ASSERT. Verified on ty 0.0.97 (campaign/day4/verify-v2.md section 2; Day-6 seeds 71678dbb3e82, be36399b8efa, fb209a32a3c3)."
+  },
+  {
+   "id": "TY-2171-ASSERT",
+   "kind": "only_ty",
+   "codes": ["type-assertion-failure"],
+   "message": "Type `Literal\\[(?:True|False)\\]` does not match asserted type `bool`",
+   "requires": "tuple_subclass_comparison_fold",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/2171",
+   "note": "same root cause as TY-2171 (open; state as of 2026-11-05), assert_type row: assert_type(r, bool) fails in ty because it folded the comparison of a tuple / NamedTuple subclass instance, whose class defines the dunder the comparison calls, to Literal[True] / Literal[False]; mypy and pyright accept it and CPython runs the override. Same narrow AST matcher as TY-2171. Verified on ty 0.0.97 (Day-6 seeds 5185e0172bd6, 71678dbb3e82; the Day-2 calibration program)."
+  },
+  {
+   "id": "TY-2792",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type",
+   "requires": "attr_kept_after_call",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/2792",
+   "note": "open (narrowing, attributes; state as of 2026-11-05, 'Consider invalidating attribute narrowing based on method calls known to mutate that attribute'): ty keeps the narrowing of obj.attr after a call obj.method() of a method that assigns self.attr. A maintainer answers that all Python checkers narrow attributes this way because the alternative rejects many sound programs, and keeps the issue open to track discarding the narrowing when a method on self that mutates the attribute is called directly. Here the revealed expression reads root.attr, which was narrowed earlier (assignment, if / assert test, or an aliased condition such as `is_none = a.x is None`) and then a program method that assigns self.attr was called on root (or an alias of it), with no store into root.attr in between. Narrow AST matcher: a direct store into the attribute or a rebinding of the receiver in between, a loop that also stores into the attribute (the loop back edge is a different bug, draft 2 of campaign/day3-issue-drafts.md), a method that assigns other attributes only and a call placed before the narrowing do not match. The Day-2 calibration program calibration/known_duplicates/mypy_stale_alias.py is this shape. Verified on ty 0.0.97 (campaign/day4/verify-v2.md; Day-6 seeds 414c5ac8b0fd, 7a8a33bb5fce, ced5e907ce98, e3dd8220ec7b, e95dc61284c6, 978e400d5d29)."
+  },
+  {
+   "id": "TY-2792-READONLY",
+   "kind": "only_mypy",
+   "silent_tool": "ty",
+   "codes": ["misc"],
+   "message": "Property \"\\w+\" defined in \"\\w+\" is read-only",
+   "requires": "readonly_prop_after_stale_narrowing",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/astral-sh/ty/issues/2792",
+   "note": "same root cause as TY-2792 (open; state as of 2026-11-05), the row where the stale narrowing ends in Never: mypy and pyright reject the assignment to a read-only property of the program, ty is silent because it narrowed an attribute of the receiver (assert / if), kept the narrowing after a call obj.method() of a program method that assigns self attributes, and the later use of the attribute contradicts it, so ty treats the assignment as unreachable (it reveals Never before it). Narrow AST matcher: the statement assigns a read-only @property of the program through a name; that name's attribute is narrowed, then a mutating method is called on the name, then the attribute is read again, all before the statement, with no store into the attribute or rebinding of the name in between. A property with a setter, no method call in between and a call placed before the narrowing do not match. Verified on ty 0.0.97 (Day-6 seeds 5dafb60c97da, 978e400d5d29, abaca087f7e3, d15eac15e585). ty rejects the same assignment when the narrowing is not stale."
   }
  ],
  "prior_stances": [
   {
-   "id": "TY-2171",
+   "id": "TY-2171-PRIOR",
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/2171",
    "kinds": [
@@ -352,7 +391,7 @@
    ],
    "message": "Literal\\[(?:True|False)\\]",
    "source": "class\\s+\\w+\\((?:[^)\\n]*\\btuple\\b|NamedTuple)[^)\\n]*\\):(?:.|\\n)*?def\\s+__(?:eq|ne|lt|le|gt|ge|len|bool)__",
-   "note": "open (unsoundness, diagnostics; state as of 2026-11-05; the design is recorded in the closed ty#2140): ty folds a comparison of a tuple type to Literal[True] / Literal[False] on the assumption that tuple subclasses do not override __eq__, __ne__, __lt__ ... __len__, __bool__; the issue asks for a diagnostic on such overrides. A program that defines such a tuple (or NamedTuple) subclass and gets a Literal from ty is this issue (campaign/day4/verify-v2.md section 2). Kept as a prior stance and NOT as a dismissal: calibration/must_stay_live/ty_constant_fold_tuple_subclass.py must stay live."
+   "note": "open (unsoundness, diagnostics; state as of 2026-11-05; the design is recorded in the closed ty#2140): ty folds a comparison of a tuple type to Literal[True] / Literal[False] on the assumption that tuple subclasses do not override __eq__, __ne__, __lt__ ... __len__, __bool__; the issue asks for a diagnostic on such overrides. A program that defines such a tuple (or NamedTuple) subclass and gets a Literal from ty is this issue (campaign/day4/verify-v2.md section 2). The narrow comparison-dunder shapes are closed by the dismissals UPSTREAM-TY-2171 and UPSTREAM-TY-2171-ASSERT (Day 7); this prior stance still covers the rest (for example __len__ / __bool__ overrides and the other tuple forms) and caps those findings at REVIEW."
   },
   {
    "id": "TY-4656",
