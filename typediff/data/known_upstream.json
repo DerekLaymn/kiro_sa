@@ -81,7 +81,7 @@
    "requires": "nested_tuple_alias_compare",
    "dismissal": "DUPLICATE",
    "url": "https://github.com/astral-sh/ty/issues/4883",
-   "note": "closed as completed on 2026-11-03 (performance; fix referenced by the team as astral-sh/ruff#29933, not verified by us), but ty 0.0.84 still shows it: comparing two values of the same deeply nested tuple alias (type Tn = tuple[T(n-1), T(n-1)], depth >= 12) takes exponential time, seen by the pipeline only as a runner timeout (depth 20 takes ~9.5 s on 0.84, depth 24 exceeds the 120 s default). Kept as an entry because the pinned version still reproduces."
+   "note": "closed as completed on 2026-11-03 (performance; fix referenced by the team as astral-sh/ruff#29933, not verified by us), and ty 0.0.84 still showed it (FIXED in ty 0.0.97, verified 2026-11-06: ty_TA_depth24 now finishes in 0.06 s with no diagnostics; the entry stays so stored runs from <= 0.0.84 still close as duplicates): comparing two values of the same deeply nested tuple alias (type Tn = tuple[T(n-1), T(n-1)], depth >= 12) takes exponential time, seen by the pipeline only as a runner timeout (depth 20 takes ~9.5 s on 0.84, depth 24 exceeds the 120 s default). Kept as a historical entry; on the pinned 0.0.97 nothing reproduces."
   },
   {
    "id": "TY-4898",
@@ -199,9 +199,9 @@
    "message": "Incompatible types in assignment",
    "requires": "generic_typeddict_typevar_call",
    "dismissal": "DUPLICATE",
-   "example": "from typing import Generic, TypedDict, TypeVar\n\nT = TypeVar(\"T\")\n\n\nclass Resp(TypedDict, Generic[T]):\n    data: T\n\n\ndef first(r: Resp[T]) -> T:\n    return r[\"data\"]\n\n\na: Resp[int] = {\"data\": 1}\ny: str = first(a)\n",
+   "example_pre_0_0_97": "from typing import Generic, TypedDict, TypeVar\n\nT = TypeVar(\"T\")\n\n\nclass Resp(TypedDict, Generic[T]):\n    data: T\n\n\ndef first(r: Resp[T]) -> T:\n    return r[\"data\"]\n\n\na: Resp[int] = {\"data\": 1}\ny: str = first(a)\n",
    "url": "https://github.com/astral-sh/ty/issues/4884",
-   "note": "closed as completed on 2026-11-02, fixed by astral-sh/ruff#29903, but ty 0.0.84 still reproduces (state as of 2026-11-04): ty cannot solve a TypeVar from a generic TypedDict argument (Resp[int] passed to Resp[T] leaves T Unknown), so a bad assignment of the call result is silently accepted; mypy and pyright report it. Narrow AST matcher: the statement calls a function with a parameter Resp[T] over a generic TypedDict. Verified on ty 0.0.84."
+   "note": "closed as completed on 2026-11-02, fixed by astral-sh/ruff#29903; ty 0.0.84 still reproduced it, FIXED in ty 0.0.97 (verified 2026-11-06: first(a) is now int and the bad assignment is reported; kb-selftest example no longer fires, so it is stored as example_pre_0_0_97). Kept for stored runs from <= 0.0.84. Original description (state as of 2026-11-04): ty cannot solve a TypeVar from a generic TypedDict argument (Resp[int] passed to Resp[T] leaves T Unknown), so a bad assignment of the call result is silently accepted; mypy and pyright report it. Narrow AST matcher: the statement calls a function with a parameter Resp[T] over a generic TypedDict. Verified on ty 0.0.84; not reproducible on 0.0.97."
   },
   {
    "id": "TY-4884-REVEAL",
@@ -210,7 +210,7 @@
    "requires": "generic_typeddict_typevar_call",
    "dismissal": "DUPLICATE",
    "url": "https://github.com/astral-sh/ty/issues/4884",
-   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903, still reproduces on ty 0.0.84): reveal_type of the call result is Unknown on ty and int on mypy/pyright."
+   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903; reproduced on ty 0.0.84, FIXED in ty 0.0.97): reveal_type of the call result is Unknown on ty and int on mypy/pyright."
   },
   {
    "id": "TY-4884-ASSERT",
@@ -221,7 +221,7 @@
    "requires": "generic_typeddict_typevar_call",
    "dismissal": "DUPLICATE",
    "url": "https://github.com/astral-sh/ty/issues/4884",
-   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903, still reproduces on ty 0.0.84): assert_type of the call result sees Unknown because ty could not solve the TypeVar from the generic TypedDict."
+   "note": "same root cause as TY-4884 (closed 2026-11-02, fixed by astral-sh/ruff#29903; reproduced on ty 0.0.84, FIXED in ty 0.0.97): assert_type of the call result sees Unknown because ty could not solve the TypeVar from the generic TypedDict."
   },
   {
    "id": "MYPY-22339",
