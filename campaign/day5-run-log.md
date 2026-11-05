@@ -40,3 +40,10 @@
 - kbloop_run exit=0, 71s (jobs=14, no memory pressure). 250 programs, 250 ok.
 - Stats: programs=250 discrepancies=154 crashes(tool_crashes)=42 (crash findings live=20) auto-closed(dismissed)=60 live=136.
 - OOM kills (systemd-oomd Marked, last 4h): 0
+
+## Step 5: morning decisions (details: `campaign/day5-morning.md`)
+- Read all 196 findings (not only the 3 examples per pattern in the triage), checked bug vs design difference and duplicates by reading issue bodies with read-only `gh` (mypy#16830, #21117, #21937, #22339; pyright#11100; ty#2938, #876). ty#4656 stays a design difference; no Day-5 finding involves it.
+- Entries: `TY-4148`/`MYPY-22361` matcher follows `c = C(); c()`; new `MYPY-21937-REVEAL` (reveal_unpaired); `TY-876` also covers `~F.X`; `MYPY-22339` also covers a public property setter; new `MYPY-16830` and `MYPY-16830-REVEAL` (enum value aliases). No `example` fields, so kb-selftest stays 21.
+- Replay `scripts/kbloop_replay.py runs/day5/out runs/day5/replay --jobs 14 --verify-sample 30`: 250 reports, 30/30 identical to a full re-run, live 136 -> 110 (dismissed 60 -> 86, programs with live 105 -> 87, crash findings 20 -> 18); exactly 26 findings changed, all hand-checked. OOM kills: 0.
+- Promotions: the 8 `d4p_*` parents confirmed present and used (4 Day-5 mutants each); new hit `d5p_descriptors_one_decorator_dunders_pyright_rangeerror.py` (force-added); `check_hits.py 0.80`: 51 files, 0 problems, 0 near-duplicates. Regression program `campaign/day5/regression/c1_entry_gap_local_binding_f0e02e36.py`.
+- Tests: `pytest tests -q` 422 passed (408 + 14 new in `tests/test_upstream_day5_morning.py`; `ALLOWED_KINDS` in test_upstream_day3 gained `reveal_unpaired`); `typediff --python-version 3.13 kb-selftest` 21 PASS, 0 FAIL.
