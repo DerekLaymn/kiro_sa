@@ -60,3 +60,7 @@ for p in "$INBOX"/*.prompt.md; do
 done
 WRITTEN=$(find "$OUT" -type f -name '*.py' | wc -l)
 echo "- gen pass $PASS: pending=$PENDING written=$WRITTEN" | tee -a campaign/day6/gen-pass.log
+GATE=/home/derek/Projects/5th_sem/Software_analysis/Assignment/Assignment_2/.agents/tasks/day6-gen-status.json
+mkdir -p "$(dirname "$GATE")"
+printf '{"pass": %s, "pending": %s, "written": %s}\n' "$PASS" "$PENDING" "$WRITTEN" > "$GATE"
+$ROOT/.venv/bin/python scripts/inbox_check.py "$INBOX"
