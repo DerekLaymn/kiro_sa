@@ -29,3 +29,14 @@
 [Day5 step2 / item 5 EXCLUDED, duplicate + design gap] `d3p_constructors_metaclasses_type_call_generic_base__mut0_1ff6bc79.py`. The existing hit `d3p_constructors_metaclasses_type_call_generic_base.py` already contains the conflicting `type(..., (IntBase, StrBase), {})` case (ty `invalid-generic-class`). Also mypy is silent for the plain `class Mixed(IntBase, StrBase)` statement (checked), so the gap is "mypy does not check inconsistent generic bases at all", not a `type()` bug; the new program adds only `types.new_class`.
 [Day5 step2 / check_hits.py] `.venv/bin/python campaign/day4m/check_hits.py`: 50 files, 0 with problems, d5p file preflight=[] runtime=ok, no near-duplicate pair >= 0.80, so nothing moved to runs/hits-dropped. `runs/` is git-ignored, so the new hit is force-added.
 - gen pass 0: pending=250 written=0
+- gen pass 1: pending=236 written=14
+- gen pass 2: pending=216 written=34
+- gen pass 3: pending=196 written=54
+- gen pass 4: pending=180 written=70
+- gen pass 1: pending=139 written=111
+- gen pass 2: pending=0 written=250
+
+## Step 4: judge
+- kbloop_run exit=0, 71s (jobs=14, no memory pressure). 250 programs, 250 ok.
+- Stats: programs=250 discrepancies=154 crashes(tool_crashes)=42 (crash findings live=20) auto-closed(dismissed)=60 live=136.
+- OOM kills (systemd-oomd Marked, last 4h): 0

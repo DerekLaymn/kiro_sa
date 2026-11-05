@@ -1,0 +1,16 @@
+[all] programs=250 discrepancies=154 live=136 (programs with live=105, crash findings=20) dismissed=60 tool_crashes=42
+   dismissed by category: {'DESIGN_DIVERGENCE': 14, 'DUPLICATE': 44, 'KNOWN_LIMITATION': 2}
+   dismissed by entry: {'rule:crash:signal': 22, 'kb:LITERAL-WIDENING': 8, 'kb:PRECISION-RUNTIME-CONSISTENT': 6, 'kb:UPSTREAM-TY-4884': 5, 'kb:UPSTREAM-TY-876-ARGTYPE': 4, 'kb:UPSTREAM-TY-876': 4, 'kb:UPSTREAM-TY-4884-REVEAL': 3, 'kb:UPSTREAM-MYPY-20969': 2, 'kb:JOIN-VS-UNION': 2, 'kb:UPSTREAM-MYPY-21937': 2, 'kb:UPSTREAM-MYPY-20969-REVEAL': 1, 'kb:UPSTREAM-MYPY-22339': 1}
+   crash closures by closing reference: {'MYPY-22361': 6, 'TY-4148': 6, 'TY-4898': 4, 'MYPY-22360': 3, 'TY-4882': 2, 'MYPY-22344': 1}
+   live by kind: {'reveal_mismatch': 46, 'only_ty': 22, 'only_mypy': 44, 'crash': 20, 'reveal_unpaired': 4}
+[tuning] programs=250 discrepancies=154 live=136 (programs with live=105, crash findings=20) dismissed=60 tool_crashes=42
+   dismissed by category: {'DESIGN_DIVERGENCE': 14, 'DUPLICATE': 44, 'KNOWN_LIMITATION': 2}
+   dismissed by entry: {'rule:crash:signal': 22, 'kb:LITERAL-WIDENING': 8, 'kb:PRECISION-RUNTIME-CONSISTENT': 6, 'kb:UPSTREAM-TY-4884': 5, 'kb:UPSTREAM-TY-876-ARGTYPE': 4, 'kb:UPSTREAM-TY-876': 4, 'kb:UPSTREAM-TY-4884-REVEAL': 3, 'kb:UPSTREAM-MYPY-20969': 2, 'kb:JOIN-VS-UNION': 2, 'kb:UPSTREAM-MYPY-21937': 2, 'kb:UPSTREAM-MYPY-20969-REVEAL': 1, 'kb:UPSTREAM-MYPY-22339': 1}
+   crash closures by closing reference: {'MYPY-22361': 6, 'TY-4148': 6, 'TY-4898': 4, 'MYPY-22360': 3, 'TY-4882': 2, 'MYPY-22344': 1}
+   live by kind: {'reveal_mismatch': 46, 'only_ty': 22, 'only_mypy': 44, 'crash': 20, 'reveal_unpaired': 4}
+[holdout] programs=0 discrepancies=0 live=0 (programs with live=0, crash findings=0) dismissed=0 tool_crashes=0
+   dismissed by category: {}
+   dismissed by entry: {}
+   crash closures by closing reference: {}
+   live by kind: {}
+rejected/failed: {}
