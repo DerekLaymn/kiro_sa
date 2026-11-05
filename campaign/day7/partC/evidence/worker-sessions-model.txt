@@ -1,0 +1,5 @@
+worker sessions = session.json files created after the Day 7 generation start whose workspacePaths is /tmp/d7/work
+      1 "modelId": "claude-haiku-5.5" 
+     45 "modelId": "claude-haiku-5.5" "effortLevel": "medium"
+other sessions created in the window (not workers):
+      2 "modelId": "claude-sonnet-5.5"

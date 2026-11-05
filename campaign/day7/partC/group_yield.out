@@ -1,0 +1,38 @@
+per parent / fresh:
+  d3p_callables_self_call_attr                                           {'programs': 5, 'tool_crashes': 6, 'dismissed': 6}
+  d3p_descriptors_decorated_get                                          {'programs': 6, 'dismissed': 6, 'tool_crashes': 1, 'live': 5, 'live_strong': 1}
+  d3p_generics_callable_attr_contravariant                               {'programs': 6, 'live': 5, 'tool_crashes': 0, 'dismissed': 3}
+  d3p_paramspec_identity_applied_to_itself                               {'programs': 7, 'live': 2, 'tool_crashes': 3, 'dismissed': 3}
+  d3p_paramspec_self_annotated_dunder_call                               {'programs': 7, 'tool_crashes': 0, 'live': 16, 'dismissed': 1}
+  d3p_protocols_generic_protocol_stack_overflow                          {'programs': 3, 'dismissed': 2, 'tool_crashes': 1}
+  d3p_self_classmethods_self_call_union                                  {'programs': 5, 'dismissed': 10, 'tool_crashes': 10}
+  d4p_descriptors_readonly_prop_never                                    {'programs': 6, 'dismissed': 2, 'tool_crashes': 0, 'live': 1, 'live_strong': 1}
+  d4v_callables_mutual_call_attr                                         {'programs': 5, 'dismissed': 10, 'tool_crashes': 10}
+  d5p_descriptors_decorated_get_pyright_rangeerror                       {'programs': 6, 'live': 6, 'tool_crashes': 0}
+  d5p_descriptors_one_decorator_dunders_pyright_rangeerror               {'programs': 6, 'dismissed': 1, 'live': 2, 'tool_crashes': 0}
+  dataclasses__dataclass_transform                                       {'programs': 6, 'tool_crashes': 0}
+  dataclasses__kw_only_initvar_order                                     {'programs': 6, 'tool_crashes': 0, 'live': 2}
+  dataclasses__overloaded_post_init                                      {'programs': 6, 'live': 11, 'tool_crashes': 0}
+  final_classvar__final_overrides                                        {'programs': 6, 'dismissed': 1, 'tool_crashes': 0}
+  fresh                                                                  {'programs': 108, 'tool_crashes': 0, 'dismissed': 21, 'live': 32}
+  match_statement__class_sequence_patterns                               {'programs': 6, 'live': 13, 'tool_crashes': 0}
+  overloads__literal_flag_overload                                       {'programs': 6, 'tool_crashes': 0}
+  tuples_unpacking__partial_unpack_exception                             {'programs': 6, 'dismissed': 3, 'tool_crashes': 0, 'live': 3, 'live_strong': 3}
+  tuples_unpacking__variadic_tuples                                      {'programs': 6, 'tool_crashes': 0, 'live': 3, 'dismissed': 1}
+  typeddict__readonly_notrequired                                        {'programs': 6, 'dismissed': 5, 'live': 6, 'tool_crashes': 0}
+per area dir:
+  abstract_classes         {'programs': 10, 'tool_crashes': 0, 'dismissed': 1, 'live': 2}
+  callables                {'programs': 10, 'tool_crashes': 16, 'dismissed': 16}
+  dataclasses              {'programs': 28, 'tool_crashes': 0, 'live': 13}
+  descriptors_properties   {'programs': 34, 'dismissed': 9, 'tool_crashes': 1, 'live': 20, 'live_strong': 2}
+  final_classvar           {'programs': 16, 'dismissed': 1, 'tool_crashes': 0}
+  generics_variance        {'programs': 6, 'live': 5, 'tool_crashes': 0, 'dismissed': 3}
+  inheritance_mro          {'programs': 10, 'tool_crashes': 0, 'dismissed': 2, 'live': 1}
+  match_statement          {'programs': 16, 'dismissed': 2, 'tool_crashes': 0, 'live': 21}
+  overloads                {'programs': 16, 'tool_crashes': 0, 'live': 6, 'dismissed': 3}
+  paramspec_concatenate    {'programs': 24, 'live': 18, 'tool_crashes': 3, 'dismissed': 4}
+  protocols                {'programs': 3, 'dismissed': 2, 'tool_crashes': 1}
+  recursive_aliases        {'programs': 8, 'live': 6, 'tool_crashes': 0}
+  self_classmethods        {'programs': 5, 'dismissed': 10, 'tool_crashes': 10}
+  tuples_unpacking         {'programs': 22, 'tool_crashes': 0, 'dismissed': 14, 'live': 7, 'live_strong': 3}
+  typeddict                {'programs': 16, 'tool_crashes': 0, 'dismissed': 8, 'live': 8}

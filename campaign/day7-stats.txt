@@ -1,0 +1,18 @@
+[all] programs=224 discrepancies=151 live=107 (programs with live=68, crash findings=1) dismissed=75 tool_crashes=31
+   dismissed by category: {'DUPLICATE': 37, 'DESIGN_DIVERGENCE': 28, 'SPEC_AMBIGUITY': 7, 'KNOWN_LIMITATION': 3}
+   dismissed by entry: {'rule:crash:signal': 30, 'kb:LITERAL-WIDENING': 13, 'kb:BOTH-GRADUAL': 7, 'kb:UPSTREAM-TY-4212': 4, 'kb:PRECISION-RUNTIME-CONSISTENT': 4, 'kb:UPSTREAM-MYPY-22339': 3, 'kb:UPSTREAM-TY-4756': 3, 'kb:INFERENCE-DOWNSTREAM': 3, 'kb:JOIN-VS-UNION': 3, 'kb:MYPY-SKIPS-UNREACHABLE': 2, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 2, 'kb:UPSTREAM-TY-2792-READONLY': 1}
+   crash closures by closing reference: {'MYPY-22361': 13, 'TY-4148': 13, 'TY-4898': 3, 'TY-4882': 1}
+   live by kind: {'concern_mismatch': 7, 'reveal_mismatch': 43, 'crash': 1, 'only_mypy': 23, 'only_ty': 14, 'only_pyright': 19}
+   live without only_pyright: 88 (programs with such live=60)
+[tuning] programs=224 discrepancies=151 live=107 (programs with live=68, crash findings=1) dismissed=75 tool_crashes=31
+   dismissed by category: {'DUPLICATE': 37, 'DESIGN_DIVERGENCE': 28, 'SPEC_AMBIGUITY': 7, 'KNOWN_LIMITATION': 3}
+   dismissed by entry: {'rule:crash:signal': 30, 'kb:LITERAL-WIDENING': 13, 'kb:BOTH-GRADUAL': 7, 'kb:UPSTREAM-TY-4212': 4, 'kb:PRECISION-RUNTIME-CONSISTENT': 4, 'kb:UPSTREAM-MYPY-22339': 3, 'kb:UPSTREAM-TY-4756': 3, 'kb:INFERENCE-DOWNSTREAM': 3, 'kb:JOIN-VS-UNION': 3, 'kb:MYPY-SKIPS-UNREACHABLE': 2, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 2, 'kb:UPSTREAM-TY-2792-READONLY': 1}
+   crash closures by closing reference: {'MYPY-22361': 13, 'TY-4148': 13, 'TY-4898': 3, 'TY-4882': 1}
+   live by kind: {'concern_mismatch': 7, 'reveal_mismatch': 43, 'crash': 1, 'only_mypy': 23, 'only_ty': 14, 'only_pyright': 19}
+   live without only_pyright: 88 (programs with such live=60)
+[holdout] programs=0 discrepancies=0 live=0 (programs with live=0, crash findings=0) dismissed=0 tool_crashes=0
+   dismissed by category: {}
+   dismissed by entry: {}
+   crash closures by closing reference: {}
+   live by kind: {}
+rejected/failed: {}

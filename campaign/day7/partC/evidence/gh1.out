@@ -1,0 +1,42 @@
+######## astral-sh/ty :: try except narrowing
+[]
+
+######## astral-sh/ty :: partial assignment
+[]
+
+######## astral-sh/ty :: except tuple unpacking
+[]
+
+######## astral-sh/ty :: try block assignment except
+[]
+
+######## astral-sh/ty :: unpacking exception
+[]
+
+######## microsoft/pyright :: partial assignment except
+[]
+
+######## microsoft/pyright :: tuple assignment exception
+[]
+
+######## microsoft/pyright :: except clause narrowing assignment
+[]
+
+######## python/mypy :: partial assignment try
+[]
+
+######## microsoft/pyright :: RangeError descriptor
+[]
+
+######## microsoft/pyright :: RangeError decorator
+[]
+
+######## microsoft/pyright :: call stack size exceeded decorated
+[]
+
+######## microsoft/pyright :: stack overflow descriptor
+[]
+
+######## microsoft/pyright :: Maximum call stack size exceeded
+[{"number":11961,"state":"open","title":"Crash (RangeError: Maximum call stack size exceeded) when a constructor method is annotated with its own class and the class is instantiated"},{"number":9283,"state":"closed","title":"RangeError: Maximum call stack size exceeded"},{"number":9740,"state":"closed","title":"Stack overflow found in Pylance telemetry"},{"number":6178,"state":"closed","title":"Error telemetry: Max call stack size exceeded."},{"number":6783,"state":"closed","title":"Stack overflow in `typeEvaluator`"},{"number":5139,"state":"closed","title":"RangeError: Maximum call stack size exceeded when using exclude config"},{"number":4798,"state":"closed","title":"Recursion error - RangeError: Maximum call stack size exceeded"},{"number":5090,"state":"closed","title":"Stack overflow found in telemetry"}]
+

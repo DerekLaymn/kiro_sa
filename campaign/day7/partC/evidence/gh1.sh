@@ -1,0 +1,16 @@
+cd /tmp/d7
+s() { echo "######## $1 :: $2"; gh search issues --repo "$1" --limit 8 --json number,title,state "$2" 2>&1 | head -c 1500; echo; }
+s astral-sh/ty "try except narrowing"
+s astral-sh/ty "partial assignment"
+s astral-sh/ty "except tuple unpacking"
+s astral-sh/ty "try block assignment except"
+s astral-sh/ty "unpacking exception"
+s microsoft/pyright "partial assignment except"
+s microsoft/pyright "tuple assignment exception"
+s microsoft/pyright "except clause narrowing assignment"
+s python/mypy "partial assignment try"
+s microsoft/pyright "RangeError descriptor"
+s microsoft/pyright "RangeError decorator"
+s microsoft/pyright "call stack size exceeded decorated"
+s microsoft/pyright "stack overflow descriptor"
+s microsoft/pyright "Maximum call stack size exceeded"

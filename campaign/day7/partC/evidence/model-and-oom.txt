@@ -1,0 +1,13 @@
+== log dirs from 20261105T200900 (UTC; 01:39 IST generation start) on
+log dirs: 10, with a modelId line: 10
+== every modelId in those dirs (all log files, all lines)
+     30 modelId=claude-haiku-5.5
+== worker sessions: 46; rc lines:
+      1 rc=0 keys=1
+      1 rc=0 keys=4
+     44 rc=0 keys=5
+== kernel oom / oomd events since 2026-11-06 01:30 IST (generation + judge)
+0
+Nov 06 02:06:28 cachyos-x8664 kernel: [UFW BLOCK] IN=wlan0 OUT= MAC=01:00:5e:00:00:01:d8:0d:17:2b:c8:4a:08:00 SRC=192.168.0.1 DST=224.0.0.1 LEN=32 TOS=0x00 PREC=0xC0 TTL=1 ID=0 DF PROTO=2 
+Nov 06 02:10:38 cachyos-x8664 kernel: [UFW BLOCK] IN=wlan0 OUT= MAC=01:00:5e:00:00:01:d8:0d:17:2b:c8:4a:08:00 SRC=192.168.0.1 DST=224.0.0.1 LEN=32 TOS=0x00 PREC=0xC0 TTL=1 ID=0 DF PROTO=2 
+Nov 06 02:12:43 cachyos-x8664 kernel: [UFW BLOCK] IN=wlan0 OUT= MAC=01:00:5e:00:00:01:d8:0d:17:2b:c8:4a:08:00 SRC=192.168.0.1 DST=224.0.0.1 LEN=32 TOS=0x00 PREC=0xC0 TTL=1 ID=0 DF PROTO=2 

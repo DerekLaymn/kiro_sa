@@ -1,0 +1,52 @@
+[INFO] kas.server.starting {"product":"KAS (Kiro Agent Server)","version":"0.66.8"}
+[INFO] Auth: --auth=acp-callback (host-mediated refresh via _kiro/auth/getAccessToken)
+[INFO] acp.content_collection.resolved {"enabled":true}
+[INFO] acp.remote_sessions.enabled {"endpoint":"https://app.kiro.dev"}
+[INFO] [KiroAgent] MCP subsystem initialized
+[ERROR] (node:1347837) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[tool] Read File
+[tool] status: InProgress
+[tool] status: Completed
+
+[tool] Read File
+[tool] status: InProgress
+
+[tool] Read File
+[tool] status: InProgress
+[tool] status: Completed
+[tool] status: Completed
+
+[tool] Read File
+[tool] status: InProgress
+[tool] status: Completed
+
+[tool] Read File
+[tool] status: InProgress
+[tool] status: Completed
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=106
+
+[tool] Write File
+[tool] status: Pending
+[tool] status: Completed
+
+[tool] Write File
+[tool] status: Pending
+[tool] status: Completed
+
+[tool] Write File
+[tool] status: Pending
+[tool] status: Completed
+
+[tool] Write File
+[tool] status: Pending
+[tool] status: Completed
+
+[tool] Write File
+[tool] status: Pending
+[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=1898
+[tool] status: Completed
+DONE[INFO] [KRS] <-- GenerateAssistantResponseCommand done totalEvents=23
+
+rc=0 keys=5

@@ -1,0 +1,15 @@
+reports with only_pyright: 12
+only_pyright sections: 19
+     19 - evidence [RUNTIME/weak/verified, supports neutral]: statement executed under CPython without a type-related 
+      1 pyright: L56:23 error[reportAttributeAccessIssue] Cannot access attribute "label" for clas
+      1 pyright: L46:13 error[reportAssertTypeFailure] "assert_type" mismatch: expected "Clamped" 
+      1 pyright: L43:30 error[reportCallIssue] Expected 1 positional argument
+      1 pyright: L36:5 error[reportCallIssue] Object of type "int" is not callable
+      1 pyright: L36:3 error[reportAttributeAccessIssue] Cannot assign to attribute "slot" for cla
+      1 pyright: L35:3 error[reportAttributeAccessIssue] Cannot assign to attribute "slot" for cla
+      1 pyright: L31:7 error[reportAttributeAccessIssue] Cannot delete attribute "attr" for class 
+      1 pyright: L31:1 error[reportCallIssue] Object of type "int" is not callable
+      1 pyright: L30:3 error[reportAttributeAccessIssue] Cannot assign to attribute "slot" for cla
+      1 pyright: L29:3 error[reportAttributeAccessIssue] Cannot assign to attribute "slot" for cla
+      1 pyright: L28:1 error[reportCallIssue] Object of type "int" is not callable
+      1 pyright: L27:1 error[reportCallIssue] Object of type "int" is not callable

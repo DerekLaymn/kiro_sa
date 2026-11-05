@@ -1,0 +1,15 @@
+samples: 71
+min_available_mb=10221 at_epoch=1793910498 max_available_mb=12054 max_swap_used_mb=4262
+first sample: 1793910439	12047	4262
+last sample: 1793910510	11253	4261
+judge window: 2026-11-06 01:58:29.915399708 +0530
+kbloop_run exit=0 secs=61
+stats+triage exit=0 total_secs=62
+== kernel oom (since 02:40 AM = judge start approx)
+== all oom lines in last 3 hours
+== end
+Friday 06 November 2026 01:59:22 AM IST
+1:start Fri Nov  6 01:57:28 2026 total=224 jobs=14
+6:DONE Fri Nov  6 01:58:29 2026 total=224 {'ok': 224} elapsed=61s
+start Fri Nov  6 01:57:28 2026 total=224 jobs=14
+50/224 {'ok': 50} elapsed=13s last=ok runs/day7/gen/dataclasses/dataclasses__overloaded_post_init__mut0_96f4526c.py 6.6s

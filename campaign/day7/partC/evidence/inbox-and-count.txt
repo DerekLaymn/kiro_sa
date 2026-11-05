@@ -1,0 +1,37 @@
+prompts=225 (retry prompts=1) answers=225 answered=225 pending=0 orphan_answers=0 malformed_keys=0
+inbox_check exit=0
+gen files: 224
+abstract_classes 10
+callables 10
+dataclasses 28
+descriptors_properties 34
+final_classvar 16
+generics_variance 6
+inheritance_mro 10
+match_statement 16
+overloads 16
+paramspec_concatenate 24
+protocols 3
+recursive_aliases 8
+self_classmethods 5
+tuples_unpacking 22
+typeddict 16
+{"pass": 2, "pending": 0, "written": 224}
+- gen pass 0: pending=224 written=0
+- gen pass 1: pending=1 written=223
+- gen pass 2: pending=0 written=224
+== models used in worker sessions (log dirs from 20261105T200900 on, i.e. after 01:39 IST start)
+     30 Sending GenerateAssistantResponse modelId=claude-haiku-5.5
+== worker logs: n=46; rc lines:
+      1 rc=0 keys=1
+      1 rc=0 keys=4
+     44 rc=0 keys=5
+== oom kernel events
+Nov 05 22:22:18 cachyos-x8664 kernel: mypy.real invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+Nov 05 22:22:18 cachyos-x8664 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=user@1000.service,mems_allowed=0,oom_memcg=/user.slice/user-1000.slice/user@1000.service/typediff.slice/typediff-guard.slice/run-p1106187-i5325370.scope,task_memcg=/user.slice/user-1000.slice/user@1000.service/typediff.slice/typediff-guard.slice/run-p1106187-i5325370.scope,task=mypy.real,pid=1106187,uid=1000
+Nov 05 22:22:18 cachyos-x8664 kernel: Memory cgroup out of memory: Killed process 1106187 (mypy.real) total-vm:4952008kB, anon-rss:4180596kB, file-rss:35044kB, shmem-rss:512kB, UID:1000 pgtables:8684kB oom_score_adj:0
+== oomd kill count
+0
+== answers / prompts
+225
+225
