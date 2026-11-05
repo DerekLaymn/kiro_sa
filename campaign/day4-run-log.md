@@ -30,3 +30,6 @@
 [Plan §3 daily loop / morning4] pytest 373 passed (360 + 13 new in tests/test_upstream_day4.py; two Day-3 tests that encoded "ty on A1 unfiled" updated); kb-selftest 21 PASS, 0 FAIL. Report: campaign/day4-morning.md.
 - gen pass 0: pending=246 written=0
 - --n 2 check (pass 0): fix dc51a60 is in branch; filenames are distinct and stable, but prompt BODIES are NOT distinct for feature_crossover (98 prompts, 49 unique bodies; pairs byte-identical). Non-crossover prompts: 148 files, 103 unique (5 duplicate groups among them). Total 246 prompts, 152 unique bodies. Duplicates need one answer each only if answered per key; consider dedup before answering.
+- gen pass 1: pending=25 written=221
+- gen pass 2: pending=0 written=246
+[Plan §3 daily loop / report4] Day 4 daily line: programs=246, discrepancies=175, tool_crashes=40, live=142 (83 programs with a live finding, 16 live crash findings), dismissed=73, new patterns=29 triage patterns, candidates=5 unverified not explained by Stage A (pyright RangeError, mypy TypeVarTuple concatenation, 2 unexplained ty salsa panics, mypy type() generic bases, C1 entry gap), issues filed=0. Report: campaign/day4-report.md. pytest 373 passed in 59.72s, kb-selftest 21 PASS 0 FAIL, systemd-oomd Marked count (last 10 h) = 0.
