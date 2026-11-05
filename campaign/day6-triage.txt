@@ -1,0 +1,427 @@
+
+##   20 findings (20 with strong bug evidence)  crash | ty:signal-SIGABRT:stack-overflow
+     * rotocols_expanding_self_receiver_pep695_ty__mut1_76a8bb31.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (1104399) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day6/out/seed-2a2c6316dba0.md
+     * rotocols_expanding_self_receiver_pep695_ty__mut2_9258474a.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (1104774) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day6/out/seed-2cb94c907de8.md
+     * rotocols_expanding_self_receiver_pep695_ty__mut0_721f3b71.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] thread '<unknown>' (1104152) has overflowed its stack
+fatal runtime error: stack overflow, aborting
+         full report: runs/day6/out/seed-3c8c3a3637d8.md
+
+##   14 findings (12 with strong bug evidence)  reveal_mismatch | ty_more_precise
+     * ing_builtin/d4p_narrowing_stale_alias_loop__mut0_061fed49.py  D1 L21: reveal_type(a.x)
+         mypy: reveal int | None
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value 'None' of type builtins.NoneType does NOT inhabit ty's revealed type int
+         full report: runs/day6/out/seed-414c5ac8b0fd.md
+     * 3p_tuples_unpacking_constant_fold_subclass__mut0_24a0a18a.py  D2 L18: reveal_type(r)
+         mypy: reveal bool
+         ty:   reveal Literal[False]
+         KB hints: LITERAL-WIDENING   decided by: gate
+         [RUNTIME/strong, supports bug] runtime value 'True' of type builtins.bool does NOT inhabit ty's revealed type Literal[False]
+         [RUNTIME/strong, supports bug] KB:LITERAL-WIDENING would explain this, but runtime value 'True' (builtins.bool) is outside ty's type Literal[False]
+         full report: runs/day6/out/seed-63caa3b5f505.md
+     * ples_unpacking/d4p_tuples_fold_subclass_eq__mut0_61e55e46.py  D2 L24: reveal_type(r)
+         mypy: reveal bool
+         ty:   reveal Literal[False]
+         KB hints: LITERAL-WIDENING   decided by: gate
+         [RUNTIME/strong, supports bug] runtime value 'True' of type builtins.bool does NOT inhabit ty's revealed type Literal[False]
+         [RUNTIME/strong, supports bug] KB:LITERAL-WIDENING would explain this, but runtime value 'True' (builtins.bool) is outside ty's type Literal[False]
+         full report: runs/day6/out/seed-71678dbb3e82.md
+
+##   28 findings (8 with strong bug evidence)  reveal_mismatch | different
+     * ors_metaclasses/d4v_metaclass_reflected_op__mut0_f1c9f6f1.py  D3 L27: reveal_type(A * B)
+         mypy: reveal int
+         ty:   reveal str
+         [RUNTIME/strong, supports bug] runtime value "'s'" of type builtins.str does NOT inhabit mypy's revealed type int
+         full report: runs/day6/out/seed-25583554c377.md
+     * ors_metaclasses/d4v_metaclass_reflected_op__mut0_7bd593be.py  D3 L36: reveal_type(A * B)
+         mypy: reveal int
+         ty:   reveal str
+         [RUNTIME/strong, supports bug] runtime value "'s'" of type builtins.str does NOT inhabit mypy's revealed type int
+         full report: runs/day6/out/seed-346aac95c74c.md
+     * recursive_aliases/d4v_recursive_alias_dots__mut0_6700975a.py  D1 L12: reveal_type(sample)
+         mypy: reveal tuple[int, tuple[str, ...]] | None
+         ty:   reveal tuple[Literal[1], tuple[Literal["a"], tuple[Literal[2], tuple[Literal["b"], None]]]]
+         [RUNTIME/strong, supports bug] runtime value "(1, ('a', (2, ('b', None))))" of type builtins.tuple does NOT inhabit mypy's revealed type tuple[int, tuple[str, ...]] | None
+         full report: runs/day6/out/seed-6b8a716703da.md
+
+##    5 findings (5 with strong bug evidence)  only_mypy | ('misc',) | property _ defined in _ is read-only
+     * erties/d4p_descriptors_readonly_prop_never__mut1_042a9c38.py  D1 L47: t.readonly = 5  # expect-error
+         mypy: [misc] Property "readonly" defined in "Thing" is read-only
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `t`: runtime type __main__.Thing is outside ty's inferred type Never
+         full report: runs/day6/out/seed-5dafb60c97da.md
+     * ing_user/d4v_ty_attr_eq_narrow_unreachable__mut0_9412cd99.py  D1 L29: c.readonly = 5  # expect-error
+         mypy: [misc] Property "readonly" defined in "C" is read-only
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `c`: runtime type __main__.C is outside ty's inferred type Never
+         full report: runs/day6/out/seed-978e400d5d29.md
+     * erties/d4p_descriptors_readonly_prop_never__mut2_13318242.py  D1 L41: c.count = local  # expect-error
+         mypy: [misc] Property "count" defined in "Counter" is read-only
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `local`: runtime type builtins.int is outside ty's inferred type Never
+         [RUNTIME/strong, supports bug] operand `c`: runtime type __main__.Counter is outside ty's inferred type Never
+         full report: runs/day6/out/seed-abaca087f7e3.md
+
+##    3 findings (3 with strong bug evidence)  only_ty | ('type-assertion-failure',) | type _ does not match asserted type _
+     * 3p_tuples_unpacking_constant_fold_subclass__mut0_fcc3f249.py  D1 L19: assert_type(r, bool)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Literal[True]` does not match asserted type `bool`
+         [RUNTIME/strong, supports bug] operand `r`: runtime type builtins.bool is outside ty's inferred type Literal[True]
+         full report: runs/day6/out/seed-5185e0172bd6.md
+     * 3p_tuples_unpacking_constant_fold_subclass__mut0_24a0a18a.py  D1 L19: assert_type(r, bool)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Literal[False]` does not match asserted type `bool`
+         [RUNTIME/strong, supports bug] operand `r`: runtime type builtins.bool is outside ty's inferred type Literal[False]
+         full report: runs/day6/out/seed-63caa3b5f505.md
+     * ples_unpacking/d4p_tuples_fold_subclass_eq__mut0_61e55e46.py  D1 L25: assert_type(r, bool)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Literal[False]` does not match asserted type `bool`
+         [RUNTIME/strong, supports bug] operand `r`: runtime type builtins.bool is outside ty's inferred type Literal[False]
+         full report: runs/day6/out/seed-71678dbb3e82.md
+
+##    3 findings (2 with strong bug evidence)  concern_mismatch | ('type-var',) | a type variable with default cannot follow typevartuple
+     * artuple_unpack_paramspec_default_after_tvt__mut1_f0d6ebea.py  D1 L8: class Box[*Ts, U = int]:
+         mypy: [type-var] A type variable with default cannot follow TypeVarTuple
+         ty:   [invalid-type-variable-default] Type parameter `U` with a default follows TypeVarTuple `Ts`
+         [RUNTIME/strong, supports bug] CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(8, '<module>'), (8, '<generic parameters of Box>')]). Checker output 
+         full report: runs/day6/out/seed-4023858e7697.md
+     * artuple_unpack_paramspec_default_after_tvt__mut1_8a095c9c.py  D1 L9: class Row[*Ts, T = int]:
+         mypy: [type-var] A type variable with default cannot follow TypeVarTuple
+         ty:   [invalid-type-variable-default] Type parameter `T` with a default follows TypeVarTuple `Ts`
+         [RUNTIME/strong, supports bug] CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic parameters of Row>')]). Checker output 
+         full report: runs/day6/out/seed-f21db3890f4c.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_25e68c78.py  D1 L6: class Foo[*Ts, T = int]:  # expect-error
+         mypy: [type-var] A type variable with default cannot follow TypeVarTuple
+         ty:   [invalid-type-variable-default] Type parameter `T` with a default follows TypeVarTuple `Ts`
+         full report: runs/day6/out/seed-937a8c1ce405.md
+
+##    2 findings (2 with strong bug evidence)  runtime_miss | () | 
+     * artuple_unpack_paramspec_default_after_tvt__mut1_1875954b.py  D3 L9: class Callback[*Ts, **P = [bool]]:
+         mypy: (nothing)
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic parameters of Callback>')]). Checker ou
+         full report: runs/day6/out/seed-1ee44b1a36b0.md
+     * e/d3p_generics_callable_attr_contravariant__mut0_0bac40f6.py  D1 L29: h.add(lambda v: print(v.bit_length()))
+         mypy: (nothing)
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] CPython raised AttributeError: 'float' object has no attribute 'bit_length' with this statement on the stack (frames [(35, '<module>'), (11, 'inner'), (25, 'fire'), (29, '<lambda>')]). Chec
+         full report: runs/day6/out/seed-5cff77681ab7.md
+
+##    2 findings (2 with strong bug evidence)  crash | pyright:internal:RangeError
+     * scriptors_decorated_get_pyright_rangeerror__mut2_5455e8f6.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] An internal error occurred while type checking file "/tmp/typediff-96mthvdq/case.py": RangeError: Maximum call stack size exceeded
+    at M (/home/derek/Projects/5th_sem/Software_analysi
+         full report: runs/day6/out/seed-367ac7f519bd.md
+     * s_one_decorator_dunders_pyright_rangeerror__mut2_dcc9f4b2.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] An internal error occurred while type checking file "/tmp/typediff-d3uq11o_/case.py": RangeError: Maximum call stack size exceeded
+    at z (/home/derek/Projects/5th_sem/Software_analysi
+         full report: runs/day6/out/seed-6d3963a5f445.md
+
+##    1 findings (1 with strong bug evidence)  crash | mypy:signal-SIGKILL
+     * rash_mypy_segv_recursive_tvt_default_alias__mut0_460fd06e.py  C1 LNone: 
+         mypy: 
+         ty:   
+         [STACKTRACE/strong, supports bug] 
+         full report: runs/day6/out/seed-eb1b134676f7.md
+
+##   42 findings (0 with strong bug evidence)  reveal_mismatch | uncomparable
+       e/d3p_generics_callable_attr_contravariant__mut2_c47a759e.py  D1 L28: reveal_type(hf.slots)
+         mypy: reveal dict[str, def (float)]
+         ty:   reveal dict[str, (float, /) -> None]
+         full report: runs/day6/out/seed-0a36364f2719.md
+       seed runs/day6/gen/callables/gen1_f3418ea4.py  D1 L37: reveal_type(h1)
+         mypy: reveal case.Handler
+         ty:   reveal def render(value: int, /, *, scale: int = 1) -> str
+         full report: runs/day6/out/seed-1458b6a1c263.md
+       seed runs/day6/gen/callables/gen1_f3418ea4.py  D2 L38: reveal_type(h2)
+         mypy: reveal case.Handler
+         ty:   reveal (value, /, *, scale=1) -> str
+         full report: runs/day6/out/seed-1458b6a1c263.md
+
+##   10 findings (0 with strong bug evidence)  only_mypy | ('assert-type',) | expression is of type _, not _
+       ors_metaclasses/d4v_metaclass_reflected_op__mut0_f1c9f6f1.py  D2 L26: assert_type(A * B, str)
+         mypy: [assert-type] Expression is of type "int", not "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-25583554c377.md
+       ors_metaclasses/d4v_metaclass_reflected_op__mut0_7bd593be.py  D2 L37: assert_type(A * B, str)
+         mypy: [assert-type] Expression is of type "int", not "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-346aac95c74c.md
+       ck_pep695_paramspec_default_mypy_subscript__mut2_0e8c333e.py  D2 L23: assert_type(inner.args(), tuple[int])
+         mypy: [assert-type] Expression is of type "tuple[()]", not "tuple[int]"
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-4029dbe10099.md
+
+##   10 findings (0 with strong bug evidence)  reveal_mismatch | gradual
+       ructors_metaclasses_type_call_generic_base__mut0_503fcec1.py  D2 L26: reveal_type(dyn_obj)
+         mypy: reveal Any
+         ty:   reveal Dyn
+         full report: runs/day6/out/seed-303b19d83191.md
+       s_properties/d3p_descriptors_decorated_get__mut0_924c9792.py  D2 L25: reveal_type(h.f)
+         mypy: reveal Any
+         ty:   reveal int
+         full report: runs/day6/out/seed-49c0a3858dbb.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut0_af95fdd5.py  D1 L11: reveal_type(value)
+         mypy: reveal str
+         ty:   reveal Any
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day6/out/seed-6be1c4d91ab4.md
+
+##    7 findings (0 with strong bug evidence)  reveal_unpaired | unpaired
+       ance_mro/d4p_inheritance_hash_none_from_eq__mut0_039bd1a0.py  D1 L36: reveal_type(Plain.__hash__)
+         mypy: (nothing)
+         ty:   reveal Never
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 36, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day6/out/seed-6b3eee769a46.md
+       _literals/d3p_enums_flag_is_narrowing_else__mut0_a4c52ec6.py  D3 L39: reveal_type(x)
+         mypy: (nothing)
+         ty:   reveal F & ~Literal[F.R] & ~Literal[F.W]
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 39, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day6/out/seed-8f279fe18ea5.md
+       _literals/d3p_enums_flag_is_narrowing_else__mut0_a4c52ec6.py  D4 L50: reveal_type(x)
+         mypy: (nothing)
+         ty:   reveal F & ~Literal[F.R] & ~Literal[F.W]
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 50, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day6/out/seed-8f279fe18ea5.md
+
+##    6 findings (0 with strong bug evidence)  only_mypy | ('misc',) | _ parameter missing for a non-static method (or an invalid type for self)
+       s_properties/d3p_descriptors_decorated_get__mut2_3b14e003.py  D1 L17: def wrap(fn: Callable[..., int]) -> Wrapper:
+         mypy: [misc] "self" parameter missing for a non-static method (or an invalid type for self)
+         ty:   (nothing)
+         full report: runs/day6/out/seed-3eb405b1e819.md
+       s_properties/d3p_descriptors_decorated_get__mut0_924c9792.py  D1 L10: def passthrough(fn: Callable[..., None]) -> Callable[..., None]:
+         mypy: [misc] "self" parameter missing for a non-static method (or an invalid type for self)
+         ty:   (nothing)
+         full report: runs/day6/out/seed-49c0a3858dbb.md
+       s_properties/d3p_descriptors_decorated_get__mut2_29ab069d.py  D1 L19: def wrap(fn: Callable[..., int]) -> Double:
+         mypy: [misc] "self" parameter missing for a non-static method (or an invalid type for self)
+         ty:   (nothing)
+         full report: runs/day6/out/seed-853fdc9fd282.md
+
+##    6 findings (0 with strong bug evidence)  only_mypy | ('misc', 'valid-type') | can only replace paramspec with a parameter types list or another paramspec, got _
+       ck_pep695_paramspec_default_mypy_subscript__mut2_0e8c333e.py  D3 L24: outer = Foo[Foo[int], str](inner, 's')
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-4029dbe10099.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_ac27b31d.py  D3 L18: outer = Foo[Foo[int], str](inner, 'x')
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-88d62e3c1923.md
+       ck_pep695_paramspec_default_mypy_subscript__mut1_cad1c404.py  D2 L20: outer = Foo[Foo[int], str]()
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-8fd9a600d3dc.md
+
+##    5 findings (0 with strong bug evidence)  only_ty | ('unresolved-attribute',) | unresolved attribute _ on type _
+       e/d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py  D1 L13: self.args = args
+         mypy: (nothing)
+         ty:   [unresolved-attribute] Unresolved attribute `args` on type `(**P@__init__) -> T@__init__`
+         full report: runs/day6/out/seed-69cbe2c807d9.md
+       e/d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py  D2 L14: self.kwargs = kwargs
+         mypy: (nothing)
+         ty:   [unresolved-attribute] Unresolved attribute `kwargs` on type `(**P@__init__) -> T@__init__`
+         full report: runs/day6/out/seed-69cbe2c807d9.md
+       e/d3p_paramspec_self_annotated_dunder_call__mut1_3242bc7d.py  D1 L13: self.count = len(args) + len(kwargs)
+         mypy: (nothing)
+         ty:   [unresolved-attribute] Unresolved attribute `count` on type `(**P@__init__) -> T@__init__`
+         full report: runs/day6/out/seed-7a62f4033536.md
+
+##    4 findings (0 with strong bug evidence)  only_mypy | ('assert-type', 'valid-type') | expression is of type _, not _
+       ck_pep695_paramspec_default_mypy_subscript__mut2_0e8c333e.py  D4 L26: assert_type(outer.args(), tuple[Foo[int], str])
+         mypy: [assert-type] Expression is of type "tuple[Any, ...]", not "tuple[Foo[*tuple[Any, ...], Any], str]"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         KB hints: GRADUAL-OPERAND, ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-4029dbe10099.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_ac27b31d.py  D4 L20: assert_type(outer.args(), tuple[Foo[int], str])
+         mypy: [assert-type] Expression is of type "tuple[Any, ...]", not "tuple[Foo[*tuple[Any, ...], Any], str]"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         KB hints: GRADUAL-OPERAND, ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-88d62e3c1923.md
+       ck_pep695_paramspec_default_mypy_subscript__mut1_ca7c6543.py  D2 L18: assert_type(nested.args(), tuple[Foo[int], str])
+         mypy: [assert-type] Expression is of type "tuple[Any, ...]", not "tuple[Foo[*tuple[Any, ...], Any], str]"; [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "int"
+         ty:   (nothing)
+         KB hints: GRADUAL-OPERAND, ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-b9fcb79a1bd0.md
+
+##    4 findings (0 with strong bug evidence)  only_mypy | ('misc',) | can only replace paramspec with a parameter types list or another paramspec, got _
+       ck_pep695_paramspec_default_mypy_subscript__mut2_9b0deabe.py  D1 L20: foo = Foo[int, str]()
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-41fbf4e76134.md
+       ck_pep695_paramspec_default_mypy_subscript__mut1_cad1c404.py  D1 L19: inner = Foo[int, str]()
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-8fd9a600d3dc.md
+       artuple_unpack_paramspec_default_after_tvt__mut3_59cdbcf2.py  D1 L14: cb_int_str = Callback[int, str](lambda flag: (1, 'a'))
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"; [misc] Cannot infer type of lambda
+         ty:   (nothing)
+         full report: runs/day6/out/seed-96e4da7a793b.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('call-arg',) | too many arguments for _
+       ck_pep695_paramspec_default_mypy_subscript__mut2_0e8c333e.py  D1 L22: inner = Foo[int](1)
+         mypy: [call-arg] Too many arguments for "Foo"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-4029dbe10099.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_ac27b31d.py  D1 L16: inner = Foo[int](1)
+         mypy: [call-arg] Too many arguments for "Foo"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-88d62e3c1923.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_e6de8f04.py  D1 L30: defaulted = Foo[int](2)
+         mypy: [call-arg] Too many arguments for "Foo"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-b2f23a36a81f.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('operator',) | unsupported operand types for + (_ and _)
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut0_c7213a89.py  D1 L18: total += x + 1  # expect-error
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         KB hints: PARTIAL-TYPES   decided by: gate
+         full report: runs/day6/out/seed-575383e0153c.md
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut0_c7213a89.py  D2 L28: total += h.x + 1  # expect-error
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         full report: runs/day6/out/seed-575383e0153c.md
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut0_7485152a.py  D1 L20: total += a.x + 1  # expect-error
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         full report: runs/day6/out/seed-5932c6630754.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('misc',) | attribute function _ with type _ does not accept self argument
+       gen/callables/d3p_callables_self_call_attr__mut1_e6f34b84.py  D1 L17: reveal_type(c())
+         mypy: [misc] Attribute function "__call__" with type "Callable[[], Callable[[], C]]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day6/out/seed-660917ae341d.md
+       gen/callables/d3p_callables_self_call_attr__mut1_71fcabc0.py  D1 L20: made = n()
+         mypy: [misc] Attribute function "__call__" with type "Callable[[], Node]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day6/out/seed-77889ef77e0a.md
+       gen/callables/d3p_callables_self_call_attr__mut2_8eaa6bcc.py  D1 L26: x()  # expect-error
+         mypy: [misc] Attribute function "__call__" with type "Callable[[], Node]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day6/out/seed-ed6b33204351.md
+
+##    3 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to bound method _ is incorrect: expected _, found _
+       artuple_unpack_paramspec_default_after_tvt__mut1_8a095c9c.py  D3 L24: reveal_type(r2.pick(5))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to bound method `Row.pick` is incorrect: Expected `str`, found `Literal[5]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-f21db3890f4c.md
+       artuple_unpack_paramspec_default_after_tvt__mut1_8a095c9c.py  D4 L26: assert r2.pick(5) == 5
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to bound method `Row.pick` is incorrect: Expected `str`, found `Literal[5]`
+         KB hints: TY-STRICT-EQUALITY, ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-f21db3890f4c.md
+       nc_generators_protocol_flatten_overflow_ty__mut1_b76f3c7c.py  D1 L40: r = c.flatten()
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to bound method `Cell.flatten` is incorrect: Expected `Cell[Cell[Cell[int]]]`, found `Cell[Cell[int]]`
+         full report: runs/day6/out/seed-fa45ef32b3b9.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to function _ is incorrect: expected _, found _
+       _mro/d3p_inheritance_mro_hash_none_from_eq__mut0_4e989699.py  D1 L46: print(is_hashable(b), is_hashable(c), is_hashable(d))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `is_hashable` is incorrect: Expected `Hashable`, found `C`
+         full report: runs/day6/out/seed-04236c348fcd.md
+       _mro/d3p_inheritance_mro_hash_none_from_eq__mut0_4e989699.py  D2 L47: print(key_use(b), key_use(c), key_use(d))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `key_use` is incorrect: Expected `Hashable`, found `C`
+         full report: runs/day6/out/seed-04236c348fcd.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('valid-type',) | can only replace paramspec with a parameter types list or another paramspec, got _
+       artuple_unpack_paramspec_default_after_tvt__mut1_1875954b.py  D1 L31: cb2: Callback[int, str] = Callback(flag)
+         mypy: [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-1ee44b1a36b0.md
+       artuple_unpack_paramspec_default_after_tvt__mut0_2d5c48fa.py  D1 L25: cb: Callback[int, str] = Callback(make)
+         mypy: [valid-type] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-5d70e5e989fd.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('assignment',) | incompatible types in assignment (expression has type _, variable has type _)
+       ors_metaclasses/d4v_metaclass_reflected_op__mut0_f1c9f6f1.py  D1 L25: s: str = A * B
+         mypy: [assignment] Incompatible types in assignment (expression has type "int", variable has type "str")
+         ty:   (nothing)
+         full report: runs/day6/out/seed-25583554c377.md
+       ors_metaclasses/d4v_metaclass_reflected_op__mut0_7bd593be.py  D1 L26: s: str = A * B
+         mypy: [assignment] Incompatible types in assignment (expression has type "int", variable has type "str")
+         ty:   (nothing)
+         full report: runs/day6/out/seed-346aac95c74c.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('name-defined',) | name _ is not defined
+       artuple_unpack_paramspec_default_after_tvt__mut1_f0d6ebea.py  D2 L11: self.extra: U | None = None
+         mypy: [name-defined] Name "U" is not defined
+         ty:   (nothing)
+         full report: runs/day6/out/seed-4023858e7697.md
+       rash_mypy_segv_recursive_tvt_default_alias__mut0_c7c224f8.py  D1 L8: type Pair[T = Pair[T]] = list[T]
+         mypy: [name-defined] Name "T" is not defined
+         ty:   (nothing)
+         KB hints: GRADUAL-OPERAND   decided by: gate
+         full report: runs/day6/out/seed-8b50154e2601.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('too-many-positional-arguments',) | too many positional arguments to _: expected n, got n
+       artuple_unpack_paramspec_default_after_tvt__mut1_f0d6ebea.py  D3 L17: b = Box[str, bytes]('a', b'x')
+         mypy: (nothing)
+         ty:   [too-many-positional-arguments] Too many positional arguments to `Box.__init__`: expected 2, got 3
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-4023858e7697.md
+       artuple_unpack_paramspec_default_after_tvt__mut1_8a095c9c.py  D2 L23: r2 = Row[int, str](1, 'a')
+         mypy: (nothing)
+         ty:   [too-many-positional-arguments] Too many positional arguments to `Row.__init__`: expected 2, got 3
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-f21db3890f4c.md
+
+##    2 findings (0 with strong bug evidence)  concern_mismatch | ('var-annotated',) | need type annotation for _
+       e/d3p_paramspec_self_annotated_dunder_call__mut2_7c4a9402.py  D1 L21: made = u()
+         mypy: [var-annotated] Need type annotation for "made"
+         ty:   [missing-argument] No argument provided for required parameter 1 of bound method `User.__call__`
+         full report: runs/day6/out/seed-6653d9bfcd15.md
+       e/d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py  D3 L23: made = u(2, flag=False)
+         mypy: [var-annotated] Need type annotation for "made"
+         ty:   [invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[2]`; [invalid-argument-type] Argument to bound method `User.__call__` is incor
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-69cbe2c807d9.md
+
+##    2 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to _ is incorrect: expected _, found _
+       e/d3p_paramspec_self_annotated_dunder_call__mut1_3242bc7d.py  D2 L20: u = User()
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to `User.__init__` is incorrect: Expected `(...) -> ((...) -> Never)`, found `User`
+         full report: runs/day6/out/seed-7a62f4033536.md
+       ck_pep695_paramspec_default_mypy_subscript__mut0_25e68c78.py  D4 L13: foo = Foo[int, str](3)
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to `Foo.__init__` is incorrect: Expected `str`, found `Literal[3]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day6/out/seed-937a8c1ce405.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('arg-type', 'misc') | cannot infer type of lambda
+       artuple_unpack_paramspec_default_after_tvt__mut3_59cdbcf2.py  D2 L16: cb_list = Callback[list[int]](lambda flag: ([1],))
+         mypy: [misc] Cannot infer type of lambda; [arg-type] Argument 1 to "Callback" has incompatible type "Callable[[Any], tuple[list[int]]]"; expected "def (*list[int], **list[int]) -> tuple[()]"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-96e4da7a793b.md
+       ck_pep695_paramspec_default_mypy_subscript__mut1_c5459653.py  D1 L14: inner = Foo[int](lambda x, y: (1,))
+         mypy: [misc] Cannot infer type of lambda; [arg-type] Argument 1 to "Foo" has incompatible type "Callable[[Any, Any], tuple[int]]"; expected "def (*int, **int) -> tuple[()]"
+         ty:   (nothing)
+         full report: runs/day6/out/seed-e3e9526f1283.md
+
+218 findings in 47 patterns (* = strong verified bug evidence; triage those patterns first)

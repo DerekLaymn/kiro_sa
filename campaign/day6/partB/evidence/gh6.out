@@ -1,0 +1,6 @@
+== Hashable __eq__ without __hash__
+[]
+== class defining __eq__ is considered Hashable
+[]
+== unhashable __eq__ Hashable protocol
+[]

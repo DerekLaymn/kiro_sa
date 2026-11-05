@@ -1,0 +1,47 @@
+seed-3eb405b1e819 d3p_descriptors_decorated_get__mut2_3b14e003.py D1 L17 only_mypy/None 'def wrap(fn: Callable[..., int]) -> Wrapper:'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-414c5ac8b0fd d4p_narrowing_stale_alias_loop__mut0_061fed49.py D1 L21 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-49c0a3858dbb d3p_descriptors_decorated_get__mut0_924c9792.py D1 L10 only_mypy/None 'def passthrough(fn: Callable[..., None]) -> Callable[..., No'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-5185e0172bd6 d3p_tuples_unpacking_constant_fold_subclass__mut0_fcc3f249.py D1 L19 only_ty/None 'assert_type(r, bool)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2171-ASSERT (already reported upstream: same root cause as TY-2171 (open; state as )
+seed-5dafb60c97da d4p_descriptors_readonly_prop_never__mut1_042a9c38.py D1 L47 only_mypy/None 't.readonly = 5  # expect-error'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792-READONLY (already reported upstream: same root cause as TY-2792 (open): a method)
+seed-71678dbb3e82 d4p_tuples_fold_subclass_eq__mut0_61e55e46.py D1 L25 only_ty/None 'assert_type(r, bool)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2171-ASSERT (already reported upstream: same root cause as TY-2171 (open; state as )
+seed-71678dbb3e82 d4p_tuples_fold_subclass_eq__mut0_61e55e46.py D2 L24 reveal_mismatch/ty_more_precise 'reveal_type(r)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2171 (already reported upstream: open (unsoundness, diagnostics; state as of)
+seed-7a8a33bb5fce d3p_narrowing_user_attr_narrowing_kept_after_method_call__mut0 D1 L20 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-7a8a33bb5fce d3p_narrowing_user_attr_narrowing_kept_after_method_call__mut0 D2 L23 reveal_mismatch/different 'reveal_type([a.x for _ in range(1)])'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-853fdc9fd282 d3p_descriptors_decorated_get__mut2_29ab069d.py D1 L19 only_mypy/None 'def wrap(fn: Callable[..., int]) -> Double:'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-92676e7ebb47 d3p_descriptors_decorated_get__mut1_1ac60ada.py D1 L11 only_mypy/None 'def passthrough(f: Setter) -> Setter:'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-978e400d5d29 d4v_ty_attr_eq_narrow_unreachable__mut0_9412cd99.py D1 L29 only_mypy/None 'c.readonly = 5  # expect-error'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792-READONLY (already reported upstream: same root cause as TY-2792 (open): a method)
+seed-978e400d5d29 d4v_ty_attr_eq_narrow_unreachable__mut0_9412cd99.py D2 L27 reveal_mismatch/ty_more_precise 'reveal_type(c.n)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-abaca087f7e3 d4p_descriptors_readonly_prop_never__mut2_13318242.py D1 L41 only_mypy/None 'c.count = local  # expect-error'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792-READONLY (already reported upstream: same root cause as TY-2792 (open): a method)
+seed-b175142946a2 d3p_descriptors_decorated_get__mut0_9eb50933.py D1 L14 only_mypy/None 'def passthrough(fn: F) -> F:'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-be36399b8efa d4v_ty_tuple_subclass_dunder_fold__mut0_67d91913.py D1 L16 reveal_mismatch/ty_more_precise 'reveal_type(x != (1,))'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2171 (already reported upstream: open (unsoundness, diagnostics; state as of)
+seed-ced5e907ce98 d3p_narrowing_builtin_stale_alias_condition__mut0_68ff27aa.py D1 L21 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-d15eac15e585 d4p_descriptors_readonly_prop_never__mut0_0e529fff.py D1 L47 only_mypy/None 't.readonly = 5  # expect-error'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792-READONLY (already reported upstream: same root cause as TY-2792 (open): a method)
+seed-e3dd8220ec7b d3p_narrowing_user_attr_narrowing_kept_after_method_call__mut0 D1 L21 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-e67522d4f8c5 d3p_descriptors_decorated_get__mut1_fb78dc71.py D1 L10 only_mypy/None "def wrap(fn: Callable[['Scale', object, int], None]) -> Call"
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-4756 (already reported upstream: open (lint; state as of 2026-11-05, 'no err)
+seed-e95dc61284c6 d4p_narrowing_stale_alias_loop__mut0_09d5e932.py D1 L21 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-e95dc61284c6 d4p_narrowing_stale_alias_loop__mut0_09d5e932.py D2 L43 reveal_mismatch/ty_more_precise 'reveal_type(a.x)'
+     None/gate -> DUPLICATE/kb:UPSTREAM-TY-2792 (already reported upstream: open (state as of 2026-11-05, 'Consider inv)
+seed-fb209a32a3c3 d4p_tuples_fold_subclass_eq__mut0_f0a82a6f.py D1 L14 reveal_mismatch/ty_more_precise 'reveal_type(r)'
+     DESIGN_DIVERGENCE/kb:LITERAL-WIDENING -> DUPLICATE/kb:UPSTREAM-TY-2171 (already reported upstream: open (unsoundness, diagnostics; state as of)
+23

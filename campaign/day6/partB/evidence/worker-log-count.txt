@@ -1,0 +1,2 @@
+51
+0 campaign/day6/partB/evidence/worker-logs-not-rc0.txt

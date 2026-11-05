@@ -1,0 +1,11 @@
+A_ty_crash {'programs': 63, 'discrepancies': 23, 'crashes': 53, 'live': 38, 'dismissed': 38, 'programs_live': 30, 'strong_programs': 19}
+C_callback {'programs': 18, 'discrepancies': 65, 'crashes': 0, 'live': 65, 'dismissed': 0, 'programs_live': 18, 'strong_programs': 3}
+M_mypy_crash {'programs': 16, 'discrepancies': 15, 'crashes': 5, 'live': 14, 'dismissed': 6, 'programs_live': 8, 'strong_programs': 1}
+P_pyright {'programs': 45, 'discrepancies': 25, 'crashes': 2, 'live': 15, 'dismissed': 12, 'programs_live': 14, 'strong_programs': 6}
+R_rest {'programs': 58, 'discrepancies': 96, 'crashes': 2, 'live': 62, 'dismissed': 36, 'programs_live': 37, 'strong_programs': 18}
+fresh {'programs': 50, 'discrepancies': 35, 'crashes': 0, 'live': 18, 'dismissed': 17, 'programs_live': 15, 'strong_programs': 0}
+TOTAL {'programs': 250, 'discrepancies': 259, 'crashes': 62, 'live': 212, 'dismissed': 109, 'programs_live': 122, 'strong_programs': 47}
+crashes by tool/signature (tool crash events): {('mypy', 'mypy:signal-SIGSEGV'): 18, ('ty', 'ty:signal-SIGABRT:stack-overflow'): 41, ('pyright', 'pyright:internal:RangeError'): 2, ('mypy', 'mypy:signal-SIGKILL'): 1}
+live crash findings by signature: {'ty:signal-SIGABRT:stack-overflow': 20, 'pyright:internal:RangeError': 2, 'mypy:signal-SIGKILL': 1}
+pyright consensus evidence: {'agrees-with-ty': 106, 'agrees-with-mypy': 105}
+cases with pyright key 250 cases with >=1 pyright diag 235

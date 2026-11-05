@@ -1,0 +1,4 @@
+replayed 250 reports into runs/day6/replay
+verify-sample: 30/30 identical to a full re-run (mismatches: 0)
+rc=0
+min avail: 12015

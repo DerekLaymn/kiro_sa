@@ -1,0 +1,8 @@
+== self parameter missing instance method
+[]
+== missing self parameter
+[]
+== reportSelfClsParameterName
+[{"number":4756,"state":"open","title":"no error when instance method has no `self` parameter"},{"number":1070,"state":"closed","title":"Does not know about pydantic_settings.BaseSettings from env vars"}]
+== method without self
+[{"number":4158,"state":"closed","title":"method without self incorrectly matches protocol with self"}]

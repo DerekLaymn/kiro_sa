@@ -1,0 +1,10 @@
+== models used in worker sessions (log dirs from 20261105T162700 on, excluding the current workflow session)
+     30 Sending GenerateAssistantResponse modelId=claude-haiku-5.5
+== oom kernel events last 3h
+      1 mypy.real /user.slice/user-1000.slice/user@1000.service/typediff.slice/typediff-guard.slice/run-p1038966-i5181187.scope
+      1 mypy.real /user.slice/user-1000.slice/user@1000.service/typediff.slice/typediff-guard.slice/run-p1048320-i5242555.scope
+      1 mypy.real /user.slice/user-1000.slice/user@1000.service/typediff.slice/typediff-guard.slice/run-p1106187-i5325370.scope
+== oomd
+0
+== answers written / prompts
+250
