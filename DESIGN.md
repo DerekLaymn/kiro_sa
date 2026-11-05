@@ -88,7 +88,9 @@ evidence plus "pyright sides with X".
  S2 parse + normalise (mypy text/json, ty concise/full/gitlab, pyright json, traceback/harness json)
     statement anchors (AST)   type-string canonicaliser   rule/concern map (ty's official table)
  S3 discrepancy extraction  ONLY_MYPY | ONLY_TY | CONCERN_MISMATCH | SEVERITY_ONLY |
-                            REVEAL_MISMATCH | REVEAL_UNPAIRED | RUNTIME_MISS
+                            REVEAL_MISMATCH | REVEAL_UNPAIRED | RUNTIME_MISS |
+                            ONLY_PYRIGHT (opt-in, `--pyright-only`: pyright error, mypy and ty silent,
+                            CPython ran the statement; see campaign/day7-morning.md §5)
  S4 deterministic stage (no LLM)
     • runtime evidence: exception-on-stack, value-inhabits-type, coverage
     • auto operand reveal-probes   • call/assignability self-consistency oracle

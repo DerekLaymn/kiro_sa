@@ -40,7 +40,7 @@ def _cid(path: str) -> str:
 
 
 def _work(args):
-    path, out, timeout = args
+    path, out, timeout, pyright_only = args
     from typediff.cli import _save, _seed_area
     from typediff.corpus import Corpus
     from typediff.generator import blocking, preflight
@@ -64,8 +64,8 @@ def _work(args):
     signal.signal(signal.SIGALRM, _alarm)
     signal.alarm(timeout)
     try:
-        pipe = Pipeline(PipelineConfig(tools=ToolConfig(python_version=PYV), reduce=False, audit_rate=0.0),
-                        from_env("null"), Corpus(), None)
+        pipe = Pipeline(PipelineConfig(tools=ToolConfig(python_version=PYV), reduce=False, audit_rate=0.0,
+                                       pyright_only=pyright_only), from_env("null"), Corpus(), None)
         report = pipe.run_source(source, case_id=cid)
         report.notes += [f"area={area}", f"origin=seed {path}", "depth=0"] + problems
         _save(report, out, None)
@@ -111,6 +111,7 @@ def main() -> int:
     ap.add_argument("--sample", type=int, default=0)
     ap.add_argument("--manifest", help="write/read the file list here (keeps the same sample across rounds)")
     ap.add_argument("--progress", required=True)
+    ap.add_argument("--pyright-only", action="store_true", help="also emit only_pyright discrepancies (off by default)")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -127,7 +128,7 @@ def main() -> int:
     t0 = time.time()
     with mp.Pool(a.jobs, maxtasksperchild=50) as pool, open(a.progress, "a") as log:
         log.write(f"start {time.ctime()} total={total} jobs={a.jobs}\n")
-        for path, status, dur in pool.imap_unordered(_work, [(f, str(out), a.timeout) for f in files], chunksize=1):
+        for path, status, dur in pool.imap_unordered(_work, [(f, str(out), a.timeout, a.pyright_only) for f in files], chunksize=1):
             done += 1
             counts[status] += 1
             if status not in ("ok", "skip") or done % 50 == 0:

@@ -34,6 +34,9 @@ class DiscrepancyKind(str, enum.Enum):
     REVEAL_MISMATCH = "reveal_mismatch"  # reveal_type() results disagree
     REVEAL_UNPAIRED = "reveal_unpaired"  # only one checker revealed (usually reachability)
     RUNTIME_MISS = "runtime_miss"  # CPython raised a type-related error nobody flagged
+    # pyright reports an error at a statement where mypy AND ty are silent, and CPython ran the statement (opt-in:
+    # PipelineConfig.pyright_only, off by default so historical numbers do not change)
+    ONLY_PYRIGHT = "only_pyright"
 
 
 class Symptom(str, enum.Enum):

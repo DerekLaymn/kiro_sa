@@ -27,7 +27,7 @@ from .discrepancy import find_discrepancies
 from .experiments import ExperimentRunner
 from .llm import CachedLLM, from_env
 from .crash_upstream import match_crash
-from .models import CaseReport, Crash, Dismissal, RuntimeResult, Symptom, Tier, Tool, Verdict
+from .models import CaseReport, Crash, DiscrepancyKind, Dismissal, RuntimeResult, Symptom, Tier, Tool, Verdict
 from .parsers import classify_exception, parse_mypy, parse_pyright, parse_runtime, parse_ty
 from .priors import apply_prior_cap, find_priors
 from .reducer import Reducer, _norm_msg
@@ -41,6 +41,7 @@ class PipelineConfig:
     tools: ToolConfig = field(default_factory=ToolConfig)
     gate: GateConfig = field(default_factory=GateConfig)
     use_pyright: bool = True
+    pyright_only: bool = False  # surface pyright-only errors with CPython evidence as `only_pyright` discrepancies (opt-in)
     check_nondeterminism: bool = True  # re-run ty once and compare (cheap; catches salsa/cycle flakiness)
     auto_probe: bool = True
     reduce: bool = True
@@ -127,7 +128,8 @@ class Pipeline:
             state.notes.append(f"{', '.join(t.value for t in crashed)} crashed: diagnostics are incomplete, discrepancy "
                                "analysis skipped (the crash itself is the finding)")
         else:
-            discrepancies = find_discrepancies(state.diags, state.amap, state.runtime, state.module)
+            discrepancies = find_discrepancies(state.diags, state.amap, state.runtime, state.module,
+                                               pyright_only=self.cfg.pyright_only and state.pyright_ran)
             decided, remaining = deterministic_stage(
                 state, discrepancies, ex, auto_probe=self.cfg.auto_probe,
                 audit_rate=self.cfg.audit_rate if self.adjudicator.enabled else 0.0)
@@ -180,7 +182,7 @@ class Pipeline:
             if crash:
                 pred = red.predicate_for(state.source, None, f, crash.signature, crash.tool)
                 return red.reduce(state.source, pred)
-            if d is None:
+            if d is None or d.kind == DiscrepancyKind.ONLY_PYRIGHT:  # the reducer's predicates only re-run mypy and ty
                 return None
             pred = red.predicate_for(state.source, d, f, runtime=state.runtime)
             st = state.amap.stmt(d.anchor)

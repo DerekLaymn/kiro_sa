@@ -22,6 +22,9 @@ def signature(f: Finding, d: Discrepancy | None) -> str:
         return f.signature
     codes = sorted({x.code or "" for x in (d.mypy + d.ty if d else [])})
     msgs = sorted({message_template(x.message) for x in ((d.ty if f.faulty_tool == "ty" else d.mypy) if d else [])})
+    if d and d.kind.value == "only_pyright":  # the only side that has diagnostics
+        codes = sorted({x.code or "" for x in d.pyright if x.is_problem})
+        msgs = sorted({message_template(x.message) for x in d.pyright if x.is_problem})
     feats = sorted(d.features) if d else []
     raw = json.dumps([f.faulty_tool, f.symptom.value if f.symptom else None, d.kind.value if d else None, codes, msgs, feats])
     return hashlib.sha256(raw.encode()).hexdigest()[:16]

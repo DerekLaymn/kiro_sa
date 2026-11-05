@@ -21,13 +21,13 @@ from pathlib import Path
 KEEP = ("area=", "origin=", "depth=", "WARN")
 
 
-def _pipeline():
+def _pipeline(pyright_only: bool = False):
     from typediff.corpus import Corpus
     from typediff.llm import from_env
     from typediff.pipeline import Pipeline, PipelineConfig
     from typediff.runners import Runners, ToolConfig
 
-    cfg = PipelineConfig(tools=ToolConfig(python_version="3.13"), reduce=False, audit_rate=0.0)
+    cfg = PipelineConfig(tools=ToolConfig(python_version="3.13"), reduce=False, audit_rate=0.0, pyright_only=pyright_only)
     p = Pipeline(cfg, from_env("null"), Corpus(), None)
     p.runners = Runners(cfg.tools)
     return p
@@ -38,12 +38,12 @@ _P = None
 
 def _work(args):
     global _P
-    src, dst, rerun_runtime = args
+    src, dst, rerun_runtime, pyright_only = args
     from typediff.cli import _save
     from typediff.models import to_jsonable
     from typediff.replay import readjudicate
 
-    _P = _P or _pipeline()
+    _P = _P or _pipeline(pyright_only)
     r = json.loads(Path(src).read_text())
     if rerun_runtime:  # the runtime harness changed: refresh ONLY the CPython result, keep the saved checker output
         r["runtime"] = json.loads(json.dumps(to_jsonable(_P.runners.run_runtime(r["source"]))))
@@ -67,6 +67,7 @@ def main() -> int:
     ap.add_argument("--verify-sample", type=int, default=0)
     ap.add_argument("--only", help="file of seed paths: replay only these")
     ap.add_argument("--rerun-runtime", action="store_true", help="re-run only the CPython harness (it was fixed), keep tool output")
+    ap.add_argument("--pyright-only", action="store_true", help="also emit only_pyright discrepancies (off by default)")
     a = ap.parse_args()
     src, dst = Path(a.src), Path(a.dst)
     dst.mkdir(parents=True, exist_ok=True)
@@ -80,7 +81,7 @@ def main() -> int:
                       if n.startswith("origin=")), "")
             if o not in only:
                 continue
-        files.append((str(f), str(dst), a.rerun_runtime))
+        files.append((str(f), str(dst), a.rerun_runtime, a.pyright_only))
     with mp.Pool(a.jobs, maxtasksperchild=200) as pool:
         for i, _ in enumerate(pool.imap_unordered(_work, files, chunksize=8), 1):
             if i % 1000 == 0:
@@ -91,9 +92,9 @@ def main() -> int:
 
         rng = random.Random(7)
         sample = rng.sample(files, min(a.verify_sample, len(files)))
-        p = _pipeline()
+        p = _pipeline(a.pyright_only)
         bad = 0
-        for s, _d, _rr in sample:
+        for s, _d, _rr, _po in sample:
             old = json.loads(Path(s).read_text())
             full = p.run_source(old["source"], case_id=old["case_id"])
             from typediff.models import to_jsonable

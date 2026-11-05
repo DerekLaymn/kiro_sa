@@ -52,8 +52,29 @@ def _runtime_miss_suppressed(amap: AnchorMap, inner: int, runtime: RuntimeResult
     return False
 
 
+def pyright_runtime_relation(amap: AnchorMap, runtime: RuntimeResult, anchor: int) -> str | None:
+    """What CPython says about a statement that only pyright rejects.
+
+    ``"supports"``: a type-related exception (``classify_exception`` == strong) was raised with this statement on the
+    stack, so pyright's complaint matches what happened at runtime. ``"contradicts"``: coverage is known and CPython
+    executed the statement without such an exception, so pyright's rejection did not show up at runtime (weak: an
+    unsound-but-working program is also rejected by a correct checker). ``None``: no usable runtime evidence (the
+    statement never ran, coverage unknown, harness failed, or a non-type exception was raised there)."""
+    if runtime.status not in ("success", "exception"):
+        return None
+    lo, hi = amap.span(anchor)
+    if runtime.status == "exception":
+        frames = {amap.anchor(ln) for ln, _ in runtime.frames} or ({amap.anchor(runtime.exc_line)} if runtime.exc_line else set())
+        if lo in frames or anchor in frames:
+            return "supports" if classify_exception(runtime.exc_type, runtime.exc_message) == "strong" else None
+    if runtime.coverage_known and any(ln in set(runtime.executed_lines or []) for ln in range(lo, hi + 1)):
+        return "contradicts"
+    return None
+
+
 def find_discrepancies(
-    diags: dict[Tool, list[Diagnostic]], amap: AnchorMap, runtime: RuntimeResult, module: str = "case"
+    diags: dict[Tool, list[Diagnostic]], amap: AnchorMap, runtime: RuntimeResult, module: str = "case",
+    pyright_only: bool = False,
 ) -> list[Discrepancy]:
     attach_anchors(diags, amap)
     mypy, ty = diags.get(Tool.MYPY, []), diags.get(Tool.TY, [])
@@ -138,8 +159,25 @@ def find_discrepancies(
             if not _runtime_miss_suppressed(amap, inner, runtime, mypy + ty + pyright):
                 new(DiscrepancyKind.RUNTIME_MISS, inner, [], [])
 
+    # ---------------------------------------------------------------- pyright-only errors (opt-in; appended last so
+    # the ids of every other discrepancy stay the same)
+    supports: set[int] = set()
+    if pyright_only and Tool.PYRIGHT in diags:
+        quiet = {amap.span(d.anchor)[0] for d in mypy + ty if d.is_problem and (d.code or "") not in META_CODES}
+        quiet |= {d.anchor for d in out if d.kind == DiscrepancyKind.RUNTIME_MISS}  # that discrepancy already carries d.pyright
+        for a in sorted({p.anchor for p in pyright if p.severity == Severity.ERROR and p.revealed_type is None
+                         and (p.code or "") not in META_CODES and p.anchor is not None}):
+            if amap.span(a)[0] in quiet:
+                continue
+            rel = pyright_runtime_relation(amap, runtime, a)
+            if rel is None:
+                continue
+            d = new(DiscrepancyKind.ONLY_PYRIGHT, a, [], [], rel=f"runtime_{rel}")
+            if rel == "supports":
+                supports.add(id(d))
+
     for d in out:
-        d.priority = _priority(d)
+        d.priority = 0.7 if id(d) in supports else _priority(d)
     return out
 
 
@@ -147,7 +185,7 @@ def _priority(d: Discrepancy) -> float:
     base = {
         DiscrepancyKind.RUNTIME_MISS: 0.8, DiscrepancyKind.ONLY_MYPY: 0.6, DiscrepancyKind.ONLY_TY: 0.6,
         DiscrepancyKind.CONCERN_MISMATCH: 0.4, DiscrepancyKind.REVEAL_MISMATCH: 0.5,
-        DiscrepancyKind.REVEAL_UNPAIRED: 0.2, DiscrepancyKind.SEVERITY_ONLY: 0.05,
+        DiscrepancyKind.REVEAL_UNPAIRED: 0.2, DiscrepancyKind.SEVERITY_ONLY: 0.05, DiscrepancyKind.ONLY_PYRIGHT: 0.3,
     }[d.kind]
     if d.kind == DiscrepancyKind.REVEAL_MISMATCH:
         base = {"different": 0.6, "uncomparable": 0.35, "gradual": 0.25, "todo": 0.1}.get(d.reveal_relation or "", 0.3)

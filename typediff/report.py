@@ -36,7 +36,9 @@ def render_summary(r: CaseReport) -> str:
         lines += ["", f"## {f.discrepancy_id} - {f.tier.value}"]
         if d:
             lines.append(f"- kind: {d.kind.value}; mypy: {'; '.join(x.short() for x in d.mypy) or '-'}; "
-                         f"ty: {'; '.join(x.short() for x in d.ty) or '-'}")
+                         f"ty: {'; '.join(x.short() for x in d.ty) or '-'}"
+                         + (f"; pyright: {'; '.join(x.short() for x in d.pyright if x.is_problem) or '-'}"
+                            if d.kind.value == "only_pyright" else ""))
             if d.kb_hits:
                 lines.append(f"- KB matches: {', '.join(d.kb_hits)}")
         if f.reasoning:

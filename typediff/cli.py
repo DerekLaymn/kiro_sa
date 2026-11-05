@@ -38,7 +38,7 @@ def _pipeline(args, llm=None) -> Pipeline:
     if getattr(args, "typeshed", None):
         tools.shared_typeshed = args.typeshed
     cfg = PipelineConfig(tools=tools, use_pyright=not args.no_pyright, reduce=not args.no_reduce,
-                         audit_rate=args.audit_rate)
+                         audit_rate=args.audit_rate, pyright_only=getattr(args, "pyright_only", False))
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     return Pipeline(cfg, llm or from_env(args.llm), Corpus(Path(args.docs)), Dataset(out / "dataset.jsonl"))
@@ -378,6 +378,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--llm", default=None, help="override TYPEDIFF_LLM (anthropic:<model> | openai:<model>[@url] | file:<dir> | null)")
     ap.add_argument("--python-version", default="3.12")
     ap.add_argument("--no-pyright", action="store_true")
+    ap.add_argument("--pyright-only", action="store_true",
+                    help="also report errors only pyright makes (mypy and ty silent) when CPython evidence supports or "
+                         "contradicts them, as discrepancy kind only_pyright (off by default)")
     ap.add_argument("--no-reduce", action="store_true")
     ap.add_argument("--audit-rate", type=float, default=0.05)
     ap.add_argument("--typeshed", default=None, help="shared typeshed checkout for both checkers (removes stub skew)")

@@ -208,8 +208,8 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
             "(body is only pass/.../docstring), which returns None at runtime: test scaffolding, not a type error",
             citation=f"line {rt.exc_line}", verified=True, strength="weak"))
     elif strong_exc and d.anchor in frame_anchors:
-        blame = {K.ONLY_MYPY: "ty", K.ONLY_TY: "mypy", K.RUNTIME_MISS: "both"}.get(d.kind, "unknown")
-        reported = "; ".join(x.short() for x in d.mypy + d.ty) or "nothing"
+        blame = {K.ONLY_MYPY: "ty", K.ONLY_TY: "mypy", K.RUNTIME_MISS: "both", K.ONLY_PYRIGHT: "both"}.get(d.kind, "unknown")
+        reported = "; ".join(x.short() for x in d.mypy + d.ty + (d.pyright if d.kind == K.ONLY_PYRIGHT else [])) or "nothing"
         st = state.amap.stmt(rt.exc_line) if rt.exc_line else None
         causes = dependency_constructs(state.amap.tree, st.node if st else None, state.amap.lines)
         cause_txt = (f" Constructs in the raising statement's dependency set that could be responsible: {'; '.join(causes)}."
@@ -274,6 +274,20 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
 
 def attach_pyright_evidence(state: CaseState, d: Discrepancy) -> None:
     if not state.pyright_ran:
+        return
+    if d.kind == K.ONLY_PYRIGHT:
+        from .discrepancy import pyright_runtime_relation
+
+        rel = pyright_runtime_relation(state.amap, state.runtime, d.anchor)
+        shown = "; ".join(x.short() for x in d.pyright if x.is_problem) or "an error"
+        d.evidence.append(Evidence(
+            EvidenceType.CONSENSUS, "neutral",
+            f"only pyright reports a problem here ({shown}); mypy and ty are both silent. CPython: "
+            + ("raised a type-related exception with this statement on the stack, so pyright's report matches the runtime "
+               "(mypy and ty missed it)" if rel == "supports" else
+               "executed the statement without a type-related exception, so the runtime does not back pyright (pyright "
+               "may be too strict, or the code is unsound but works)"),
+            citation=f"line {d.anchor}", verified=True, strength="weak", blame=None))
         return
     from .experiments import _pyright_side
 
