@@ -87,9 +87,10 @@ def test_controls_never_match_even_with_a_matching_signature(name, tool, sig):
     assert crashes_as(tool, sig, name) is None
 
 
-def test_unfiled_ty_overflow_on_A1_matches_nothing():
-    assert crashes_as("ty", TY_SO, "A1") is None
-    assert crashes_as("mypy", MYPY_SEGV, "A1") == "MYPY-22361"  # but mypy's crash on the same program is #22361
+def test_ty_overflow_on_A1_is_ty4148_and_mypy_crash_is_22361():
+    # Day 3 left the ty crash on A1 unfiled and live; Day 4 added TY-4148 (astral-sh/ty#4148, the same two-line program)
+    assert crashes_as("ty", TY_SO, "A1") == "TY-4148"
+    assert crashes_as("mypy", MYPY_SEGV, "A1") == "MYPY-22361"  # mypy's crash on the same program is #22361
 
 
 def test_mypy_hang_variant_is_not_22343():
@@ -147,7 +148,9 @@ def test_pipeline_dismisses_matching_crash_with_url_in_note():
 
 
 def test_pipeline_unmatched_crash_stays_confirmed():
-    rep = _judge(src("A1"), Crash(Tool.TY, "signal", TY_SO, "", -6))
+    # a ty stack overflow no entry covers (protocol flatten, not filed upstream as of Day 4)
+    unfiled = (DATA.parent / "upstream_day4" / "ty4148_control_protocol_flatten_new_bug.py").read_text()
+    rep = _judge(unfiled, Crash(Tool.TY, "signal", TY_SO, "", -6))
     f = rep.findings[0]
     assert f.verdict == Verdict.BUG and f.tier == Tier.CONFIRMED and f.dismissal is None
     rep = _judge("x = 1\n", Crash(Tool.TY, "signal", TY_SO, "", -6))

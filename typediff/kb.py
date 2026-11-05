@@ -1229,7 +1229,29 @@ def _flag_member_op(s, d) -> bool:
                and any(isinstance(t, ast.Name) and t.id in names for t in a.targets) for a in ast.walk(tree))
 
 
-_REQUIRES = {"open_typeddict_kwargs": _open_typeddict_kwargs,
+_FLAG_LITERAL_ARG = re.compile(r'has incompatible type "(?P<cls>\w+)"; expected "Literal\[(?P=cls)\.\w+\]"')
+
+
+def _flag_combo_literal_arg(s, d) -> bool:
+    """astral-sh/ty#876 (same Flag-expansion item, mypy-only row): mypy rejects passing a Flag value to a
+    `Literal[F.X]` parameter ([arg-type], the type named in the message is a Flag / IntFlag subclass of the program)
+    and the statement uses a bitwise combination of two members of that Flag, directly or through a variable assigned
+    from one. ty is silent because it expands the combination to `Literal[F.R, F.W]`, narrows it to Never and treats
+    the line as unreachable. A plain Enum, a Flag value that is not a member combination, or another mypy message do
+    not match."""
+    tree = s.amap.tree
+    if tree is None or not d.mypy:
+        return False
+    flags = _flag_classes(tree)
+    for x in d.mypy:
+        m = _FLAG_LITERAL_ARG.search(x.message)
+        if not m or m["cls"] not in flags:
+            return False
+    return _flag_member_op(s, d)
+
+
+_REQUIRES = {"flag_combo_literal_arg": _flag_combo_literal_arg,
+             "open_typeddict_kwargs": _open_typeddict_kwargs,
              "rebound_inferred_lambda": _rebound_inferred_lambda,
              "unquoted_forward_ref": _unquoted_forward_ref,
              "generic_typeddict_typevar_call": _generic_typeddict_typevar_call,
@@ -1268,6 +1290,8 @@ def _upstream_entries() -> list[KBEntry]:
             f"UPSTREAM-{e['id']}", f"already reported upstream: {e['note']}", Dismissal(e["dismissal"]), e["url"],
             f"{e['note']} ({e['url']}). Known issue - do not file again; add new variants as a comment if they "
             "add information.", (kind,), matcher, auto=True, runtime_override=False, example=e.get("example", ""),
+            # optional per entry: step aside when CPython raised a type-related exception in the very statement
+            demote=demote_exception_at_statement if e.get("demote_on_exception") else None,
         ))
     return out
 

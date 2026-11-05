@@ -1,5 +1,5 @@
 {
- "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles. CRASH entries (kind \"crash\", matched in typediff/crash_upstream.py from the pipeline because crash findings have no discrepancy): fields id, kind, tool (mypy|ty|pyright; one entry per tool, the same program can crash two tools with two different issues), signature (regex, re.fullmatch against the crash signature, e.g. ty:signal-SIGABRT:stack-overflow, mypy:signal-SIGSEGV, pyright:internal:RangeError, <tool>:timeout), requires (MANDATORY name in crash_upstream._CRASH_REQUIRES, a pure function of the parsed program: a crash is dismissed only when tool AND signature AND source shape all match, never on tool + signature alone), dismissal (DUPLICATE), stance, url, note. Crash entries build no KB entry and have no kb-selftest example.",
+ "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, an optional demote_on_exception (true: the entry steps aside and the finding stays in review when CPython raised a type-related exception in that statement) and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles. CRASH entries (kind \"crash\", matched in typediff/crash_upstream.py from the pipeline because crash findings have no discrepancy): fields id, kind, tool (mypy|ty|pyright; one entry per tool, the same program can crash two tools with two different issues), signature (regex, re.fullmatch against the crash signature, e.g. ty:signal-SIGABRT:stack-overflow, mypy:signal-SIGSEGV, pyright:internal:RangeError, <tool>:timeout), requires (MANDATORY name in crash_upstream._CRASH_REQUIRES, a pure function of the parsed program: a crash is dismissed only when tool AND signature AND source shape all match, never on tool + signature alone), dismissal (DUPLICATE), stance, url, note. Crash entries build no KB entry and have no kb-selftest example.",
  "entries": [
   {
    "id": "TY-1090",
@@ -93,6 +93,17 @@
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4898",
    "note": "open (bug, fatal, paramspec; state as of 2026-11-04): stack overflow when a function generic over Callable[P, R] (ParamSpec plus a separate return TypeVar) is called with itself, id(id). Callable[[T], T], Callable[P, int] and id(g) do not crash. Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-4148",
+   "kind": "crash",
+   "tool": "ty",
+   "signature": "ty:signal-SIGABRT:stack-overflow",
+   "requires": "call_attr_own_type",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4148",
+   "note": "open (bug, fatal, attributes, callables, cycles; state as of 2026-11-05): ty overflows its stack when an instance is called and its class declares __call__ as an attribute annotated with the class itself (class C: __call__: 'C'; C()()), also with Self or a union holding C or Self. The issue shows the exact two-line program; a fix attempt (ruff#28691) was closed unmerged. Verified on ty 0.0.84 and 0.0.97. Same shape as MYPY-22361 (the mypy crash on the same programs). Mutually recursive pairs (A.__call__: B, B.__call__: A) crash the same way but are NOT matched by this entry."
   },
   {
    "id": "TY-4899",
@@ -275,6 +286,19 @@
    "example": "import enum\nfrom typing import assert_type\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\nv = F.R | F.W\nassert_type(v, F)\n",
    "url": "https://github.com/astral-sh/ty/issues/876",
    "note": "same unchecked item of the open umbrella issue ty#876 (state as of 2026-11-04): assert_type(F.R | F.W, F) is rejected by ty because it expands a Flag combination to Literal[F.R, F.W]; mypy and pyright accept it. Verified on ty 0.0.84."
+  },
+  {
+   "id": "TY-876-ARGTYPE",
+   "kind": "only_mypy",
+   "silent_tool": "ty",
+   "codes": ["arg-type"],
+   "message": "has incompatible type \"\\w+\"; expected \"Literal\\[\\w+\\.\\w+\\]\"",
+   "requires": "flag_combo_literal_arg",
+   "demote_on_exception": true,
+   "dismissal": "DUPLICATE",
+   "example": "import enum\nfrom typing import Literal\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\ndef only_r(x: Literal[F.R]) -> int:\n    return 1\n\n\ncombined = F.R | F.W\nassert combined.value == 3\nonly_r(combined)\n",
+   "url": "https://github.com/astral-sh/ty/issues/876",
+   "note": "same unchecked item of the open umbrella issue ty#876 (state as of 2026-11-05), mypy-only row: ty expands the Flag combination to Literal[F.R, F.W], derives combined.value as Literal[1, 2], so `assert combined.value == 3` narrows it to Never and the later call is unreachable for ty; mypy and pyright correctly reject passing the combined Flag to a Literal[F.R] parameter. ty is silent only because of the Flag expansion. Narrow AST matcher: the mypy message names a Flag/IntFlag class of the program and the statement uses a bitwise combination of two members of it. The entry steps aside when CPython raises a type-related exception in that statement. Verified on ty 0.0.84 and 0.0.97."
   }
  ],
  "prior_stances": [
