@@ -178,4 +178,4 @@ Broke / rough:
 - Whether ty's `Never` inference (descriptor, Flag) is one underlying bug or two.
 - The "first impression" column of section 3 comes from the triage text only; the programs were not read.
 - The Day-3 replay figures for Day 2 come from `day3-morning.md`; the Day-2 final figures come from `day2-run-report.md`.
-- pytest and kb-selftest were run at report time (before this file was added); they are re-run in the final verification below the log line.
+- Final verification: pytest passed 360 on 2 of 3 full runs. One full run had 1 failure, `tests/test_runner_timeout_kills_group.py::test_timeout_kills_grandchild`, and it passed 3/3 in isolation. Suspected cause (not confirmed): the test uses a 1 s timeout, so under full-suite load bash may be killed before it writes the pidfile. The test is from commit `032bf3d`; not changed here. kb-selftest: 20 PASS, 0 FAIL.
