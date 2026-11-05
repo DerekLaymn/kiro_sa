@@ -72,9 +72,13 @@ def blocking(problems: list[str]) -> bool:
 
 
 def generate(llm, area: str, brief: str, mutations: list, previous: str, avoid: list[str], target_python: str = "3.12",
-             retries: int = 1, seed: int = 0) -> tuple[str | None, dict]:
+             retries: int = 1, seed: int = 0, variant: tuple[int, int] | None = None) -> tuple[str | None, dict]:
+    """``variant=(k, n)`` (1-based k) adds a 'Variant k of n' line when n > 1, so the n prompts of one request differ in
+    their text and not only in the cache seed. n == 1 or ``None`` leaves the prompt exactly as before."""
     system = prompts.GENERATOR_SYSTEM.format(target_python=target_python, avoid="; ".join(avoid) or "(none)")
     user = prompts.GENERATOR_USER.format(area=area, brief=brief, mutations=mutations or "(none)", previous=previous or "")
+    if variant and variant[1] > 1:
+        user += prompts.GENERATOR_VARIANT.format(k=variant[0], n=variant[1])
     meta: dict = {}
     for _ in range(retries + 1):
         obj = complete_json(llm, system, user, lambda o: [] if isinstance(o, dict) and isinstance(o.get("source"), str) else ["need 'source'"],

@@ -337,6 +337,11 @@ Previous program (may be empty):
 ```
 """
 
+# appended to GENERATOR_USER only when a request asks for several variants (`generate --n N`, N > 1)
+GENERATOR_VARIANT = (
+    "\nVariant {k} of {n}: independent variants of this request are written separately; make this one differ from the others.\n"
+)
+
 # =====================================================================================
 # REPORTER
 # =====================================================================================

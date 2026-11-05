@@ -161,7 +161,8 @@ def cmd_generate(args) -> int:
             if args.max_llm_calls and llm.calls >= args.max_llm_calls:
                 print(f"stopping: LLM call budget reached ({llm.calls})")
                 return 0
-            src, meta = generate(llm, area, brief, mutations, previous, [], args.python_version, seed=k)
+            src, meta = generate(llm, area, brief, mutations, previous, [], args.python_version, seed=k,
+                                 variant=(k + 1, args.n))
             if not src:
                 print(f"  failed ({area}): {meta.get('preflight') or meta.get('error')}")
                 continue
