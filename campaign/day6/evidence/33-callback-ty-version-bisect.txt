@@ -1,0 +1,52 @@
+=== ty 0.0.84
+ty 0.0.84
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.85
+ty 0.0.85
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.86
+ty 0.0.86
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.87
+ty 0.0.87
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.88
+ty 0.0.88
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.89
+ty 0.0.89
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.90
+ty 0.0.90
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.91
+ty 0.0.91
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.92
+ty 0.0.92
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.93
+ty 0.0.93
+error[invalid-type-variable-default]: Type parameters with defaults cannot follow a TypeVarTuple parameter
+Found 1 diagnostic
+=== ty 0.0.94
+ty 0.0.94
+All checks passed!
+=== ty 0.0.95
+ty 0.0.95
+All checks passed!
+=== ty 0.0.96
+ty 0.0.96
+All checks passed!
+=== ty 0.0.97
+ty 0.0.97
+All checks passed!

@@ -1,0 +1,134 @@
+######## ty#3781
+Flag non-hashable objects as error in `set`/`dict`
+OPEN created 2026-06-16T19:05:06Z closed null
+https://github.com/astral-sh/ty/issues/3781
+### Summary
+
+`ty` does not flag when non-hashable objects are inserted into `set` or `dict` which causes runtime errors. Below is an example with `set`.
+
+Working example with a hashable object.
+
+[Playground Link](https://play.ty.dev/cfccd0e2-986c-47a2-bfff-15bc3d74cef3)
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class HashableObject:
+    content: str
+
+obj = HashableObject("content")
+print({obj})
+```
+
+Failing example with a non-hashable object where it fails during runtime:
+
+[Playground Link](https://play.ty.dev/f38c32dd-5de4-4e90-bca2-5d49f0e73408)
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class NonHashableObject:
+    content: str
+
+obj = NonHashableObject("content")
+print({obj})
+```
+
+runtime error:
+
+```text
+Failed to run Python script: PythonError: Traceback (most recent call last):
+  File "/lib/python313.zip/_pyodide/_base.py", line 523, in eval_code
+    .run(globals, locals)
+     ~~~^^^^^^^^^^^^^^^^^
+  File "/lib/python313.zip/_pyodide/_base.py", line 357, in run
+    coroutine = eval(self.code, globals, locals)
+  File "main.py", line 8, in <module>
+    print({obj})
+          ^^^^^
+TypeError: unhashable type: 'NonHashableObject'
+```
+
+Might be related to https://github.com/astral-sh/ty/issues/1162
+
+### Version
+
+4f7fc885d
+--- comments ---
+[sharkdp 2026-06-17T08:20:12Z] Thank you for reporting this.
+
+The [`set` constructor in typeshed](https://github.com/python/typeshed/blob/5e927a88f7c37b2592371a419cf4dd355a3ae4b7/stdlib/builtins.pyi#L1427-L1430) does not indicate that elements must be `Hashable`, so I guess that would have to be an explicit rule in ty?
+
+Flag non-hashable objects as error in `set`/`dict`
+OPEN created 2026-06-16T19:05:06Z closed null
+https://github.com/astral-sh/ty/issues/3781
+### Summary
+
+`ty` does not flag when non-hashable objects are inserted into `set` or `dict` which causes runtime errors. Below is an example with `set`.
+
+Working example with a hashable object.
+
+[Playground Link](https://play.ty.dev/cfccd0e2-986c-47a2-bfff-15bc3d74cef3)
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class HashableObject:
+    content: str
+
+obj = HashableObject("content")
+print({obj})
+```
+
+Failing example with a non-hashable object where it fails during runtime:
+
+[Playground Link](https://play.ty.dev/f38c32dd-5de4-4e90-bca2-5d49f0e73408)
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class NonHashableObject:
+    content: str
+
+obj = NonHashableObject("content")
+print({obj})
+```
+
+runtime error:
+
+```text
+Failed to run Python script: PythonError: Traceback (most recent call last):
+  File "/lib/python313.zip/_pyodide/_base.py", line 523, in eval_code
+    .run(globals, locals)
+     ~~~^^^^^^^^^^^^^^^^^
+  File "/lib/python313.zip/_pyodide/_base.py", line 357, in run
+    coroutine = eval(self.code, globals, locals)
+  File "main.py", line 8, in <module>
+    print({obj})
+          ^^^^^
+TypeError: unhashable type: 'NonHashableObject'
+```
+
+Might be related to https://github.com/astral-sh/ty/issues/1162
+
+### Version
+
+4f7fc885d
+--- comments ---
+
+######## grep __eq__ in PR 27441 diff
+######## grep __eq__ in PR 29471 diff
+######## grep __eq__ in PR 26040 comments/diff
+148:+    def __eq__(self, other: object, /) -> bool:
+157:+    def __eq__(self, other: object, /) -> bool:
+161:+    def __eq__(self, other: object, /) -> bool:
+420:-    def __eq__(self, other: object, /) -> bool:
+424:-    def __eq__(self, other: object, /) -> bool:
+613:+/// Defining `__eq__` without defining `__hash__` implicitly installs
+621:+///     def __eq__(self, other: object, /) -> bool: ...
+658:+            .own_class_member(db, None, "__eq__")
+######## search comments

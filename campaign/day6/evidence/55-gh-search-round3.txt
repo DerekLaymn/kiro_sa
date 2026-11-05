@@ -1,0 +1,105 @@
+######## PR 26040 closing
+- static_frame/core/node_fill_value.py:129:47 warning[unused-type-ignore-comment] Unused blanket `type: ignore` directive
+- static_frame/core/node_selector.py:456:39 error[invalid-argument-type] Argument to `InterGetItemLocReduces.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 16 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
++ static_frame/core/node_selector.py:456:39 error[invalid-argument-type] Argument to `InterGetItemLocReduces.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 17 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
+- static_frame/core/node_selector.py:492:32 error[invalid-argument-type] Argument to `InterGetItemLoc.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 16 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
++ static_frame/core/node_selector.py:492:32 error[invalid-argument-type] Argument to `InterGetItemLoc.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 17 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
+- static_frame/core/node_selector.py:536:39 error[invalid-argument-type] Argument to `InterGetItemLocReduces.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 16 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
++ static_frame/core/node_selector.py:536:39 error[invalid-argument-type] Argument to `InterGetItemLocReduces.__init__` is incorrect: Expected `(Hashable | int | integer[Any] | ... omitted 17 union elements, /) -> Unknown`, found `TLocSelectorFunc@__init__`
+- static_frame/test/unit/test_index_hierarchy.py:5020:13 error[unresolved-attribute] Attribute `tolist` is not defined on `Hashable`, `int`, `float`, `complex`, `str`, `bytes`, `date`, `tuple[Divergent, ...]` in union `Hashable | int | integer[Any] | ... omitted 10 union elements`
++ static_frame/test/unit/test_index_hierarchy.py:5020:13 error[unresolved-attribute] Attribute `tolist` is not defined on `Hashable`, `int`, `float`, `complex`, `Iterable[Hashable | int | integer[Any] | ... omitted 10 union elements]`, `tuple[Divergent, ...]`, `date` in union `Hashable | int | integer[Any] | ... omitted 10 union elements`
+xarray (https://github.com/pydata/xarray)
+- xarray/core/dataset.py:5432:34 error[invalid-argument-type] Argument expression after ** must be a mapping with `str` key type: Found `Hashable`
++ xarray/core/dataset.py:5432:34 error[invalid-argument-type] Argument expression after ** must be a mapping with `str` key type: Found `Hashable | Unknown`
+- xarray/core/dataset.py:6044:35 error[invalid-argument-type] Argument to bound method `Dataset.drop_vars` is incorrect: Expected `Iterable[Hashable] | ((Self@drop, /) -> Iterable[Hashable])`, found `Hashable | Mapping[Hashable, Unknown] | list[Hashable]`
++ xarray/core/dataset.py:6044:35 error[invalid-argument-type] Argument to bound method `Dataset.drop_vars` is incorrect: Expected `Iterable[Hashable] | ((Self@drop, /) -> Iterable[Hashable])`, found `Hashable | (Unknown & Iterable[object] & ~Top[dict[Unknown, Unknown]]) | Mapping[Hashable, Unknown] | list[Hashable]`
+- xarray/core/datatree.py:1564:16 error[invalid-return-type] Return type does not match returned value: expected `set[str]`, found `set[Hashable]`
++ xarray/core/datatree.py:1564:16 error[invalid-return-type] Return type does not match returned value: expected `set[str]`, found `set[Hashable | Unknown]`
+```
+</details>
+**[Full report with detailed diff](https://71123fe3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://71123fe3.ty-ecosystem-ext.pages.dev/timing))
+--
+author:	codspeed
+association:	none
+edited:	true
+status:	none
+--
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+## Merging this PR will **not alter performance**
+`✅ 71` untouched benchmarks  
+`⏩ 64` skipped benchmarks[^skipped]  
+---
+<sub>Comparing <code>charlie/fix-hashable-union-simplification</code> (12f478b) with <code>main</code> (444e2f4)</sub>
+<a href="https://app.codspeed.io/astral-sh/ruff/branches/charlie%2Ffix-hashable-union-simplification?utm_source=github&utm_medium=comment-v2&utm_content=button">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://codspeed.io/pr-report/open-in-codspeed-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://codspeed.io/pr-report/open-in-codspeed-light.svg">
+    <img alt="Open in CodSpeed" src="https://codspeed.io/pr-report/open-in-codspeed-light.svg" width="169" height="32">
+  </picture>
+</a>
+[^skipped]: 64 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://app.codspeed.io/astral-sh/ruff/branches/charlie%2Ffix-hashable-union-simplification?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
+--
+######## recent ruff PRs mentioning hash (merged after 2026-10-25)
+27636	MERGED	[ty] Add diagnostic baseline support
+######## recent ruff PRs ty hashable open
+29138	OPEN	[ty] Preserve local dictionary contents during keyword unpacking
+28473	OPEN	[ty] Preserve union alternatives during cycle normalization
+21786	OPEN	[ruff][ext-lint] 5: per-external-linter toml config
+27210	OPEN	[ty] narrow `TypeGuard` targets to an intersection of the previous type and the narrowed type to avoid unintended widening and for consistency with `TypeIs`
+28307	OPEN	[ty] Lazy evaluation of gradual constraints (v2)
+27598	OPEN	[ty] Fix `invalid-yield` false negatives by using constraint sets to infer the yield, send and return types of a generator function
+27665	OPEN	[ty] Collect type context from function calls during full-scope bidirectional inference
+24761	OPEN	[ty] Fix TODO for meta-type of intersections
+26680	OPEN	[ty] Solve generic call type context through constraint sets
+28089	OPEN	[ty] Use target type context for unpacked assignments
+29947	OPEN	[ty] Add separate rules for missing `return` statements and invalid return-type annotations for generator functions
+28783	OPEN	[ty] Enable `disjoint-cast` by default; move invariant specializations to `disjoint-cast-strict`
+29954	OPEN	[ty] Add an invalid-index-type diagnostic for subscripts
+29067	OPEN	[ty] Restrict gradual inferred types with validity constraints
+24736	OPEN	[ty] Top materialization issues (take 394)
+23969	OPEN	[ty] Use upper bounds for TypeVar materialization in generic classes
+27863	OPEN	[ty] Don't union inherited instance attributes over constructor overrides
+27942	OPEN	[ty] Reject failed calls during overload resolution
+19946	OPEN	[ty] Solve unbound typevar to Unknown & UpperBound
+26140	OPEN	[ty] Improve diagnostics for failed `__getitem__` calls
+######## ty open issues with eq
+4881	OPEN	Dataclass-synthesised __eq__ not counted as implementing an abstract __eq__ (call-non-callable)
+921	OPEN	No call signature checking for implicit calls to `__eq__` or `__ne__` methods
+3419	CLOSED	Consider allowing equality narrowing to ignore the possibility of a subclass overriding `__eq__`
+1454	CLOSED	Incorrect narrowing of enums with custom `__eq__` methods in `match` statements
+2140	CLOSED	assume in narrowing that tuple subclasses don't override `__eq__`
+1177	CLOSED	Changes to an enum's `__ne__` still affects the `__eq__` for type narrowing
+4748	CLOSED	False invalid-attribute-override when subclass restores __hash__ on a dataclass
+4157	CLOSED	Overriding `__hash__` does not make the object unhashable; `list` is also `Hashable`?
+4754	OPEN	false positive: tuples of Hashable-bounded type variables rejected as Hashable
+3781	OPEN	Flag non-hashable objects as error in `set`/`dict`
+4196	CLOSED	`Iterator[int]` not recognised as `Hashable`
+4022	CLOSED	`TypeVar` with `bound=Hashable` not working properly
+4157	CLOSED	Overriding `__hash__` does not make the object unhashable; `list` is also `Hashable`?
+3956	CLOSED	`Mapping[Hashable, ...]` and `Mapping[Any, ...]` behaves differently
+1162	CLOSED	Consider not treating `Hashable` as equivalent to `object` 
+1132	CLOSED	typing.Hashable | typing.Sequence[typing.Hashable] not matching ["x"] in ty==0.0.1a20
+######## mypy lists by title
+--- mypy issues: metaclass in:title operator
+4789	CLOSED	Variables declared as Type[Foo] doesn't support operators from Foo's metaclass
+4929	CLOSED	Metaclass operators not respected by TypeVar bounds
+--- mypy issues: reflected in:title
+9388	OPEN	__r<magic>__ methods for reflected (swapped) operands doesnt duck type int to float
+7086	CLOSED	Error when dynamically constructing classes from reflected metaclass
+--- mypy issues: __rmul__ in:title
+18498	CLOSED	Different overlap checking between `__mul__` and `__rmul__`
+1486	CLOSED	incorrect error about overlapping `__rmul__` with NamedTuple
+--- mypy issues: __ror__ in:title
+--- mypy issues: __radd__ in:title
+19006	CLOSED	Incorrect type inference with `__radd__` with subclass of `tuple[int, ...]`
+--- mypy issues: reverse operator in:title
+--- mypy issues: right operand in:title
+11888	OPEN	Non-overlapping identity check when left operand is not optional and right operand is None
+13233	OPEN	(🐞) No color on operator in "Unsupported right operand type" error message
+14120	CLOSED	error: Right operand of "or" is never evaluated - although it is evaluated at some point
+4954	CLOSED	'in' operator rejected with union right operand
+9197	CLOSED	Optional type incorrectly reporting Unsupported right operand type
+9306	CLOSED	Unsupported right operand type for in with __getitem__
+4055	CLOSED	Right 'is' operand not type checked
+6622	CLOSED	Union type incorrectly reporting Unsupported right operand type
+--- mypy issues: binary operator in:title metaclass

@@ -1,0 +1,7 @@
+--- class objects (meta_bug.py)
+covers_at_runtime(CallableType: def () -> meta_bug.B, CallableType: def () -> meta_bug.A) -> False
+covers_at_runtime(CallableType: def () -> meta_bug.B, CallableType: def () -> meta_bug.A) -> False
+covers_at_runtime(CallableType: def () -> meta_bug.B, CallableType: def () -> meta_bug.A) -> False
+covers_at_runtime(CallableType: def () -> meta_bug.B, CallableType: def () -> meta_bug.A) -> False
+meta_bug.py:18: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+meta_bug.py:19: error: Expression is of type "int", not "str"  [assert-type]

@@ -1,0 +1,259 @@
+################ /tmp/d6/cb/c0_orig.py
+--- CPython Python 3.13.16
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=0
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+cb/c0_orig.py:7: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy 2.4.1
+cb/c0_orig.py:7: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c0_orig.py:7: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c1_min_ps.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+cb/c1_min_ps.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy 2.4.1
+cb/c1_min_ps.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c1_min_ps.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c1b_decl_only.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+exit=0
+--- mypy 2.4.1
+exit=0
+--- mypy master 2.5.0+dev.879da562
+exit=0
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c2_typevar.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+error[invalid-type-variable-default]: TypeVars with defaults cannot follow a TypeVarTuple
+ --> cb/c2_typevar.py:1:17
+  |
+1 | class Pack[*Ts, T = int]: ...
+  |            ---  ^^^^^^^ `T` has a default
+  |            |
+  |            `Ts` is a TypeVarTuple
+info: Using the default would let the TypeVarTuple consume an extra positional type argument
+Found 1 diagnostic
+exit=1
+--- mypy 2.4.0
+cb/c2_typevar.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy 2.4.1
+cb/c2_typevar.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c2_typevar.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- pyright
+/tmp/d6/cb/c2_typevar.py
+  /tmp/d6/cb/c2_typevar.py:1:17 - error: TypeVar "T" has a default value and cannot follow TypeVarTuple "Ts" (reportGeneralTypeIssues)
+1 error, 0 warnings, 0 informations
+exit=1
+################ /tmp/d6/cb/c2b_typevar_decl.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+error[invalid-type-variable-default]: TypeVars with defaults cannot follow a TypeVarTuple
+ --> cb/c2b_typevar_decl.py:1:17
+  |
+1 | class Pack[*Ts, T = int]: ...
+  |            ---  ^^^^^^^ `T` has a default
+  |            |
+  |            `Ts` is a TypeVarTuple
+info: Using the default would let the TypeVarTuple consume an extra positional type argument
+Found 1 diagnostic
+exit=1
+--- mypy 2.4.0
+cb/c2b_typevar_decl.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy 2.4.1
+cb/c2b_typevar_decl.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c2b_typevar_decl.py:1: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- pyright
+/tmp/d6/cb/c2b_typevar_decl.py
+  /tmp/d6/cb/c2b_typevar_decl.py:1:17 - error: TypeVar "T" has a default value and cannot follow TypeVarTuple "Ts" (reportGeneralTypeIssues)
+1 error, 0 warnings, 0 informations
+exit=1
+################ /tmp/d6/cb/c3_oldstyle_ps.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+cb/c3_oldstyle_ps.py:10: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy 2.4.1
+cb/c3_oldstyle_ps.py:10: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c3_oldstyle_ps.py:10: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+exit=1
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c3b_oldstyle_tv.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+error[invalid-type-variable-default]: TypeVars with defaults cannot follow a TypeVarTuple
+ --> cb/c3b_oldstyle_tv.py:7:32
+  |
+7 | class Pack(Generic[Unpack[Ts], T]): ...
+  |                    ----------  ^ `T` has a default
+  |                    |
+  |                    `Ts` is a TypeVarTuple
+info: Using the default would let the TypeVarTuple consume an extra positional type argument
+Found 1 diagnostic
+exit=1
+--- mypy 2.4.0
+cb/c3b_oldstyle_tv.py:7: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy 2.4.1
+cb/c3b_oldstyle_tv.py:7: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c3b_oldstyle_tv.py:7: error: A type variable with default cannot follow TypeVarTuple  [type-var]
+exit=1
+--- pyright
+/tmp/d6/cb/c3b_oldstyle_tv.py
+  /tmp/d6/cb/c3b_oldstyle_tv.py:7:7 - error: TypeVar "T" has a default value and cannot follow TypeVarTuple "Ts" (reportGeneralTypeIssues)
+1 error, 0 warnings, 0 informations
+exit=1
+################ /tmp/d6/cb/c4_no_default_ps.py
+--- CPython Python 3.13.16
+exit=0
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+exit=0
+--- mypy 2.4.1
+exit=0
+--- mypy master 2.5.0+dev.879da562
+exit=0
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c5_default_before_tvt.py
+--- CPython Python 3.13.16
+  File "/tmp/d6/cb/c5_default_before_tvt.py", line 1
+    class Callback[**P = [bool], *Ts]: ...
+                                 ^^^
+SyntaxError: non-default type parameter 'Ts' follows default type parameter
+exit=1
+--- ty ty 0.0.97
+error[invalid-syntax]: non default type parameter `Ts` follows default type parameter
+ --> cb/c5_default_before_tvt.py:1:30
+  |
+1 | class Callback[**P = [bool], *Ts]: ...
+  |                              ^^^
+Found 1 diagnostic
+exit=1
+--- mypy 2.4.0
+cb/c5_default_before_tvt.py:1: error: "Ts" cannot appear after "P" in type parameter list because it has no default type  [misc]
+exit=1
+--- mypy 2.4.1
+cb/c5_default_before_tvt.py:1: error: "Ts" cannot appear after "P" in type parameter list because it has no default type  [misc]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c5_default_before_tvt.py:1: error: "Ts" cannot appear after "P" in type parameter list because it has no default type  [misc]
+exit=1
+--- pyright
+/tmp/d6/cb/c5_default_before_tvt.py
+  /tmp/d6/cb/c5_default_before_tvt.py:1:31 - error: "Ts" cannot appear after "P" in type parameter list because it has no default type (reportGeneralTypeIssues)
+1 error, 0 warnings, 0 informations
+exit=1
+################ /tmp/d6/cb/c6_default_ps_only_decl_use_bare.py
+--- CPython Python 3.13.16
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+exit=1
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+cb/c6_default_ps_only_decl_use_bare.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [valid-type]
+exit=1
+--- mypy 2.4.1
+cb/c6_default_ps_only_decl_use_bare.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [valid-type]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+cb/c6_default_ps_only_decl_use_bare.py:4: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [valid-type]
+exit=1
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0
+################ /tmp/d6/cb/c7_pack_default_after.py
+--- CPython Python 3.13.16
+exit=0
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+exit=0
+--- mypy 2.4.1
+exit=0
+--- mypy master 2.5.0+dev.879da562
+exit=0
+--- pyright
+0 errors, 0 warnings, 0 informations
+exit=0

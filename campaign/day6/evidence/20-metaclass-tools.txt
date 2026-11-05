@@ -1,0 +1,53 @@
+################ /tmp/d6/meta_bug.py
+--- CPython Python 3.13.16
+str
+exit=0
+--- ty ty 0.0.97
+All checks passed!
+exit=0
+--- mypy 2.4.0
+meta_bug.py:18: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+meta_bug.py:19: error: Expression is of type "int", not "str"  [assert-type]
+exit=1
+--- mypy 2.4.1
+meta_bug.py:18: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+meta_bug.py:19: error: Expression is of type "int", not "str"  [assert-type]
+exit=1
+--- mypy master 2.5.0+dev.879da562
+meta_bug.py:18: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+meta_bug.py:19: error: Expression is of type "int", not "str"  [assert-type]
+exit=1
+--- pyright
+/tmp/d6/meta_bug.py
+  /tmp/d6/meta_bug.py:18:10 - error: Type "int" is not assignable to declared type "str"
+    "int" is not assignable to "str" (reportAssignmentType)
+  /tmp/d6/meta_bug.py:19:13 - error: "assert_type" mismatch: expected "str" but received "int" (reportAssertTypeFailure)
+2 errors, 0 warnings, 0 informations
+exit=1
+################ /tmp/d6/meta_ctrl.py
+--- CPython Python 3.13.16
+str
+exit=0
+--- ty ty 0.0.97
+error[invalid-assignment]: Object of type `str | int` is not assignable to `str`
+  --> meta_ctrl.py:11:10
+   |
+11 | s: str = L() * R()   # no error, as it should be
+   |    ---   ^^^^^^^^^ Incompatible value of type `str | int`
+   |    |
+   |    Declared type
+info: element `int` of union `str | int` is not assignable to `str`
+Found 1 diagnostic
+exit=1
+--- mypy 2.4.0
+exit=0
+--- mypy 2.4.1
+exit=0
+--- mypy master 2.5.0+dev.879da562
+exit=0
+--- pyright
+/tmp/d6/meta_ctrl.py
+  /tmp/d6/meta_ctrl.py:11:10 - error: Type "int" is not assignable to declared type "str"
+    "int" is not assignable to "str" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+exit=1

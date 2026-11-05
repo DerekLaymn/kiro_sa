@@ -1,0 +1,25 @@
+branch: campaign/day5-p2
+== ty
+ty 0.0.97
+== mypy
+mypy 2.4.0 (compiled: yes)
+== pyright
+pyright 1.1.414
+/tmp/d3v-latest
+/tmp/d3v-master
+mypy 2.4.1 (compiled: yes)
+mypy 2.5.0+dev.879da562a4bba1ff8023799afad195bc364b730a (compiled: no)
+Python 3.13.16
+/usr/bin/python3
+/usr/bin/uv
+/usr/bin/gh
+github.com
+  ✓ Logged in to github.com account DerekLaymn (keyring)
+  - Active account: true
+runs/day5/out/seed-adbc14c6128a.json
+runs/day5/out/seed-adbc14c6128a.md
+runs/day5/replay/seed-adbc14c6128a.json
+runs/day5/replay/seed-adbc14c6128a.md
+runs/day5/out97/seed-adbc14c6128a.json
+runs/day5/out97/seed-adbc14c6128a.md
+ls: cannot access 'campaign/day6*': No such file or directory

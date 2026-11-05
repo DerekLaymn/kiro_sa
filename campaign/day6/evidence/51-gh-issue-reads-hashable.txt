@@ -1,0 +1,180 @@
+
+######## ISSUE astral-sh/ty#4157
+Overriding `__hash__` does not make the object unhashable; `list` is also `Hashable`?
+CLOSED created 2026-08-02T19:03:51Z closed 2026-08-05T18:01:02Z
+https://github.com/astral-sh/ty/issues/4157
+### Summary
+
+https://play.ty.dev/1a18dc5a-253d-4f33-a6ee-7faee6a4a5c1
+
+```py
+from collections.abc import Hashable
+from typing import ClassVar
+
+
+class DataFrame:
+    __hash__: ClassVar[None]
+
+def f(_: Hashable) -> None:
+    pass
+
+# ty is okay; mypy, pyright and pyrefly raise
+f(DataFrame())
+f(["1"])
+```
+
+### Version
+
+playground
+--- comments ---
+[carljm 2026-08-04T01:49:52Z] Currently we consider the type `Hashable` equivalent to the type `object`, which is technically correct, since `object` specifies a non-None `__hash__`, and thus it should be a Liskov violation to ever create a non-hashable Python object. But obviously this doesn't accommodate very well the reality of the (unsound) way that `Hashable` and hashability are used in real-world Python type annotations.
+
+I think we should not consider `Hashable` equivalent to `object`, and we should actually validate the `__hash__` type of the provided type against `Hashable`.
+
+######## ISSUE astral-sh/ty#4196
+`Iterator[int]` not recognised as `Hashable`
+CLOSED created 2026-08-05T20:34:57Z closed 2026-08-05T21:43:00Z
+https://github.com/astral-sh/ty/issues/4196
+### Summary
+
+- https://play.ty.dev/13380319-febd-421a-9540-ce987c4bbc9c
+- https://pyrefly.org/sandbox/?project=v2.lVVBboMwEPzKqjlgWoJL1RMPqHrs3eWAUgSWmoCwqZJD_95Zg8GoSZRckGV21-uZ2fEdlvnoBcqlxTEH_NbrZdLKkZ4o47DAk4QLf32JQcp_zDb0MW7QdDzcAmDXAzwJIKafhw3sqKLG2s7kUvr0tq9ldZBf7c7IVYYklkf5U2rndOty1DqODcqeJyu7iaxo5Cq6RlXETCFirw0Grd6aoav67Q4iwk8LWQKLBXHtIb9g3Mvz8V6ahi-2-Bmb4FuP0Vk5mqksTwJMbe1bCaHNnOwAC1TmW4c1i9n7_HkKHAMHTl5mmdIUADIz-1N3IlwCShmHJqGJILeLta4b9nOetLlPEadhf8J1Ibg0HtL5Gyc83L1Qz0WMtcoKCCioofIgoACoiIDCLotdP_z-AQ
+- https://pyright-play.net/?code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgGUkBHAVySxiQBooAJAnABbFkAKBEx4-HFAAiBVAQBiIAhCQAuEVG1QAJkmBQA%2BkZxIMqJBBMAKLTodn4wbgGskAT3VRUzCsgBtHHh0Dm4%2BQWEkAF1uADcCeFZvBhY2DgD0LFRo%2B20ASigAWgA%2BKAA5bA0oPFqxAGIoCA8KDygCLF0fNqQQcBBuVpADeDaOrqH0AHMBWgopETkFZVUkG3y8EzMLK1sbYNC1yqwuCqruY6R87nRLEBsAgAZo-OuoAIBGF8X5JRU1dYBdQ3O4PZ75aJQAC87y%2BIiAA
+- https://mypy-play.net/?gist=71aba787eb6f23212e1fd4e0a63cf86f
+
+```py
+from collections.abc import Sequence, Hashable
+
+class DataFrame:
+    def __setitem__(
+        self, key: tuple[slice, Hashable], value: Sequence[int]
+    ) -> None: ...
+
+# mypy and ty error, pyrefly and pyright pass
+DataFrame().__setitem__((slice(None, None, None), iter([0])), [1])
+DataFrame()[:, iter([0])] = [1]
+```
+
+### Version
+
+playground
+--- comments ---
+[carljm 2026-08-05T21:43:00Z] I think mypy and ty are correct here; pyright and pyrefly are wrong.
+
+`Iterator` (in typeshed) is a protocol. The protocol includes no hashability requirement. That means that both hashable and non-hashable iterators are assignable to `Iterator`. It's easy to create a non-hashable iterator:
+
+```py
+class UnhashableIterator:
+    __hash__: ClassVar[None] = None
+
+    def __iter__(self) -> Self:
+        return self
+
+    def __next__(self) -> int:
+        return 0
+
+######## PR astral-sh/ruff#27441
+[ty] Reject unhashable objects for Hashable protocols
+MERGED merged 2026-08-05T18:01:00Z
+https://github.com/astral-sh/ruff/pull/27441
+## Summary
+
+- Stop treating protocols that explicitly require `__hash__` as equivalent to `object`, because (even though it's not Liskov sound) subclasses disable hashing with `__hash__ = None`.
+- Reject unhashable classes, built-in containers, and mutable dataclasses for both standard-library `Hashable` spellings and equivalent user-defined protocols.
+- Preserve meaningful `Hashable | T` union members while keeping hashable `object()` sentinel values assignable to hash protocols.
+- Adjust pandas and static-frame benchmark diagnostic ceilings for newly surfaced hashability errors.
+
+Closes https://github.com/astral-sh/ty/issues/4157
+
+## Test plan
+
+- Added mdtests covering annotation-only and assigned `ClassVar[None]`, inherited and final unhashable classes, `list`/`dict`/`set`, both `Hashable` imports, equivalent custom protocols, mutable versus frozen dataclasses, valid hashable values, `object()` sentinel defaults, and explicit assignability/subtyping checks.
+- Updated existing mdtests for `object` non-equivalence and preservation of unions containing final unhashable classes, mutable dataclasses, type variables, and protocols.
+
+
+######## PR astral-sh/ruff#29471
+[ty] Allow subclasses to restore hashability
+MERGED merged 2026-10-19T21:12:34Z
+https://github.com/astral-sh/ruff/pull/29471
+Allow subclasses to disable or restore hashing regardless of an ancestor's hash definition. Validate each `__hash__` against the bound signature of `object.__hash__` or `None`, rejecting incompatible signatures and non-callable values.
+
+Hash definitions do not inherit ancestor type annotations. Final methods and variables still cannot be overridden.
+
+Closes astral-sh/ty#4748.
+
+## Test plan
+
+Manually verified that instance-only hash assignments neither invalidate a valid class hash nor hide an invalid one, that a descriptor can supply a valid hash callable, and that an annotated invalid hash produces one diagnostic.
+
+## Ecosystem report
+
+For head [`a1839e7d9c7a90adbe11420896f3f3545971de0e`](https://github.com/astral-sh/ruff/commit/a1839e7d9c7a90adbe11420896f3f3545971de0e), 22 hash-override diagnostics disappear, 10 existing diagnostic messages change, and SymPy gains one unused-ignore warning. All changes match the intended behavior; no ecosystem regressions were found. [Full analysis](https://github.com/astral-sh/ruff/pull/29471#issuecomment-6260317360).
+
+
+######## PR astral-sh/ruff#26040
+[ty] Model hashability for union simplification
+CLOSED merged null
+https://github.com/astral-sh/ruff/pull/26040
+## Summary
+
+Today, ty effectively treats every type as assignable to `Hashable`, because `object` defines `__hash__`. Normal union simplification would therefore reduce `Hashable | T` to `Hashable` for any `T`. To avoid discarding types that may contain unhashable values, `main` has a narrow exception that preserves `T` when it is a non-final nominal class, since subclasses can disable hashing.
+
+This branch broadens that exception. Finality only tells us whether a class can be subclassed; it does not establish whether its instances are hashable. A final class can explicitly set `__hash__ = None`, implicitly disable hashing by defining `__eq__`, or inherit either behavior from a base class:
+
+```python
+from typing import Hashable, final
+
+@final
+class Unhashable:
+    def __eq__(self, other: object, /) -> bool: ...
+
+def f(value: Hashable | Unhashable) -> None:
+    reveal_type(value)  # Hashable | Unhashable
+```
+
+This replaces the finality heuristic with a conservative `Always` / `Never` / `Maybe` hashability model. Nominal classes use their effective `__hash__` slot across the MRO, including implicit cancellation and synthesized dataclass members, while TypeVars, TypedDicts, literals, aliases, and structural protocols receive corresponding classifications.
+
+Union normalization now removes the other arm only when every represented value is known to be hashable. The shared pair-preservation hook applies the rule consistently to ordinary and literal union elements, while `object` and exact complements retain their existing universal-union behavior.
+
+
+######## ISSUE python/mypy#5491
+Clean up kludges for handling metaclasses and Type[...] in check_op_reversible
+CLOSED created 2018-08-16T20:19:58Z closed 2025-06-09T14:35:54Z
+https://github.com/python/mypy/issues/5491
+The [current implementation for checking reversible operators][0] contains two kludges that seem to be related to operators, metaclasses, and Type[...]
+
+1. This call to [has_member][1] feels like it ought to be unnecessary/redundant due to the following `analyze_member_access` -- but removing it causes pythoneval's [OpMetaclassAccess](https://github.com/python/mypy/blob/master/test-data/unit/pythoneval.test#L1159) test case to fail.
+
+    (Note: if you remove just that call, you also need to add in a `elif isinstance(member, AnyTyp): return None` after calling `analyze_member_access`)
+
+2. If the reversible operators logic was unable to find a matching operator, it just [tries calling `check_call` on the name directly][2] to get back some generic error message. It seems as if this call ought to always return an error message, but sometimes it surprisingly will not. E.g. see the [TypeTypeComparisonWorks](https://github.com/python/mypy/blob/master/test-data/unit/check-classes.test#L3251) tests in check-classes -- adding an `assert local_errors.is_errors()` causes that test case to crash.
+
+    This feels related to the first TODO in some way -- either we're not handling operators + metaclasses + Type directly, or there are some weird shenanigans happening due to `Any`...
+
+For additional context, see https://github.com/python/mypy/issues/5136 and https://github.com/python/mypy/pull/1806.
+
+  [0]:https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L1848
+  [1]: https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L1879
+  [2]: https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L2020
+--- comments ---
+[elazarg 2018-08-17T18:31:52Z] I should work on this, if I will find the time. 
+Clean up kludges for handling metaclasses and Type[...] in check_op_reversible
+CLOSED created 2018-08-16T20:19:58Z closed 2025-06-09T14:35:54Z
+https://github.com/python/mypy/issues/5491
+The [current implementation for checking reversible operators][0] contains two kludges that seem to be related to operators, metaclasses, and Type[...]
+
+1. This call to [has_member][1] feels like it ought to be unnecessary/redundant due to the following `analyze_member_access` -- but removing it causes pythoneval's [OpMetaclassAccess](https://github.com/python/mypy/blob/master/test-data/unit/pythoneval.test#L1159) test case to fail.
+
+    (Note: if you remove just that call, you also need to add in a `elif isinstance(member, AnyTyp): return None` after calling `analyze_member_access`)
+
+2. If the reversible operators logic was unable to find a matching operator, it just [tries calling `check_call` on the name directly][2] to get back some generic error message. It seems as if this call ought to always return an error message, but sometimes it surprisingly will not. E.g. see the [TypeTypeComparisonWorks](https://github.com/python/mypy/blob/master/test-data/unit/check-classes.test#L3251) tests in check-classes -- adding an `assert local_errors.is_errors()` causes that test case to crash.
+
+    This feels related to the first TODO in some way -- either we're not handling operators + metaclasses + Type directly, or there are some weird shenanigans happening due to `Any`...
+
+For additional context, see https://github.com/python/mypy/issues/5136 and https://github.com/python/mypy/pull/1806.
+
+  [0]:https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L1848
+  [1]: https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L1879
+  [2]: https://github.com/python/mypy/blob/master/mypy/checkexpr.py#L2020
+--- comments ---
+[Michael0x2a 2018-08-17T19:47:39Z] @elazarg -- sounds good to me! 
