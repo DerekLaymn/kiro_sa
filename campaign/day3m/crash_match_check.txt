@@ -1,0 +1,8 @@
+d3p_crash_ty_stack_overflow_protocol_flatten.py | replay source -> None | hits file -> None
+   replay crashes: ['ty:signal-SIGABRT:stack-overflow'] | replay findings: [('C1', 'confirmed', None, 'rule:crash:signal')]
+d3p_crash_mypy_segv_recursive_tvt_default_alias.py | replay source -> None | hits file -> None
+   replay crashes: ['mypy:signal-SIGSEGV'] | replay findings: [('C1', 'confirmed', None, 'rule:crash:signal')]
+d3p_crash_ty_panic_partial_or_none_in_loop.py | replay source -> None | hits file -> None
+   replay crashes: ['ty:panic@/root/.cargo/registry/src/index.crates.io'] | replay findings: [('C1', 'confirmed', None, 'rule:crash:panic')]
+d3p_crash_ty_timeout_typeis_generic_in_loop.py | replay source -> None | hits file -> None
+   replay crashes: ['ty:timeout'] | replay findings: [('C1', 'confirmed', None, 'rule:crash:timeout')]

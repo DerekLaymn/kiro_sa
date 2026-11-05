@@ -1,0 +1,303 @@
+====================================================================================================
+seed-0aa2461b8e0e origin=seed seeds/harvested/enums_literals/ty__enums__1.py ['area=enums_literals']
+# area: enums_literals
+# origin: ruff mdtest enums.md block 1
+from enum import IntEnum, auto
+from typing import Literal
+
+class Integer(IntEnum):
+    ONE = 1
+    TRUE = True
+    TWO = 2
+
+reveal_type(Integer.ONE.value)  # revealed: Literal[1]
+reveal_type(Integer.ONE._value_)  # revealed: Literal[1]
+reveal_type(Integer.TRUE.value)  # revealed: Literal[1]
+reveal_type(Integer.TRUE)  # revealed: Literal[Integer.ONE]
+
+def _(value: Integer):
+    reveal_type(value.value)  # revealed: int
+
+class ConvertedGenerated(IntEnum):
+    @staticmethod
+    def _generate_next_value_(name, start, count, last_values) -> Literal["1"]:
+        return "1"
+
+    ONE = auto()
+
+reveal_type(ConvertedGenerated.ONE.value)  # revealed: int
+
+-- runtime: success None  line None
+-- live D1 reveal_mismatch L13 reveal_type(Integer.TRUE.value)  # revealed: Literal[1]
+     mypy: {'tool': 'mypy', 'line': 13, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[True]?"', 'end_line': 13, 'end_col': 30, 'revealed_type': 'Literal[True]?', 'anchor': 13
+     ty: {'tool': 'ty', 'line': 13, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[1]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[1]', 'anchor':
+     pyright: {'tool': 'pyright', 'line': 13, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "Integer.TRUE.value" is "Literal[True]"', 'end_line': 13, 'end_col': 31, 'revealed_type': 'Literal[True
+-- live D2 reveal_mismatch L14 reveal_type(Integer.TRUE)  # revealed: Literal[Integer.ONE]
+     mypy: {'tool': 'mypy', 'line': 14, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[case.Integer.TRUE]?"', 'end_line': 14, 'end_col': 24, 'revealed_type': 'Literal[case.Int
+     ty: {'tool': 'ty', 'line': 14, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[Integer.ONE]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[Inte
+     pyright: {'tool': 'pyright', 'line': 14, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "Integer.TRUE" is "Literal[Integer.TRUE]"', 'end_line': 14, 'end_col': 25, 'revealed_type': 'Literal[In
+-- live D3 reveal_mismatch L26 reveal_type(ConvertedGenerated.ONE.value)  # revealed: int
+     mypy: {'tool': 'mypy', 'line': 26, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[\'1\']"', 'end_line': 26, 'end_col': 40, 'revealed_type': "Literal['1']", 'anchor': 26, 
+     ty: {'tool': 'ty', 'line': 26, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `int`', 'end_line': None, 'end_col': None, 'revealed_type': 'int', 'anchor': 26, 'raw': 'c
+     pyright: {'tool': 'pyright', 'line': 26, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "ConvertedGenerated.ONE.value" is "Literal[\'1\']"', 'end_line': 26, 'end_col': 41, 'revealed_type': "L
+====================================================================================================
+seed-83ecc5833a87 origin=seed seeds/harvested/overloads/mypy__check_classes__testOverloadedNewAndInitNoReturn.py ['area=overloads']
+# area: overloads
+# origin: python/mypy check-classes.test [case testOverloadedNewAndInitNoReturn]
+from typing import NoReturn, overload
+
+class A:
+    @overload
+    def __new__(cls) -> NoReturn: ...
+    @overload
+    def __new__(cls, a: int) -> "A": ...
+    def __new__(cls, a: int = ...) -> "A": ...
+
+class B:
+    @overload
+    def __init__(self) -> NoReturn: ...
+    @overload
+    def __init__(self, a: int) -> None: ...
+    def __init__(self, a: int = ...) -> None: ...
+
+class C:
+    def __new__(cls, a: int = ...) -> "C": ...
+    @overload
+    def __init__(self) -> NoReturn: ...
+    @overload
+    def __init__(self, a: int) -> None: ...
+    def __init__(self, a: int = ...) -> None: ...
+
+class D:
+    @overload
+    def __new__(cls) -> NoReturn: ...
+    @overload
+    def __new__(cls, a: int) -> "D": ...
+    def __new__(cls, a: int = ...) -> "D": ...
+    @overload
+    def __init__(self) -> NoReturn: ...
+    @overload
+    def __init__(self, a: int) -> None: ...
+    def __init__(self, a: int = ...) -> None: ...
+
+if object():
+    reveal_type(A())  # N: Revealed type is "Never"
+reveal_type(A(1))  # N: Revealed type is "__main__.A"
+
+if object():
+    reveal_type(B())  # N: Revealed type is "Never"
+reveal_type(B(1))  # N: Revealed type is "__main__.B"
+
+if object():
+    reveal_type(C())  # N: Revealed type is "Never"
+reveal_type(C(1))  # N: Revealed type is "__main__.C"
+
+if object():
+    reveal_type(D())  # N: Revealed type is "Never"
+reveal_type(D(1))  # N: Revealed type is "__main__.D"
+
+
+-- runtime: success None  line None
+-- live D1 only_ty L10 def __new__(cls, a: int = ...) -> "A": ...
+     ty: {'tool': 'ty', 'line': 10, 'col': 22, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D2 only_ty L17 def __init__(self, a: int = ...) -> None: ...
+     ty: {'tool': 'ty', 'line': 17, 'col': 24, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D3 only_ty L20 def __new__(cls, a: int = ...) -> "C": ...
+     ty: {'tool': 'ty', 'line': 20, 'col': 22, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D4 only_ty L25 def __init__(self, a: int = ...) -> None: ...
+     ty: {'tool': 'ty', 'line': 25, 'col': 24, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D5 only_ty L32 def __new__(cls, a: int = ...) -> "D": ...
+     ty: {'tool': 'ty', 'line': 32, 'col': 22, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D6 only_ty L37 def __init__(self, a: int = ...) -> None: ...
+     ty: {'tool': 'ty', 'line': 37, 'col': 24, 'severity': 'error', 'code': 'invalid-parameter-default', 'message': 'Default value of type `EllipsisType` is not assignable to annotated parameter type `int`', '
+-- live D7 reveal_mismatch L44 reveal_type(B())  # N: Revealed type is "Never"
+     mypy: {'tool': 'mypy', 'line': 44, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Never"', 'end_line': 44, 'end_col': 19, 'revealed_type': 'Never', 'anchor': 44, 'raw': 'case.py:
+     ty: {'tool': 'ty', 'line': 44, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `B`', 'end_line': None, 'end_col': None, 'revealed_type': 'B', 'anchor': 44, 'raw': 'case.
+     pyright: {'tool': 'pyright', 'line': 44, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "B()" is "B"', 'end_line': 44, 'end_col': 20, 'revealed_type': 'B', 'anchor': 44, 'raw': '{"file": "/tm
+-- live D8 reveal_mismatch L48 reveal_type(C())  # N: Revealed type is "Never"
+     mypy: {'tool': 'mypy', 'line': 48, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Never"', 'end_line': 48, 'end_col': 19, 'revealed_type': 'Never', 'anchor': 48, 'raw': 'case.py:
+     ty: {'tool': 'ty', 'line': 48, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `C`', 'end_line': None, 'end_col': None, 'revealed_type': 'C', 'anchor': 48, 'raw': 'case.
+     pyright: {'tool': 'pyright', 'line': 48, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "C()" is "C"', 'end_line': 48, 'end_col': 20, 'revealed_type': 'C', 'anchor': 48, 'raw': '{"file": "/tm
+====================================================================================================
+seed-0bf204fff13b origin=seed seeds/harvested/gradual_any/ty__class__slots__16.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest class/slots.md block 16
+class StringSlots:
+    __slots__ = "value"
+
+reveal_type(StringSlots().value)  # revealed: Unknown
+
+-- runtime: exception AttributeError 'StringSlots' object has no attribute 'value' line 6
+-- live D1 only_mypy L6 reveal_type(StringSlots().value)  # revealed: Unknown
+     mypy: {'tool': 'mypy', 'line': 6, 'col': 13, 'severity': 'error', 'code': 'attr-defined', 'message': '"StringSlots" has no attribute "value"', 'end_line': 6, 'end_col': 31, 'revealed_type': None, 'anchor': 
+====================================================================================================
+seed-1cadfac7cbe5 origin=seed seeds/harvested/constructors_metaclasses/pyright__metaclass9.py ['area=constructors_metaclasses']
+# area: constructors_metaclasses
+# origin: microsoft/pyright tests/samples/metaclass9.py
+# This sample tests the handling of metaclass keyword arguments.
+
+from typing import Any, TypeVar
+
+T = TypeVar("T")
+
+
+class Meta1(type):
+    def __new__(
+        cls: type[T],
+        cls_name: str,
+        bases: tuple[type, ...],
+        attrs: dict[str, Any],
+        *,
+        param1: int,
+        param2: str,
+        param3: str = "",
+    ) -> T: ...
+
+
+class Class1_1(metaclass=Meta1, param1=1, param2="", param3=""): ...
+
+
+class Class1_2(metaclass=Meta1, param2="", param1=1): ...
+
+
+# This should generate an error because param1 is the wrong type.
+class Class1_3(metaclass=Meta1, param1="", param2=""): ...
+
+
+# This should generate an error because param1 and param2 are missing.
+class Class1_4(metaclass=Meta1): ...
+
+
+# This should generate an error because param4 doesn't exist.
+class Class1_5(metaclass=Meta1, param2="", param1=1, param4=3): ...
+
+
+class Meta2(type):
+    def __new__(
+        cls: type[T],
+        cls_name: str,
+        bases: tuple[type, ...],
+        attrs: dict[str, Any],
+        *,
+        param1: int,
+        **kwargs: str,
+    ) -> T: ...
+
+
+class Class2_1(metaclass=Meta2, param1=1, param2="", param3=""): ...
+
+
+class Class2_2(metaclass=Meta2, param2="", param1=1, param20=""): ...
+
+
+# This should generate an error because param1 is the wrong type.
+class Class2_3(metaclass=Meta2, param1="", param2=""): ...
+
+
+# This should generate an error because param1 is missing.
+class Class2_4(metaclass=Meta2): ...
+
+
+# This should generate an error because param4 is the wrong type.
+class Class2_5(metaclass=Meta2, param2="", param1=1, param4=3): ...
+
+-- runtime: exception TypeError Meta1.__new__() missing 2 required keyword-only arguments: 'param1' and 'param2' line 34
+-- live D1 only_mypy L11 def __new__(
+     mypy: {'tool': 'mypy', 'line': 11, 'col': 5, 'severity': 'error', 'code': 'empty-body', 'message': 'Missing return statement', 'end_line': 20, 'end_col': 15, 'revealed_type': None, 'anchor': 11, 'raw': 'cas
+-- live D2 only_ty L20 ) -> T: ...
+     ty: {'tool': 'ty', 'line': 20, 'col': 10, 'severity': 'error', 'code': 'empty-body', 'message': 'Function always implicitly returns `None`, which is not assignable to return type `T@__new__`', 'end_line':
+-- live D3 only_mypy L42 def __new__(
+     mypy: {'tool': 'mypy', 'line': 42, 'col': 5, 'severity': 'error', 'code': 'empty-body', 'message': 'Missing return statement', 'end_line': 50, 'end_col': 15, 'revealed_type': None, 'anchor': 42, 'raw': 'cas
+-- live D4 only_ty L50 ) -> T: ...
+     ty: {'tool': 'ty', 'line': 50, 'col': 10, 'severity': 'error', 'code': 'empty-body', 'message': 'Function always implicitly returns `None`, which is not assignable to return type `T@__new__`', 'end_line':
+-- live D5 runtime_miss L34 class Class1_4(metaclass=Meta1): ...
+     pyright: {'tool': 'pyright', 'line': 34, 'col': 7, 'severity': 'error', 'code': 'reportGeneralTypeIssues', 'message': 'Arguments missing for parameters "param1", "param2"', 'end_line': 34, 'end_col': 15, 'reve
+====================================================================================================
+seed-46c5ca8ecf21 origin=seed seeds/harvested/constructors_metaclasses/pyright__metaclass2.py ['area=constructors_metaclasses']
+# area: constructors_metaclasses
+# origin: microsoft/pyright tests/samples/metaclass2.py
+# This sample verifies that the type checker allows access
+# to class variables provided by a metaclass.
+
+from enum import Enum
+from typing import Mapping
+
+
+class Fruit(Enum):
+    apple = 1
+    orange = 2
+    pear = 3
+
+
+def requires_fruit_mapping(a: Mapping[str, Fruit]):
+    pass
+
+
+requires_fruit_mapping(Fruit.__members__)
+
+aaa = len(Fruit)
+
+for i in Fruit:
+    print(i)
+
+
+class Meta(type):
+    inst_var1: int
+
+    def __init__(self):
+        self.inst_var1 = 1
+
+    def method1(cls, some_param: str):
+        pass
+
+
+class MyClass1(metaclass=Meta):
+    pass
+
+
+MyClass1.method1("some argument")
+reveal_type(MyClass1.inst_var1, expected_text="int")
+
+
+class MyClass2(metaclass=Meta):
+    # This should generate an error
+    inst_var1 = ""
+
+
+class MyClass3(metaclass=Meta):
+    def __init__(self):
+        # This should generate an error
+        self.inst_var1 = ""
+
+-- runtime: exception TypeError Meta.__init__() takes 1 positional argument but 4 were given line 38
+-- live D1 only_ty L48 inst_var1 = ""
+     ty: {'tool': 'ty', 'line': 48, 'col': 5, 'severity': 'error', 'code': 'invalid-assignment', 'message': 'Object of type `Literal[""]` is not assignable to attribute `inst_var1` of type `int`', 'end_line': 
+     pyright: {'tool': 'pyright', 'line': 48, 'col': 17, 'severity': 'error', 'code': 'reportAssignmentType', 'message': 'Type "Literal[\'\']" is not assignable to declared type "int"', 'end_line': 48, 'end_col': 1
+-- live D2 runtime_miss L38 class MyClass1(metaclass=Meta):
+====================================================================================================
+seed-6ea899562c8c origin=seed seeds/harvested/gradual_any/ty__assignment__augmented__0.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest assignment/augmented.md block 0
+x = 3
+x -= 1
+reveal_type(x)  # revealed: Literal[2]
+
+x = 1.0
+x /= 2
+reveal_type(x)  # revealed: float
+
+x = (1, 2)
+x += (3, 4)
+reveal_type(x)  # revealed: tuple[Literal[1], Literal[2], Literal[3], Literal[4]]
+
+-- runtime: success None  line None
+-- live D4 only_mypy L12 x += (3, 4)
+     mypy: {'tool': 'mypy', 'line': 12, 'col': 6, 'severity': 'error', 'code': 'operator', 'message': 'Unsupported operand types for + ("int" and "tuple[int, int]")', 'end_line': 12, 'end_col': 11, 'revealed_typ
+-- live D6 reveal_mismatch L9 reveal_type(x)  # revealed: float
+     mypy: {'tool': 'mypy', 'line': 9, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "int"', 'end_line': 9, 'end_col': 13, 'revealed_type': 'int', 'anchor': 9, 'raw': 'case.py:9:13:9:
+     ty: {'tool': 'ty', 'line': 9, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `float`', 'end_line': None, 'end_col': None, 'revealed_type': 'float', 'anchor': 9, 'raw': 
+     pyright: {'tool': 'pyright', 'line': 9, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "x" is "float"', 'end_line': 9, 'end_col': 14, 'revealed_type': 'float', 'anchor': 9, 'raw': '{"file": "
+-- live D7 reveal_mismatch L13 reveal_type(x)  # revealed: tuple[Literal[1], Literal[2], Literal[3], Literal[4]
+     mypy: {'tool': 'mypy', 'line': 13, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "int"', 'end_line': 13, 'end_col': 13, 'revealed_type': 'int', 'anchor': 13, 'raw': 'case.py:13:1
+     ty: {'tool': 'ty', 'line': 13, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `tuple[Literal[1], Literal[2], Literal[3], Literal[4]]`', 'end_line': None, 'end_col': Non
+     pyright: {'tool': 'pyright', 'line': 13, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "x" is "tuple[Literal[1], Literal[2], Literal[3], Literal[4]]"', 'end_line': 13, 'end_col': 14, 'reveal

@@ -1,0 +1,322 @@
+====================================================================================================
+seed-bcd8afd96f79 origin=seed seeds/harvested/gradual_any/ty__decorators__total_ordering__8.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest decorators/total_ordering.md block 8
+from functools import total_ordering
+from typing import Literal
+
+class Base:
+    def __lt__(self, other: "Base") -> Literal[True]:
+        return True
+
+@total_ordering
+class Child(Base):
+    # __gt__ is defined locally, but __lt__ (inherited) takes precedence
+    def __gt__(self, other: "Child") -> Literal[False]:
+        return False
+
+c1 = Child()
+c2 = Child()
+
+# __lt__ is inherited from Base
+reveal_type(c1 < c2)  # revealed: Literal[True]
+
+# __gt__ is defined locally on Child
+reveal_type(c1 > c2)  # revealed: Literal[False]
+
+# __le__ and __ge__ are synthesized from __lt__ (the highest-priority method),
+# even though __gt__ is defined locally on the class itself
+reveal_type(c1 <= c2)  # revealed: bool
+reveal_type(c1 >= c2)  # revealed: bool
+
+-- runtime: success None  line None
+-- live D1 reveal_mismatch L20 reveal_type(c1 < c2)  # revealed: Literal[True]
+     mypy: {'tool': 'mypy', 'line': 20, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[False]"', 'end_line': 20, 'end_col': 19, 'revealed_type': 'Literal[False]', 'anchor': 20
+     ty: {'tool': 'ty', 'line': 20, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[True]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[True]', 'an
+     pyright: {'tool': 'pyright', 'line': 20, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "c1 < c2" is "Literal[True]"', 'end_line': 20, 'end_col': 20, 'revealed_type': 'Literal[True]', 'anchor
+-- live D2 reveal_mismatch L23 reveal_type(c1 > c2)  # revealed: Literal[False]
+     mypy: {'tool': 'mypy', 'line': 23, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[True]"', 'end_line': 23, 'end_col': 19, 'revealed_type': 'Literal[True]', 'anchor': 23, 
+     ty: {'tool': 'ty', 'line': 23, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[False]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[False]', '
+     pyright: {'tool': 'pyright', 'line': 23, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "c1 > c2" is "Literal[False]"', 'end_line': 23, 'end_col': 20, 'revealed_type': 'Literal[False]', 'anch
+-- live D3 reveal_mismatch L27 reveal_type(c1 <= c2)  # revealed: bool
+     mypy: {'tool': 'mypy', 'line': 27, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Any"', 'end_line': 27, 'end_col': 20, 'revealed_type': 'Any', 'anchor': 27, 'raw': 'case.py:27:1
+     ty: {'tool': 'ty', 'line': 27, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `bool`', 'end_line': None, 'end_col': None, 'revealed_type': 'bool', 'anchor': 27, 'raw': 
+     pyright: {'tool': 'pyright', 'line': 27, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "c1 <= c2" is "bool"', 'end_line': 27, 'end_col': 21, 'revealed_type': 'bool', 'anchor': 27, 'raw': '{"
+-- live D4 reveal_mismatch L28 reveal_type(c1 >= c2)  # revealed: bool
+     mypy: {'tool': 'mypy', 'line': 28, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Any"', 'end_line': 28, 'end_col': 20, 'revealed_type': 'Any', 'anchor': 28, 'raw': 'case.py:28:1
+     ty: {'tool': 'ty', 'line': 28, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `bool`', 'end_line': None, 'end_col': None, 'revealed_type': 'bool', 'anchor': 28, 'raw': 
+     pyright: {'tool': 'pyright', 'line': 28, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "c1 >= c2" is "bool"', 'end_line': 28, 'end_col': 21, 'revealed_type': 'bool', 'anchor': 28, 'raw': '{"
+====================================================================================================
+seed-d68de70a95aa origin=seed seeds/harvested/gradual_any/ty__binary__instances__9.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest binary/instances.md block 9
+from typing import Literal
+
+class LeftMeta(type):
+    def __add__(cls, other: object) -> Literal["left"]:
+        return "left"
+
+class RightMeta(LeftMeta):
+    def __radd__(cls, other: object) -> Literal["right"]:
+        return "right"
+
+class A(metaclass=LeftMeta): ...
+class B(metaclass=RightMeta): ...
+
+reveal_type(A + B)  # revealed: Literal["right"]
+
+-- runtime: success None  line None
+-- live D1 reveal_mismatch L16 reveal_type(A + B)  # revealed: Literal["right"]
+     mypy: {'tool': 'mypy', 'line': 16, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[\'left\']"', 'end_line': 16, 'end_col': 17, 'revealed_type': "Literal['left']", 'anchor'
+     ty: {'tool': 'ty', 'line': 16, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal["right"]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal["right"]
+     pyright: {'tool': 'pyright', 'line': 16, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "A + B" is "Literal[\'left\']"', 'end_line': 16, 'end_col': 18, 'revealed_type': "Literal['left']", 'an
+====================================================================================================
+seed-a9f445b3a193 origin=seed seeds/harvested/narrowing_builtin/ty__narrow__conditionals__nested__4.py ['area=narrowing_builtin']
+# area: narrowing_builtin
+# origin: ruff mdtest narrow/conditionals/nested.md block 4
+class A:
+    x: str | None = None
+
+    def update_x(self, value: str | None):
+        self.x = value
+
+a = A()
+a.x = "a"
+
+class B:
+    reveal_type(a.x)  # revealed: Literal["a"]
+
+def f():
+    reveal_type(a.x)  # revealed: str | None
+
+[reveal_type(a.x) for _ in range(1)]  # revealed: Literal["a"]
+
+a = A()
+
+class C:
+    reveal_type(a.x)  # revealed: str | None
+
+def g():
+    reveal_type(a.x)  # revealed: str | None
+
+[reveal_type(a.x) for _ in range(1)]  # revealed: str | None
+
+a = A()
+a.x = "a"
+a.update_x("b")
+
+class D:
+    # TODO: should be `str | None`
+    reveal_type(a.x)  # revealed: Literal["a"]
+
+def h():
+    reveal_type(a.x)  # revealed: str | None
+
+# TODO: should be `str | None`
+[reveal_type(a.x) for _ in range(1)]  # revealed: Literal["a"]
+
+-- runtime: success None  line None
+-- live D3 reveal_mismatch L36 reveal_type(a.x)  # revealed: Literal["a"]
+     mypy: {'tool': 'mypy', 'line': 36, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "str | None"', 'end_line': 36, 'end_col': 19, 'revealed_type': 'str | None', 'anchor': 36, 'raw':
+     ty: {'tool': 'ty', 'line': 36, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal["a"]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal["a"]', 'anch
+     pyright: {'tool': 'pyright', 'line': 36, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "a.x" is "Literal[\'a\']"', 'end_line': 36, 'end_col': 20, 'revealed_type': "Literal['a']", 'anchor': 3
+-- live D4 reveal_mismatch L42 [reveal_type(a.x) for _ in range(1)]  # revealed: Literal["a"]
+     mypy: {'tool': 'mypy', 'line': 42, 'col': 14, 'severity': 'note', 'code': None, 'message': 'Revealed type is "str"', 'end_line': 42, 'end_col': 16, 'revealed_type': 'str', 'anchor': 42, 'raw': 'case.py:42:1
+     ty: {'tool': 'ty', 'line': 42, 'col': 14, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal["a"]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal["a"]', 'anch
+     pyright: {'tool': 'pyright', 'line': 42, 'col': 14, 'severity': 'note', 'code': None, 'message': 'Type of "a.x" is "Literal[\'a\']"', 'end_line': 42, 'end_col': 17, 'revealed_type': "Literal['a']", 'anchor': 4
+====================================================================================================
+seed-74a547d0de78 origin=seed seeds/harvested/narrowing_builtin/ty__narrow__conditionals__is__19.py ['area=narrowing_builtin']
+# area: narrowing_builtin
+# origin: ruff mdtest narrow/conditionals/is.md block 19
+from typing import Literal
+
+def f() -> Literal[1, 2] | None: ...
+
+if (x := f()) is None:
+    reveal_type(x)  # revealed: None
+else:
+    reveal_type(x)  # revealed: Literal[1, 2]
+
+value = f()
+if result := (value is None):
+    reveal_type(value)  # revealed: None
+    reveal_type(result)  # revealed: Literal[True]
+else:
+    reveal_type(value)  # revealed: Literal[1, 2]
+    reveal_type(result)  # revealed: Literal[False]
+
+value = f()
+if value := (value is None):
+    reveal_type(value)  # revealed: Literal[True]
+else:
+    reveal_type(value)  # revealed: Literal[False]
+
+-- runtime: success None  line None
+-- live D1 only_mypy L21 if value := (value is None):
+     mypy: {'tool': 'mypy', 'line': 21, 'col': 14, 'severity': 'error', 'code': 'assignment', 'message': 'Incompatible types in assignment (expression has type "bool", variable has type "Literal[1, 2] | None")',
+-- live D2 reveal_mismatch L22 reveal_type(value)  # revealed: Literal[True]
+     mypy: {'tool': 'mypy', 'line': 22, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "None"', 'end_line': 22, 'end_col': 21, 'revealed_type': 'None', 'anchor': 22, 'raw': 'case.py:22
+     ty: {'tool': 'ty', 'line': 22, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[True]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[True]', 'an
+     pyright: {'tool': 'pyright', 'line': 22, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "value" is "Never"', 'end_line': 22, 'end_col': 22, 'revealed_type': 'Never', 'anchor': 22, 'raw': '{"f
+-- live D3 reveal_mismatch L24 reveal_type(value)  # revealed: Literal[False]
+     mypy: {'tool': 'mypy', 'line': 24, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[1] | Literal[2]"', 'end_line': 24, 'end_col': 21, 'revealed_type': 'Literal[1] | Literal
+     ty: {'tool': 'ty', 'line': 24, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[False]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[False]', '
+     pyright: {'tool': 'pyright', 'line': 24, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "value" is "bool"', 'end_line': 24, 'end_col': 22, 'revealed_type': 'bool', 'anchor': 24, 'raw': '{"fil
+====================================================================================================
+seed-87c3dd4f28ef origin=seed seeds/harvested/gradual_any/ty__loops__while_loop__56.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest loops/while_loop.md block 56
+class C:
+    x = None
+
+c = C()
+c.x = 0
+
+while True:
+    reveal_type(c.x)  # revealed: Literal[0]
+    c = C()
+    break
+
+d = [0]
+d[0] = 1
+
+while True:
+    reveal_type(d[0])  # revealed: Literal[1]
+    d = []
+    break
+
+-- runtime: success None  line None
+-- live D1 only_mypy L7 c.x = 0
+     mypy: {'tool': 'mypy', 'line': 7, 'col': 7, 'severity': 'error', 'code': 'assignment', 'message': 'Incompatible types in assignment (expression has type "int", variable has type "None")', 'end_line': 7, 'en
+     pyright: {'tool': 'pyright', 'line': 7, 'col': 3, 'severity': 'error', 'code': 'reportAttributeAccessIssue', 'message': 'Cannot assign to attribute "x" for class "C"', 'end_line': 7, 'end_col': 4, 'revealed_ty
+-- live D2 reveal_mismatch L10 reveal_type(c.x)  # revealed: Literal[0]
+     mypy: {'tool': 'mypy', 'line': 10, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "None"', 'end_line': 10, 'end_col': 19, 'revealed_type': 'None', 'anchor': 10, 'raw': 'case.py:10
+     ty: {'tool': 'ty', 'line': 10, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[0]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[0]', 'anchor':
+     pyright: {'tool': 'pyright', 'line': 10, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "c.x" is "None"', 'end_line': 10, 'end_col': 20, 'revealed_type': 'None', 'anchor': 10, 'raw': '{"file"
+====================================================================================================
+seed-ea524f8aff1a origin=seed seeds/harvested/enums_literals/ty__enums__140.py ['area=enums_literals']
+# area: enums_literals
+# origin: ruff mdtest enums.md block 140
+from enum import Enum
+
+# error: [invalid-argument-type]
+Color = Enum("Color", "RED", start="0")
+
+reveal_type(Color.RED.value)  # revealed: Literal[1]
+
+-- runtime: success None  line None
+-- live D1 only_ty L6 Color = Enum("Color", "RED", start="0")
+     ty: {'tool': 'ty', 'line': 6, 'col': 36, 'severity': 'error', 'code': 'invalid-argument-type', 'message': 'Expected `int` for `start` argument, got `Literal["0"]`', 'end_line': None, 'end_col': None, 'rev
+-- live D2 reveal_mismatch L8 reveal_type(Color.RED.value)  # revealed: Literal[1]
+     mypy: {'tool': 'mypy', 'line': 8, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Any"', 'end_line': 8, 'end_col': 27, 'revealed_type': 'Any', 'anchor': 8, 'raw': 'case.py:8:13:8:
+     ty: {'tool': 'ty', 'line': 8, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Literal[1]`', 'end_line': None, 'end_col': None, 'revealed_type': 'Literal[1]', 'anchor': 
+     pyright: {'tool': 'pyright', 'line': 8, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "Color.RED.value" is "Literal[1]"', 'end_line': 8, 'end_col': 28, 'revealed_type': 'Literal[1]', 'anchor
+====================================================================================================
+seed-e9e91de85d61 origin=seed seeds/harvested/enums_literals/ty__enums__35.py ['area=enums_literals']
+# area: enums_literals
+# origin: ruff mdtest enums.md block 35
+from enum import Enum
+
+class Base(Enum):
+    def __new_member__(cls: type["Base"], value: int) -> "Base":
+        obj = object.__new__(cls)
+        obj._value_ = str(value)
+        return obj
+
+class Child(Base):
+    VALUE = 1
+
+reveal_type(Child.VALUE.value)  # revealed: Any
+
+-- runtime: success None  line None
+-- live D1 only_mypy L6 def __new_member__(cls: type["Base"], value: int) -> "Base":
+     mypy: {'tool': 'mypy', 'line': 6, 'col': 5, 'severity': 'error', 'code': 'misc', 'message': 'The erased type of self "type[case.Base]" is not a supertype of its class "case.Base"', 'end_line': 9, 'end_col':
+     pyright: {'tool': 'pyright', 'line': 6, 'col': 24, 'severity': 'warning', 'code': 'reportSelfClsParameterName', 'message': 'Instance methods should take a "self" parameter', 'end_line': 6, 'end_col': 41, 'reve
+     pyright: {'tool': 'pyright', 'line': 6, 'col': 29, 'severity': 'error', 'code': 'reportGeneralTypeIssues', 'message': 'Type of parameter "cls" must be a supertype of its class "Base"', 'end_line': 6, 'end_col'
+-- live D2 reveal_mismatch L14 reveal_type(Child.VALUE.value)  # revealed: Any
+     mypy: {'tool': 'mypy', 'line': 14, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[1]?"', 'end_line': 14, 'end_col': 29, 'revealed_type': 'Literal[1]?', 'anchor': 14, 'raw
+     ty: {'tool': 'ty', 'line': 14, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Any`', 'end_line': None, 'end_col': None, 'revealed_type': 'Any', 'anchor': 14, 'raw': 'c
+     pyright: {'tool': 'pyright', 'line': 14, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "Child.VALUE.value" is "Literal[1]"', 'end_line': 14, 'end_col': 30, 'revealed_type': 'Literal[1]', 'an
+====================================================================================================
+seed-9f690bb5b21e origin=seed seeds/harvested/enums_literals/ty__enums__24.py ['area=enums_literals']
+# area: enums_literals
+# origin: ruff mdtest enums.md block 24
+from enum import Enum
+from typing import Any, cast
+
+def external_init(self: Any, value: object) -> None: ...
+
+class ReassignedInit(Enum):
+    _value_: int
+
+    def __init__(self, value: int) -> None: ...
+
+    __init__ = cast(Any, external_init)
+
+    A = "accepted by the assigned hook"
+
+reveal_type(ReassignedInit.A.value)  # revealed: int
+
+class AssignedInitWithFunctionNew(Enum):
+    def __new__(cls, value: int): ...
+
+    __init__ = external_init
+
+    A = "not an int"  # error: [invalid-assignment]
+
+class FunctionInitBase(Enum):
+    def __init__(self, value: int) -> None: ...
+
+class AssignedInitMiddle(FunctionInitBase):
+    __init__ = cast(Any, external_init)
+
+class AssignedInitChild(AssignedInitMiddle):
+    A = "accepted by the assigned hook"
+
+reveal_type(AssignedInitChild.A.value)  # revealed: Any
+
+def assigned_init_instance(value: AssignedInitChild) -> None:
+    reveal_type(value.value)  # revealed: Any
+
+-- runtime: exception AttributeError 'NoneType' object has no attribute '_value_' and no __dict__ for setting new attributes line 19
+-- live D1 only_ty L24 A = "not an int"  # error: [invalid-assignment]
+     ty: {'tool': 'ty', 'line': 24, 'col': 5, 'severity': 'error', 'code': 'invalid-assignment', 'message': 'Enum member `A` is incompatible with `__new__`', 'end_line': None, 'end_col': None, 'revealed_type':
+     pyright: {'tool': 'pyright', 'line': 24, 'col': 9, 'severity': 'error', 'code': 'reportArgumentType', 'message': 'Argument of type "Literal[\'not an int\']" cannot be assigned to parameter "value" of type "int
+     pyright: {'tool': 'pyright', 'line': 24, 'col': 9, 'severity': 'error', 'code': 'reportCallIssue', 'message': 'Expected 0 positional arguments', 'end_line': 24, 'end_col': 21, 'revealed_type': None, 'anchor': 
+-- live D2 reveal_mismatch L17 reveal_type(ReassignedInit.A.value)  # revealed: int
+     mypy: {'tool': 'mypy', 'line': 17, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[\'accepted by the assigned hook\']?"', 'end_line': 17, 'end_col': 34, 'revealed_type': "
+     ty: {'tool': 'ty', 'line': 17, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `int`', 'end_line': None, 'end_col': None, 'revealed_type': 'int', 'anchor': 17, 'raw': 'c
+     pyright: {'tool': 'pyright', 'line': 17, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "ReassignedInit.A.value" is "int"', 'end_line': 17, 'end_col': 35, 'revealed_type': 'int', 'anchor': 17
+-- live D3 reveal_mismatch L38 reveal_type(value.value)  # revealed: Any
+     mypy: {'tool': 'mypy', 'line': 38, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Revealed type is "Literal[\'accepted by the assigned hook\']?"', 'end_line': 38, 'end_col': 27, 'revealed_type': "
+     ty: {'tool': 'ty', 'line': 38, 'col': 17, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `Any`', 'end_line': None, 'end_col': None, 'revealed_type': 'Any', 'anchor': 38, 'raw': 'c
+     pyright: {'tool': 'pyright', 'line': 38, 'col': 17, 'severity': 'note', 'code': None, 'message': 'Type of "value.value" is "Any"', 'end_line': 38, 'end_col': 28, 'revealed_type': 'Any', 'anchor': 38, 'raw': '{
+====================================================================================================
+seed-62f6aa0baf89 origin=seed seeds/harvested/gradual_any/ty__call__functools_partial__34.py ['area=gradual_any']
+# area: gradual_any
+# origin: ruff mdtest call/functools_partial.md block 34
+from functools import partial
+from typing import cast
+from typing_extensions import TypeVar
+
+T = TypeVar("T")
+U = TypeVar("U", default=T)
+
+def with_default(x: T) -> tuple[T, U]:
+    return (x, cast(U, x))
+
+reveal_type(with_default(1))  # revealed: tuple[Literal[1], Literal[1]]
+
+p = partial(with_default, 1)
+reveal_type(p)  # revealed: partial[() -> tuple[Literal[1], Literal[1]]]
+reveal_type(p())  # revealed: tuple[Literal[1], Literal[1]]
+
+-- runtime: success None  line None
+-- live D2 reveal_mismatch L16 reveal_type(p)  # revealed: partial[() -> tuple[Literal[1], Literal[1]]]
+     mypy: {'tool': 'mypy', 'line': 16, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "functools.partial[tuple[int, Any]]"', 'end_line': 16, 'end_col': 13, 'revealed_type': 'functools
+     ty: {'tool': 'ty', 'line': 16, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `partial[() -> tuple[Literal[1], Literal[1]]]`', 'end_line': None, 'end_col': None, 'revea
+     pyright: {'tool': 'pyright', 'line': 16, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "p" is "partial[tuple[T@with_default, U@with_default]]"', 'end_line': 16, 'end_col': 14, 'revealed_type
+-- live D3 reveal_mismatch L17 reveal_type(p())  # revealed: tuple[Literal[1], Literal[1]]
+     mypy: {'tool': 'mypy', 'line': 17, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Revealed type is "tuple[int, Never]"', 'end_line': 17, 'end_col': 15, 'revealed_type': 'tuple[int, Never]', 'ancho
+     ty: {'tool': 'ty', 'line': 17, 'col': 13, 'severity': 'note', 'code': 'revealed-type', 'message': 'Revealed type: `tuple[Literal[1], Literal[1]]`', 'end_line': None, 'end_col': None, 'revealed_type': 'tup
+     pyright: {'tool': 'pyright', 'line': 17, 'col': 13, 'severity': 'note', 'code': None, 'message': 'Type of "p()" is "tuple[int, Unknown]"', 'end_line': 17, 'end_col': 16, 'revealed_type': 'tuple[int, Unknown]',

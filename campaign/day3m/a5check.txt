@@ -1,0 +1,1 @@
+[('C1', 'dismissed', 'DUPLICATE', 'mypy', 'mypy:signal-SIGSEGV'), ('C2', 'confirmed', None, 'ty', 'ty:signal-SIGABRT:stack-overflow')]

@@ -1,0 +1,8 @@
+replayed 1000/5086
+replayed 2000/5086
+replayed 3000/5086
+replayed 4000/5086
+replayed 5000/5086
+replayed 5086 reports into /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day3/replay
+verify-sample: 50/50 identical to a full re-run (mismatches: 0)
+exit 0

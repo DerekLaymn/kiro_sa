@@ -1,0 +1,104 @@
+====================================================================================================
+only_mypy|arg-type 220 findings; strong: 8 ; sources: {'ty-mdtest': 53, 'pyright': 130, 'mypy-suite': 32, 'conformance': 5}
+   kb hints: {'SUITE-EXPECTS-ERROR': 61, 'GRADUAL-OPERAND': 37, 'TY-STRICT-EQUALITY': 27, 'TY-GRADUAL-GENERIC-NARROWING': 17, 'ERROR-CASCADE': 9, 'PARTIAL-TYPES': 7}
+  [pyright] seed-8b64e22cf025 D2 L42 'func2(a1)'
+      mypy=Argument 1 to "func2" has incompatible type "A[str]"; expected "ProtoA[int]"  ty=-
+  [pyright] seed-a5f47c39d04e D7 L52 'accepts_protocols(cm, sm)'
+      mypy=Argument 1 to "accepts_protocols" has incompatible type "Callable[[type[Example], int], st  ty=-
+  [pyright] seed-ee0136fb4773 D7 L61 'accepts_staticmethod(saved_inner)'
+      mypy=Argument 1 to "accepts_staticmethod" has incompatible type "Callable[[int], str]"; expecte  ty=-
+  [ty-mdtest] seed-8da900f2d397 D2 L22 'partial_like_bad: PartialLike[str] = partial(f)  # error: [invalid-ass'
+      mypy=Argument 1 to "partial" has incompatible type "Callable[[int], int]"; expected "Callable[.  ty=-
+  [pyright] seed-965583a4897e D1 L80 'return decorator2(inner)'
+      mypy=Argument 1 to "decorator2" has incompatible type "Callable[[list[T2]], list[T1 | T2]]"; ex  ty=-
+====================================================================================================
+reveal|ty_more_precise 414 findings; strong: 8 ; sources: {'ty-mdtest': 401, 'mypy-suite': 13}
+   kb hints: {'ORIGIN-ORACLE-NOTE': 385, 'TY-STRICT-EQUALITY': 69, 'TY-GRADUAL-GENERIC-NARROWING': 65, 'ORIGIN-MISMATCH': 23, 'PARTIAL-TYPES': 5, 'LITERAL-WIDENING': 5}
+  [ty-mdtest] seed-bd57b3568685 D23 L49 'reveal_type(x3)  # revealed: int'
+      mypy=int | None  ty=int
+  [ty-mdtest] seed-457e5743838c D2 L7 'assert value or True, reveal_type(value)  # revealed: Never'
+      mypy=object  ty=Never
+  [ty-mdtest] seed-41aed65a5691 D13 L55 'reveal_type(value)  # revealed: Literal["b", 2]'
+      mypy=Literal['a'] | Literal['b'] | Literal[1] | Literal[2] | Literal[b'x']  ty=Literal["b", 2]
+  [ty-mdtest] seed-ae2783e95555 D10 L52 'reveal_type(x)  # revealed: Literal["a", "z"]'
+      mypy=Literal['a'] | Literal['z'] | Literal['missing']  ty=Literal["a", "z"]
+  [ty-mdtest] seed-9e71af73cc74 D3 L11 'reveal_type(s)  # revealed: (LiteralString & ~Literal["foo"] & ~Litera'
+      mypy=str | None  ty=(LiteralString & ~Literal["foo"] & ~Literal["bar"]) | None
+====================================================================================================
+concern|assignment 127 findings; strong: 7 ; sources: {'mypy-suite': 77, 'ty-mdtest': 4, 'pyright': 38, 'conformance': 8}
+   kb hints: {'GRADUAL-OPERAND': 69, 'ERROR-CASCADE': 38, 'STUB-SKEW': 22, 'SUPPRESSION-LINE': 1}
+  [ty-mdtest] seed-ee71a0a1148f D2 L10 'x = 1  # error: [conflicting-declarations] "Conflicting declared types'
+      mypy=Incompatible types in assignment (expression has type "int", variable has type "str")  ty=Conflicting declared types for `x`: `str` and `int`
+  [conformance] seed-ea1ea15fc825 D11 L76 'bad8: TypeForm = Optional  # E'
+      mypy=Incompatible types in assignment (expression has type "<typing special form>", variable ha  ty=`typing.Optional` requires exactly one argument when used in a type expression
+  [pyright] seed-fbd6d09578f8 D23 L195 't15: TypeForm = "typing.Optional"'
+      mypy=Incompatible types in assignment (expression has type "str", variable has type "TypeForm[A  ty=`typing.Optional` requires exactly one argument when used in a type expression
+  [mypy-suite] seed-5dff50761c1b D4 L34 'e = f  # E: Incompatible types in assignment (expression has type "PIn'
+      mypy=Incompatible types in assignment (expression has type "PInv[object]", variable has type "P  ty=Name `f` used when not defined
+  [mypy-suite] seed-2e2435b128ba D1 L11 's = t # E: Incompatible types in assignment (expression has type "T", '
+      mypy=Incompatible types in assignment (expression has type "T", variable has type "S")  ty=Name `t` used when not defined
+====================================================================================================
+reveal|uncomparable 538 findings; strong: 13 ; sources: {'ty-mdtest': 422, 'mypy-suite': 108, 'pyright': 1, 'conformance': 7}
+   kb hints: {'ORIGIN-ORACLE-NOTE': 463, 'ORIGIN-MISMATCH': 45, 'TY-GRADUAL-GENERIC-NARROWING': 28, 'TY-STRICT-EQUALITY': 19, 'PARTIAL-TYPES': 4}
+  [ty-mdtest] seed-ebfaf8fb69ef D5 L35 'reveal_type(arg4)  # revealed: HasNotRequired2 & ~AlwaysFalsy'
+      mypy=TypedDict(case.HasNotRequired2, {'x'?: int})  ty=HasNotRequired2 & ~AlwaysFalsy
+  [ty-mdtest] seed-9bd72ff36161 D1 L16 'reveal_type(p)  # revealed: Person & ~AlwaysFalsy'
+      mypy=TypedDict(case.Person, {'name'?: str, 'age'?: int})  ty=Person & ~AlwaysFalsy
+  [ty-mdtest] seed-570818101ed2 D3 L12 'reveal_type(Callback[list[int]]().fn)  # revealed: (bool, /) -> tuple['
+      mypy=def (*list[int], **list[int]) -> tuple[()]  ty=(...) -> tuple[()]
+  [ty-mdtest] seed-32685782a88e D2 L7 "reveal_type(Numbers)  # revealed: <class 'list[int]'>"
+      mypy=Overload(def () -> list[int], def (typing.Iterable[int]) -> list[int])  ty=<class 'list[int]'>
+  [ty-mdtest] seed-184aabe7a17b D4 L9 'reveal_type(Callback[list[int]]().fn)  # revealed: (bool, /) -> tuple['
+      mypy=def (*list[int], **list[int]) -> tuple[()]  ty=(...) -> tuple[()]
+====================================================================================================
+only_mypy|assert-type 306 findings; strong: 7 ; sources: {'conformance': 31, 'pyright': 271, 'mypy-suite': 1, 'ty-mdtest': 3}
+   kb hints: {'GRADUAL-OPERAND': 59, 'TY-STRICT-EQUALITY': 40, 'ERROR-CASCADE': 29, 'TY-CHECK-PARTIAL': 11, 'STUB-SKEW': 7, 'SUITE-EXPECTS-ERROR': 5}
+  [pyright] seed-92c6b0d8d416 D5 L31 'assert_type(s, Literal["done"])'
+      mypy=Expression is of type "Literal['pending', 'done', 'failed']", not "Literal['done']"  ty=-
+  [pyright] seed-a5f47c39d04e D16 L81 'assert_type(convert.__wrapped__(1), int)'
+      mypy=Expression is of type "Any", not "int"  ty=-
+  [pyright] seed-4e6fdc6b7a98 D24 L124 'assert_type(forward_order["value"], str)'
+      mypy=Expression is of type "Any", not "str"  ty=-
+  [pyright] seed-053bdb03bffc D3 L27 'assert_type(struct.unpack("1024s", buffer), tuple[bytes])'
+      mypy=Expression is of type "tuple[Any, ...]", not "tuple[bytes]"  ty=-
+  [pyright] seed-e090b7c90be1 D4 L42 'assert_type(Derived.sm(1), str)'
+      mypy=Expression is of type "Any", not "str"  ty=-
+====================================================================================================
+reveal|gradual 589 findings; strong: 90 ; sources: {'ty-mdtest': 445, 'mypy-suite': 134, 'pyright': 10}
+   kb hints: {'ORIGIN-ORACLE-NOTE': 448, 'ORIGIN-ORACLE-REVEAL': 268, 'ORIGIN-MISMATCH': 114, 'TY-GRADUAL-GENERIC-NARROWING': 29, 'TY-STRICT-EQUALITY': 26, 'PARTIAL-TYPES': 17}
+  [ty-mdtest] seed-180aa155646c D7 L35 'reveal_type(g)  # revealed: Unknown'
+      mypy=int  ty=Unknown
+  [ty-mdtest] seed-180aa155646c D2 L29 'reveal_type(a)  # revealed: Unknown'
+      mypy=int  ty=Unknown
+  [ty-mdtest] seed-117a372ee076 D6 L9 'reveal_type(g(values or {1}))  # revealed: set[object]'
+      mypy=set[Any]  ty=set[object]
+  [ty-mdtest] seed-3b760845955a D2 L9 'reveal_type(value)  # revealed: Any'
+      mypy=Any  ty=Unknown
+  [ty-mdtest] seed-f066cef5f16c D1 L6 'reveal_type(ellipsis.with_detailed_display())'
+      mypy=Any  ty=Unknown
+====================================================================================================
+reveal|different 480 findings; strong: 82 ; sources: {'ty-mdtest': 430, 'mypy-suite': 49, 'pyright': 1}
+   kb hints: {'ORIGIN-ORACLE-NOTE': 391, 'ORIGIN-MISMATCH': 77, 'TY-STRICT-EQUALITY': 30, 'TY-GRADUAL-GENERIC-NARROWING': 22, 'PARTIAL-TYPES': 22}
+  [ty-mdtest] seed-52fadd22b71d D3 L15 'reveal_type(one_two + x + three_four)  # revealed: tuple[Literal[1], L'
+      mypy=tuple[Literal[1] | Literal[2] | int, ...]  ty=tuple[Literal[1], Literal[2], *tuple[int, ...], Literal[3], Literal[4]]
+  [ty-mdtest] seed-cda3a0635a10 D1 L13 'reveal_type(value)  # revealed: Nested'
+      mypy=list[list[...] | int] | int  ty=Nested
+  [ty-mdtest] seed-0e08b4aa1d9c D4 L8 'reveal_type("a\\U000e0100")  # revealed: Literal["a\\U000e0100"]'
+      mypy=Literal['a󠄀']?  ty=Literal["a\u{e0100}"]
+  [ty-mdtest] seed-a2107b448677 D2 L16 'reveal_type(state)  # revealed: Literal[0, "changed"]'
+      mypy=int  ty=Literal[0, "changed"]
+  [ty-mdtest] seed-750d30d2b48c D4 L9 'reveal_type(c)  # revealed: list[LiteralString]'
+      mypy=list[str]  ty=list[LiteralString]
+====================================================================================================
+reveal|mypy_more_precise 82 findings; strong: 7 ; sources: {'ty-mdtest': 67, 'mypy-suite': 15}
+   kb hints: {'ORIGIN-ORACLE-NOTE': 67, 'ORIGIN-MISMATCH': 14, 'TY-GRADUAL-GENERIC-NARROWING': 13, 'TY-STRICT-EQUALITY': 11, 'PARTIAL-TYPES': 7}
+  [ty-mdtest] seed-d0bf587ae5f9 D11 L22 'reveal_type(x)  # revealed: str | None'
+      mypy=str  ty=str | None
+  [ty-mdtest] seed-804ade4781f1 D1 L16 'reveal_type(left + right)  # revealed: Literal["right", "left"]'
+      mypy=Literal['right']  ty=Literal["right", "left"]
+  [ty-mdtest] seed-dfbd87d2d0b4 D2 L7 'reveal_type(value)  # revealed: tuple[int, int]'
+      mypy=tuple[int, int]  ty=tuple[str, ...] | tuple[int, int]
+  [ty-mdtest] seed-87e3ea8e2173 D2 L27 'reveal_type(x)  # revealed: Literal[1] | None'
+      mypy=None  ty=Literal[1] | None
+  [ty-mdtest] seed-918956387dda D1 L12 'reveal_type(plain + custom)  # revealed: str | tuple[str | int, ...]'
+      mypy=str  ty=str | tuple[str | int, ...]
