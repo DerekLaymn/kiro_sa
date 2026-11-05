@@ -14,9 +14,12 @@ for f in d3p_callables_self_call_attr d4v_callables_mutual_call_attr d3p_self_cl
   cp "runs/hits/$f.py" "$G/A_ty_4148/"; done
 for f in d3p_paramspec_identity_applied_to_itself d3p_paramspec_self_annotated_dunder_call; do
   cp "runs/hits/$f.py" "$G/A_ty_paramspec/"; done
-# draft-1 protocol-overflow family, CAPPED: two parents, 3 programs each. The four expanding-receiver parents
-# (d4v_protocols_expanding_self_receiver, d6p_protocols_expanding_self_receiver_*) are NOT copied anywhere.
-for f in d3p_protocols_generic_protocol_stack_overflow d6p_async_generators_protocol_flatten_overflow_ty; do
+# protocol overflow, CAPPED: ONE parent, 3 programs. It is the two-protocol `P1[T2] | P2[T2]` shape (TY-4882), not
+# the draft-1 expanding receiver. The draft-1 family (receiver `self: 'Stream[Stream[T]]'`) gets 0 programs: the four
+# expanding-receiver parents (d4v_protocols_expanding_self_receiver, d6p_protocols_expanding_self_receiver_*) AND the
+# flatten descendant d6p_async_generators_protocol_flatten_overflow_ty (same receiver shape, Day-6 "same root cause")
+# are NOT copied anywhere.
+for f in d3p_protocols_generic_protocol_stack_overflow; do
   cp "runs/hits/$f.py" "$G/A_ty_protocol_capped/"; done
 # pyright-leaning parents (descriptors with decorated dunders, callable attributes)
 for f in d5p_descriptors_decorated_get_pyright_rangeerror d5p_descriptors_one_decorator_dunders_pyright_rangeerror \

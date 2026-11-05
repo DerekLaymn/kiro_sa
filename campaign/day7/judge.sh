@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Day 7 judge + triage (Plan §3 daily loop steps 2-3). Deterministic: no LLM. Run from anywhere, after the
-# generation passes are complete. Judged WITH --pyright-only: pyright errors that mypy and ty both miss, where
-# CPython ran the statement, become `only_pyright` findings. They are listed separately in the report; the
-# live counts of Days 1 to 6 do not include them (those runs used the default).
+# generation passes are complete. Judged WITH --pyright-only on ALL programs: pyright errors that mypy and ty both
+# miss, where CPython ran the statement, become `only_pyright` findings. The live counts of Days 1 to 6 do not include
+# them (those runs used the default), so kbloop_stats prints both: `live=` (with) and `live without only_pyright:`
+# (comparable with Days 1 to 6). Quote the second one when comparing days.
 # Usage: judge.sh [GEN_DIR] [OUT_DIR]   (default runs/day7/gen runs/day7/out)
 ROOT=/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa
 PY=$ROOT/.venv/bin/python

@@ -7,8 +7,10 @@
 PASS="${1:-0}"
 ROOT=/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa
 TD=$ROOT/.venv/bin/typediff
-INBOX=$ROOT/runs/day7/inbox
-OUT=runs/day7/gen
+# Dry-run overrides (campaign/day7/partB/gen-pass-dryrun.sh): DAY7_INBOX, DAY7_OUT, DAY7_GATE, DAY7_LOG, DAY7_RETRIES.
+INBOX=${DAY7_INBOX:-$ROOT/runs/day7/inbox}
+OUT=${DAY7_OUT:-runs/day7/gen}
+LOG=${DAY7_LOG:-campaign/day7/gen-pass.log}
 G=runs/day7/parents
 cd "$ROOT" || exit 1
 export PYTHONHASHSEED=0
@@ -16,7 +18,7 @@ unset TYPEDIFF_LLM
 mkdir -p "$INBOX" "$OUT"
 
 run() {  # retry up to 3 times on failure (network/TLS)
-  for i in 1 2 3; do "$@" && return 0; echo "retry $i: $*"; sleep 5; done
+  for i in $(seq 1 "${DAY7_RETRIES:-3}"); do "$@" && return 0; echo "retry $i: $*"; sleep "${DAY7_SLEEP:-5}"; done
   return 0
 }
 gen_seeds() {  # gen_seeds GROUP OP N
@@ -26,7 +28,7 @@ gen_area() {  # gen_area AREA N
   run $TD --llm file:$INBOX --python-version 3.13 generate --area "$1" --n "$2" --out-dir "$OUT"
 }
 
-# ---- (c) crash families that still crash ty 0.0.97: 35 mutants + 5 fresh = 40
+# ---- (c) crash families that still crash ty 0.0.97: 32 mutants + 8 fresh = 40
 # TY-4148 trio: 3 parents x 5 = 15
 gen_seeds A_ty_4148 recursion_deepening 2
 gen_seeds A_ty_4148 feature_crossover 2
@@ -35,10 +37,10 @@ gen_seeds A_ty_4148 invalid_type_form 1
 gen_seeds A_ty_paramspec recursion_deepening 3
 gen_seeds A_ty_paramspec feature_crossover 2
 gen_seeds A_ty_paramspec invalid_type_form 2
-# protocol overflow, CAPPED: 2 parents x 3 = 6 (expanding-receiver family: 0)
+# protocol overflow, CAPPED: 1 parent x 3 = 3 (draft-1 expanding-receiver family incl. the flatten descendant: 0)
 gen_seeds A_ty_protocol_capped feature_crossover 2
 gen_seeds A_ty_protocol_capped recursion_deepening 1
-gen_area recursive_aliases 5
+gen_area recursive_aliases 8
 
 # ---- (d) pyright-leaning: 30 mutants + 30 fresh = 60 (judge these with --pyright-only)
 # 5 parents x 6 = 30
@@ -71,8 +73,8 @@ for p in "$INBOX"/*.prompt.md; do
   [ -e "$INBOX/$k.answer.json" ] || PENDING=$((PENDING+1))
 done
 WRITTEN=$(find "$OUT" -type f -name '*.py' | wc -l)
-echo "- gen pass $PASS: pending=$PENDING written=$WRITTEN" | tee -a campaign/day7/gen-pass.log
-GATE=/home/derek/Projects/5th_sem/Software_analysis/Assignment/Assignment_2/.agents/tasks/day7-gen-status.json
+echo "- gen pass $PASS: pending=$PENDING written=$WRITTEN" | tee -a "$LOG"
+GATE=${DAY7_GATE:-/home/derek/Projects/5th_sem/Software_analysis/Assignment/Assignment_2/.agents/tasks/day7-gen-status.json}
 mkdir -p "$(dirname "$GATE")"
 printf '{"pass": %s, "pending": %s, "written": %s}\n' "$PASS" "$PENDING" "$WRITTEN" > "$GATE"
 $ROOT/.venv/bin/python scripts/inbox_check.py "$INBOX"

@@ -15,7 +15,7 @@ Generation was **not** run in this step. The next step runs `campaign/day7/mk_gr
 | `d3p_tuples_unpacking_constant_fold_subclass` | **retired today** (moved to `runs/hits-dropped`) | the same ty#2171 shape; since Part A every finding of it is dismissed (`TY-2171`, `TY-2171-ASSERT`) |
 | `d4p_narrowing_stale_alias_loop`, `d3p_narrowing_user_attr_narrowing_kept_after_method_call`, `d3p_narrowing_builtin_stale_alias_condition` | **retired today** | Part A log item 12: with the `TY-2792` entries these parents give only dismissed findings, the same case as the two retired tuple parents. This goes one step beyond "retired tuple parents"; undo with `mv runs/hits-dropped/<name>.py runs/hits/` |
 | `d4v_protocols_expanding_self_receiver`, `d6p_protocols_expanding_self_receiver_{pep695,dict_arg,tuple_nesting}_ty` | stay, **never mutated** | the 20-strong expanding-receiver family (draft 1). The Day-6 replay has 20 live ty stack-overflow crash findings (one triage pattern, `ty:signal-SIGABRT:stack-overflow`) |
-| `d3p_crash_ty_stack_overflow_protocol_flatten` | stays, not mutated | ty 0.0.97 gives rc 1 with plain diagnostics (`campaign/day7/partB/crash-parents-probe.tsv`); its crashing descendant `d6p_async_generators_protocol_flatten_overflow_ty` is used instead |
+| `d3p_crash_ty_stack_overflow_protocol_flatten`, `d6p_async_generators_protocol_flatten_overflow_ty` | stay, **not mutated** | the first gives rc 1 with plain diagnostics on ty 0.0.97 (`campaign/day7/partB/crash-parents-probe.tsv`); the second still crashes (rc 134) but its receiver is `self: 'Stream[Stream[T_co]]'`, the draft-1 expanding-receiver shape, so it belongs to the family that gets 0 programs |
 | mypy crash group `M_mypy_crash` (4 parents), `R_rest` (the other parents) | stay, **not mutated today** | the task is ty crash families plus no-hit areas. Both groups return when a day has spare budget |
 
 `.venv/bin/python campaign/day4m/check_hits.py 0.80` after the moves: **45 files; 0 with problems; no near-duplicate pair** (`campaign/day7/partB/check_hits.out`).
@@ -45,7 +45,7 @@ Areas from the task list that are **not** zero-parent, and so are not in this ta
 | (b) no-hit areas | 150 | 124 | 26 |
 | **Total** | **250** | **224** | **26** |
 
-Pass-1 prompt count checked with a dry run of `gen_pass.sh` against a scratch inbox (224 prompts, no LLM answers): `pending=224`.
+Pass-1 prompt count checked with a dry run of `gen_pass.sh` against a scratch inbox (224 prompts, no LLM answers): `pending=224`. Evidence: `campaign/day7/partB/gen-pass-dryrun.sh` -> `gen-pass-dryrun.out` (re-run after the review fix: group sizes `A_ty_4148 3, A_ty_paramspec 2, A_ty_protocol_capped 1, N_seeds 9, P_pyright 5`; `pending=224`; 224 prompt files).
 
 ### 3.1 (c) ~40 programs on crash families that still crash ty 0.0.97
 
@@ -55,10 +55,10 @@ Probe: `campaign/day7/partB/probe_ty_crash_parents.sh` -> `crash-parents-probe.t
 |---|---|---|---|
 | `A_ty_4148` | `d3p_callables_self_call_attr`, `d4v_callables_mutual_call_attr`, `d3p_self_classmethods_self_call_union` (TY-4148) | recursion_deepening 2, feature_crossover 2, invalid_type_form 1 | 3 x 5 = 15 |
 | `A_ty_paramspec` | `d3p_paramspec_identity_applied_to_itself` (TY-4898), `d3p_paramspec_self_annotated_dunder_call` (TY-4899, panic, not an OOM reproducer) | recursion_deepening 3, feature_crossover 2, invalid_type_form 2 | 2 x 7 = 14 |
-| `A_ty_protocol_capped` | `d3p_protocols_generic_protocol_stack_overflow`, `d6p_async_generators_protocol_flatten_overflow_ty` | feature_crossover 2, recursion_deepening 1 | 2 x 3 = **6** |
-| fresh | `recursive_aliases` (crash hunting, Plan P4) | n = 5 | 5 |
+| `A_ty_protocol_capped` | `d3p_protocols_generic_protocol_stack_overflow` (the two-protocol `P1[T2] \| P2[T2]` shape, TY-4882; receiver is plain `self`) | feature_crossover 2, recursion_deepening 1 | 1 x 3 = **3** |
+| fresh | `recursive_aliases` (crash hunting, Plan P4) | n = 8 | 8 |
 
-The protocol-overflow variants are **capped at 6** (Day 6 gave the four protocol parents 28 programs). The expanding-receiver family gets **0**.
+The protocol-overflow variants are **capped at 3** (Day 6 gave the four protocol parents 28 programs). The draft-1 expanding-receiver family gets **0**. The family is defined by its shape (a protocol method whose `self` is annotated `Stream[Stream[T]]` or similar, as in `day6-report.md`), not by the four named parents, so `d6p_async_generators_protocol_flatten_overflow_ty` (receiver `self: 'Stream[Stream[T_co]]'`, "same root cause" in `day6-morning.md`) is **excluded** too. It was in the first version of this plan with 3 programs (review finding); those 3 went to fresh `recursive_aliases` (5 to 8), so the crash share stays 40: 15 + 14 + 3 + 8. Pass-1 total is unchanged (224).
 
 ### 3.2 (d) ~60 programs, pyright-leaning
 
@@ -71,7 +71,7 @@ Chosen from the pyright-only clusters of the Day-6 replay (section 5): decorated
 | fresh `paramspec_concatenate` | n = 10 | 10 |
 | fresh `inheritance_mro` (the `Hashable` / `__eq__` / `__hash__` cluster) | n = 10 | 10 |
 
-The judge step must run with `--pyright-only` (section 5), otherwise these programs surface a pyright-only bug only as a crash.
+The judge step must run with `--pyright-only` (section 5), otherwise these programs surface a pyright-only bug only as a crash. `judge.sh` applies the flag to all 224 programs (kbloop_run takes one switch per run; the flag is cheap and a pyright-only error can appear in any program). To keep Day 7 comparable with Days 1 to 6, `scripts/kbloop_stats.py` now prints an extra line `live without only_pyright: N (programs with such live=M)` whenever a run contains `only_pyright` findings; use that number when comparing days. Check on the Day-6 replay: with the flag, live 231 and programs 123; the new line gives 194 and 110, equal to the run without the flag (`stats-day6replay-pyright.txt`). Output for runs without `only_pyright` is byte-identical to before (`stats-day6replay-off.txt`).
 
 ### 3.3 (b) ~150 programs in no-hit areas
 
@@ -86,7 +86,7 @@ Reason for the reserve: for a no-hit area the useful parents appear only after p
 ## 4. How the next step runs it
 
 ```
-bash campaign/day7/mk_groups.sh                 # rebuild runs/day7/parents/* (A_ty_4148 3, A_ty_paramspec 2, A_ty_protocol_capped 2, P_pyright 5, N_seeds 9)
+bash campaign/day7/mk_groups.sh                 # rebuild runs/day7/parents/* (A_ty_4148 3, A_ty_paramspec 2, A_ty_protocol_capped 1, P_pyright 5, N_seeds 9)
 bash campaign/day7/gen_pass.sh 0                # then 1, 2, ... until pending=0 (answer runs/day7/inbox/*.prompt.md; campaign/day7/answer_pending.sh is the haiku-5.5 stand-in)
 bash campaign/day7/judge.sh                     # kbloop_run --jobs 14 --pyright-only, stats, triage
 ```
@@ -132,4 +132,7 @@ Clusters in the 37 (read from `pyright-added.txt`; none was hand-verified as a p
 * **`runtime_contradicts` is weak evidence.** A program that runs fine is not proof that pyright is wrong, and not proof that it is right. The finding is a lead for hand verification against the pyright docs and the typing spec, not a bug claim.
 * **No `runtime_supports` yet.** Day 6 has none; the path is covered by unit tests only.
 * **Memory.** Group `A_ty_paramspec` and fresh `paramspec_concatenate` can produce TY-4899-style programs that hit the 4 GB shim cap; `judge.sh` uses `--jobs 14` as instructed, check `journalctl` for oomd afterwards and fall back to `--jobs 8` if a kill appears (same note as Day 6).
+* **Crash-family yield check after pass 1.** `A_ty_4148` and `A_ty_paramspec` are 29 of the 40 crash programs, and on Day 6 `TY-4148` and `TY-4898` already closed 14 and 7 crash findings from these parents. After pass 1, count live crash findings (and `crash closures by closing reference`) from the programs of these two groups. If fewer than 3 of the 29 are live, move the unspent crash budget (not yet generated, so pass 2) to the no-hit area with the most live findings.
+* **`runtime_supports` has no real-data coverage.** The 0.7-priority branch of `only_pyright` is unit-tested only (0 in the Day-6 replay). On the first Day-7 `only_pyright` finding whose runtime evidence is a type exception on the stack, check its evidence text and priority by hand before trusting the branch.
+* **Retirement scope needs your confirmation.** The three narrowing parents retired in section 1 go beyond "retired tuple parents". Reverting is `mv runs/hits-dropped/<name>.py runs/hits/` followed by `check_hits.py 0.80`, then `mk_groups.sh` if a group should include them (none does today).
 * The untracked `-l` file, `.kiro/` and `findings/2026-10-27-llm-run/` are not touched.
