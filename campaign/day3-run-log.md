@@ -23,3 +23,5 @@
 - [Plan §3 daily loop / gen-pass] pass 1: pending=1 (cf76eb214a9a3afa, generics_variance narrowing_construct_swap), written=159
 - [Plan §3 daily loop / gen-pass] pass 2 pending=0 written=160
 [Plan §3 daily loop / judge] kbloop_run over runs/day3/gen: 160 programs, all ok, 43 s, --jobs 14, TYPEDIFF_LLM=null (campaign/day3m/judge.sh). Stats: 50 discrepancies, 18 tool crashes (12 auto-dismissed signal rule), 20 dismissed (DUPLICATE 17, SPEC_AMBIGUITY 1, DESIGN_DIVERGENCE 2), live 48 (41 programs; 6 crash findings; reveal_mismatch 23, only_ty 8, only_mypy 10, reveal_unpaired 1). Saved campaign/day3-stats.txt, day3-triage.txt.
+[Plan §3 'Keep a log line per day'] Day 3: programs=160 (40 parents x 4), discrepancies=50, live=48 (6 crash), auto-closed=20 (5 by new upstream entries), new patterns=19 live patterns in the generated set (0 new KB entries), candidates=8 groups UNVERIFIED (section 4 of campaign/day3-report.md), issues filed=0
+[Plan §3 daily loop / report] done: campaign/day3-report.md; pytest 360 passed, kb-selftest 20 PASS / 0 FAIL (campaign/day3m/report-pytest.txt, report-kb-selftest.txt)

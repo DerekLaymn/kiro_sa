@@ -1,0 +1,69 @@
+prompts 161
+answers 161
+hits 33
+out-md 160
+async_generators 4
+callables 12
+constructors_metaclasses 12
+descriptors_properties 12
+enums_literals 12
+generics_variance 16
+gradual_any 4
+inheritance_mro 8
+narrowing_builtin 4
+narrowing_user 16
+paramspec_concatenate 16
+protocols 4
+recursive_aliases 8
+self_classmethods 12
+tuples_unpacking 4
+typeddict 12
+typevartuple_unpack 4
+120
+32
+8
+start Thu Nov  5 07:43:57 2026 total=160 jobs=14
+50/160 {'ok': 50} elapsed=14s last=ok runs/day3/gen/enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut0_d50e679a.py 3.0s
+100/160 {'ok': 100} elapsed=28s last=ok runs/day3/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut0_2a405e16.py 3.5s
+150/160 {'ok': 150} elapsed=40s last=ok runs/day3/gen/typeddict/gen3_347a0c98.py 3.1s
+DONE Thu Nov  5 07:44:40 2026 total=160 {'ok': 160} elapsed=43s
+      4 s3r1_ty_type_equality_narrowing_any
+      4 s3r1_mypy_class_base_forward_ref
+      4 gen7
+      4 gen6
+      4 gen5
+      4 gen4
+      4 gen3
+      4 gen2
+      4 gen1
+      4 gen0
+      4 d3p_typevartuple_unpack_paramspec_default_after_tvt
+      4 d3p_typeddict_generic_typevar_unsolved
+      4 d3p_tuples_unpacking_constant_fold_subclass
+      4 d3p_self_classmethods_self_call_union
+      4 d3p_recursive_aliases_type_of_self_alias
+      4 d3p_protocols_generic_protocol_stack_overflow
+      4 d3p_paramspec_self_annotated_dunder_call
+      4 d3p_paramspec_identity_applied_to_itself
+      4 d3p_narrowing_user_index_assign_stale
+      4 d3p_narrowing_user_attr_narrowing_kept_after_method_call
+      4 d3p_narrowing_builtin_stale_alias_condition
+      4 d3p_inheritance_mro_total_ordering_inherited_lt
+      4 d3p_inheritance_mro_hash_none_from_eq
+      4 d3p_generics_typevar_default_refers_to_itself
+      4 d3p_generics_contravariant_recursive_generic_base
+      4 d3p_generics_contravariant_recursive_base
+      4 d3p_generics_callable_attr_contravariant
+      4 d3p_enums_literals_intenum_true_aliases_one
+      4 d3p_enums_flag_or_literal_union
+      4 d3p_enums_flag_is_narrowing_else
+      4 d3p_descriptors_decorated_get
+      4 d3p_crash_ty_timeout_typeis_generic_in_loop
+      4 d3p_crash_ty_stack_overflow_protocol_flatten
+      4 d3p_crash_ty_panic_partial_or_none_in_loop
+      4 d3p_crash_mypy_segv_recursive_tvt_default_alias
+      4 d3p_constructors_metaclasses_type_call_generic_base
+      4 d3p_constructors_metaclasses_reflected_operator_on_metaclass
+      4 d3p_constructors_metaclasses_missing_kwonly_class_args
+      4 d3p_callables_self_call_attr
+      4 d3p_callables_partial_too_many_positional
