@@ -328,9 +328,32 @@
    "example": "import enum\nfrom typing import Literal\n\n\nclass F(enum.Flag):\n    R = 1\n    W = 2\n\n\ndef only_r(x: Literal[F.R]) -> int:\n    return 1\n\n\ncombined = F.R | F.W\nassert combined.value == 3\nonly_r(combined)\n",
    "url": "https://github.com/astral-sh/ty/issues/876",
    "note": "same unchecked item of the open umbrella issue ty#876 (state as of 2026-11-05), mypy-only row: ty expands the Flag combination to Literal[F.R, F.W], derives combined.value as Literal[1, 2], so `assert combined.value == 3` narrows it to Never and the later call is unreachable for ty; mypy and pyright correctly reject passing the combined Flag to a Literal[F.R] parameter. ty is silent only because of the Flag expansion. Narrow AST matcher: the mypy message names a Flag/IntFlag class of the program and the statement uses a bitwise combination of two members of it. The entry steps aside when CPython raises a type-related exception in that statement. Verified on ty 0.0.84 and 0.0.97."
+  },
+  {
+   "id": "TY-4756",
+   "kind": "only_mypy",
+   "silent_tool": "ty",
+   "codes": ["misc"],
+   "message": "\"self\" parameter missing for a non-static method",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/4756",
+   "note": "open (lint; state as of 2026-11-05, 'no error when instance method has no `self` parameter'): mypy reports [misc] on a function defined in a class body without a self parameter (and not a staticmethod), e.g. a helper used as a decorator inside the class body; pyright reports it too (reportSelfClsParameterName), ty reports nothing at the definition. A maintainer in the issue is unsure it should be a ty error (ty already rejects calling it on an instance) and suggests a ruff rule. Verified on mypy 2.4.0, pyright 1.1.414 and ty 0.0.97 (Day-6 seeds 49c0a3858dbb, 3eb405b1e819, 853fdc9fd282)."
   }
  ],
  "prior_stances": [
+  {
+   "id": "TY-2171",
+   "stance": "open",
+   "url": "https://github.com/astral-sh/ty/issues/2171",
+   "kinds": [
+    "reveal_mismatch",
+    "only_ty"
+   ],
+   "message": "Literal\\[(?:True|False)\\]",
+   "source": "class\\s+\\w+\\((?:[^)\\n]*\\btuple\\b|NamedTuple)[^)\\n]*\\):(?:.|\\n)*?def\\s+__(?:eq|ne|lt|le|gt|ge|len|bool)__",
+   "note": "open (unsoundness, diagnostics; state as of 2026-11-05; the design is recorded in the closed ty#2140): ty folds a comparison of a tuple type to Literal[True] / Literal[False] on the assumption that tuple subclasses do not override __eq__, __ne__, __lt__ ... __len__, __bool__; the issue asks for a diagnostic on such overrides. A program that defines such a tuple (or NamedTuple) subclass and gets a Literal from ty is this issue (campaign/day4/verify-v2.md section 2). Kept as a prior stance and NOT as a dismissal: calibration/must_stay_live/ty_constant_fold_tuple_subclass.py must stay live."
+  },
   {
    "id": "TY-4656",
    "stance": "intended",
