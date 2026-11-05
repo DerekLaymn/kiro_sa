@@ -1,0 +1,25 @@
+area                       parents hand seeds
+generics_variance                3          3
+paramspec_concatenate            2          1
+typevartuple_unpack              2          0
+protocols                        5          2
+typeddict                        0          1
+overloads                        0          1
+narrowing_builtin                1          1
+narrowing_user                   3          1
+match_statement                  0          1
+dataclasses                      0          3
+enums_literals                   7          1
+self_classmethods                1          3
+descriptors_properties           4          1
+constructors_metaclasses         4          1
+callables                        3          1
+recursive_aliases                3          2
+final_classvar                   0          1
+abstract_classes                 0          0
+async_generators                 2          1
+inheritance_mro                  4          1
+tuples_unpacking                 0          2
+gradual_any                      1          1
+
+areas with no parent in runs/hits: ['typeddict', 'overloads', 'match_statement', 'dataclasses', 'final_classvar', 'abstract_classes', 'tuples_unpacking']

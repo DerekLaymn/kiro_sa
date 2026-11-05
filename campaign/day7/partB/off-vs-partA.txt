@@ -1,0 +1,5 @@
+old findings compared: 321; old findings changed or missing in the new run: 0
+added findings: 0 in 0 programs
+by runtime relation: {}
+by tier / decided_by: {}
+by pyright rule: {}
