@@ -12,7 +12,7 @@ for the taxonomy, algorithm, oracles and prompts.
 ## Install
 
 ```bash
-pip install -e .            # Python >= your target version (3.13 recommended); also: pip install ty==0.0.84 mypy==2.4.0 pyright typing_extensions
+pip install -e .            # Python >= your target version (3.13 recommended); also: pip install ty==0.0.97 mypy==2.4.0 pyright typing_extensions
 typediff fetch-docs         # local typing-spec / mypy / ty / pyright corpus (needed to verify citations)
 typediff kb-selftest        # confirm KB entries still match your installed tool versions
 ```

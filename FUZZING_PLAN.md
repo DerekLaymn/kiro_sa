@@ -4,8 +4,9 @@ Goal: find **new, confirmed, reportable** bugs in ty (and mypy) and build a docu
 dataset, using `typediff` to separate real bugs from design differences.
 
 Assumptions:
-- ty 0.0.84 and mypy 2.4.0 are pinned for the whole campaign. Upgrading mid-campaign invalidates
-  the knowledge base and the dedup signatures.
+- ty 0.0.97 and mypy 2.4.0 are pinned (ty was bumped from 0.0.84 on Day 5, see
+  campaign/day5-ty97-bump.md). Upgrading mid-campaign invalidates the knowledge base and the dedup
+  signatures.
 - The target is **Python 3.13**. `TypeIs`, `ReadOnly` and PEP 696 type-parameter defaults need
   ≥ 3.13 at runtime, and typediff must run on a Python ≥ the target version.
 - The LLM is OpenRouter: free tier first, paid credits later. The per-role LLM setting (separate
@@ -138,7 +139,7 @@ Every morning:
 
 ```bash
 uv venv -p 3.13 .venv && source .venv/bin/activate      # Python >= target version
-uv pip install ty==0.0.84 mypy==2.4.0 pyright typing_extensions -e .
+uv pip install ty==0.0.97 mypy==2.4.0 pyright typing_extensions -e .
 typediff fetch-docs && typediff kb-selftest             # all PASS
 python scripts/harvest_seeds.py                         # -> seeds/harvested (git-ignored)
 
@@ -209,7 +210,7 @@ This is the checklist the `Self` report (ty#4656) should have gone through:
    - astral-sh/ty issues, open and closed (closed ones may be *intended*, like #4212 and #4656).
    - astral-sh/ruff pull requests (ty's code lives there).
    - For mypy: python/mypy issues.
-6. **Playground:** play.ty.dev (it may be newer than 0.0.84) or mypy-play.net. If it no longer
+6. **Playground:** play.ty.dev (it may be newer than 0.0.97) or mypy-play.net. If it no longer
    reproduces, don't file.
 7. **File one issue per root cause.** Include the minimal repro, actual vs expected output, the
    spec rule, variants, links to related issues and the playground link.
