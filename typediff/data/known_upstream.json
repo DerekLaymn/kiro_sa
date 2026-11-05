@@ -284,7 +284,7 @@
    "url": "https://github.com/astral-sh/ty/issues/4656",
    "kinds": ["only_mypy", "only_ty", "reveal_mismatch", "concern_mismatch", "runtime_miss"],
    "tags": ["self"],
-   "note": "closed 'Not planned' (intended): ty treats Self in a method signature as a TypeVar bounded by the defining class and solves it jointly with the receiver, so Leaf().add(Node()) is accepted; mypy/pyright pin Self to the receiver. The spec is ambiguous. A crash through Self-typed state (list[Self], next: Self | None) is a different, genuine unsoundness"
+   "note": "reported by us, closed as intended behaviour (design divergence), not a bug (closed 'Not planned' 2026-10-05; same topic as ty#4849, closed as duplicate 2026-10-28, where carljm calls ty's behaviour intentional and more correct): ty treats Self in a method signature as a TypeVar bounded by the defining class and solves it jointly with the receiver, so Leaf().add(Node()) is accepted; mypy/pyright pin Self to the receiver. The spec is ambiguous. A crash through Self-typed state (list[Self], next: Self | None) is a different, genuine unsoundness"
   },
   {
    "id": "TY-4152",
@@ -296,12 +296,12 @@
   },
   {
    "id": "TY-4673",
-   "stance": "open",
+   "stance": "duplicate-of",
    "url": "https://github.com/astral-sh/ty/issues/4673",
    "kinds": ["reveal_mismatch", "only_mypy", "concern_mismatch"],
    "message": "bound method",
    "source": "\\bSelf\\b|TypeVar",
-   "note": "open display bug: reveal_type of a bound method prints Self/TypeVar parameters specialised to the receiver (e.g. `Leaf.add(c: Leaf)`), which is not what call checking uses"
+   "note": "display bug (labelled bug; state checked 2026-11-05: closed as duplicate on 2026-10-05, so it is tracked elsewhere): reveal_type of a bound method prints Self/TypeVar parameters specialised to the receiver (e.g. `Leaf.add(c: Leaf)`), which is not what call checking uses"
   },
   {
    "id": "TY-1172",

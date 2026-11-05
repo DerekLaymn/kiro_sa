@@ -19,7 +19,7 @@ Assumptions:
 **How the first report was found, and what it taught us.** It wasn't random fuzzing. A hand-written
 seed probed a feature ty claims to support (`Self` in a parameter). The pipeline flagged ty as
 silent where mypy rejected the call, and a self-consistency oracle seemed to show ty contradicting
-itself. We reported it (ty#4656); the maintainers closed it as **intended**: ty solves `Self` in a
+itself. We reported it (ty#4656); the maintainers closed it as **intended behaviour (design divergence), not a bug**: ty solves `Self` in a
 signature as a TypeVar bounded by the defining class, mypy/pyright pin it to the receiver, the spec
 is ambiguous, and the contradiction was a display bug (ty#4673). Lessons: **targeted seeds plus
 variants still beat random programs**, but a printed signature is not proof, "mypy and pyright
@@ -30,7 +30,7 @@ agree" is not a spec rule, and the tracker must be searched by body text before 
 
 | Result | Seed | Status |
 |---|---|---|
-| inherited method with a `Self` parameter: ty accepts, mypy/pyright reject | `self_param_inherited.py` | Reported (ty#4656); **intended** behaviour, display bug ty#4673. Lands in review / KB `TY-SELF-UPPER-BOUND` |
+| inherited method with a `Self` parameter: ty accepts, mypy/pyright reject | `self_param_inherited.py` | Reported (ty#4656), closed as design difference, not a bug; display issue ty#4673. Lands in review / KB `TY-SELF-UPPER-BOUND` |
 | Same question through **classmethods** and **`tuple[Self, int]`** | `self_classmethod_param.py` | Same design decision; not a bug |
 | ty silent on mixed constrained-TypeVar arguments (runtime `TypeError`) | `constrained_typevar.py` | Duplicate of open **ty#1090**, now closed automatically |
 | ty accepts unknown keyword through `Unpack[TypedDict]` | `readonly_notrequired.py` | Closed upstream **as intended** (ty#4212; open TypedDicts), now closed automatically |

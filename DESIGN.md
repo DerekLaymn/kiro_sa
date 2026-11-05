@@ -301,8 +301,8 @@ and size limits.
 
 ## 8. Worked example: the case that taught these rules (real, ty 0.0.84)
 
-`examples/self_param_unsound.py` is **not** a confirmed ty bug. We reported it as one (ty#4656) and
-the maintainers closed it as intended. It stays in the repo because it shows how a plausible-looking
+`examples/self_param_unsound.py` is **not** a bug in ty. We reported it (ty#4656) and
+the maintainers closed it as intended behaviour (a design divergence, not a bug; ty#4849 is the same topic from another user, closed as a duplicate on 2026-10-28). It stays in the repo because it shows how a plausible-looking
 finding goes wrong, and which rules now stop that.
 
 ```python
@@ -322,7 +322,7 @@ defining class and solves it jointly with the receiver (the typing spec's own de
 `Self = Node` here. mypy and pyright pin `Self` to the receiver. The typing spec does not settle it.
 Pinning makes any non-final class with a `Self` parameter break Liskov substitutability, which is why
 ty chose its reading (ty#1172 is the earlier discussion, ty#2255 tracks the missing override check).
-The only real bug found was the *printed* signature `bound method Leaf.add(c: Leaf)` (ty#4673).
+The only real defect is the *printed* signature `bound method Leaf.add(c: Leaf)`, a display bug (ty#4673, closed as a duplicate on 2026-10-05).
 
 **What typediff did on the way (and why that was wrong).**
 - `SELF_CONTRADICTION/strong` came from that printed signature: a display bug, not a call-checking fact.

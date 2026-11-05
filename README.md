@@ -104,7 +104,7 @@ repro. `dataset.jsonl` holds one record per finding, with a dedup signature.
 |---|---|
 | `examples/known_divergences.py` | 6 discrepancies, all closed deterministically: 5 by KB entries (redeclaration, `Callable.__name__`, join vs union, literal widening, assignment narrowing) and 1 as an error cascade of the first |
 | `examples/needs_experiments.py` | `==`-narrowing dismissed only after the `strict-equality-semantics` toggle confirms it. A mutable-override `AttributeError` that both checkers miss goes to review with opt-in-check evidence |
-| `examples/self_param_unsound.py` | The case that taught the `Self` rules: reported as a ty false negative (ty#4656), closed by the maintainers as **intended** (display bug: ty#4673). Both discrepancies land in REVIEW: weak `SELF_CONTRADICTION` only, KB hint `TY-SELF-UPPER-BOUND` demoted because a `Self`-typed attribute crashes at runtime, prior-stance warning on any draft. See DESIGN.md §8 |
+| `examples/self_param_unsound.py` | The case that taught the `Self` rules: reported by us as ty#4656, closed as **intended behaviour (design divergence), not a bug** (the display issue is ty#4673, closed as a duplicate). Both discrepancies land in REVIEW: weak `SELF_CONTRADICTION` only, KB hint `TY-SELF-UPPER-BOUND` demoted because a `Self`-typed attribute crashes at runtime, prior-stance warning on any draft. See DESIGN.md §8 |
 
 ## Layout
 
