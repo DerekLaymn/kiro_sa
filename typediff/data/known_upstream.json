@@ -1,5 +1,5 @@
 {
- "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, an optional demote_on_exception (true: the entry steps aside and the finding stays in review when CPython raised a type-related exception in that statement) and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles. CRASH entries (kind \"crash\", matched in typediff/crash_upstream.py from the pipeline because crash findings have no discrepancy): fields id, kind, tool (mypy|ty|pyright; one entry per tool, the same program can crash two tools with two different issues), signature (regex, re.fullmatch against the crash signature, e.g. ty:signal-SIGABRT:stack-overflow, mypy:signal-SIGSEGV, pyright:internal:RangeError, <tool>:timeout), requires (MANDATORY name in crash_upstream._CRASH_REQUIRES, a pure function of the parsed program: a crash is dismissed only when tool AND signature AND source shape all match, never on tool + signature alone), dismissal (DUPLICATE), stance, url, note. Crash entries build no KB entry and have no kb-selftest example.",
+ "_doc": "Already-reported upstream issues. A discrepancy matching an entry in `entries` is closed as DUPLICATE (open issue) or DESIGN_DIVERGENCE (closed as intended), with the link. Add an entry every time you file or find an issue so the campaign stops re-triaging it. Fields: kind (only_mypy|only_ty|reveal_mismatch|reveal_unpaired|concern_mismatch), silent_tool, codes (diagnostic codes of the reporting tool), message (regex on its message), statement (optional regex on the statement), source (optional regex on the whole program), dismissal, url, note, an optional demote_on_exception (true: the entry steps aside and the finding stays in review when CPython raised a type-related exception in that statement) and an optional stance (open|intended|not_planned|duplicate-of) used by the prior-stance check (typediff/priors.py). `prior_stances` entries NEVER dismiss anything: they only cap a would-be CONFIRMED/CANDIDATE finding at REVIEW and attach the stance + url to the draft. Fields: id, stance, url, note, kinds (discrepancy kinds, gate), and either a signature (message/codes/statement/source) or tags (feature tags that must all be present in the statement or program). Searching the tracker and discuss.python.org stays a manual step: check the BODY text, not only titles. CRASH entries (kind \"crash\", matched in typediff/crash_upstream.py from the pipeline because crash findings have no discrepancy): fields id, kind, tool (mypy|ty|pyright; one entry per tool, the same program can crash two tools with two different issues), signature (regex, re.fullmatch against the crash signature, e.g. ty:signal-SIGABRT:stack-overflow, mypy:signal-SIGSEGV, pyright:internal:RangeError, <tool>:timeout), requires (MANDATORY name in crash_upstream._CRASH_REQUIRES, a pure function of the parsed program: a crash is dismissed only when tool AND signature AND source shape all match, never on tool + signature alone), dismissal (DUPLICATE), stance, url, note. Crash entries build no KB entry and have no kb-selftest example.",
  "entries": [
   {
    "id": "TY-1090",
@@ -103,7 +103,7 @@
    "dismissal": "DUPLICATE",
    "stance": "open",
    "url": "https://github.com/astral-sh/ty/issues/4148",
-   "note": "open (bug, fatal, attributes, callables, cycles; state as of 2026-11-05): ty overflows its stack when an instance is called and its class declares __call__ as an attribute annotated with the class itself (class C: __call__: 'C'; C()()), also with Self or a union holding C or Self. The issue shows the exact two-line program; a fix attempt (ruff#28691) was closed unmerged. Verified on ty 0.0.84 and 0.0.97. Same shape as MYPY-22361 (the mypy crash on the same programs). Since Day 5 the matcher (call_attr_own_type) also covers every __call__ attribute type that leads back to its class and is then called, verified on ty 0.0.84 and 0.0.97 in campaign/day4/verify-v1.md section 4: mutually recursive pairs (A.__call__: B, B.__call__: A), a three-class chain, ClassVar[...], 'B | None' pairs, subclass instances, and a call through a union-typed parameter (obj: C | Other). __call__: int, an unrelated class, list[C] and a __call__ method do not crash and are not matched."
+   "note": "open (bug, fatal, attributes, callables, cycles; state as of 2026-11-05): ty overflows its stack when an instance is called and its class declares __call__ as an attribute annotated with the class itself (class C: __call__: 'C'; C()()), also with Self or a union holding C or Self. The issue shows the exact two-line program; a fix attempt (ruff#28691) was closed unmerged. Verified on ty 0.0.84 and 0.0.97. Same shape as MYPY-22361 (the mypy crash on the same programs). Since Day 5 the matcher (call_attr_own_type) also covers every __call__ attribute type that leads back to its class and is then called, verified on ty 0.0.84 and 0.0.97 in campaign/day4/verify-v1.md section 4: mutually recursive pairs (A.__call__: B, B.__call__: A), a three-class chain, ClassVar[...], 'B | None' pairs, subclass instances, a call through a union-typed parameter (obj: C | Other), and a local bound by c = C() and then called (Day-5 seed 0bc328316b4c; the issue program with one more line). __call__: int, an unrelated class, list[C] and a __call__ method do not crash and are not matched."
   },
   {
    "id": "TY-4899",
@@ -169,7 +169,7 @@
    "dismissal": "DUPLICATE",
    "stance": "open",
    "url": "https://github.com/python/mypy/issues/22361",
-   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault when an instance is called and its class declares __call__ as an attribute annotated with the class itself, Self | None or C | None. The declaration alone, __get__: C and __call__: int do not crash. Verified on mypy 2.4.0. Since Day 5 the matcher also covers the other __call__ attribute types that lead back to their class (mutual pairs, chains, ClassVar, subclass instances, calls through a union-typed parameter; campaign/day4/verify-v1.md section 4), same as TY-4148. The decorated-__get__ program (A7) also crashes mypy 2.4.0 but its relation to this issue is unconfirmed, so it is not matched."
+   "note": "open (crash, topic-recursive-types; state as of 2026-11-04): segfault when an instance is called and its class declares __call__ as an attribute annotated with the class itself, Self | None or C | None. The declaration alone, __get__: C and __call__: int do not crash. Verified on mypy 2.4.0. Since Day 5 the matcher also covers the other __call__ attribute types that lead back to their class (mutual pairs, chains, ClassVar, subclass instances, calls through a union-typed parameter, a local bound by c = C() and then called; campaign/day4/verify-v1.md section 4), same as TY-4148. The decorated-__get__ program (A7) also crashes mypy 2.4.0 but its relation to this issue is unconfirmed, so it is not matched."
   },
   {
    "id": "PYRIGHT-11961",
@@ -233,7 +233,7 @@
    "dismissal": "DUPLICATE",
    "example": "from collections.abc import Callable\n\n\nclass Handler[T]:\n    def __init__(self, cb: Callable[[T], None]) -> None:\n        self.cb = cb\n\n\ndef use(h: Handler[int]) -> None:\n    h.cb = lambda v: print(v.bit_length())\n\n\nhf = Handler[float](lambda x: print(x.is_integer()))\nuse(hf)\n",
    "url": "https://github.com/python/mypy/issues/22339",
-   "note": "open mypy bug (state as of 2026-11-04): PEP 695 variance inference treats a writable Callable[[T], None] attribute as contravariant, so Handler[float] is accepted as Handler[int] and the later callback reassignment fails at runtime; ty and pyright infer invariant and reject. Narrow AST matcher: the class named in ty's message is PEP 695 and stores a non-Final, non-underscore Callable[[..T..], R] attribute (class annotation or self.x = param); Final attributes and methods are not covered. Verified on mypy 2.4.0."
+   "note": "open mypy bug (state as of 2026-11-04): PEP 695 variance inference treats a writable Callable[[T], None] attribute as contravariant, so Handler[float] is accepted as Handler[int] and the later callback reassignment fails at runtime; ty and pyright infer invariant and reject. Narrow AST matcher: the class named in ty's message is PEP 695 and stores a non-Final, non-underscore Callable[[..T..], R] attribute (class annotation or self.x = param) or a public property whose @x.setter takes such a Callable (the issue body lists 'a property with a setter' as the same behaviour); Final attributes, read-only properties and plain methods are not covered. Verified on mypy 2.4.0 (Day-5 seed a660052c7821)."
   },
   {
    "id": "MYPY-20969",
@@ -267,13 +267,42 @@
    "note": "open mypy bug (bug, topic-enum, topic-type-narrowing; reopened; state as of 2026-11-04): mypy narrows an enum.Flag like a plain Enum, expanding it into its members, although the typing spec exempts Flag because members combine arbitrarily. The issue shows the == form; the same root cause makes the final else of an `x is F.A / elif x is F.B` chain look unreachable, so errors there are never reported (ty and pyright report them). Narrow AST matcher: the statement is in the final else of such a chain over a Flag/IntFlag subclass; the same chain over a plain Enum is not covered. Known limit: the matcher does not check that the chain tests every member, so a partial chain could be over-matched. Verified on mypy 2.4.0."
   },
   {
+   "id": "MYPY-21937-REVEAL",
+   "kind": "reveal_unpaired",
+   "message": "Revealed type",
+   "requires": "flag_is_chain",
+   "dismissal": "DUPLICATE",
+   "stance": "open",
+   "url": "https://github.com/python/mypy/issues/21937",
+   "note": "same root cause as MYPY-21937 (open, reopened; state as of 2026-11-05): mypy expands an enum.Flag into its members, so the final else of an `x is F.A / elif x is F.B` chain over a Flag is treated as unreachable and reveal_type there prints nothing, although CPython runs that branch (a combined value such as F.A | F.B reaches it). ty and pyright reveal a type there. Narrow AST matcher: the statement is in the final else of such a chain over a Flag/IntFlag subclass. Verified on mypy 2.4.0 (Day-5 seeds 21e5664f55a9, 7517113c9957, 93344aa813c2, b3771201cb49) and in campaign/day4/verify-v2.md section 4.4."
+  },
+  {
    "id": "TY-876",
    "kind": "reveal_mismatch",
    "message": "Revealed type: `Literal\\[",
    "requires": "flag_member_op",
    "dismissal": "DUPLICATE",
    "url": "https://github.com/astral-sh/ty/issues/876",
-   "note": "open ty umbrella issue 'Enums: advanced features' (state as of 2026-11-04), unchecked item 'Handling of enum.Flag (enum expansion may not be performed for subclasses of enum.Flag)': ty reveals F.R | F.W as Literal[F.R, F.W] where mypy and pyright reveal F, although the runtime value <F.R|W: 3> is neither member. Narrow AST matcher: the statement uses a bitwise combination of two Flag/IntFlag members (directly or through a variable assigned from one). Verified on ty 0.0.84."
+   "note": "open ty umbrella issue 'Enums: advanced features' (state as of 2026-11-05), unchecked item 'Handling of enum.Flag (enum expansion may not be performed for subclasses of enum.Flag)': ty reveals F.R | F.W as Literal[F.R, F.W] where mypy and pyright reveal F, although the runtime value <F.R|W: 3> is neither member. Narrow AST matcher: the statement uses a bitwise combination of two Flag/IntFlag members, or the inversion ~F.X of one member (ty reveals ~F.W as Literal[F.W], runtime F.R; campaign/day4/verify-v2.md section 4.4), directly or through a variable assigned from one. Verified on ty 0.0.84."
+  },
+  {
+   "id": "MYPY-16830",
+   "kind": "only_mypy",
+   "codes": ["assignment", "arg-type", "assert-type"],
+   "message": "Literal\\[",
+   "requires": "enum_value_alias",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/python/mypy/issues/16830",
+   "note": "closed as completed on 2026-01-16 (PR #20492 reworked equality and identity narrowing only), but mypy 2.4.0 still reproduces the rest (state as of 2026-11-05): mypy treats an enum member that is a runtime ALIAS of an earlier member as a member of its own. The issue body says 'aliases or duplicate values' and cites the Python docs rule that a second member with the same value is an alias; a second symptom, assert_never on an alias, is the open mypy#21117 (explicit alias form). Here mypy rejects x: Literal[E.A] = E.B, assert_type(E.B, Literal[E.A]) or assert_never(e) although E.B is E.A at runtime; ty matches CPython, pyright has the same limitation (pyright#11100, open). Narrow AST matcher: a mypy message names Literal[E.alias] where alias repeats an earlier constant value of the same Enum/IntEnum/StrEnum (True after 1 included) or is assigned an earlier member; auto() values, a custom __new__ and Flag classes are not judged. Verified on mypy 2.4.0 (campaign/day4/verify-v3.md section 1, Day-5 seeds 5b98a456c114, 744e0c9a2bca, 99f2b5bbcca2, bcac6db24c36)."
+  },
+  {
+   "id": "MYPY-16830-REVEAL",
+   "kind": "reveal_mismatch",
+   "message": "Revealed type",
+   "requires": "enum_value_alias",
+   "dismissal": "DUPLICATE",
+   "url": "https://github.com/python/mypy/issues/16830",
+   "note": "same root cause as MYPY-16830 (state as of 2026-11-05): reveal_type of an enum alias member (ONE = 1; UNO = 1, or TRUE = True after ONE = 1 in an IntEnum) shows the alias as a member of its own (Literal[E.UNO], .value Literal[True]) where ty shows the first member and its value (Literal[E.ONE], Literal[1]), which is what CPython does (E.UNO is E.ONE). pyright shows the alias too (pyright#11100). Narrow AST matcher: the statement reads E.alias of a value-duplicate or assigned alias."
   },
   {
    "id": "TY-876-ASSERT",

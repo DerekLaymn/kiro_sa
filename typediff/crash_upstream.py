@@ -341,7 +341,8 @@ def call_attr_own_type(tree: ast.Module) -> bool:
     """ty#4148 / mypy#22361: a class whose ``__call__`` is declared as an ATTRIBUTE whose type leads back to the class
     (``__call__: C``, ``Self``, a union / ``Optional`` / ``ClassVar`` of those, or a cycle through other classes:
     ``A.__call__: B`` and ``B.__call__: A``, a chain of three), and an instance of that class, or of a subclass, being
-    called (``C()()``, or a name annotated with the class or with a union containing it, e.g. ``obj: C | Other``).
+    called (``C()()``, a name annotated with the class or with a union containing it, e.g. ``obj: C | Other``, or a name
+    assigned from ``C()``: ``c = C(); c()``).
     campaign/day4/verify-v1.md section 4: mutual pair, three-class chain, ``ClassVar``, ``"B | None"`` pairs and subclass
     instances all crash ty and mypy; ``__call__: int``, an unrelated class or ``list[C]`` do not (no cycle)."""
     classes = {c.name: c for c in _classes(tree)}
@@ -384,6 +385,9 @@ def call_attr_own_type(tree: ast.Module) -> bool:
             typed.add(n.target.id)
         elif isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
             typed |= {p.arg for p in _params(n) if in_family(p.annotation)}
+        elif (isinstance(n, ast.Assign) and isinstance(n.value, ast.Call) and isinstance(n.value.func, ast.Name)
+              and n.value.func.id in family):  # ``c = C()`` then ``c()``: a local bound to an instance
+            typed |= {t.id for t in n.targets if isinstance(t, ast.Name)}
     for n in ast.walk(tree):
         if isinstance(n, ast.Call):
             f = n.func

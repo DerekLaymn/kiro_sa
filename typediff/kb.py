@@ -1096,7 +1096,9 @@ _BACKTICK_GENERIC = re.compile(r"`(\w+)\[")
 def _callable_attr_contravariance(s, d) -> bool:
     """python/mypy#22339: mypy infers a PEP 695 class contravariant in T although it stores a mutable (non-Final, not
     underscore-private) Callable[[..T..], R] attribute (class-level annotation or `self.x = param`). The class is named
-    in ty's message. Final attributes, methods and classes with other attribute shapes do not match."""
+    in ty's message. A public `@x.setter` whose value parameter is such a Callable also matches (the issue body: "a
+    property with a setter"). Final attributes, read-only properties, methods and classes with other attribute shapes
+    do not match."""
     from . import crash_upstream as cu
 
     tree = s.amap.tree
@@ -1122,6 +1124,11 @@ def _callable_attr_contravariance(s, d) -> bool:
                 return True
         for fn in cu._methods(c):
             ann = {p.arg: p.annotation for p in cu._params(fn) if p.annotation is not None}
+            # a public property with a setter taking the callable: the issue body lists it as the same bug
+            if (not fn.name.startswith("_")
+                    and any(isinstance(dec, ast.Attribute) and dec.attr == "setter" for dec in fn.decorator_list)
+                    and any(contra_callable(a, tps) for a in ann.values())):
+                return True
             for n in ast.walk(fn):
                 if (isinstance(n, ast.Assign) and isinstance(n.value, ast.Name) and n.value.id in ann
                         and contra_callable(ann[n.value.id], tps)
@@ -1206,7 +1213,9 @@ def _flag_is_chain(s, d) -> bool:
 
 def _flag_member_op(s, d) -> bool:
     """astral-sh/ty#876 (checklist item: enum expansion must not be performed for enum.Flag): the statement uses
-    a bitwise combination of two members of a Flag / IntFlag subclass, directly or through a variable assigned from one."""
+    a bitwise combination of two members of a Flag / IntFlag subclass, or the inversion ``~F.X`` of one member (campaign/
+    day4/verify-v2.md section 4.4: ty reveals ``~F.R`` as ``Literal[F.R]``, runtime ``F.W``), directly or through a
+    variable assigned from one."""
     tree = s.amap.tree
     if tree is None:
         return False
@@ -1218,8 +1227,9 @@ def _flag_member_op(s, d) -> bool:
         return isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.value.id in flags
 
     def combo(n) -> bool:
-        return (isinstance(n, ast.BinOp) and isinstance(n.op, (ast.BitOr, ast.BitAnd, ast.BitXor))
-                and member(n.left) and member(n.right))
+        return ((isinstance(n, ast.BinOp) and isinstance(n.op, (ast.BitOr, ast.BitAnd, ast.BitXor))
+                 and member(n.left) and member(n.right))
+                or (isinstance(n, ast.UnaryOp) and isinstance(n.op, ast.Invert) and member(n.operand)))
 
     nodes = _stmt_walk(s, d)
     if any(combo(n) for n in nodes):
@@ -1250,7 +1260,63 @@ def _flag_combo_literal_arg(s, d) -> bool:
     return _flag_member_op(s, d)
 
 
+_LITERAL_MEMBER = re.compile(r"Literal\[(?:\w+\.)*?(\w+)\.(\w+)\]")
+
+
+def _enum_value_aliases(tree: ast.AST) -> dict[str, set[str]]:
+    """Enum / IntEnum / StrEnum classes of the program -> names that are ALIASES at runtime: a member whose constant value
+    equals an earlier member's (``ONE = 1; UNO = 1``, also ``True`` after ``1``), or that is assigned an earlier member's
+    name (``DEFAULT = V2``). Classes with ``__new__`` (custom values) and non-constant values (``auto()``) are not judged."""
+    from . import crash_upstream as cu
+
+    out: dict[str, set[str]] = {}
+    for c in cu._classes(tree):
+        if not any(cu._head(b) in ("Enum", "IntEnum", "StrEnum") for b in c.bases):
+            continue
+        if any(f.name == "__new__" for f in cu._methods(c)):
+            continue
+        first: dict = {}
+        members: set[str] = set()
+        aliases: set[str] = set()
+        for st in c.body:
+            if not (isinstance(st, ast.Assign) and len(st.targets) == 1 and isinstance(st.targets[0], ast.Name)):
+                continue
+            name = st.targets[0].id
+            if name.startswith("_"):
+                continue
+            v = st.value
+            if isinstance(v, ast.Name) and v.id in members:
+                aliases.add(name)
+            elif isinstance(v, ast.Constant) and v.value in first:
+                aliases.add(name)
+            elif isinstance(v, ast.Constant):
+                first[v.value] = name
+            members.add(name)
+        if aliases:
+            out[c.name] = aliases
+    return out
+
+
+def _enum_value_alias(s, d) -> bool:
+    """python/mypy#16830 ("Enum member aliases are treated as never-equal", the body names "aliases or duplicate values")
+    and #21117 (alias + assert_never): mypy treats an enum member that is a runtime ALIAS of an earlier member (same
+    constant value, or assigned an earlier member) as a member of its own. only_mypy rows: a mypy message names
+    `Literal[E.alias]`. reveal rows: the statement reads `E.alias`. Needs a plain Enum / IntEnum / StrEnum of the program
+    with such an alias; `auto()` values, custom `__new__` and a Flag are not judged."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    aliases = _enum_value_aliases(tree)
+    if not aliases:
+        return False
+    if d.kind == K.ONLY_MYPY:
+        return any(m[2] in aliases.get(m[1], ()) for x in d.mypy for m in _LITERAL_MEMBER.finditer(x.message))
+    return any(isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.attr in aliases.get(n.value.id, ())
+               for n in _stmt_walk(s, d))
+
+
 _REQUIRES = {"flag_combo_literal_arg": _flag_combo_literal_arg,
+             "enum_value_alias": _enum_value_alias,
              "open_typeddict_kwargs": _open_typeddict_kwargs,
              "rebound_inferred_lambda": _rebound_inferred_lambda,
              "unquoted_forward_ref": _unquoted_forward_ref,
