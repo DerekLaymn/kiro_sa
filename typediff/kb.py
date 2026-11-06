@@ -2581,6 +2581,128 @@ def m_contextmanager_iterator_deprecated(s, d):
     return True
 
 
+def _metaclass_call_returns(tree: ast.AST) -> dict[str, str]:
+    """Day 10 (python/mypy#8595): program class -> the unparsed return annotation of the ``__call__`` of its metaclass
+    (``metaclass=M`` on the class or on a program base), for classes where that annotation says the call does NOT return an
+    instance of the class. Not covered: no annotation, ``Any``, ``Self``, a TypeVar (also a PEP 695 parameter of the method),
+    and any annotation that names the class or one of its program bases; a metaclass that only inherits ``__call__``."""
+    classes = {c.name: c for c in ast.walk(tree) if isinstance(c, ast.ClassDef)}
+
+    def meta_of(c: ast.ClassDef, seen: tuple[str, ...] = ()) -> str | None:
+        for kw in c.keywords:
+            if kw.arg == "metaclass" and isinstance(kw.value, ast.Name):
+                return kw.value.id
+        for b in c.bases:
+            if isinstance(b, ast.Name) and b.id in classes and b.id not in seen:
+                m = meta_of(classes[b.id], seen + (c.name,))
+                if m:
+                    return m
+        return None
+
+    typevars = {t.targets[0].id for t in ast.walk(tree)
+                if isinstance(t, ast.Assign) and len(t.targets) == 1 and isinstance(t.targets[0], ast.Name)
+                and isinstance(t.value, ast.Call) and _plain_name(t.value.func) in ("TypeVar", "ParamSpec", "TypeVarTuple")}
+    out: dict[str, str] = {}
+    for name, c in classes.items():
+        meta = classes.get(meta_of(c) or "")
+        call = next((f for f in meta.body if isinstance(f, ast.FunctionDef) and f.name == "__call__"), None) if meta else None
+        if call is None or call.returns is None:
+            continue
+        ret = parse_string_annotation(call.returns) or call.returns
+        names = {n.id for n in ast.walk(ret) if isinstance(n, ast.Name)} | {n.attr for n in ast.walk(ret) if isinstance(n, ast.Attribute)}
+        own = {name, *(b.id for b in c.bases if isinstance(b, ast.Name))}
+        own |= {n for base in list(own) if base in classes for n in
+                (b.id for b in classes[base].bases if isinstance(b, ast.Name))}
+        if names & ({"Any", "Self"} | typevars | {t.name for t in getattr(call, "type_params", [])} | own):
+            continue
+        out[name] = ast.unparse(ret)
+    return out
+
+
+def _class_of_annotation(ann: ast.AST | None) -> str | None:
+    """``C`` for ``C`` / ``'C'`` and for ``type[C]`` / ``Type[C]``."""
+    if ann is None:
+        return None
+    ann = parse_string_annotation(ann) or ann
+    if isinstance(ann, ast.Subscript) and _plain_name(ann.value) in ("type", "Type"):
+        ann = ann.slice
+    return ann.id if isinstance(ann, ast.Name) else None
+
+
+def _metaclass_classes_in_statement(s, d, rets: dict[str, str]) -> set[str]:
+    """Classes of ``rets`` that the statement names, calls through a ``type[C]`` parameter / variable, or reaches through a
+    variable assigned from them (three assignments deep)."""
+    tree = s.amap.tree
+    found: set[str] = set()
+
+    def visit(nodes, depth: int) -> None:
+        for n in nodes:
+            if not isinstance(n, ast.Name):
+                continue
+            if n.id in rets:
+                found.add(n.id)
+                continue
+            for p in ast.walk(tree):
+                if (isinstance(p, ast.arg) and p.arg == n.id) \
+                        or (isinstance(p, ast.AnnAssign) and isinstance(p.target, ast.Name) and p.target.id == n.id):
+                    c = _class_of_annotation(p.annotation)
+                    if c in rets:
+                        found.add(c)
+            v = _last_assigned_value(tree, n.id, d.anchor) if depth < 3 else None
+            if v is not None:
+                visit(list(ast.walk(v)), depth + 1)
+
+    visit(_stmt_walk(s, d), 0)
+    return found
+
+
+_ASSERT_TYPE_MYPY = re.compile(r'^Expression is of type "(?P<got>[^"]+)", not "(?P<want>[^"]+)"$')
+
+
+def m_metaclass_call_return(s, d):
+    """python/mypy#8595 (closed; maintainer: "unlikely this will be ever supported"): mypy ignores the return annotation of a
+    metaclass ``__call__`` and treats ``C(..)`` as an instance of ``C``; ty and pyright use the annotation, as CPython does.
+    The statement must name a class whose metaclass ``__call__`` is annotated with a type that is not the class (see
+    ``_metaclass_call_returns``), and the three tools must differ in exactly that way:
+
+    * ``reveal_mismatch``: mypy reveals the class, ty and pyright reveal the same other type;
+    * ``only_mypy``: every mypy diagnostic is ``[assert-type]`` saying the expression is the class and not the annotated type;
+    * ``only_ty``: every ty diagnostic is an invalid return / assignment / argument whose message names the class and the
+      annotated type.
+
+    A class without such a metaclass, a metaclass ``__call__`` that returns the class (or ``Any`` / ``Self`` / a TypeVar), and
+    a disagreement of a different shape do not match."""
+    tree = s.amap.tree
+    if tree is None:
+        return False
+    rets = _metaclass_call_returns(tree)
+    if not rets:
+        return False
+    used = _metaclass_classes_in_statement(s, d, rets)
+    if not used:
+        return False
+    if d.kind == K.REVEAL_MISMATCH:
+        if not (d.mypy and d.ty and d.pyright) or d.pyright[0].revealed_type is None:
+            return False
+        m, t = _rev(d, "mypy", s), _rev(d, "ty", s)
+        p = normalize(d.pyright[0].revealed_type, s.module)
+        return bool(m and t and p and t.text == p.text and t.text != m.text
+                    and re.sub(r"\[.*", "", m.text).rsplit(".", 1)[-1] in used)
+    if d.kind == K.ONLY_MYPY:
+        if not d.mypy or any(x.code != "assert-type" for x in d.mypy):
+            return False
+        for x in d.mypy:
+            m = _ASSERT_TYPE_MYPY.match(x.message.strip())
+            if not m or not any(re.sub(r"\[.*", "", m["got"]).rsplit(".", 1)[-1] == c and m["want"] == rets[c] for c in used):
+                return False
+        return True
+    if d.kind == K.ONLY_TY:
+        if not d.ty or any(x.code not in ("invalid-return-type", "invalid-assignment", "invalid-argument-type") for x in d.ty):
+            return False
+        return all(any(f"`{c}`" in x.message and f"`{rets[c]}`" in x.message for c in used) for x in d.ty)
+    return False
+
+
 ENTRIES.extend([
     KBEntry(  # Day-10 block. No `example`: kb-selftest stays at the 20 Day-9 entries; tests/test_day10_pipeline.py runs the real tools
         "TY-CONTEXTMANAGER-ITERATOR-DEPRECATED",
@@ -2597,6 +2719,20 @@ ENTRIES.extend([
         "return annotation, and the only ty diagnostics are that warning with the stub's own wording. The program is still "
         "valid at runtime; the entry says nothing about any other `deprecated` diagnostic.",
         (K.ONLY_TY,), m_contextmanager_iterator_deprecated, auto=True, runtime_override=False,
+    ),
+    KBEntry(  # Day-10 morning (phase 5). No `example` (kb-selftest stays at 20); tests/test_day10_morning.py runs the real tools
+        "MYPY-8595-METACLASS-CALL",
+        "mypy ignores the return annotation of a metaclass __call__; ty and pyright follow it",
+        Dismissal.KNOWN_LIMITATION, "https://github.com/python/mypy/issues/8595",
+        "mypy treats `C(..)` as an instance of `C` even when the metaclass of `C` defines `__call__` with another return type "
+        "(`def __call__(cls, *args) -> str`). ty and pyright use the annotation and so does CPython, which runs "
+        "`Meta.__call__`. python/mypy#8595 was closed on 2020-03-27 with the maintainer's comment that this is unlikely ever to "
+        "be supported; python/mypy#14122 (open) tracks the related handling of `__call__` on metaclasses. Seen on Days 9 and 10 "
+        "as a reveal of the class, an `assert_type` against the annotated type, or ty's invalid return / assignment / argument "
+        "for the annotated type. Fires only when the statement reaches a class whose metaclass `__call__` is annotated with a "
+        "type that does not mention the class (not `Any`, `Self` or a TypeVar), and the three tools differ exactly in that "
+        "way (mypy: the class; ty and pyright: the annotated type).",
+        (K.REVEAL_MISMATCH, K.ONLY_MYPY, K.ONLY_TY), m_metaclass_call_return, auto=True, runtime_override=False,
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation

@@ -1,0 +1,3 @@
+mypy: mypy 2.4.0 (compiled: yes)
+ty: ty 0.0.97
+pyright: pyright 1.1.414

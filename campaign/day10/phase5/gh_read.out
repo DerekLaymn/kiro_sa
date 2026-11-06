@@ -1,0 +1,82 @@
+=== python/mypy#8595
+{"body":"* Are you reporting a bug, or opening a feature request?\r\nBug/Feature request ?\r\n\r\n* Minimal repro:\r\n```py\r\nclass BaseMeta(type):\r\n    # make it so that constructing a class' instance will return a string instead\r\n    def __call__(cls, *args, **kwargs) -\u003e str:\r\n        return \"test\"\r\n\r\nclass Base(metaclass=BaseMeta):\r\n    pass\r\n\r\ninst = Base()\r\nreveal_type(inst)  # revealed type is 'Base' instance\r\nprint(inst)  # prints 'test' at runtime\r\n```\r\n\r\n* What is the actual behavior/output?\r\nAs explained by the comments in the example above\r\n\r\n* What is the behavior/output you expect?\r\nRevealed type would be `str`, as the `__call__` return type specifies.\r\n\r\n* What are the versions of mypy and Python you are using?\r\n* Do you see the same issue after installing mypy from Git master?\r\nPython 3.8. Happens on the current Git master, and the previous version of MyPy I was using (it was like 0.76X).\r\n","closedAt":"2020-03-27T23:32:52Z","labels":[],"number":8595,"state":"CLOSED","stateReason":"COMPLETED","title":"Metaclass __call__ ignores return type","url":"https://github.com/python/mypy/issues/8595"}
+--- comments (last 3)
+author:	ilevkivskyi
+association:	member
+edited:	false
+status:	none
+--
+It is unlikely this will be ever supported, so doesn't really make sense to keep this open.
+--
+author:	DevilXD
+association:	none
+edited:	false
+status:	none
+--
+Why is that so? Can I get a better explanation? Inspecting the metaclass for the `__call__` return type should be easy to do, I'd think =/
+--
+author:	DevilXD
+association:	none
+edited:	true
+status:	none
+--
+@ilevkivskyi Can you please respond to this?
+
+Are meta classes something that cannot be statically analyzed?
+--
+author:	pinghedm
+association:	none
+edited:	false
+status:	none
+--
+I'm doing a very similar thing - curious if there is any further information available as well.
+--
+=== python/mypy#14122
+{"body":"Currently we don't handle `__call__()` on metaclasses correctly. For example:\r\n\r\n```python\r\nclass M(type):\r\n    def __call__(self, x: int) -\u003e Any: ...\r\n\r\nclass C(metaclass=M): ...\r\n\r\nC(x=1)\r\n```\r\nresults in a false positive. Also similarly handling of metaclass `__call__()` in protocols is not very principled, see e.g. https://github.com/python/mypy/pull/14121","closedAt":null,"labels":["bug","priority-2-low","topic-protocols"],"number":14122,"state":"OPEN","stateReason":"","title":"Support __call__ on metaclasses","url":"https://github.com/python/mypy/issues/14122"}
+--- comments (last 3)
+=== python/mypy#15182
+{"body":"This follows gh-1020 which was closed by gh-7188. This arises because I am adding type hints to sympy (https://github.com/sympy/sympy/pull/25103).\r\n\r\nIn the following code we have a subclass whose `__new__` method is only guaranteed to return objects that are types of the superclass:\r\n```python\r\nfrom __future__ import annotations\r\n\r\nclass A:\r\n    def __new__(cls) -\u003e A:\r\n        return super().__new__(cls)\r\n\r\nclass B(A):\r\n    def __new__(cls) -\u003e A:\r\n        return super().__new__(cls)\r\n\r\nreveal_type(B())\r\n```\r\nWith mypy this is rejected and the type of `B()` is inferred incorrectly but pyright accepts this and gets the inference for `B()` correct:\r\n```console\r\n$ mypy q.py\r\nq.py:8: error: Incompatible return type for \"__new__\" (returns \"A\", but must return a subtype of \"B\")  [misc]\r\nq.py:11: note: Revealed type is \"q.B\"\r\nFound 1 error in 1 file (checked 1 source file)\r\n$ pyright q.py\r\n...\r","closedAt":"2026-05-27T01:13:11Z","labels":["bug"],"number":15182,"state":"CLOSED","stateReason":"COMPLETED","title":"Honor return type of `__new__` even if not a subclass","url":"https://github.com/python/mypy/issues/15182"}
+--- comments (last 3)
+
+class B(A):
+    def __new__(cls) -> A:
+        return super().__new__(cls)
+
+class C(B):
+    def __init__(self): # possibly use self:C here.
+        pass
+
+# C.__init__ is earlier in the "combined MRO" than B.__new__
+
+reveal_type(B()) # should be A
+reveal_type(C()) # should also be A
+```
+I think the overall logic in `type_object_type` and other places needs a rethink from first principles to be able to handle all cases. The presence of the `is_new` variable implies a confusion that `__new__` and `__init__` are somehow interchangeable so anything derived from it is likely incorrect f
+--
+author:	jorenham
+association:	contributor
+edited:	false
+status:	none
+--
+This is also a blocker for correctly annotating the `numpy.object_` constructor, as well as the constructors of (all) other scalar types in case of "multidimensional" input:
+
+```pycon
+>>> import numpy as np
+>>> type(np.object_(42))
+<class 'int'>
+>>> np.float16([3.14, 6.28])
+array([3.14, 6.28], dtype=float16)
+```
+
+See https://github.com/python/mypy/issues/18343#issuecomment-2571784915 for details.
+--
+author:	Avasam
+association:	contributor
+edited:	true
+status:	none
+--
+In the meantime, could `Incompatible return type for "__new__" (returns "...", but must return a subtype of "...")` and `"__new__" must return a class instance (got <some union>)` be made into a separate error code than `misc` ? I can't really ignore them without ignoring the entirety of `misc` atm.
+--
+=== mypy search: unquoted forward reference in own class body annotation (candidate gen1_5c366404)
+[]
+[]

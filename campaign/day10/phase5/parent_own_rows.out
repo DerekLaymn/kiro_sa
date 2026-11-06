@@ -1,0 +1,52 @@
+d3p_generics_callable_attr_contravariant  | D2 runtime_miss L13
+    mypy:    -
+    ty:      -
+    pyright: -
+s3r1_mypy_class_base_forward_ref  | D1 only_ty L6
+    mypy:    -
+    ty:      [unresolved-reference] Name `B` used when not defined
+    pyright: [reportUndefinedVariable] "B" is not defined
+s3r1_mypy_class_base_forward_ref  | D2 reveal_mismatch L8
+    mypy:    [] int | None
+    ty:      [revealed-type] Unknown
+    pyright: [] int
+d4v_ty_alias_loop_backedge  | D1 only_mypy L9
+    mypy:    [operator] Unsupported operand types for + ("None" and "int")
+    ty:      -
+    pyright: [reportOptionalOperand] Operator "+" not supported for "None"
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D1 only_mypy L12
+    mypy:    [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+    ty:      -
+    pyright: [] (bool) -> tuple[int, str]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D2 reveal_mismatch L12
+    mypy:    [] def (*Any, **Any) -> tuple[Any, ...]
+    ty:      [revealed-type] (bool, /) -> tuple[int, str]
+    pyright: [] (bool) -> tuple[int, str]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D3 reveal_mismatch L13
+    mypy:    [] def (*list[int], **list[int]) -> tuple[()]
+    ty:      [revealed-type] (bool, /) -> tuple[list[int]]
+    pyright: [] (bool) -> tuple[list[int]]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D4 reveal_mismatch L16
+    mypy:    [] def (*Any, **Any) -> tuple[()]
+    ty:      [revealed-type] (...) -> tuple[()]
+    pyright: [] (bool) -> tuple[...]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D5 reveal_mismatch L21
+    mypy:    [] def (*Q.args, **Q.kwargs) -> tuple[int]
+    ty:      [revealed-type] (**Q@forward) -> tuple[int]
+    pyright: [] (bool) -> tuple[int, Q@forward]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D6 reveal_mismatch L22
+    mypy:    [] def (int, *Q.args, **Q.kwargs) -> tuple[str]
+    ty:      [revealed-type] (int, /, *args: Q@forward.args, **kwargs: Q@forward.kwargs) -> tuple[str]
+    pyright: [] (bool) -> tuple[str, Concatenate[int, Q@forward]]
+d3p_typevartuple_unpack_paramspec_default_after_tvt  | D7 runtime_miss L9
+    mypy:    -
+    ty:      -
+    pyright: -
+d3p_callables_partial_too_many_positional  | D1 reveal_mismatch L10
+    mypy:    [] functools.partial[int]
+    ty:      [revealed-type] partial[() -> int]
+    pyright: [] partial[int]
+d3p_callables_partial_too_many_positional  | D2 runtime_miss L11
+    mypy:    -
+    ty:      -
+    pyright: -

@@ -1,0 +1,10 @@
+seed-1c8a2fd6ab6f.json D1 origin=seed runs/day10/gen/constructors_metaclasses/gen1_37b4e5f8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:MYPY-8595-METACLASS-CALL')
+seed-1c8a2fd6ab6f.json D2 origin=seed runs/day10/gen/constructors_metaclasses/gen1_37b4e5f8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:MYPY-8595-METACLASS-CALL')
+seed-ff3db5b9951b.json D1 es/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py 
+    ('review', 'gate') -> ('dismissed', 'kb:MYPY-8595-METACLASS-CALL')
+seed-ff3db5b9951b.json D2 es/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py 
+    ('review', 'gate') -> ('dismissed', 'kb:MYPY-8595-METACLASS-CALL')
+compared 247 changed 4 live before 172 live after 168
+new decided_by of changed findings: {'kb:MYPY-8595-METACLASS-CALL': 4}

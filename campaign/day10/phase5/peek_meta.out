@@ -1,0 +1,15 @@
+===== 1 ['origin=seed /tmp/d10p5/alone/in1/gen1_37b4e5f8.py']
+D1 only_ty L22 'return kind(n)'
+    ty invalid-return-type Return type does not match returned value: expected `Box`, found `str`
+    pyright reportReturnType Type "str" is not assignable to return type "Box"
+D2 reveal_mismatch L26 'reveal_type(b)'
+    mypy None case.Box
+    ty revealed-type str
+    pyright None str
+===== 10 ['origin=seed /tmp/d10p5/alone/in10/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py']
+D1 only_mypy L33 'assert_type(b, int)'
+    mypy assert-type Expression is of type "Bottom", not "int"
+D2 reveal_mismatch L32 'reveal_type(b)'
+    mypy None case.Bottom
+    ty revealed-type int
+    pyright None int

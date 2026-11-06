@@ -1,0 +1,4 @@
+seed-04b8fbed00e8.json D1 origin=seed runs/day9/gen/constructors_metaclasses/gen1_c86958a8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:MYPY-8595-METACLASS-CALL')
+compared 339 changed 1 live before 199 live after 198
+new decided_by of changed findings: {'kb:MYPY-8595-METACLASS-CALL': 1}

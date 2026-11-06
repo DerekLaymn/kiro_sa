@@ -1,0 +1,34 @@
+seed-1c8a2fd6ab6f constructors_metaclasses/gen1_37b4e5f8.py D2 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'runtime value "\'wrapped:10\'" of type builtins.str does NOT inhabit mypy\'s revealed type Box', 'citation': 'probe line 26', 'quote': '', 'verified'
+seed-26b2a4f748fa overloads/hv_overloads__conformance__overloads_definitions__mut1_59eaed87.py D2 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value '12' of type builtins.int does NOT inhabit ty's revealed type Never", 'citation': 'probe line 46', 'quote': '', 'verified': True, 'stre
+seed-2e0b1cffe401 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_b16712de.py D1 concern_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(11, '<module>')]). Checker ou
+seed-4268a2d22c79 abstract_classes/gen1_5c366404.py D1 only_ty
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised NameError: name 'Shape' is not defined on a name that ty reports as undefined/unbound: the reporting tool is right and the silent tool
+seed-45c6a699024f narrowing_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py D3 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value '<__main__.Equal object at 0x7f74fd6ddfd0>' of type __main__.Equal does NOT inhabit mypy's revealed type str", 'citation': 'probe line 
+seed-503004be8701 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut1_b0772641.py D7 runtime_miss
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic
+seed-a54a82219f01 paramspec_concatenate/hv_paramspec_concatenate__conformance__generics_paramspec_components__mut0_66a0b5b8.py D1 only_ty
+     None {'type': 'SELF_CONTRADICTION', 'supports': 'bug', 'summary': 'mypy reveals `label` as `(str, name: str, width: int) -> str` (parameter type `str`), rejects `_td_probe: str = 6` (L47:22 error[assignmen
+seed-ce0470298975 typeddict/hv_typeddict__pyright__typedDict10__mut1_5eeeb41b.py D1 only_ty
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'closed' with this statement on the stack (frames [(8, '<module
+seed-ec6c6ea6d53f enums_literals/d4v_ty_flag_or_else_never__mut0_d156e44d.py D3 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value '<I.A|B: 3>' of type __main__.I does NOT inhabit mypy's revealed type Literal[I.B]", 'citation': 'probe line 44', 'quote': '', 'verifie
+seed-ff3db5b9951b constructors_metaclasses/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py D1 only_mypy
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "operand `b`: runtime type builtins.int is outside mypy's inferred type case.Bottom", 'citation': 'E1', 'quote': '', 'verified': True, 'strength': 'st
+seed-ff3db5b9951b constructors_metaclasses/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py D2 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value '1' of type builtins.int does NOT inhabit mypy's revealed type Bottom", 'citation': 'probe line 32', 'quote': '', 'verified': True, 'st
+strong live findings: 11 programs: 10
+== program paths
+constructors_metaclasses/gen1_37b4e5f8.py
+overloads/hv_overloads__conformance__overloads_definitions__mut1_59eaed87.py
+typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_b16712de.py
+abstract_classes/gen1_5c366404.py
+narrowing_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py
+typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut1_b0772641.py
+paramspec_concatenate/hv_paramspec_concatenate__conformance__generics_paramspec_components__mut0_66a0b5b8.py
+typeddict/hv_typeddict__pyright__typedDict10__mut1_5eeeb41b.py
+enums_literals/d4v_ty_flag_or_else_never__mut0_d156e44d.py
+constructors_metaclasses/hv_constructors_metaclasses__conformance__constructors_call_metaclass__mut1_2cca6936.py

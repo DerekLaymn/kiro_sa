@@ -1,0 +1,46 @@
+parent | where | programs live live_no_pyright_only strong dismissed crashes | top dismissals
+d3p_typevartuple_unpack_paramspec_default_after_tvt            hits     4  15  15  2   0  0 | {}
+d9p_context_managers_swallowed_name_possibly_unbound           hits     6  13   2  0  10  0 | {'DESIGN_DIVERGENCE': 7, 'CONFIG_ARTIFACT': 3}
+rsv_generics_variance_3c28536f                                 other    4  12  12  0   0  0 | {}
+s3r1_ty_type_equality_narrowing_any                            hits     3  10  10  1   0  0 | {}
+d4v_ty_alias_loop_backedge                                     hits     3   7   7  0   0  0 | {}
+rsv_abstract_classes_cf2683fb                                  other    4   7   3  0   0  0 | {}
+d5p_descriptors_decorated_get_pyright_rangeerror               hits     6   6   2  0   0  0 | {}
+hv_overloads__conformance__overloads_definitions               other    3   5   5  1   0  0 | {}
+rsv_paramspec_concatenate_29247984                             other    4   5   5  0   0  0 | {}
+d8p_dunder_dispatch_annotation_only_call                       hits     6   4   3  0   6  0 | {'DESIGN_DIVERGENCE': 4, 'CONFIG_ARTIFACT': 2}
+rsv_context_managers_c8eb51b8                                  other    4   4   4  0   1  0 | {'CONFIG_ARTIFACT': 1}
+d3p_callables_partial_too_many_positional                      hits     3   3   3  0   0  0 | {}
+d4v_ty_flag_or_else_never                                      hits     3   3   3  1   7  0 | {'DUPLICATE': 7}
+hv_abstract_classes__mypy__check_abstract__testImplementingAbstractMethodWithMultipleBaseClasses other    3   3   2  0   0  0 | {}
+hv_callables__conformance__callables_kwargs                    other    3   3   3  0   0  0 | {}
+hv_overloads__conformance__overloads_consistency               other    3   3   3  0   0  0 | {}
+hv_overloads__conformance__overloads_evaluation                other    3   3   3  0   0  0 | {}
+hv_typeddict__conformance__typeddicts_required                 other    3   3   1  0   1  0 | {'DESIGN_DIVERGENCE': 1}
+hv_typeddict__pyright__typedDict10                             other    3   3   3  1   1  0 | {'DESIGN_DIVERGENCE': 1}
+hv_constructors_metaclasses__conformance__constructors_call_metaclass other    3   2   2  2   0  0 | {}
+hv_inheritance_mro__pyright__methodOverride2                   other    3   2   2  0   0  0 | {}
+hv_narrowing_user__conformance__narrowing_typeguard            other    3   2   2  0   1  0 | {'DESIGN_DIVERGENCE': 1}
+rsv_gradual_any_76921a4b                                       other    4   2   2  0   0  0 | {}
+self_classmethods__self_classmethod_param                      other    3   2   2  0   1  0 | {'DESIGN_DIVERGENCE': 1}
+hv_callables__conformance__callables_subtyping                 other    3   1   1  0   0  0 | {}
+hv_gradual_any__conformance__exceptions_context_managers       other    3   1   1  0   0  0 | {}
+hv_narrowing_user__pyright__typeIs3                            other    3   1   1  0   5  0 | {'DESIGN_DIVERGENCE': 5}
+hv_paramspec_concatenate__conformance__generics_paramspec_components other    3   1   1  1   0  0 | {}
+paramspec_concatenate__decorator_signature                     other    3   1   1  0   0  0 | {}
+s3r1_mypy_class_base_forward_ref                               hits     3   1   1  0   0  0 | {}
+typeddict__readonly_notrequired                                other    3   1   1  0   6  0 | {'DESIGN_DIVERGENCE': 4, 'NOISE': 2}
+d3p_generics_callable_attr_contravariant                       hits     3   0   0  0   4  0 | {'DUPLICATE': 2, 'NOISE': 2}
+hv_abstract_classes__pyright__abstractClass5                   other    3   0   0  0   0  0 | {}
+hv_callables__conformance__callables_annotation                other    3   0   0  0   2  0 | {'NOISE': 1, 'DESIGN_DIVERGENCE': 1}
+hv_final_classvar__mypy__check_final__testFinalDefiningInstanceVar other    3   0   0  0   0  0 | {}
+hv_final_classvar__pyright__final2                             other    3   0   0  0   0  0 | {}
+hv_final_classvar__pyright__final3                             other    3   0   0  0   1  0 | {'DESIGN_DIVERGENCE': 1}
+hv_generics_variance__conformance__generics_upper_bound        other    3   0   0  0   0  0 | {}
+hv_inheritance_mro__conformance__classes_override              other    3   0   0  0   0  0 | {}
+hv_inheritance_mro__pyright__mro2                              other    3   0   0  0   0  0 | {}
+hv_narrowing_user__conformance__narrowing_typeis               other    3   0   0  0   1  0 | {'DESIGN_DIVERGENCE': 1}
+hv_paramspec_concatenate__conformance__generics_paramspec_semantics other    3   0   0  0   1  0 | {'NOISE': 1}
+hv_self_classmethods__conformance__generics_self_basic         other    3   0   0  0   0  0 | {}
+overloads__literal_flag_overload                               other    3   0   0  0   0  0 | {}
+rsv_context_managers_d3110ded                                  other    4   0   0  0   0  0 | {}

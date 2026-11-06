@@ -1,0 +1,5 @@
+10
+kbloop_run rc=0
+[all] programs=10 discrepancies=29 live=27 (programs with live=9, crash findings=1) dismissed=3 tool_crashes=1
+   dismissed by category: {'DUPLICATE': 3}
+   dismissed by entry: {'kb:UPSTREAM-TY-876': 1, 'kb:UPSTREAM-MYPY-21937-REVEAL': 1, 'kb:UPSTREAM-MYPY-22339': 1}

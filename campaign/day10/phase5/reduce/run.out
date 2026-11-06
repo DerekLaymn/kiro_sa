@@ -1,0 +1,27 @@
+=== a ty
+info[revealed-type]: Revealed type
+=== a mypy
+a.py:27: note: Revealed type is "int"
+Success: no issues found in 1 source file
+=== a pyright
+  /tmp/d10p5/reduce/a.py:27:13 - information: Type of "sq.area(3)" is "int"
+0 errors, 0 warnings, 1 information
+=== b ty
+info[revealed-type]: Revealed type
+error[missing-argument]: No argument provided for required parameter `width`
+error[invalid-argument-type]: Argument is incorrect
+error[missing-argument]: No argument provided for required parameter `width`
+error[invalid-argument-type]: Argument is incorrect
+error[invalid-argument-type]: Argument is incorrect
+=== b mypy
+b.py:32: note: Revealed type is "def (str, name: str, width: int) -> str"
+b.py:33: error: Missing positional argument "name" in call to "label"  [call-arg]
+b.py:34: error: Missing positional argument "name" in call to "label2"  [call-arg]
+b.py:36: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+Found 3 errors in 1 file (checked 1 source file)
+=== b pyright
+  /tmp/d10p5/reduce/b.py:32:13 - information: Type of "label" is "(str, name: str, width: int) -> str"
+  /tmp/d10p5/reduce/b.py:33:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /tmp/d10p5/reduce/b.py:34:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /tmp/d10p5/reduce/b.py:36:12 - error: Argument of type "Literal[6]" cannot be assigned to parameter "name" of type "str"
+3 errors, 0 warnings, 1 information

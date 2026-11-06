@@ -1,0 +1,44 @@
+d3p_callables_partial_too_many_positional: programs=3 live=3 signatures=2 new_signatures=1 (live in new=1); parent live=2
+    NEW x1 ('only_ty', (), ('missing-argument',), ('reportCallIssue',))
+    parent x1 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+    parent x1 ('runtime_miss', (), (), ())
+d3p_generics_callable_attr_contravariant: programs=3 live=0 signatures=0 new_signatures=0 (live in new=0); parent live=1
+    parent x1 ('runtime_miss', (), (), ())
+d3p_typevartuple_unpack_paramspec_default_after_tvt: programs=4 live=15 signatures=7 new_signatures=4 (live in new=4); parent live=7
+    NEW x1 ('concern_mismatch', ('type-var',), ('invalid-type-variable-default',), ('reportGeneralTypeIssues',))
+    NEW x1 ('only_ty', (), ('invalid-assignment',), ('reportAssignmentType',))
+    NEW x1 ('only_mypy', ('misc',), (), ())
+    NEW x1 ('only_mypy', ('arg-type',), (), ())
+    parent x4 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+    parent x1 ('only_mypy', ('misc',), (), ('-',))
+    parent x1 ('reveal_mismatch', ('-',), ('revealed-type',), ('-', 'reportInvalidTypeForm'))
+    parent x1 ('runtime_miss', (), (), ())
+d4v_ty_alias_loop_backedge: programs=3 live=7 signatures=2 new_signatures=1 (live in new=1); parent live=1
+    NEW x1 ('only_mypy', ('operator',), (), ())
+    parent x1 ('only_mypy', ('operator',), (), ('reportOptionalOperand',))
+d4v_ty_flag_or_else_never: programs=3 live=3 signatures=2 new_signatures=2 (live in new=3); parent live=0
+    NEW x2 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+    NEW x1 ('reveal_unpaired', (), ('revealed-type',), ('-',))
+d5p_descriptors_decorated_get_pyright_rangeerror: programs=6 live=6 signatures=3 new_signatures=3 (live in new=6); parent live=1
+    NEW x2 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+    NEW x2 ('only_pyright', (), (), ('reportAttributeAccessIssue',))
+    NEW x2 ('only_pyright', (), (), ('reportCallIssue',))
+    parent x1 ('crash', (), (), ())
+d8p_dunder_dispatch_annotation_only_call: programs=6 live=4 signatures=3 new_signatures=2 (live in new=2); parent live=1
+    NEW x1 ('only_pyright', (), (), ('reportArgumentType',))
+    NEW x1 ('only_ty', (), ('invalid-argument-type',), ())
+    parent x1 ('only_mypy', ('misc',), (), ())
+d9p_context_managers_swallowed_name_possibly_unbound: programs=6 live=13 signatures=4 new_signatures=3 (live in new=5); parent live=1
+    NEW x3 ('only_pyright', (), (), ('-', 'reportPossiblyUnboundVariable'))
+    NEW x1 ('only_ty', (), ('invalid-context-manager',), ('reportGeneralTypeIssues',))
+    NEW x1 ('only_ty', (), ('not-subscriptable',), ('reportIndexIssue',))
+    parent x1 ('only_pyright', (), (), ('reportPossiblyUnboundVariable',))
+s3r1_mypy_class_base_forward_ref: programs=3 live=1 signatures=1 new_signatures=0 (live in new=0); parent live=2
+    parent x1 ('only_ty', (), ('unresolved-reference',), ('reportUndefinedVariable',))
+    parent x1 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+s3r1_ty_type_equality_narrowing_any: programs=3 live=10 signatures=3 new_signatures=1 (live in new=6); parent live=11
+    NEW x6 ('reveal_mismatch', ('-',), ('revealed-type',), ('-',))
+    parent x4 ('only_mypy', ('assert-type',), (), ('reportAssertTypeFailure',))
+    parent x3 ('only_ty', (), ('type-assertion-failure',), ())
+    parent x2 ('only_mypy', ('union-attr',), (), ('reportAttributeAccessIssue',))
+    parent x2 ('only_mypy', ('assert-type',), (), ())

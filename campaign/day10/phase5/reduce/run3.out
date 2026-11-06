@@ -1,0 +1,16 @@
+=== e ty
+e.py:19:13: info[revealed-type] Revealed type: `<class 'Square'>`
+e.py:21:13: info[revealed-type] Revealed type: `Square`
+e.py:22:13: info[revealed-type] Revealed type: `int`
+Found 3 diagnostics
+=== e mypy
+e.py:19: note: Revealed type is "def (side: int) -> e.Square"
+e.py:21: note: Revealed type is "e.Square"
+e.py:22: note: Revealed type is "int"
+Success: no issues found in 1 source file
+=== e pyright
+/tmp/d10p5/reduce/e.py
+  /tmp/d10p5/reduce/e.py:19:13 - information: Type of "Square" is "type[Square]"
+  /tmp/d10p5/reduce/e.py:21:13 - information: Type of "sq" is "Square"
+  /tmp/d10p5/reduce/e.py:22:13 - information: Type of "sq.area(3)" is "int"
+0 errors, 0 warnings, 3 informations
