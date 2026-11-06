@@ -1,0 +1,288 @@
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut0_fde50a38.py
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut1_ac804bfe.py
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut2_f627cf71.py
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut3_b60a1c87.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut0_8954dd71.py
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut1_7763aae7.py
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut2_495d4792.py
+done: 3 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/paramspec_concatenate/d3p_paramspec_identity_applied_to_itself__mut0_69a73831.py
+done: 1 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut0_3c2ab237.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut1_1909d723.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut0_b891f7c3.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut1_c0f02bde.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut0_334a03a5.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut1_e88177c8.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut0_d14abaf2.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut1_1812aae5.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut0_62a57d74.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_decorated_get_pyright_rangeerror__mut1_a875c0ee.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut0_ce28a56f.py
+  wrote runs/day8/gen/descriptors_properties/d5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut1_f631bce3.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/callables/d3p_callables_self_call_attr__mut0_af8b870b.py
+  wrote runs/day8/gen/protocols/d3p_protocols_generic_protocol_stack_overflow__mut0_5449058a.py
+  wrote runs/day8/gen/self_classmethods/d3p_self_classmethods_self_call_union__mut0_35821cc0.py
+  wrote runs/day8/gen/callables/d4v_callables_mutual_call_attr__mut0_00a31a49.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/callables/d3p_callables_self_call_attr__mut0_5445453a.py
+  wrote runs/day8/gen/protocols/d3p_protocols_generic_protocol_stack_overflow__mut0_5d6e7f43.py
+  wrote runs/day8/gen/self_classmethods/d3p_self_classmethods_self_call_union__mut0_54b95c87.py
+  wrote runs/day8/gen/callables/d4v_callables_mutual_call_attr__mut0_d617c9bb.py
+done: 4 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/recursive_aliases/gen0_3afc2509.py
+  wrote runs/day8/gen/recursive_aliases/gen1_2d80b87e.py
+  wrote runs/day8/gen/recursive_aliases/gen2_5b35152d.py
+  wrote runs/day8/gen/recursive_aliases/gen3_8bff3146.py
+  wrote runs/day8/gen/recursive_aliases/gen4_62a5d549.py
+  wrote runs/day8/gen/recursive_aliases/gen5_1cf9d1a3.py
+  wrote runs/day8/gen/recursive_aliases/gen6_ea81c2d2.py
+  wrote runs/day8/gen/recursive_aliases/gen7_a3b38156.py
+  wrote runs/day8/gen/recursive_aliases/gen8_adcff6a5.py
+  wrote runs/day8/gen/recursive_aliases/gen9_c321682d.py
+  wrote runs/day8/gen/recursive_aliases/gen10_99530cbd.py
+  wrote runs/day8/gen/recursive_aliases/gen11_8fa6ce9a.py
+done: 12 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/abstract_classes/rsv_abstract_classes_ae31b752__mut0_5a90804c.py
+  wrote runs/day8/gen/dataclasses/rsv_dataclasses_223fff8f__mut0_6defd09d.py
+  wrote runs/day8/gen/overloads/rsv_overloads_7ab4b09b__mut0_79349fd8.py
+  wrote runs/day8/gen/overloads/rsv_overloads_d41747bd__mut0_991a122b.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_0bbabab4__mut0_0bbabab4.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_d5395259__mut0_97ab6f20.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_b068dfad__mut0_86cdc03a.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_c98fed28__mut0_71d666ae.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/abstract_classes/rsv_abstract_classes_ae31b752__mut0_aa041099.py
+  wrote runs/day8/gen/dataclasses/rsv_dataclasses_223fff8f__mut0_93d8424b.py
+  wrote runs/day8/gen/overloads/rsv_overloads_7ab4b09b__mut0_f10d8b91.py
+  wrote runs/day8/gen/overloads/rsv_overloads_d41747bd__mut0_f7c04c87.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_0bbabab4__mut0_0cc86de4.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_d5395259__mut0_54b8699a.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_b068dfad__mut0_6941aa9c.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_c98fed28__mut0_27f00d5e.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/abstract_classes/rsv_abstract_classes_ae31b752__mut0_6604d6fb.py
+  wrote runs/day8/gen/dataclasses/rsv_dataclasses_223fff8f__mut0_3b9111ba.py
+  wrote runs/day8/gen/overloads/rsv_overloads_7ab4b09b__mut0_a1c462c1.py
+  wrote runs/day8/gen/overloads/rsv_overloads_d41747bd__mut0_1de657a6.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_0bbabab4__mut0_64eaedb0.py
+  wrote runs/day8/gen/recursive_aliases/rsv_recursive_aliases_d5395259__mut0_e36834e8.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_b068dfad__mut0_52076836.py
+  wrote runs/day8/gen/tuples_unpacking/rsv_tuples_unpacking_c98fed28__mut0_c98fed28.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/overloads/rsv_overloads_d6e90b34__mut0_186f739e.py
+done: 1 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/overloads/rsv_overloads_d6e90b34__mut0_b324eb05.py
+done: 1 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut0_655e135a.py
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut1_700cc9b3.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut0_4f6afcf3.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut1_7ffc3316.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut0_d82026de.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut1_17c399aa.py
+done: 6 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut0_c6859080.py
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut1_c3280e5e.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut0_6f56d8e0.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut1_ca3ea4a5.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut0_3302eca3.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut1_01b5240a.py
+done: 6 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut0_8d166ec7.py
+  wrote runs/day8/gen/descriptors_properties/d3p_descriptors_decorated_get__mut1_f1f15c3d.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut0_c52eafc6.py
+  wrote runs/day8/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut1_f60aadff.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut0_f116e46b.py
+  wrote runs/day8/gen/descriptors_properties/d4p_descriptors_readonly_prop_never__mut1_597306c6.py
+done: 6 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_d873ebcb.py
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut1_d326d4a3.py
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut2_d7ae56c5.py
+done: 3 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_cdecbcd7.py
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut1_cfdf17ba.py
+done: 2 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_623fc301.py
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut1_bd16f7af.py
+done: 2 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_aa1f1387.py
+done: 1 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/match_statement/gen0_ef3f2dc7.py
+  wrote runs/day8/gen/match_statement/gen1_2920a932.py
+  wrote runs/day8/gen/match_statement/gen2_e104fc6d.py
+  wrote runs/day8/gen/match_statement/gen3_b6e3e723.py
+  wrote runs/day8/gen/match_statement/gen4_23670d96.py
+  wrote runs/day8/gen/match_statement/gen5_d3ded49a.py
+  wrote runs/day8/gen/match_statement/gen6_3fce4665.py
+  wrote runs/day8/gen/match_statement/gen7_30dbfd4d.py
+  wrote runs/day8/gen/match_statement/gen8_f5144630.py
+  wrote runs/day8/gen/match_statement/gen9_3bf5033d.py
+  wrote runs/day8/gen/match_statement/gen10_af657718.py
+  wrote runs/day8/gen/match_statement/gen11_2f4f5771.py
+  wrote runs/day8/gen/match_statement/gen12_e098719f.py
+  wrote runs/day8/gen/match_statement/gen13_dc32d0a3.py
+  wrote runs/day8/gen/match_statement/gen14_d1380f90.py
+  wrote runs/day8/gen/match_statement/gen15_d8d5bd5f.py
+  wrote runs/day8/gen/match_statement/gen16_332ed036.py
+  wrote runs/day8/gen/match_statement/gen17_9f10d2bd.py
+  wrote runs/day8/gen/match_statement/gen18_840c08af.py
+  wrote runs/day8/gen/match_statement/gen19_5e1711d9.py
+  wrote runs/day8/gen/match_statement/gen20_ae16a32b.py
+  wrote runs/day8/gen/match_statement/gen21_24d2b540.py
+  wrote runs/day8/gen/match_statement/gen22_b519c236.py
+  wrote runs/day8/gen/match_statement/gen23_a0c0e463.py
+done: 24 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/gen0_5e0b7060.py
+  wrote runs/day8/gen/dataclasses/gen1_bdf19a51.py
+  wrote runs/day8/gen/dataclasses/gen2_1b7cead6.py
+  wrote runs/day8/gen/dataclasses/gen3_f29ee49c.py
+  wrote runs/day8/gen/dataclasses/gen4_fe950119.py
+  wrote runs/day8/gen/dataclasses/gen5_9c89ecb9.py
+  wrote runs/day8/gen/dataclasses/gen6_bd405b4f.py
+  wrote runs/day8/gen/dataclasses/gen7_2e7831d0.py
+  wrote runs/day8/gen/dataclasses/gen8_e82bd918.py
+  wrote runs/day8/gen/dataclasses/gen9_23d58e09.py
+  wrote runs/day8/gen/dataclasses/gen10_ee317acf.py
+  wrote runs/day8/gen/dataclasses/gen11_70251be8.py
+  wrote runs/day8/gen/dataclasses/gen12_199a4acf.py
+  wrote runs/day8/gen/dataclasses/gen13_eaa09ed8.py
+  wrote runs/day8/gen/dataclasses/gen14_339e7a7e.py
+  wrote runs/day8/gen/dataclasses/gen15_0f5f9187.py
+  wrote runs/day8/gen/dataclasses/gen16_011f5611.py
+  wrote runs/day8/gen/dataclasses/gen17_910e0f4c.py
+  wrote runs/day8/gen/dataclasses/gen18_9ba72a1c.py
+  wrote runs/day8/gen/dataclasses/gen19_679caab2.py
+  wrote runs/day8/gen/dataclasses/gen20_45de48ac.py
+  wrote runs/day8/gen/dataclasses/gen21_dce38ff4.py
+  wrote runs/day8/gen/dataclasses/gen22_2841f777.py
+  wrote runs/day8/gen/dataclasses/gen23_8ab1e5ee.py
+done: 24 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/typeddict/gen0_2f900456.py
+  wrote runs/day8/gen/typeddict/gen1_94d7d3f1.py
+  wrote runs/day8/gen/typeddict/gen2_bee6e2ce.py
+  wrote runs/day8/gen/typeddict/gen3_9bcf77ab.py
+  wrote runs/day8/gen/typeddict/gen4_179d3384.py
+  wrote runs/day8/gen/typeddict/gen5_f0edce77.py
+  wrote runs/day8/gen/typeddict/gen6_e159373a.py
+  wrote runs/day8/gen/typeddict/gen7_2655c013.py
+  wrote runs/day8/gen/typeddict/gen8_a5454374.py
+  wrote runs/day8/gen/typeddict/gen9_33458b14.py
+  wrote runs/day8/gen/typeddict/gen10_4f0d21ae.py
+  wrote runs/day8/gen/typeddict/gen11_06228c64.py
+done: 12 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/overloads/gen0_a9874e31.py
+  wrote runs/day8/gen/overloads/gen1_db2b8d53.py
+  wrote runs/day8/gen/overloads/gen2_95164633.py
+  wrote runs/day8/gen/overloads/gen3_b665274f.py
+  wrote runs/day8/gen/overloads/gen4_3b9e550d.py
+  wrote runs/day8/gen/overloads/gen5_baee2d08.py
+  wrote runs/day8/gen/overloads/gen6_3e519222.py
+  wrote runs/day8/gen/overloads/gen7_07d3ea78.py
+  wrote runs/day8/gen/overloads/gen8_cc7ed49c.py
+  wrote runs/day8/gen/overloads/gen9_77895acf.py
+  wrote runs/day8/gen/overloads/gen10_e5d2774e.py
+  wrote runs/day8/gen/overloads/gen11_166474f1.py
+  wrote runs/day8/gen/overloads/gen12_a368580c.py
+  wrote runs/day8/gen/overloads/gen13_c7383213.py
+done: 14 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/self_classmethods/gen0_54c3e528.py
+  wrote runs/day8/gen/self_classmethods/gen1_f763d758.py
+  wrote runs/day8/gen/self_classmethods/gen2_1b31dab4.py
+  wrote runs/day8/gen/self_classmethods/gen3_8f84fbbd.py
+  wrote runs/day8/gen/self_classmethods/gen4_b6a1ecc5.py
+  wrote runs/day8/gen/self_classmethods/gen5_0ac795c0.py
+  wrote runs/day8/gen/self_classmethods/gen6_8a41ab69.py
+  wrote runs/day8/gen/self_classmethods/gen7_6039505a.py
+  wrote runs/day8/gen/self_classmethods/gen8_911f32e0.py
+  wrote runs/day8/gen/self_classmethods/gen9_93b11bed.py
+  wrote runs/day8/gen/self_classmethods/gen10_22a2e020.py
+done: 11 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/abstract_classes/gen0_07105ab2.py
+  wrote runs/day8/gen/abstract_classes/gen1_1ee4459c.py
+  wrote runs/day8/gen/abstract_classes/gen2_b543a577.py
+  wrote runs/day8/gen/abstract_classes/gen3_88093225.py
+  wrote runs/day8/gen/abstract_classes/gen4_c4565cf2.py
+  wrote runs/day8/gen/abstract_classes/gen5_882cf944.py
+  wrote runs/day8/gen/abstract_classes/gen6_a91eb8e9.py
+  wrote runs/day8/gen/abstract_classes/gen7_8cca49da.py
+  wrote runs/day8/gen/abstract_classes/gen8_00cafbcd.py
+done: 9 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/final_classvar/gen0_7871d991.py
+  wrote runs/day8/gen/final_classvar/gen1_c1c579ac.py
+  wrote runs/day8/gen/final_classvar/gen2_ef563e77.py
+  wrote runs/day8/gen/final_classvar/gen3_1fca99ad.py
+  wrote runs/day8/gen/final_classvar/gen4_a75efbf4.py
+  wrote runs/day8/gen/final_classvar/gen5_ecfaa907.py
+done: 6 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/tuples_unpacking/gen0_7b54e91a.py
+  wrote runs/day8/gen/tuples_unpacking/gen1_eaa58c40.py
+  wrote runs/day8/gen/tuples_unpacking/gen2_b1c13d3a.py
+  wrote runs/day8/gen/tuples_unpacking/gen3_9f01a730.py
+  wrote runs/day8/gen/tuples_unpacking/gen4_ba5dcdd1.py
+  wrote runs/day8/gen/tuples_unpacking/gen5_771a8617.py
+  wrote runs/day8/gen/tuples_unpacking/gen6_dd20d0d3.py
+  wrote runs/day8/gen/tuples_unpacking/gen7_baf65c36.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/descriptors_properties/gen0_24b6d59f.py
+  wrote runs/day8/gen/descriptors_properties/gen1_4287130f.py
+  wrote runs/day8/gen/descriptors_properties/gen2_a635bcd8.py
+  wrote runs/day8/gen/descriptors_properties/gen3_e54d74b0.py
+  wrote runs/day8/gen/descriptors_properties/gen4_8faa0c52.py
+  wrote runs/day8/gen/descriptors_properties/gen5_b8c9dfde.py
+  wrote runs/day8/gen/descriptors_properties/gen6_d4b8df08.py
+  wrote runs/day8/gen/descriptors_properties/gen7_d1cc49fe.py
+  wrote runs/day8/gen/descriptors_properties/gen8_057928a8.py
+  wrote runs/day8/gen/descriptors_properties/gen9_92c10e28.py
+  wrote runs/day8/gen/descriptors_properties/gen10_d07619d1.py
+  wrote runs/day8/gen/descriptors_properties/gen11_8c4adaee.py
+done: 12 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__overloaded_post_init__mut0_35e09e22.py
+  wrote runs/day8/gen/final_classvar/final_classvar__final_overrides__mut0_3e6fed49.py
+  wrote runs/day8/gen/match_statement/match_statement__class_sequence_patterns__mut0_76e3b66e.py
+done: 3 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__overloaded_post_init__mut0_46f20490.py
+  wrote runs/day8/gen/final_classvar/final_classvar__final_overrides__mut0_fdcd37b9.py
+  wrote runs/day8/gen/match_statement/match_statement__class_sequence_patterns__mut0_b95ea051.py
+done: 3 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__dataclass_transform__mut0_48876d45.py
+  wrote runs/day8/gen/dataclasses/dataclasses__kw_only_initvar_order__mut0_6912d5b4.py
+  wrote runs/day8/gen/overloads/overloads__literal_flag_overload__mut0_96e69463.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_classmethod_param__mut0_360a90c4.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_param_inherited__mut0_af30c9f4.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_runtime_witness__mut0_9c12c4bb.py
+  wrote runs/day8/gen/tuples_unpacking/tuples_unpacking__variadic_tuples__mut0_122e6d2f.py
+  wrote runs/day8/gen/typeddict/typeddict__readonly_notrequired__mut0_e47c5c5e.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__dataclass_transform__mut0_881c32eb.py
+  wrote runs/day8/gen/dataclasses/dataclasses__kw_only_initvar_order__mut0_6a3e1527.py
+  wrote runs/day8/gen/overloads/overloads__literal_flag_overload__mut0_1cbbac5a.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_classmethod_param__mut0_80fffb67.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_param_inherited__mut0_50df8383.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_runtime_witness__mut0_0093ebdd.py
+  wrote runs/day8/gen/tuples_unpacking/tuples_unpacking__variadic_tuples__mut0_d93c54f3.py
+  wrote runs/day8/gen/typeddict/typeddict__readonly_notrequired__mut0_9a3cea3e.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__dataclass_transform__mut0_544fa250.py
+  wrote runs/day8/gen/dataclasses/dataclasses__kw_only_initvar_order__mut0_33673d67.py
+  wrote runs/day8/gen/overloads/overloads__literal_flag_overload__mut0_63615c8f.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_classmethod_param__mut0_22077829.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_param_inherited__mut0_3a63c673.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_runtime_witness__mut0_e6cd851d.py
+  wrote runs/day8/gen/tuples_unpacking/tuples_unpacking__variadic_tuples__mut0_b7c9099c.py
+  wrote runs/day8/gen/typeddict/typeddict__readonly_notrequired__mut0_53519467.py
+done: 8 programs, 0 uncached LLM calls
+  wrote runs/day8/gen/dataclasses/dataclasses__dataclass_transform__mut0_ce433fa1.py
+  wrote runs/day8/gen/dataclasses/dataclasses__kw_only_initvar_order__mut0_065bc6f4.py
+  wrote runs/day8/gen/overloads/overloads__literal_flag_overload__mut0_c95e15bd.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_classmethod_param__mut0_bc1cb81c.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_param_inherited__mut0_625d747c.py
+  wrote runs/day8/gen/self_classmethods/self_classmethods__self_runtime_witness__mut0_ba5905e5.py
+  wrote runs/day8/gen/tuples_unpacking/tuples_unpacking__variadic_tuples__mut0_38fbaf23.py
+  wrote runs/day8/gen/typeddict/typeddict__readonly_notrequired__mut0_b8ea6dc5.py
+done: 8 programs, 0 uncached LLM calls
+- gen pass 2: pending=0 written=250
+prompts=251 (retry prompts=1) answers=251 answered=251 pending=0 orphan_answers=0 malformed_keys=0
