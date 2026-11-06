@@ -1,0 +1,160 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py
+--- cpython 3.13.16
+Runtime type is 'int'
+Runtime type is 'float'
+Runtime type is 'int'
+Runtime type is 'list'
+7 2.5 9
+[3] x
+5
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:37:13
+   |
+37 | reveal_type(a)
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:38:13
+   |
+38 | reveal_type(b)
+   |             ^ `float`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:39:13
+   |
+39 | reveal_type(c)
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:42:13
+   |
+42 | reveal_type(pick('box', 3))
+   |             ^^^^^^^^^^^^^^ `list[int]`
+
+error[no-matching-overload]: No overload of function `parse` matches arguments
+  --> p_overloads_a368580c.py:43:7
+   |
+43 | bad = parse('int', 5)  # expect-error: int is not str
+   |       ^^^^^^^^^^^^^^^
+info: First overload defined here
+  --> p_overloads_a368580c.py:9:1
+   |
+ 9 | / @overload
+10 | | def parse(kind: Literal['int'], value: str) -> int: ...
+   | |_______________________________________________________^ First overload defined here
+info: Possible overloads for function `parse`:
+info:   (kind: Literal["int"], value: str) -> int
+info:   (kind: Literal["float"], value: str) -> float
+info:   (kind: str, value: str) -> str
+info: Overload implementation defined here
+  --> p_overloads_a368580c.py:15:5
+   |
+15 | def parse(kind: str, value: str) -> int | float | str:
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:37:13
+   |
+37 | reveal_type(a)
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:38:13
+   |
+38 | reveal_type(b)
+   |             ^ `float`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:39:13
+   |
+39 | reveal_type(c)
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> p_overloads_a368580c.py:42:13
+   |
+42 | reveal_type(pick('box', 3))
+   |             ^^^^^^^^^^^^^^ `list[int]`
+
+error[no-matching-overload]: No overload of function `parse` matches arguments
+  --> p_overloads_a368580c.py:43:7
+   |
+43 | bad = parse('int', 5)  # expect-error: int is not str
+   |       ^^^^^^^^^^^^^^^
+info: First overload defined here
+  --> p_overloads_a368580c.py:9:1
+   |
+ 9 | / @overload
+10 | | def parse(kind: Literal['int'], value: str) -> int: ...
+   | |_______________________________________________________^ First overload defined here
+info: Possible overloads for function `parse`:
+info:   (kind: Literal["int"], value: str) -> int
+info:   (kind: Literal["float"], value: str) -> float
+info:   (kind: str, value: str) -> str
+info: Overload implementation defined here
+  --> p_overloads_a368580c.py:15:5
+   |
+15 | def parse(kind: str, value: str) -> int | float | str:
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+p_overloads_a368580c.py:10: error: Overloaded function signatures 1 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:12: error: Overloaded function signatures 2 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:37: note: Revealed type is "int"
+p_overloads_a368580c.py:38: note: Revealed type is "float"
+p_overloads_a368580c.py:39: note: Revealed type is "str"
+p_overloads_a368580c.py:42: note: Revealed type is "list[int]"
+p_overloads_a368580c.py:43: error: No overload variant of "parse" matches argument types "str", "int"  [call-overload]
+p_overloads_a368580c.py:43: note: Possible overload variants:
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['int'], value: str) -> int
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['float'], value: str) -> float
+p_overloads_a368580c.py:43: note:     def parse(kind: str, value: str) -> str
+Found 3 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+p_overloads_a368580c.py:10: error: Overloaded function signatures 1 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:12: error: Overloaded function signatures 2 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:37: note: Revealed type is "int"
+p_overloads_a368580c.py:38: note: Revealed type is "float"
+p_overloads_a368580c.py:39: note: Revealed type is "str"
+p_overloads_a368580c.py:42: note: Revealed type is "list[int]"
+p_overloads_a368580c.py:43: error: No overload variant of "parse" matches argument types "str", "int"  [call-overload]
+p_overloads_a368580c.py:43: note: Possible overload variants:
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['int'], value: str) -> int
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['float'], value: str) -> float
+p_overloads_a368580c.py:43: note:     def parse(kind: str, value: str) -> str
+Found 3 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+p_overloads_a368580c.py:10: error: Overloaded function signatures 1 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:12: error: Overloaded function signatures 2 and 3 overlap with incompatible return types  [overload-overlap]
+p_overloads_a368580c.py:37: note: Revealed type is "int"
+p_overloads_a368580c.py:38: note: Revealed type is "float"
+p_overloads_a368580c.py:39: note: Revealed type is "str"
+p_overloads_a368580c.py:42: note: Revealed type is "list[int]"
+p_overloads_a368580c.py:43: error: No overload variant of "parse" matches argument types "str", "int"  [call-overload]
+p_overloads_a368580c.py:43: note: Possible overload variants:
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['int'], value: str) -> int
+p_overloads_a368580c.py:43: note:     def parse(kind: Literal['float'], value: str) -> float
+p_overloads_a368580c.py:43: note:     def parse(kind: str, value: str) -> str
+Found 3 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:10:5 - error: Overload 1 for "parse" overlaps overload 3 and returns an incompatible type (reportOverlappingOverload)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:37:13 - information: Type of "a" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:38:13 - information: Type of "b" is "float"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:39:13 - information: Type of "c" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:42:13 - information: Type of "pick('box', 3)" is "list[int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:43:7 - error: No overloads for "parse" match the provided arguments (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_overloads_a368580c.py:43:20 - error: Argument of type "Literal[5]" cannot be assigned to parameter "value" of type "str" in function "parse"
+    "Literal[5]" is not assignable to "str" (reportArgumentType)
+3 errors, 0 warnings, 4 informations
+rc=1

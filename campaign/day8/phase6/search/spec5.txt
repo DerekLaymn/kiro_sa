@@ -1,0 +1,33 @@
+# C7 mypy overloaded __post_init__ (extra terms)
+issues|python/mypy|post_init signature
+issues|python/mypy|dataclass post_init
+issues|python/mypy|overload dataclass
+issues|python/mypy|InitVar overload
+issues|python/mypy|supertype dataclass
+issues|python/mypy|dataclass overloaded
+issues|python/mypy|Argument 2 of __post_init__
+prs|python/mypy|post_init signature
+prs|python/mypy|dataclass overload
+issues|astral-sh/ty|overloaded dataclass
+issues|microsoft/pyright|overloaded post_init
+issues|microsoft/pyright|post_init signature
+# C1 extra
+issues|astral-sh/ty|unpacking
+issues|astral-sh/ty|starred
+issues|astral-sh/ty|exception handler
+issues|astral-sh/ty|checkpoint
+issues|astral-sh/ty|try block
+prs|astral-sh/ruff|try block
+prs|astral-sh/ruff|assignment target
+# C6 extra
+issues|microsoft/pyright|decorated descriptor
+issues|microsoft/pyright|descriptor __get__
+issues|microsoft/pyright|reportSelfClsParameterName
+prs|microsoft/pyright|descriptor
+# C3 spec reading
+issues|python/mypy|overload spec
+issues|python/mypy|union expansion
+issues|python/typing|overload union expansion
+# C2 extra
+issues|astral-sh/ty|Never reveal
+issues|astral-sh/ty|unreachable method call

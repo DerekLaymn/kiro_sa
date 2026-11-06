@@ -1,0 +1,61 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c4.py
+--- cpython 3.13.16
+Runtime type is 'str'
+Runtime type is 'int'
+<class 'int'>
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> c4.py:13:13
+   |
+13 | reveal_type(k)
+   |             ^ `Literal["int"]`
+
+info[revealed-type]: Revealed type
+  --> c4.py:14:13
+   |
+14 | reveal_type(parse(k))
+   |             ^^^^^^^^ `int`
+
+Found 2 diagnostics
+rc=0
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> c4.py:13:13
+   |
+13 | reveal_type(k)
+   |             ^ `Literal["int"]`
+
+info[revealed-type]: Revealed type
+  --> c4.py:14:13
+   |
+14 | reveal_type(parse(k))
+   |             ^^^^^^^^ `int`
+
+Found 2 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+c4.py:5: error: Overloaded function signatures 1 and 2 overlap with incompatible return types  [overload-overlap]
+c4.py:13: note: Revealed type is "str"
+c4.py:14: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+c4.py:5: error: Overloaded function signatures 1 and 2 overlap with incompatible return types  [overload-overlap]
+c4.py:13: note: Revealed type is "str"
+c4.py:14: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+c4.py:5: error: Overloaded function signatures 1 and 2 overlap with incompatible return types  [overload-overlap]
+c4.py:13: note: Revealed type is "str"
+c4.py:14: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c4.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c4.py:5:5 - error: Overload 1 for "parse" overlaps overload 2 and returns an incompatible type (reportOverlappingOverload)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c4.py:13:13 - information: Type of "k" is "Literal['int']"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c4.py:14:13 - information: Type of "parse(k)" is "int"
+1 error, 0 warnings, 2 informations
+rc=1

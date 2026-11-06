@@ -1,0 +1,104 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_pyright_655e135a.py
+--- cpython 3.13.16
+Runtime type is 'function'
+42
+42
+42
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-argument-type]: Argument to function `C.deco` is incorrect
+  --> p_pyright_655e135a.py:13:5
+   |
+13 |     @deco
+   |     ^^^^^ Expected `C`, found `def __get__(self, obj: object, owner: type | None = None) -> int`
+info: Function defined here
+  --> p_pyright_655e135a.py:10:9
+   |
+10 |     def deco(fn):
+   |         ^^^^ -- Parameter declared here
+
+info[revealed-type]: Revealed type
+  --> p_pyright_655e135a.py:22:13
+   |
+22 | reveal_type(C.__get__)
+   |             ^^^^^^^^^ `Unknown`
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+error[invalid-argument-type]: Argument to function `C.deco` is incorrect
+  --> p_pyright_655e135a.py:13:5
+   |
+13 |     @deco
+   |     ^^^^^ Expected `C`, found `def __get__(self, obj: object, owner: type | None = None) -> int`
+info: Function defined here
+  --> p_pyright_655e135a.py:10:9
+   |
+10 |     def deco(fn):
+   |         ^^^^ -- Parameter declared here
+
+info[revealed-type]: Revealed type
+  --> p_pyright_655e135a.py:22:13
+   |
+22 | reveal_type(C.__get__)
+   |             ^^^^^^^^^ `Unknown`
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+p_pyright_655e135a.py:13: error: Argument 1 to "deco" has incompatible type "Callable[[C, object, type | None], int]"; expected "C"  [arg-type]
+p_pyright_655e135a.py:22: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+p_pyright_655e135a.py:13: error: Argument 1 to "deco" has incompatible type "Callable[[C, object, type | None], int]"; expected "C"  [arg-type]
+p_pyright_655e135a.py:22: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+p_pyright_655e135a.py:13: error: Argument 1 to "deco" has incompatible type "Callable[[C, object, type | None], int]"; expected "C"  [arg-type]
+p_pyright_655e135a.py:22: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+An internal error occurred while type checking file "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_pyright_655e135a.py": RangeError: Maximum call stack size exceeded
+    at z (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1985:18)
+    at M (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1830:26)
+    at M.next (<anonymous>)
+    at E (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:1791:22)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6623:26)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+    at tO (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6776:16)
+    at eQ (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:2596:26)
+    at /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:6971:34
+    at l.retainTypeAlias (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeEvaluator.ts:7194:5)
+    at c (/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/lib/python3.13/site-packages/pyright/dist/dist/pyright-internal/src/analyzer/typeUtils.ts:457:32)
+rc=2

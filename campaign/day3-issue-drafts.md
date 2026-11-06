@@ -5,6 +5,7 @@ Date: 2026-11-05. Tools: ty 0.0.84 and 0.0.97 (pinned since Day 5, also the late
 **Day 6 status (details and command output: `campaign/day6-verification.md`, raw output: `campaign/day6/evidence/`).**
 Drafts 1 and 2 were verified on the ty playground by the user; Day 6 did not re-run them. Drafts 3 and 4 were re-run on ty 0.0.97, mypy 2.4.0, 2.4.1 and mypy master, with a fresh upstream search: both are still new. Draft 5 (mypy, ParamSpec default after a TypeVarTuple) was added on Day 6 from the `adbc14c6128a` "Callback" candidate. The ty half of that candidate is not a ty bug and has no draft (see "Not drafted"). The draft bodies were edited by hand on Day 6; `/tmp/cons/build.py` was not re-run.
 **Day 7 status (details: `campaign/day7-verification.md`, raw output: `campaign/day7/partD/evidence/`).** Drafts 6 (ty) and 7 (pyright) were added from the Part C candidates. They were run on CPython 3.13.16, ty 0.0.97 and 0.0.98 (0.0.98 was released on 2026-11-05 and is the latest), mypy 2.4.0, 2.4.1 and master, pyright 1.1.414 (latest). The "Day 6 verdict" column of rows 6 and 7 holds the Day 7 verdict. Drafts 1 to 5 were not re-run.
+**Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy) was added from class F. Drafts 6 and 7 were re-run with four and one more Day-8 program (ty 0.0.97/0.0.98, pyright 1.1.414) and still reproduce; see the Day 8 status at the end of this file.
 The drafts are concatenated without edits to the issue bodies from `campaign/day4/issue-drafts-v1.md` (draft 1), `-v2.md` (draft 2) and `-v3.md` (drafts 3 and 4). Each draft sits in a fenced block: copy the contents (without the fence lines) into the issue body, set the title from the "Title" line, and replace `<PLAYGROUND LINK>`. NOT FILED. Nothing here was posted anywhere, and no GitHub write call was made. (The format reference `temp/issue_drafts.md` does not exist in the repo; the format of the v1 to v3 drafts is kept.)
 
 | # | Tool | Bug | Class | Conf | Duplicate check | Day 6 verdict | Source |
@@ -16,6 +17,7 @@ The drafts are concatenated without edits to the issue bodies from `campaign/day
 | 5 | mypy | `Foo[int, str]` on a class with a `TypeVarTuple` followed by a defaulted `ParamSpec` is rejected and inferred as `Any` | FALSE_POSITIVE / INCORRECT_INFERENCE | 0.7 | none found in python/mypy (13 issue phrases, 2 PR phrases). Known in the public conformance results (`generics_defaults.py` L203 to L205); runtime half is python/typing#2211 | STILL-BUG-NEW (mypy only) | Day 6, program `adbc14c6128a` |
 | 6 | ty | `except` clause sees the old value after a nested unpacking target failed half-way through an assignment | INCORRECT_INFERENCE | 0.5 | none found (18 term sets on ty, ruff, pyright, mypy). Related: ty#225 (closed), ruff#27471 (merged, flat unpacking only) | STILL-BUG-NEW (Day 7, ty 0.0.97 and 0.0.98) | Day 7, `partial_unpack_exception` |
 | 7 | pyright | `RangeError: Maximum call stack size exceeded` when a descriptor `__get__` is decorated by a class-body function without `self` and the attribute is accessed | CRASH | 0.8 | none found. Related: open #11961 and PR #11965 (constructor path, different frames), closed #9283, #9740, #6178, #6783, #5139, #4798, #5090 | STILL-BUG-NEW (Day 7, pyright 1.1.414 = latest) | Day 7, `d3p_descriptors_decorated_get__mut1_040cc0db` |
+| 8 | mypy | overloaded `__post_init__` of a dataclass: every overload item is checked against the InitVar signature, so an item without the `InitVar` type gets `[override]` although another item takes it | FALSE_POSITIVE | 0.6 | none found (16 term sets on python/mypy, 5 on ty and pyright; read #15498, #15503, #9254, #16293, #15515, #12379) | STILL-BUG-NEW (Day 8, mypy 2.4.0, 2.4.1, master) | Day 8, class F, `rsv_dataclasses_223fff8f__mut0_3b9111ba` |
 
 Not drafted, with reasons (all duplicates, fixed, or not bugs):
 
@@ -25,6 +27,8 @@ Not drafted, with reasons (all duplicates, fixed, or not bugs):
 - Stale alias condition after a method call and read-only property `Never`: ty#2792. Tuple-subclass constant fold: ty#2171. Flag combination `Never`: ty#876. Metaclass `A | B` in ty: ty#4683. IntEnum alias: mypy#16830, mypy#21117, pyright#11100. Recursive alias reveal: mypy#2008. `__hash__` None reveal: mypy#20230.
 
 - **Day 7 (details: `campaign/day7-verification.md`).** mypy accepts `__eq__` without `__hash__` as `Hashable`: DUPLICATE of python/mypy#2455 and #18622, fix pending in open PR #19168 (no draft; draft 4 is the ty counterpart and stays). ty skips the read-only property assignment after a descriptor `__set__` changed a narrowed attribute: ty#2792. pyright `Gauge.level` is `Clamped | int` for a data descriptor assigned in `__init__`: pyright#11382. ty `object + object` after `case (a, b)` on a union with a non-final class: design, ty#1578.
+
+- **Day 8 (details: `campaign/day8-verification.md`).** ty `Never` for a read-only property after contradicting asserts and a mutating call: ty#2792 (also ty#4345, ty#4880). ty accepts `x.add(Node())` for `add(self, c: 'Self')` on a subclass: ty#4656 (closed, intended). ty/pyright `norm(v)` for a union argument with a catch-all `T` overload (spec step 2 picks it, mypy does union math first): design. mypy reveals `str` for `k: str = 'int'` (mypy erases the literal on assignment, ty and pyright keep it): design. ty accepts `Desc.__delete__(Desc(), h, 1)` behind an untyped decorator: return type inference is off by default (ty#4739, ty#1971), it reports the call with `analysis.return-type-inference = "always"`. ParamSpec self-annotation family (e1 to e4): ty#3666 and design, no new bug.
 
 Confidence for drafts 3 and 4 is 0.7: the construct in draft 3 is rare and the source location is a hypothesis; the ty maintainers may fold draft 4 into the hashability work in ty#3781.
 
@@ -524,3 +528,97 @@ Playground: <PLAYGROUND LINK>
 
 Command line. pyright 1.1.414 (PyPI `pyright==1.1.414`, also `pyright@latest` on npm), Python 3.13.16, Linux.
 ````
+
+---
+
+## 8. mypy: overloaded `__post_init__` of a dataclass is checked item by item against the InitVar signature
+
+**Day 8 verdict: STILL-BUG-NEW.** Source: Day 8 class F, programs `rsv_dataclasses_223fff8f__mut0_3b9111ba` and `dataclasses__overloaded_post_init__mut0_46f20490` (two of the programs behind the 6 live `only_mypy override` findings of `campaign/day8-triage.txt`), reduced by hand. mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562 report `[override]` on the overload item that does not take the `InitVar` type; ty 0.0.97/0.0.98 and pyright 1.1.414 accept; CPython runs. Control: an ordinary override of a non-overloaded method by an overloaded one with one compatible item is accepted by the same mypy versions. Evidence: `campaign/day8-verification.md` (D8-7), `campaign/day8/phase6/results/draft-outputs.txt`, `c7.txt`, `c7b.txt`, `c7d.txt`.
+
+**Duplicate check:** Checked: `gh search issues` and `gh search prs` on python/mypy with 16 term sets (`__post_init__`, post_init overload, post_init signature, dataclass post_init, InitVar, InitVar overload, overload dataclass, dataclass override, dataclass overloaded, supertype dataclass, `Argument 2 of __post_init__`, overloaded override, ...) plus 5 on ty and pyright; read python/mypy#15498 and PR #15503 (the feature that added the check; no mention of overloads), #9254, #16293 (closed, `explicit-override`), #15515 (open, plugin API for implicit definitions, mentions the direct call from `checker.py`), #12379 (closed 2026-09-20, overloaded override of a non-overloaded method; it is the generic case that mypy accepts now). Result: no issue or PR for the overloaded `__post_init__`.
+
+**Not checked:** issue comments beyond the issues read; PRs that the search phrases did not surface; discuss.python.org; mypy-play (the `<PLAYGROUND LINK>` placeholder is still open, UNVERIFIED-PLAYGROUND). The typing spec has no text on `__post_init__`. Cause below is read from mypy master, not debugged. Run one last search on the exact title before submitting.
+
+Title: `Overloaded __post_init__ in a dataclass: [override] error for an overload item that does not take the InitVar type`
+
+````markdown
+**Bug Report**
+
+For a dataclass with an `InitVar`, mypy checks the user's `__post_init__` against the signature built from the `InitVar` fields (added in #15503). When `__post_init__` is overloaded, every overload item is checked on its own, so an item that does not take the `InitVar` type is reported as an incompatible override even though another item does. The overloaded method as a whole accepts what the dataclass passes, and CPython runs the program.
+
+**To Reproduce**
+
+```python
+from dataclasses import InitVar, dataclass
+from typing import overload
+
+
+@dataclass
+class Record:
+    value: InitVar[int]
+
+    @overload
+    def __post_init__(self, value: int) -> None: ...
+    @overload
+    def __post_init__(self, value: str) -> None: ...
+    def __post_init__(self, value: int | str) -> None:
+        print(type(value))
+
+
+Record(1)
+```
+
+**Actual Behavior**
+
+```
+$ mypy --python-version 3.13 test_bug.py
+test_bug.py:12: error: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "int"  [override]
+Found 1 error in 1 file (checked 1 source file)
+
+$ python test_bug.py
+<class 'int'>
+```
+
+The error is on the `str` item (line 12). The `int` item and the implementation (`int | str`) are not reported.
+
+**Expected Behavior**
+
+No error. The generated call is `__post_init__(value)` with an `int`, which the first overload accepts. For an ordinary method, mypy already accepts an overloaded override of a non-overloaded method when one item is compatible:
+
+```python
+from typing import overload
+
+
+class Base:
+    def post(self, value: int) -> None: ...
+
+
+class Child(Base):
+    @overload
+    def post(self, value: int) -> None: ...
+    @overload
+    def post(self, value: str) -> None: ...
+    def post(self, value: int | str) -> None:
+        print(type(value))
+```
+
+`mypy test_control.py` prints `Success: no issues found`. If no item takes the `InitVar` type (for example overloads for `str` and `bytes` with `InitVar[int]`), an error is right, and mypy reports both items.
+
+I read `checker.py` on master: `check_func_def` calls `dataclasses_plugin.check_post_init(self, defn, defn.info)` for a function named `__post_init__`, and `check_post_init` passes `defn.type` to `check_override`. For an overloaded method `defn` is a single item (the line of the error above) and not the `Overloaded` type, which would explain the difference to the ordinary override. I did not debug it further.
+
+ty 0.0.97 and 0.0.98 accept the program above and reject overloads that take neither `int` nor a supertype of it. pyright 1.1.414 accepts both.
+
+Playground: <PLAYGROUND LINK>
+
+**Your Environment**
+
+- Mypy version used: 2.4.0, 2.4.1 and master 2.5.0+dev.879da562
+- Mypy command-line flags: `--python-version 3.13`
+- Mypy configuration options from `mypy.ini` (and other config files): none
+- Python version used: 3.13.16
+- Operating system: Linux
+````
+
+---
+
+**Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy, overloaded `__post_init__`) was added. Draft 6 and draft 7 cover more programs now, without a new draft: the four Day-8 mutants of the partial-unpack parent (`(a, *b, c)` star target, `(first, *rest)` with an empty tuple, an attribute-chain source, a `match` in the handler) show the same `Literal[1]` / `Literal[0]` on ty 0.0.97 and 0.0.98 as draft 6; the annotated variant `d3p_descriptors_decorated_get__mut0_655e135a` with `reveal_type(C.__get__)` and a direct `C.__get__(C(), None, C)` call crashes pyright 1.1.414 like draft 7 (draft 7 already lists the direct call). Neither draft was found filed under the account that filed ty#4933, #4934, #4941 and mypy#22375, #22377 (author listing, `campaign/day8/phase6/search/out_author.txt`).

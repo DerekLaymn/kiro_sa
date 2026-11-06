@@ -1,0 +1,67 @@
+### issues astral-sh/ty :: nested unpacking except
+rc=0
+### issues astral-sh/ty :: tuple unpacking exception handler
+rc=0
+### issues astral-sh/ty :: starred unpacking except narrowing
+rc=0
+### issues astral-sh/ty :: partial assignment exception narrowing
+rc=0
+### issues astral-sh/ty :: try except assignment checkpoint
+rc=0
+### issues astral-sh/ty :: except clause stale type
+rc=0
+### issues astral-sh/ruff :: unpacking try except checkpoint
+rc=0
+### issues astral-sh/ruff :: except binding assignment raises
+rc=0
+### prs astral-sh/ruff :: try exception flow checkpoints
+rc=0
+### prs astral-sh/ruff :: unpacking exception checkpoint
+rc=0
+### issues microsoft/pyright :: except clause assignment partial unpacking
+rc=0
+### issues python/mypy :: except clause tuple unpacking partial assignment
+rc=0
+### issues astral-sh/ty :: attribute narrowing method call invalidate
+rc=0
+### issues astral-sh/ty :: assert attribute narrowing Never unreachable
+rc=0
+### issues astral-sh/ty :: narrowing attribute mutated in function call
+rc=0
+### issues astral-sh/ty :: property read-only assignment unreachable
+rc=0
+### prs astral-sh/ruff :: attribute narrowing invalidate method call
+rc=0
+### prs astral-sh/ruff :: discard narrowing self method call
+rc=0
+### issues astral-sh/ty :: __dict__ write narrowing attribute
+rc=0
+### issues astral-sh/ty :: overload union expansion typevar
+rc=0
+### issues astral-sh/ty :: overload union argument catch-all TypeVar
+rc=0
+### issues astral-sh/ty :: overload evaluation union expand before match
+rc=0
+### issues python/mypy :: overload union math typevar
+rc=0
+### issues python/mypy :: overload union argument first match greedy
+rc=0
+### issues microsoft/pyright :: overload union expansion typevar catch-all
+rc=0
+### issues microsoft/pyright :: overload evaluation union argument expand
+rc=0
+### issues python/mypy :: narrowing on initial assignment declared type literal
+rc=0
+### issues python/mypy :: declared type str not narrowed assignment overload Literal
+rc=0
+### issues python/mypy :: overload Literal argument variable assigned literal
+rc=0
+### issues python/mypy :: narrow declared type on assignment to literal
+rc=0
+### issues astral-sh/ty :: Self in parameter annotation inherited method
+rc=0
+### issues astral-sh/ty :: Self parameter bound upper bound subclass argument
+rc=0
+### issues astral-sh/ty :: quoted Self annotation
+rc=0
+finished

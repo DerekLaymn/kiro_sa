@@ -1,0 +1,40 @@
+# C6 pyright RangeError descriptor / decorated dunder
+issues|microsoft/pyright|RangeError
+issues|microsoft/pyright|Maximum call stack
+issues|microsoft/pyright|retainTypeAlias
+issues|microsoft/pyright|descriptor crash
+issues|microsoft/pyright|__get__ decorator
+issues|microsoft/pyright|descriptor recursion
+issues|microsoft/pyright|stack overflow
+prs|microsoft/pyright|RangeError
+prs|microsoft/pyright|call stack
+prs|microsoft/pyright|descriptor recursion
+prs|microsoft/pyright|infinite recursion
+# C7 mypy overloaded __post_init__
+issues|python/mypy|__post_init__
+issues|python/mypy|post_init overload
+issues|python/mypy|InitVar
+issues|python/mypy|dataclass override
+prs|python/mypy|__post_init__
+prs|python/mypy|dataclass override
+issues|python/mypy|overloaded override
+issues|astral-sh/ty|__post_init__
+issues|microsoft/pyright|__post_init__
+# C8 ty return type inference of unannotated functions / decorators
+issues|astral-sh/ty|return type inference
+issues|astral-sh/ty|unannotated return
+issues|astral-sh/ty|inferred return
+issues|astral-sh/ty|untyped decorator
+issues|astral-sh/ty|decorator Unknown
+issues|astral-sh/ty|call-site return
+prs|astral-sh/ruff|infer return type
+# C9 ParamSpec family and Callable self
+issues|python/mypy|does not accept self
+issues|python/mypy|self Callable
+issues|python/mypy|self annotation attribute
+issues|astral-sh/ty|self Callable
+issues|astral-sh/ty|self annotation
+issues|astral-sh/ty|classmethod ParamSpec
+issues|astral-sh/ty|__call__ attribute
+# own filings
+issues|astral-sh/ty|nested unpacking earlier targets

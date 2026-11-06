@@ -1,0 +1,41 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c12.py
+--- cpython 3.13.16
+C: 'C' object is not callable
+D: 'D' object is not callable
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[call-non-callable]: Object of type `D` is not callable
+  --> c12.py:19:5
+   |
+19 |     D()()
+   |     ^^^^^
+
+Found 1 diagnostic
+rc=1
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+error[call-non-callable]: Object of type `D` is not callable
+  --> c12.py:19:5
+   |
+19 |     D()()
+   |     ^^^^^
+
+Found 1 diagnostic
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+c12.py:14: error: Attribute function "__call__" with type "Callable[[], int]" does not accept self argument  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+c12.py:14: error: Attribute function "__call__" with type "Callable[[], int]" does not accept self argument  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+c12.py:14: error: Attribute function "__call__" with type "Callable[[], int]" does not accept self argument  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c12.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c12.py:19:5 - error: Object of type "D" is not callable
+    Attribute "__call__" is unknown (reportCallIssue)
+1 error, 0 warnings, 0 informations
+rc=1

@@ -1,0 +1,177 @@
+### issues python/mypy :: post_init signature
+15498	closed	2023-06-26	Support correct `__post_init__` signatures for dataclasses
+rc=0
+### issues python/mypy :: dataclass post_init
+16293	closed	2025-03-13	Incorrect explicit-override error when overriding dataclass `__post_init__`
+rc=0
+### issues python/mypy :: overload dataclass
+16186	open	2023-09-27	(🐞)  Overload matching fails when sub expression contains an unrelated error
+15843	closed	2023-10-09	Custom dataclasses are not recognized as dataclasses
+rc=0
+### issues python/mypy :: InitVar overload
+rc=0
+### issues python/mypy :: supertype dataclass
+17564	open	2024-07-22	Incorrect __post_init__ order when KW_ONLY used
+rc=0
+### issues python/mypy :: dataclass overloaded
+rc=0
+### issues python/mypy :: Argument 2 of __post_init__
+2	closed	2012-12-14	Lambdas are accepted by the type checker but not actually checked
+17564	open	2024-07-22	Incorrect __post_init__ order when KW_ONLY used
+rc=0
+### prs python/mypy :: post_init signature
+rc=0
+### prs python/mypy :: dataclass overload
+rc=0
+### issues astral-sh/ty :: overloaded dataclass
+1889	open	2026-11-03	Type system feature overview
+3115	closed	2026-03-25	False positive `dataclass-field-order` for `dataclass_transform` wrapper with `kw_only=True`
+1068	closed	2025-10-16	support field_specifiers in dataclass_transform
+rc=0
+### issues microsoft/pyright :: overloaded post_init
+rc=0
+### issues microsoft/pyright :: post_init signature
+2360	closed	2021-12-28	Type checking should be done on `__post_init__` signature for `dataclass` classes
+rc=0
+### issues astral-sh/ty :: unpacking
+4724	open	2026-10-14	[tracking] Starlark
+2628	open	2026-08-04	Add strict diagnostic for unknown length unpacking
+1633	open	2026-08-04	Issue with unpacking args in lambda function
+4054	open	2026-08-04	Missing diagnostic for unpacking multiple TypeVarTuples in non-`tuple` generics
+1496	open	2026-08-04	Reduce verbosity of inlay hints for assignments that use unpacking
+2162	open	2026-05-21	Bidirectional inference fails in assignments that use unpacking
+3649	open	2026-10-13	Unpacking an unknown (or unknown-length) argument into a call leaves no room for additional positional arguments
+4160	open	2026-08-04	Single call with `**kwargs` unpack emits many `invalid-argument-type` errors
+2871	open	2026-08-04	loop headers + overloads create cycles that resolve to `Unknown`
+3757	open	2026-08-04	new rule - unpack open `TypedDict`
+3792	open	2026-07-24	Track when a dict originated from a literal and be more forgiving about `**kwargs` unpacking to optional parameters
+4413	open	2026-08-28	Bad diagnostic spans for unpacked assignments with attribute or subscript targets
+rc=0
+### issues astral-sh/ty :: starred
+3991	closed	2026-07-14	remove `invalid-type-guard-call` diagnostic
+3735	closed	2026-06-13	`invalid-type-guard-call` examples in the docs don't report the error
+3293	closed	2026-04-17	[panic] starred fixed-tuple base unpacked to a `@final` class panics `check_static_class_definitions`
+575	closed	2026-02-24	Starred target expression is inferred as `Never`
+2071	closed	2026-01-13	Fix `Todo` type for starred expressions
+2582	closed	2026-01-24	Starred expression not checked when used in function argument
+2492	closed	2026-01-15	Fix `@Todo` type for starred expression in a `class` statement
+2653	closed	2026-01-30	[ty] Better error message for **kwargs with non-mapping type in overloaded functions
+247	closed	2025-10-06	Support starred/splatted/unpacked arguments in function calls
+191	closed	2025-06-11	Combine starred element types in unpacking
+583	closed	2025-06-05	False positive "missing-argument" error on variadic function calls with unpacked arguments
+244	closed	2025-05-30	complete expression type inference
+rc=0
+### issues astral-sh/ty :: exception handler
+233	open	2026-09-09	Properly model control flow through `finally` suites
+4293	closed	2026-08-18	Regression: assignment in exception handler ignores explicitly annotated variable type
+448	closed	2025-05-19	invalid-exception-caught false negative when exception is not captured
+447	closed	2025-05-19	invalid-exception-caught false positive with aliased error
+rc=0
+### issues astral-sh/ty :: checkpoint
+4076	closed	2026-09-07	File-order dependent checking reports Django mutable_list assignments
+4077	closed	2026-07-24	Bug: `ty` panics on Salsa cycle through `analyze_non_terminal_call_range`
+rc=0
+### issues astral-sh/ty :: try block
+406	open	2026-07-19	allow guarded access of possibly-undefined local after `locals()` containment check
+2096	open	2026-05-21	special-case try/except ImportError if all imports resolve
+3512	closed	2026-05-22	Incorrect unreachability inference with nested try blocks and a forever loop
+225	closed	2026-09-21	Control flow modelling error in `try` ... `else`
+4293	closed	2026-08-18	Regression: assignment in exception handler ignores explicitly annotated variable type
+3003	closed	2026-03-09	Types not checked in finally block after try block returns
+3819	closed	2026-06-23	dict.pop() causes no-matching-overload
+rc=0
+### prs astral-sh/ruff :: try block
+29750	merged	2026-10-27	[ty] Reuse exception checkpoints when a new place is read
+23700	open	2026-06-15	[ty] [playground] Support external package resolution
+27471	merged	2026-08-12	[ty] Model try exception flow with operation checkpoints
+28655	merged	2026-09-17	Use `cargo deny` for dep enforcement
+17281	open	2026-06-15	Add Rule to check for singular `yield` in `@contextlib.{async}contextmanager` decorated functions (RUF062)
+27703	merged	2026-08-17	[ty] Deduplicate exception checkpoints across equivalent branches
+28491	merged	2026-09-11	Support conditional assignment to `__lazy_modules__`
+27300	merged	2026-07-29	Update Rust crate syn to v3
+22844	merged	2026-05-20	[`ruff`] Add `fallible-context-manager` (`RUF075`)
+24356	closed	2026-04-02	Implement bad-except-order (PLE0701)
+25152	merged	2026-05-19	[`airflow`] Implement `airflow-task-implicit-multiple-outputs` (`AIR202`)
+27219	merged	2026-08-15	[ty] Model exception-suppressing context managers
+rc=0
+### prs astral-sh/ruff :: assignment target
+29448	closed	2026-11-05	fix(ruff): prevent re-indenting multiline string literals in B006 unsafe fix
+29454	closed	2026-10-19	[flake8-use-pathlib] Add an autofix for the last path component (PTH206)
+29685	merged	2026-11-05	[ty] Compute reaching definitions from inferred deferredness.
+29817	open	2026-11-06	Use a flat Python AST in Ruff and ty
+27206	merged	2026-10-13	[ty] Add opt-in diagnostic for mismatched sentinel names
+28039	merged	2026-08-25	[ty] Add a dedicated missing-slot diagnostic
+27872	merged	2026-08-19	[ty] Highlight declarations in invalid-assignment diagnostics
+26121	merged	2026-06-18	[ty] Preserve unpacking diagnostics for nested assignment targets
+28089	open	2026-09-12	[ty] Use target type context for unpacked assignments
+28061	merged	2026-08-28	[ty] Preserve list literal positions in starred unpacking
+27221	closed	2026-08-05	[ty] Model try exception flow with checkpoints
+27256	merged	2026-07-31	[ty] Index with-statement targets as symbols
+rc=0
+### issues microsoft/pyright :: decorated descriptor
+rc=0
+### issues microsoft/pyright :: descriptor __get__
+11382	open	2026-08-18	class-level descriptor access has incorrect type when descriptor set on instance
+10370	closed	2025-05-21	Assigning descriptor instance to a class defining `__slots__` causes undesired type narrowing
+9332	closed	2024-10-30	Assigning to an attribute with a descriptor
+7533	closed	2024-03-21	Descriptor __get__ fails to match Coroutine methods as (...) -> Awaitable[R]
+2698	closed	2023-10-24	Descriptor changing its class return type when object sets something to it
+rc=0
+### issues microsoft/pyright :: reportSelfClsParameterName
+10817	open	2025-08-19	JavaScript heap out of memory with AbstractEventLoop and call_soon_threadsafe
+10108	closed	2025-03-18	Possible missing diagnostics
+9784	closed	2025-02-12	BUG:  upgrade `1.1.392` -> `1.1.393`: can not resolve `@overload` `__init__()`
+8717	closed	2024-08-14	Relax reportSelfClsParameterName to allow mcs , mcls, and metacls when inheriting from type.
+7513	closed	2024-03-19	Setting to toggle "error: Type of parameter $X must be a supertype of its class"
+4736	closed	2023-03-08	False positive (warning: first argument to metaclass `__new__` should be `mcs`, but `cls` is suggested.
+4505	closed	2023-01-22	Decorators inside classes are falsely linted
+4526	closed	2023-02-01	Match statement within loop complains about non exhaustiveness
+4053	closed	2022-10-19	reportSelfClsParameterName does not cover overloads
+3143	closed	2022-03-12	Allow line-level type controls
+2121	closed	2021-07-27	`reportSelfClsParameterName` does not allow self param on callback protocol static methods
+800	closed	2020-07-07	Enum _generate_next_value_ method raises possible spurious type error
+rc=0
+### prs microsoft/pyright :: descriptor
+11744	open	2026-10-28	Fix TypeForm for nested classes with metaclass descriptors
+11936	open	2026-10-28	Fix circular inference for member accesses
+11875	open	2026-10-17	Fix binding for callable protocol method decorators
+11837	open	2026-10-31	Fix parameter loss when assigning lambda to property setter typed as Callable (#11833)
+11942	merged	2026-10-28	Preserve raw classmethod and staticmethod descriptor types
+11977	open	2026-11-05	Fix IntFlag bitwise narrowing with localized reflected-operator priority
+11829	open	2026-10-29	Report invalid __bool__ calls in conditional operands
+11706	merged	2026-09-28	Fix descriptor ParamSpec specialization
+11838	open	2026-10-12	Fix __slots__ handling for method-only protocols
+11953	merged	2026-11-04	Preserve bound receivers during contextual return inference
+11967	merged	2026-11-03	Add Pyright and Pyrefly inference comparison benchmark
+11708	merged	2026-09-28	Fix protocol Self specialization for class properties
+rc=0
+### issues python/mypy :: overload spec
+18922	open	2025-05-15	Type checking fails to distribute across Tuple types
+18343	open	2026-10-07	Issues related to numpy
+18321	closed	2025-09-02	Overload + generic functions + union arguments = inconsistent results (wrong overload is matched?)
+19525	closed	2025-08-08	Incorrect handling of overloads with `defaultdict` and `MutableMapping`
+rc=0
+### issues python/mypy :: union expansion
+16282	open	2025-05-04	dict type incorrectly converted (widened?) to object via TypeVar and overload
+18321	closed	2025-09-02	Overload + generic functions + union arguments = inconsistent results (wrong overload is matched?)
+16682	closed	2023-12-20	Unexpected return type error for overloaded function using enum and if-else clause 
+rc=0
+### issues python/typing :: overload union expansion
+rc=0
+### issues astral-sh/ty :: Never reveal
+3415	open	2026-08-04	Generic `@overloads` not matched against return type of `Callable` passed as parameter
+3837	open	2026-10-01	[panic] Recursive TypeOf across multiple union arms exhausts cycle iterations
+4380	closed	2026-10-07	Equality comparisons involving intersection types incorrectly infer `Never` for non-boolean return types
+4130	closed	2026-08-27	Exhaustive matching and narrowing on functional enums
+3695	closed	2026-10-30	BUG: Inconsistent `Self` `classmethod` return type widening following `isinstance`-check
+4210	closed	2026-08-07	Missing clear diagnostic when checking for absent key on closed TypedDict
+4076	closed	2026-09-07	File-order dependent checking reports Django mutable_list assignments
+3443	closed	2026-07-29	`is_dataclass` doesn't narrow `else` branch to `Never`
+4030	closed	2026-07-25	`possibly-unresolved-reference` when narrowing with `isinstance(x, Callable)`
+3552	closed	2026-07-24	Incorrect `is` narrowing of code involving newtypes
+3881	closed	2026-07-01	Multiple `@Todo`s of the same type aren't considered equivelant
+3458	closed	2026-05-15	`not in` narrowing is overly broad for literals
+rc=0
+### issues astral-sh/ty :: unreachable method call
+rc=0
+finished

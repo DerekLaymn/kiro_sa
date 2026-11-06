@@ -1,0 +1,45 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_readonly_f116e46b.py
+--- cpython 3.13.16
+Runtime type is 'int'
+True
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> p_readonly_f116e46b.py:37:17
+   |
+37 |     reveal_type(t.readonly)
+   |                 ^^^^^^^^^^ `Never`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> p_readonly_f116e46b.py:37:17
+   |
+37 |     reveal_type(t.readonly)
+   |                 ^^^^^^^^^^ `Never`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+p_readonly_f116e46b.py:37: note: Revealed type is "int"
+p_readonly_f116e46b.py:40: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+p_readonly_f116e46b.py:37: note: Revealed type is "int"
+p_readonly_f116e46b.py:40: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+p_readonly_f116e46b.py:37: note: Revealed type is "int"
+p_readonly_f116e46b.py:40: error: Property "readonly" defined in "Thing" is read-only  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_readonly_f116e46b.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_readonly_f116e46b.py:37:17 - information: Type of "t.readonly" is "Literal[5]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/p_readonly_f116e46b.py:40:22 - error: Cannot assign to attribute "readonly" for class "Thing"
+    "Literal[7]" is not assignable to "property" (reportAttributeAccessIssue)
+1 error, 0 warnings, 1 information
+rc=1

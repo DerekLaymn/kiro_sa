@@ -1,0 +1,27 @@
+== queries per file (non-comment lines) and hits=0 lines
+spec1: 33 queries
+spec2: 29 queries
+spec3: 40 queries
+spec4: 35 queries
+spec5: 28 queries
+spec6: 10 queries
+== valid batches (spec3..spec6) by repo and kind
+      2 issues|astral-sh/ruff
+     44 issues|astral-sh/ty
+     20 issues|microsoft/pyright
+     28 issues|python/mypy
+      1 issues|python/typing
+      8 prs|astral-sh/ruff
+      5 prs|microsoft/pyright
+      5 prs|python/mypy
+== total valid
+113
+== discarded (spec1+spec2, long queries, zero results because GitHub ANDs all words)
+62
+== results lines (non-header) in out1/out2 (should be ~0 for the discarded ones)
+0
+16
+== gh view/issue count
+views.txt:9
+views2.txt:8
+views3.txt:5

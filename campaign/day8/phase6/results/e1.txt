@@ -1,0 +1,66 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/e1.py
+--- cpython 3.13.16
+1
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[unresolved-attribute]: Unresolved attribute `x` on type `(int, /) -> None`
+ --> e1.py:6:9
+  |
+6 |         self.x = x
+  |         ^^^^^^
+
+error[invalid-argument-type]: Argument to `A.__init__` is incorrect
+ --> e1.py:9:5
+  |
+9 | a = A(1)
+  |     ^^^^ Expected `(int, /) -> None`, found `A`
+info: Method defined here
+ --> e1.py:5:9
+  |
+5 |     def __init__(self: Callable[[int], None], x: int) -> None:
+  |         ^^^^^^^^ --------------------------- Parameter declared here
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+error[unresolved-attribute]: Unresolved attribute `x` on type `(int, /) -> None`
+ --> e1.py:6:9
+  |
+6 |         self.x = x
+  |         ^^^^^^
+
+error[invalid-argument-type]: Argument to `A.__init__` is incorrect
+ --> e1.py:9:5
+  |
+9 | a = A(1)
+  |     ^^^^ Expected `(int, /) -> None`, found `A`
+info: Method defined here
+ --> e1.py:5:9
+  |
+5 |     def __init__(self: Callable[[int], None], x: int) -> None:
+  |         ^^^^^^^^ --------------------------- Parameter declared here
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+e1.py:5: error: The erased type of self "def (int)" is not a supertype of its class "e1.A"  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+e1.py:5: error: The erased type of self "def (int)" is not a supertype of its class "e1.A"  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+e1.py:5: error: The erased type of self "def (int)" is not a supertype of its class "e1.A"  [misc]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/e1.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/e1.py:5:24 - error: Type of parameter "self" must be a supertype of its class "A" (reportGeneralTypeIssues)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/e1.py:6:14 - error: Cannot assign to attribute "x" for class "FunctionType"
+    Attribute "x" is unknown (reportFunctionMemberAccess)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/e1.py:9:5 - error: 
+    Could not bind method "__init__" because "A" is not assignable to parameter "self"
+      Type "A" is not assignable to type "(int) -> None" (reportGeneralTypeIssues)
+3 errors, 0 warnings, 0 informations
+rc=1

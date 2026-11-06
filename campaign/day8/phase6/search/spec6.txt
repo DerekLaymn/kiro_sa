@@ -1,0 +1,10 @@
+issues|astral-sh/ty|__call__ instance variable
+issues|astral-sh/ty|dunder instance attribute
+issues|astral-sh/ty|special method lookup
+issues|astral-sh/ty|callable declared attribute
+issues|microsoft/pyright|__call__ instance variable
+issues|microsoft/pyright|dunder method instance attribute
+issues|microsoft/pyright|special method lookup instance
+issues|microsoft/pyright|__call__ declared attribute
+issues|python/mypy|dunder instance attribute
+issues|python/mypy|special method lookup instance

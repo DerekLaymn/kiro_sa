@@ -1,0 +1,14 @@
+230:# may cause performance issues. The reason is that although union math algorithm we use
+326:        # used by the union math in overloads.
+2934:    def check_overload_call(
+2953:        # Step 2: If the arguments contain a union, we try performing union math first,
+2962:        # Determine whether we need to encourage union math. This should be generally safe,
+2963:        # as union math infers better results in the vast majority of cases, but it is very
+2965:        none_type_var_overlap = self.possible_none_type_var_overlap(arg_types, plausible_targets)
+2970:                    unioned_return = self.union_overload_result(
+3076:        # Do not show the extra error if the union math was forced.
+3143:    def infer_overload_return_type(
+3274:    def possible_none_type_var_overlap(
+3277:        """Heuristic to determine whether we need to try forcing union math.
+3313:    def union_overload_result(
+3391:            sub_result = self.union_overload_result(

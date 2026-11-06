@@ -1,0 +1,28 @@
+### mypy 2.4.0 test_bug.py
+test_bug.py:12: error: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "int"  [override]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+### mypy 2.4.1 test_bug.py
+test_bug.py:12: error: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "int"  [override]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+### mypy master test_bug.py
+test_bug.py:12: error: Argument 2 of "__post_init__" is incompatible with supertype "dataclass"; supertype defines the argument type as "int"  [override]
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+### python test_bug.py
+<class 'int'>
+rc=0
+### mypy 2.4.0 test_control.py
+Success: no issues found in 1 source file
+rc=0
+### mypy master test_control.py
+Success: no issues found in 1 source file
+rc=0
+### ty 0.0.97 / 0.0.98 / pyright on test_bug.py
+All checks passed!
+rc=0
+All checks passed!
+rc=0
+0 errors, 0 warnings, 0 informations
+rc=0

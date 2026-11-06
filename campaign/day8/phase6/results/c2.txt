@@ -1,0 +1,39 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c2.py
+--- cpython 3.13.16
+Runtime type is 'int'
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> c2.py:20:13
+   |
+20 | reveal_type(c.readonly)
+   |             ^^^^^^^^^^ `Never`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> c2.py:20:13
+   |
+20 | reveal_type(c.readonly)
+   |             ^^^^^^^^^^ `Never`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+c2.py:20: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+c2.py:20: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+c2.py:20: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c2.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c2.py:20:13 - information: Type of "c.readonly" is "int"
+0 errors, 0 warnings, 1 information
+rc=0

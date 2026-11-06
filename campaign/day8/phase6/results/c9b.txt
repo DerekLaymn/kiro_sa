@@ -1,0 +1,80 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py
+--- cpython 3.13.16
+Runtime type is 'function'
+Runtime type is 'function'
+Runtime type is 'method'
+Traceback (most recent call last):
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py", line 26, in <module>
+    Desc().run(1, 2)
+    ~~~~~~~~~~^^^^^^
+TypeError: wrap.<locals>.inner() takes 2 positional arguments but 3 were given
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> c9b.py:23:13
+   |
+23 | reveal_type(wrap(plain))
+   |             ^^^^^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c9b.py:24:13
+   |
+24 | reveal_type(Desc.run)
+   |             ^^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c9b.py:25:13
+   |
+25 | reveal_type(Desc().run2)
+   |             ^^^^^^^^^^^ `Unknown`
+
+Found 3 diagnostics
+rc=0
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> c9b.py:23:13
+   |
+23 | reveal_type(wrap(plain))
+   |             ^^^^^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c9b.py:24:13
+   |
+24 | reveal_type(Desc.run)
+   |             ^^^^^^^^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> c9b.py:25:13
+   |
+25 | reveal_type(Desc().run2)
+   |             ^^^^^^^^^^^ `Unknown`
+
+Found 3 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+c9b.py:23: note: Revealed type is "Any"
+c9b.py:24: note: Revealed type is "Any"
+c9b.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+c9b.py:23: note: Revealed type is "Any"
+c9b.py:24: note: Revealed type is "Any"
+c9b.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+c9b.py:23: note: Revealed type is "Any"
+c9b.py:24: note: Revealed type is "Any"
+c9b.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py:23:13 - information: Type of "wrap(plain)" is "(self: Unknown, obj: object) -> None"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py:24:13 - information: Type of "Desc.run" is "(self: Unknown, obj: object) -> None"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py:25:13 - information: Type of "Desc().run2" is "(obj: object) -> None"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py:26:15 - error: Expected 1 positional argument (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c9b.py:27:16 - error: Expected 1 positional argument (reportCallIssue)
+2 errors, 0 warnings, 3 informations
+rc=1

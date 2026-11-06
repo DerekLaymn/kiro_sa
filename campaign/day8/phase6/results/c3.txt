@@ -1,0 +1,38 @@
+##### /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c3.py
+--- cpython 3.13.16
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> c3.py:17:17
+   |
+17 |     reveal_type(norm(v))
+   |                 ^^^^^^^ `Literal["a", "b"] | int`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.98 (/tmp/d7pd/ty98, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> c3.py:17:17
+   |
+17 |     reveal_type(norm(v))
+   |                 ^^^^^^^ `Literal["a", "b"] | int`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+c3.py:17: note: Revealed type is "Literal['A'] | Literal['B'] | int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+c3.py:17: note: Revealed type is "Literal['A'] | Literal['B'] | int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+c3.py:17: note: Revealed type is "Literal['A'] | Literal['B'] | int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c3.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase6/repro/c3.py:17:17 - information: Type of "norm(v)" is "int | str"
+0 errors, 0 warnings, 1 information
+rc=0

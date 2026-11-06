@@ -1,0 +1,45 @@
+# C1 partial unpack in except
+issues|astral-sh/ty|unpacking except
+issues|astral-sh/ty|except narrowing
+issues|astral-sh/ty|nested unpacking
+issues|astral-sh/ty|partial assignment
+issues|astral-sh/ty|try except
+issues|astral-sh/ty|except clause
+issues|astral-sh/ruff|try except checkpoint
+issues|astral-sh/ruff|unpacking exception
+prs|astral-sh/ruff|exception flow
+prs|astral-sh/ruff|checkpoints
+prs|astral-sh/ruff|unpacking except
+issues|microsoft/pyright|except unpacking
+issues|python/mypy|except unpacking
+# C2 stale attribute narrowing / Never
+issues|astral-sh/ty|stale narrowing
+issues|astral-sh/ty|attribute narrowing
+issues|astral-sh/ty|narrowing invalidate
+issues|astral-sh/ty|mutating method
+issues|astral-sh/ty|read-only property
+issues|astral-sh/ty|unreachable assert
+issues|astral-sh/ty|narrowing __dict__
+prs|astral-sh/ruff|attribute narrowing
+prs|astral-sh/ruff|method call narrowing
+# C3 overloads union expansion with TypeVar
+issues|astral-sh/ty|overload union
+issues|astral-sh/ty|union expansion
+issues|astral-sh/ty|overload typevar
+issues|python/mypy|overload union
+issues|python/mypy|union math
+issues|python/mypy|overload typevar
+issues|microsoft/pyright|overload union
+issues|microsoft/pyright|overload expansion
+prs|python/mypy|union math
+# C4 mypy no narrowing on initial assignment
+issues|python/mypy|narrowing assignment declared
+issues|python/mypy|declared type narrowing
+issues|python/mypy|initial assignment narrowing
+issues|python/mypy|overload Literal variable
+issues|python/mypy|narrow on assignment
+# C5 Self in parameter
+issues|astral-sh/ty|Self parameter
+issues|astral-sh/ty|Self bound
+issues|astral-sh/ty|Self argument
+issues|astral-sh/ty|Self upper bound

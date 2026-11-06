@@ -1,0 +1,338 @@
+=================== issue astral-sh/ty#4656
+title: False negative: Self parameter is not enforced on inherited methods
+state: CLOSED  created: 2026-10-03  closed: 2026-10-05T20:28:02Z  author: DerekLaymn
+labels: 
+body: ### Summary
+
+### Summary
+
+When a method with a `Self`-typed parameter is inherited by a subclass (not overridden), ty does not
+apply the subclass binding of `Self` when checking calls. Passing an instance of the base class is
+accepted, although ty itself reveals the parameter type as the subclass.
+
+```py
+from typing import Self
+
+class Node:
+    def add(self, c: Self) -> Self:
+        return self
+
+class Leaf(Node):
+    pass
+
+x = Leaf()
+x.add(Node())  # expected error: `Node` is not assignable to `Leaf`
+```
+
+```console
+$ ty check test_bug.py --python-version 3.14
+All checks passed!
+```
+
+**Expected:** an `invalid-argument-type` error. Per PEP 673, `Self` in `Node.add` binds to `Leaf` when
+the method is accessed on a `Leaf` instance, so `c` must be a `Leaf`. mypy and pyright both report this
+call.
+
+ty's own view of the method agrees that the parameter is `Leaf`:
+
+```py
+reveal_type(x.add)  # bound method Leaf.add(c: Leaf) -> Leaf
+y: Leaf = Node()    # error[invalid-assignment] Object of type `Node` is not assignable to `Leaf`
+```
+
+If `Leaf` overrides `add` with the same signature, ty does report the call:
+
+```
+error[invalid-argument-type] Argument to bound method `Leaf.add` is incorrect: Argument type `Node`
+does not satisfy upper bound `Leaf` of type variable `Self`
+```
+
+The same false negative occurs for other forms of the inherited method (all accepted without error):
+
+```py
+class Node:
+    def add_all(self, cs: list[Self]) -> Self: return self
+class Leaf(Node): pass
+Leaf().add_all([Node()])
+
+Leaf().add(c=Node())          # keyword argument
+Leaf.add(Leaf(), Node())      # unbound call
+
+class Box[T]:
+    def merge(self, other: Self) -> Self: return self
+class IntBox(Box[int]): pass
+IntBox().merge(Box[int]())
+```
+
+Possibly related: #4387.
+
+Playground: <https://play.ty.dev/0c7b2062-683c-4788-b0cb-132118785d27>
+
+### Version
+
+ty 0.0.84
+
+
+### Version
+
+0.0.84
+comments: 1
+  -- carljm 2026-10-05: Thanks for the report! This is intended behavior in ty. The [typing spec](https://typing.python.org/en/latest/spec/generics.html#use-in-method-signatures) says that `Self` is treated as a typevar with upper bound of the defining class, and that's how ty treats it. The upper bound of `Self` in `Node.add` is `Node`. When we solve that typevar in a call like `Leaf().add(Node())`, where `self` is a `Leaf` instance and `c` is a `Node` instance, solving the `Self` typevar to `Node` is valid -- it conforms to the upper bound, and both argument types are assignable to it.
+
+The mypy/pyright interpretation here makes `Self`-typed parameters inherently break Liskov substitutability. `Leaf` is a subtype
+=================== issue astral-sh/ty#4673
+title: Bound method type displays an overly narrow Self parameter
+state: CLOSED  created: 2026-10-05  closed: 2026-10-05T20:29:12Z  author: carljm
+labels: bug,generics,callables
+body: ### Summary
+
+The displayed type of an inherited bound method can show a `Self`-typed parameter as the receiver's subclass, even though the method accepts an instance of the base class. The displayed signature also does not show how the return type changes for that argument.
+
+### Reproduction
+
+```python
+from typing import Self, reveal_type
+
+class Node:
+    def add(self, other: Self) -> Self:
+        return other
+
+class Leaf(Node):
+    pass
+
+add = Leaf().add
+
+# Revealed: bound method Leaf.add(other: Leaf) -> Leaf
+reveal_type(add)
+
+# Accepted and revealed as Node
+reveal_type(add(Node()))
+
+# Accepted and revealed as Leaf
+reveal_type(add(Leaf()))
+```
+
+The displayed signature suggests that `add` accepts only a `Leaf`. However, the method-scoped `Self` can be solved from both the receiver and the argument, so the call with a `Node` is valid and returns a `Node`.
+
+### Expected behavior
+
+The disp
+comments: 0
+
+=================== issue astral-sh/ty#2792
+title: Consider invalidating attribute narrowing based on method calls known to mutate that attribute
+state: OPEN  created: 2026-02-11  closed: -  author: jbree
+labels: narrowing,attributes
+body: ### Summary
+
+I couldn't find this in the tracker, but it feels like it may be a duplicate.
+
+`self.bar` is initialized to `None`. Then a method call changes its value to `3.14`. ty narrows the type to `None` even though it is in fact `float` at this point:
+
+```py
+class Foo:
+
+    def __init__(self):
+        self.bar: float | None = None
+
+    def modify(self):
+        self.bar = 3.14
+    
+    def do_something(self):
+        self.bar = None
+        self.modify()
+        reveal_type(self.bar)
+```
+
+https://play.ty.dev/49740290-cb43-4229-9e07-af8eab00fec4
+
+### Version
+
+0.0.16
+comments: 3
+  -- carljm 2026-02-12: Yes, attribute narrowing can be unsound in this way. And yet all Python type checkers do it anyway (every Python type checker reports the same result in this example), because the consequences of not doing it seem to be even worse, in that many common sound programs are then rejected by the type checker. Accurately dividing the false negatives from the false positives requires quite expensive (even intractable) cross-procedural analysis.
+
+That said, it might be feasible to catch some of the most common cases of this: the cases where a method on `self` is called directly, which mutates an attribute on `self`, and discard the narrowing on that attribute when we see such a call. Will leave this
+  -- carljm 2026-02-12: #885 discusses the same issue, but tracks another possible "solution" (an opt-in setting to disable this unsound narrowing). So I'll leave this open to track the possibility that we could be somewhat more precise.
+  -- fredericmorin-flare 2026-09-08: Same issue here when using sqlalchemy:
+
+```py
+assert user.pw_reset_link is None
+# test some logic here
+# then validate sql state update through sqlalchemy
+session.refresh(user) # refresh is invisible to ty 
+assert user.pw_reset_link # get ty: redundant-condition
+```
+=================== issue astral-sh/ty#4880
+title: "Code is unreachable" seems to assume immutability
+state: CLOSED  created: 2026-10-31  closed: 2026-11-01T19:22:27Z  author: spookylukey
+labels: 
+body: ### Summary
+
+In the following code:
+
+```python
+class Switch:
+    def __init__(self):
+        self.is_on = True
+
+    def toggle(self):
+        self.is_on = not self.is_on
+
+
+def test_switch():
+    switch = Switch()
+    assert switch.is_on
+    switch.toggle()
+    assert not switch.is_on
+    assert 1 + 1 == 2
+```
+
+ty incorrectly reports "Code is unreachable" on the last line.  See https://play.ty.dev/c31a96da-57e2-4304-be1a-41f46ba1dd1b
+
+The first `assert switch.is_on` causes `switch.is_on` to narrow to `Literal[True]`, and this is assumed to continue to be true forever, so the second assert is assumed to fail, and lines following this therefore assumed to be unreachable.
+
+The issue is not related to just asserts, using `if` statements etc will show the same thing. See https://play.ty.dev/be5da32b-ba22-4eef-9ab9-f68f57deccf7
+
+This can result in a lot of code being incorrectly marked as unrea
+comments: 3
+  -- AtharvRG 2026-10-31: I'd like to take this on. The core issue is that narrowing `switch.is_on` to `Literal[True]` treats instance attributes as immutable across calls that can mutate them - the narrowed fact survives `switch.toggle()` and even simple reassignment paths. My plan: reproduce with both playground examples (the `assert` version and the `if` version), then find where attribute narrowing facts are invalidated in ty's flow analysis - the fix should be to invalidate (or at least re-join) narrowed attribute facts at any call on the owning object or any function that may mutate reachable state, similar to how ty already handles narrowing invalidation for other mutation. If a full invalidation model is too 
+  -- AlexWaygood 2026-11-01: Thanks for the report! I’m closing this as a duplicate of #4345. In both reports, the first assertion narrows an attribute and a call then changes its value. Here ty still treats `switch.is_on` as true after `switch.toggle()`, so it concludes that `assert not switch.is_on` must fail and marks the following code as unreachable. The same thing happens with `mock.call_count` in #4345.
+
+Also related:
+- #2792 discusses when a method call should invalidate an attribute’s narrowed type
+- #3888 shows the same unreachable-code symptom as this issue, with a boolean property whose value can change between reads.
+  -- AlexWaygood 2026-11-01: @AtharvRG, thanks, but I don't think this class of issues is a good candidate for a new contributor. We know why ty behaves this way, the main question to answer here is whether there's a good way of fixing this that makes some kind of principled sense, and where the cure is clearly better than the disease itself. (Your message seems like it may have been authored by an LLM: LLMs are particularly badly suited to this kind of question.)
+=================== issue astral-sh/ty#3666
+title: new rule - enforce that `self` parameter on methods is a supertype of its class
+state: OPEN  created: 2026-06-04  closed: -  author: DetachHead
+labels: typing semantics,method-receiver
+body: ```py
+class Foo:
+    def fn(asdf: int): ...
+```
+both [pyright](https://basedpyright.com/?typeCheckingMode=all&code=MYGwhgzhAEBiD28BcAoa7oBMCmAzauAdgBQTYi5LQCWhALgJRUB0rQA) and [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSIAxlKnHAAQBiuuiAOuvV-ZjGPWHQAKWpjCJ6EdABcAlBMKKQAGhBkATnyilC03AFsoFMtIAWudAFoAbjHVwIF%2BgF56bEAGZCARgAs7jmJNOBhpFzcQOGl1CEppAPQAbTt1XHsAXQ5eIJhKVGkYTHD3FLT3N3QIfWIoWIhpS1RsKPVUOMtqWgZXEvVU9QSqmrqGobSwnpBSgZAKodrKeu1LXkh0QsbpaIhsAFcC4qm%2BspAOfQg6KQBzSzhcXfVKGEPphPQLSxh8U1RdqIhbJZ9PlKKYXscZhx3g1NABHXYQTSYSwAaxgpEalCedHB-QSuGIMCsu3QxDaKOu
+comments: 0
+
+=================== issue python/mypy#15515
+title: Consider adding new plugin API for checking implicit definitions
+state: OPEN  created: 2023-06-25  closed: -  author: sobolevn
+labels: feature,topic-plugins
+body: **Feature**
+
+This PR introduces a new check for mypy: we now can find incompatible `__post_init__` methods in `@dataclass`es: https://github.com/python/mypy/pull/15503/files#diff-f96a2d6138bc6cdf2a07c4d37f6071cc25c1631afc107e277a28d5b59fc0ef04R1048-R1050
+
+But, the thing is that for now we are using a direct call to `dataclasses` internal plugin, because there are no ways to do it otherwise.
+
+**Pitch**
+
+Let's discuss possible options we have to introduce a new API that can solve this problem.
+
+CC @ilevkivskyi (original reviewer), @Tinche (as you might be interested), @JukkaL 
+
+comments: 1
+  -- Tinche 2023-06-26: Sounds cool. Could you keep me in the loop? I'm interested.
+
+On Sun, Jun 25, 2023 at 12:37 PM Nikita Sobolev ***@***.***>
+wrote:
+
+> *Feature*
+>
+> This PR introduces a new check for mypy: we now can find incompatible
+> __post_init__ methods in @dataclasses:
+> https://github.com/python/mypy/pull/15503/files#diff-f96a2d6138bc6cdf2a07c4d37f6071cc25c1631afc107e277a28d5b59fc0ef04R1048-R1050
+>
+> But, the thing is that for now we are using a direct call to dataclasses
+> internal plugin, because there are no ways to do it otherwise.
+>
+> *Pitch*
+>
+> Let's discuss possible options we have to introduce a new API that can
+> solve this problem.
+>
+> CC @ilevkivskyi <https://github.com/il
+=================== issue microsoft/pyright#11961
+title: Crash (RangeError: Maximum call stack size exceeded) when a constructor method is annotated with its own class and the class is instantiated
+state: OPEN  created: 2026-11-02  closed: -  author: Choco-princess
+labels: bug
+body: **Describe the bug**
+
+Pyright's command-line tool exits with status 2 and prints `RangeError: Maximum call stack size exceeded` when a class declares `__new__` or `__init__` (or a metaclass `__call__`) with a type that refers back to the same class, and the class is then instantiated.
+
+Expected behavior: a normal diagnostic or no diagnostic, not an internal error.
+
+Steps to reproduce: save any of the code samples below as `case.py` and run `pyright --pythonversion 3.13 case.py`.
+
+The recursion runs `validateConstructorArgs` -> `validateNewAndInitMethods` -> `validateNewMethod` -> `validateArgTypesWithExpectedType` -> `validateConstructorArgs`, with no cycle guard (frames in `constructors.ts` lines 133, 176/177, 263, 427). Raising Node's stack size does not avoid the crash — it exhausts the stack and segfaults instead — so this is unbounded recursion, not merely a deep stack.
+
+Each sample is valid at runtime (it runs under CPython without error). Removing the instantiation call, or annotating the constructor with a *different* class, avoids the crash. This reproduces on every released version tried (1.1.300 through 1.1.414), so it is long-standing rather than a recent regression.
+
+**Code or Screenshots**
+
+Each sample crashes on its own.
+
+`__init__` annotated as its own class:
+
+```python
+class C:
+    __init__: type["C"]
+
+C()
+```
+
+`__new__` annotated as its own class:
+
+```python
+class A:
+    __new__: type["A"]
+
+A()
+```
+
+Metaclass `__call__` annotated as the instance class:
+
+```p
+comments: 0
+
+=================== pr microsoft/pyright#11965
+title: Prevent recursion through class-valued constructor methods
+state: OPEN  created: 2026-11-02  closed: -  author: LionStone-1
+labels: 
+body: Fixed a bug in constructor validation when `__init__`, `__new__`, or a metaclass `__call__` is annotated with a class that leads back to the same constructor. This addresses #11961.
+
+Constructor helpers forward the same arguments back through call validation without preserving its recursion counter. Track active constructor validations per evaluator and stop a repeated class/call/argument-list combination, with stack cleanup in `finally`. Fresh argument lists remain eligible for ordinary reentrant expression evaluation.
+
+The regression sample covers all three reported variants, mutually recursive constructors, normal class-valued constructor annotations (including an invalid argument), and nested same-class calls. It also preserves the incompatible metaclass override diagnostic.
+
+Validation:
+- New regression fails on the original source with `RangeError: Maximum call stack size exceeded`.
+- All 177 tests in `typeEvaluator6.test.ts` pass.
+- Core TypeScript typecheck, focused ESLint, Prettier, and `git diff --check` pass.
+
+Test Suites: 8 passed, 8 total
+Tests:       1364 passed, 1364 total
+Time:        119.113 s
+
+No throughput benchmark was performed.
+
+Revalidated on upstream base `f
+comments: 1
+  -- heejaechang 2026-11-04: ### Pyright CLI QA: long-running constructor analysis
+
+The QA run against [175640d96df8639f97a9c6085a941d7d71950b42](https://github.com/microsoft/pyright/commit/175640d96df8639f97a9c6085a941d7d71950b42) was stopped manually after approximately 13.5 hours. It was still analyzing the `recursive-hooks` scenario below; the candidate CLI had not returned.
+
+This is a **long-running performance issue with suspected nontermination**, not a proven infinite loop. The expected behavior is that analysis terminates, even if the constructor annotations produce diagnostics.
+
+**Reproduction**
+
+Create a `recursive-hooks` directory containing these two files. These are the exact input files preserved from the
+=================== releases
+Published 1.1.414	Latest	1.1.414	2026-09-09T20:40:05Z
+Published 1.1.413		1.1.413	2026-09-09T17:46:15Z
+Published 1.1.412		1.1.412	2026-08-12T22:59:44Z
+Published 1.1.411		1.1.411	2026-06-25T00:06:53Z
+Published 1.1.410		1.1.410	2026-05-23T00:23:32Z
+0.0.98	Latest	0.0.98	2026-11-05T17:40:52Z
+0.0.97		0.0.97	2026-11-04T09:16:55Z
+0.0.96		0.0.96	2026-11-03T02:25:50Z
+finished

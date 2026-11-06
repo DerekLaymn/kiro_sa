@@ -1,0 +1,23 @@
+### issues astral-sh/ty :: __call__ instance variable
+rc=0
+### issues astral-sh/ty :: dunder instance attribute
+rc=0
+### issues astral-sh/ty :: special method lookup
+rc=0
+### issues astral-sh/ty :: callable declared attribute
+rc=0
+### issues microsoft/pyright :: __call__ instance variable
+784	closed	2020-07-06	Instance variable of Callable is reported as having wrong number of arguments
+799	closed	2020-07-07	Wrong type inferred instead of using Any with structlog
+rc=0
+### issues microsoft/pyright :: dunder method instance attribute
+rc=0
+### issues microsoft/pyright :: special method lookup instance
+rc=0
+### issues microsoft/pyright :: __call__ declared attribute
+rc=0
+### issues python/mypy :: dunder instance attribute
+rc=0
+### issues python/mypy :: special method lookup instance
+rc=0
+finished

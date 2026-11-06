@@ -1,0 +1,123 @@
+== pins (.venv)
+Python 3.13.16
+ty 0.0.97
+mypy 2.4.0 (compiled: yes)
+pyright 1.1.414
+== /tmp/d3v-latest
+activate
+activate.bat
+activate.csh
+activate.fish
+activate.nu
+activate.ps1
+activate_this.py
+activate.xsh
+deactivate.bat
+dmypy
+mypy
+mypyc
+nodeenv
+pydoc.bat
+pyright
+pyright-langserver
+pyright-python
+pyright-python-langserver
+python
+python3
+ty 0.0.97
+mypy 2.4.1 (compiled: yes)
+== /tmp/d3v-master
+activate
+activate.bat
+activate.csh
+activate.fish
+activate.nu
+activate.ps1
+activate_this.py
+activate.xsh
+deactivate.bat
+dmypy
+mypy
+mypyc
+pydoc.bat
+python
+python3
+python3.13
+stubgen
+stubtest
+mypy 2.5.0+dev.879da562a4bba1ff8023799afad195bc364b730a (compiled: no)
+== ty98 (Day 7 install)
+ap.out
+append.out
+append.sh
+ap.sh
+collect.out
+collect.sh
+commit.out
+commit.sh
+drafts_add.md
+gh_c1b.out
+gh_c1.out
+gh_c1.uniq
+gh_c2.out
+gh_c3.out
+gh_c4.out
+gh_c5.copy
+gh_c5.out
+gh_mypy_hash.out
+gh_mypy_hash.sh
+gh_read3.out
+gh_read3.sh
+gh_read4.out
+gh_read4.sh
+gh_read5.out
+gh_read5.sh
+gh_read6.out
+gh_read6.sh
+gh_read_mypy.out
+gh_read_mypy.sh
+gh_read_pyr.out
+gh_read_pyr.sh
+gh_read_ty.out
+gh_read_ty.sh
+gh_search.sh
+launch.out
+launch.sh
+log_add.md
+pr_c2min.txt
+pr_r4.txt
+pr_r6.txt
+pr_r8.txt
+pyright_exit.out
+pyright_exit.sh
+pyver.out
+pyver.sh
+rel.out
+rel.sh
+run_all_search.log
+run_all_search.sh
+run_c1_search.log
+run_c1_search.sh
+search.done
+show2.out
+show2.sh
+show3.out
+show3.sh
+show.out
+show.sh
+st2.out
+st2.sh
+st.out
+st.sh
+tail.txt
+ty98
+ty98.out
+ty98.sh
+/tmp/d7pd/ty98/bin/ty
+== gh release list ty
+0.0.98	Latest	0.0.98	2026-11-05T17:40:52Z
+0.0.97		0.0.97	2026-11-04T09:16:55Z
+0.0.96		0.0.96	2026-11-03T02:25:50Z
+0.0.95		0.0.95	2026-10-29T19:23:48Z
+== uv
+/usr/bin/uv
