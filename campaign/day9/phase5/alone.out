@@ -1,0 +1,61 @@
+== 1 constructors_metaclasses/gen1_c86958a8.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L39: `reveal_type(n)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value '3' of type builtins.int does NOT inhabit mypy's revealed type Widget
+== 2 typevartuple_unpack/gen1_4d7d067f.py rc=0
+[all] programs=1 discrepancies=4 live=4 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L13: `return (*a, *b)` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L17: `return (*b, *a)` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L21: `reveal_type(c)` |
+| D4 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L26: `reveal_type(r)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "(1, 'x', 2.0, None)" of type builtins.tuple does NOT inhabit mypy's revealed type tuple[int, str]
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "(2.0, 1, 'x')" of type builtins.tuple does NOT inhabit mypy's revealed type tuple[float]
+== 3 inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f.py rc=0
+[all] programs=1 discrepancies=4 live=4 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L23: `reveal_type(c1 < c2)` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L24: `reveal_type(c1 > c2)` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L25: `reveal_type(c1 <= c2)` |
+| D4 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L42: `print(len(p))  # expect-error: __len__ is only annotated, no` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value 'True' of type builtins.bool does NOT inhabit mypy's revealed type Literal[False]
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value 'False' of type builtins.bool does NOT inhabit mypy's revealed type Literal[True]
+== 4 constructors_metaclasses/d4v_metaclass_reflected_op__mut0_dcb547ed.py rc=0
+[all] programs=1 discrepancies=4 live=4 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L30: `assert_type(A * B, str)` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L31: `return A * B` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L29: `reveal_type(A * B)` |
+| D4 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L48: `n = len(s)  # expect-error` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "'s'" of type builtins.str does NOT inhabit mypy's revealed type int
+== 5 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_49d4094b.py rc=0
+[all] programs=1 discrepancies=2 live=1 (programs with live=1, crash findings=0) dismissed=1 tool_crashes=0
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L7: `class Callback[*Ts, **P = [bool]]:` |
+| D1 | dismissed | NOT_BUG | none | NOISE | 0.90 | kb:DISPLAY-EQUIVALENT | L15: `reveal_type(cb)` |
+- evidence [RUNTIME/strong/verified, supports bug]: CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(7, '<module>'), (7, '<generic parameters of Call
+== 6 gradual_any/gen5_ade5dcc3.py rc=0
+[all] programs=1 discrepancies=2 live=2 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L30: `reveal_type(d)  # Any` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L15: `return n + 1` |
+- evidence [RUNTIME/strong/verified, supports bug]: CPython raised TypeError: can only concatenate str (not "int") to str with this statement on the stack (frames [(26, '<module>'), (15, 'takes_int')]). Checker output he
+== 7 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_df958820.py rc=0
+[all] programs=1 discrepancies=5 live=4 (programs with live=1, crash findings=0) dismissed=1 tool_crashes=0
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L27: `cb = Callback[int, str](pair)` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L28: `reveal_type(cb.fn)  # (flag: bool) -> tuple[int, str]` |
+| D4 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L37: `reveal_type(t2.key)  # str` |
+| D5 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L9: `class Callback[*Ts, **P = [bool]]:` |
+| D1 | dismissed | NOT_BUG | none | KNOWN_LIMITATION | 0.90 | kb:TY-CHECK-NOT-IMPLEMENTED | L16: `self.key = key` |
+- evidence [RUNTIME/strong/verified, supports bug]: CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic parameters of Call
+== 8 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_9940d14a.py rc=0
+[all] programs=1 discrepancies=3 live=3 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L16: `ok = Callback[int, str]()` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L17: `reveal_type(ok)` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L12: `class Callback(Generic[*Ts, P]):` |
+- evidence [RUNTIME/strong/verified, supports bug]: CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(12, '<module>')]). Checker output here: nothing.
+== similarity
+0.36 (>=0.80: 0)  gen1_c86958a8.py  closest: d3p_inheritance_mro_total_ordering_inherited_lt.py
+0.40 (>=0.80: 0)  gen1_4d7d067f.py  closest: d4v_ty_flag_or_else_never.py
+0.70 (>=0.80: 0)  d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f.py  closest: d3p_inheritance_mro_total_ordering_inherited_lt.py
+0.56 (>=0.80: 0)  d4v_metaclass_reflected_op__mut0_dcb547ed.py  closest: d4v_metaclass_reflected_op.py
+0.53 (>=0.80: 0)  d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_49d4094b.py  closest: d6p_protocols_expanding_self_receiver_tuple_nesting_ty.py
+0.33 (>=0.80: 0)  gen5_ade5dcc3.py  closest: d3p_inheritance_mro_total_ordering_inherited_lt.py
+0.43 (>=0.80: 0)  d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_df958820.py  closest: d3p_inheritance_mro_total_ordering_inherited_lt.py
+0.48 (>=0.80: 0)  d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_9940d14a.py  closest: d3p_typevartuple_unpack_paramspec_default_after_tvt.py
+== candidate pairs >= 0.60
