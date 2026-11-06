@@ -244,6 +244,27 @@ def test_parameters_and_derived_variables_of_the_class():
     assert "CALLABLE-SELF-RECEIVER" in fam_ids("reveal_type(made)", K.REVEAL_MISMATCH, **reveal)  # made = w(), w: User
 
 
+STATIC = ("from typing import Callable\n\n\nclass Pipe:\n    @staticmethod\n    def compose(f: Callable[[int], int], g: Callable[[int], int]) -> int:\n"
+          "        return f(g(1))\n\n    @classmethod\n    def build(cls, f: Callable[[int], int]) -> int:\n        return f(1)\n\n"
+          "    def run(self, f: Callable[[int], int]) -> int:\n        return f(1)\n\n\n"
+          "p = Pipe()\nPipe.compose(1, 2)\np.run(3)\nPipe.build(4)\nself_like = Pipe\n")
+
+
+@pytest.mark.parametrize("stmt", ["Pipe.compose(1, 2)", "p.run(3)", "Pipe.build(4)", "p = Pipe()", "return f(g(1))", "def compose"])
+@pytest.mark.parametrize("kind,kw", [(K.ONLY_TY, {"ty": CALL_TY}), (K.ONLY_MYPY, {"mypy": [("arg-type", "bad")]}),
+                                     (K.ONLY_PYRIGHT, {"pyright": [("reportCallIssue", "bad")]})])
+def test_a_callable_parameter_after_self_or_a_staticmethod_is_no_receiver(stmt, kind, kw):
+    # review finding: the first parameter of a @staticmethod (and any later parameter) is an ordinary Callable argument
+    got = {i for i in pids(STATIC, stmt, kind, **kw) if i.startswith("CALLABLE-SELF")}
+    assert not got, got
+
+
+def test_a_staticmethod_next_to_a_real_receiver_does_not_widen_the_entry():
+    src = STATIC + "\n\nclass Real:\n    @classmethod\n    def __call__(cls: Callable[[int], int], x: int) -> int:\n        return x\n"
+    assert "CALLABLE-SELF-RECEIVER" in {i for i in pids(src, "def __call__", K.ONLY_TY, ty=CALL_TY)}
+    assert not {i for i in pids(src, "Pipe.compose(1, 2)", K.ONLY_TY, ty=CALL_TY) if i.startswith("CALLABLE-SELF")}
+
+
 def test_statements_that_touch_no_such_class_stay_live():
     assert "CALLABLE-SELF-RECEIVER" not in fam_ids("Plain(1).go()", K.ONLY_TY, ty=CALL_TY)
     assert "CALLABLE-SELF-RECEIVER" not in fam_ids("self.y = 1", K.ONLY_TY, ty=CALL_TY)
@@ -403,11 +424,18 @@ def test_only_pyright_with_a_handled_exception_gets_the_higher_priority_and_says
 EXPECT = ("def use(x: int) -> None: ...\n"
           "def run(cb) -> None:\n"
           "    cb(1)\n"
-          "use('a')  # expect-error\n"
-          "run(lambda v: v.bit_length2())\n")
+          "hf = lambda v: v.bit_length2()\n"
+          "use(hf)  # expect-error\n"
+          "run(hf)\n")
+# the marked statement and the failing chain share no program name: the failure is a genuine miss
+UNRELATED = ("def use(x: int) -> None: ...\n"
+             "def run(cb) -> None:\n"
+             "    cb(1)\n"
+             "use('a')  # expect-error\n"
+             "run(lambda v: v.bit_length2())\n")
 
 
-def miss_rt(frames, executed=(1, 2, 3, 4, 5)):
+def miss_rt(frames, executed=(1, 2, 3, 4, 5, 6)):
     return RuntimeResult(status="exception", exc_type="AttributeError", exc_message="'int' object has no attribute 'bit_length2'",
                          exc_line=frames[-1][0], frames=frames, executed_lines=list(executed))
 
@@ -416,28 +444,41 @@ def miss_kinds(src, diags, rt):
     return [d.kind for d in find_discrepancies(diags, AnchorMap(src), rt)]
 
 
-FRAMES = [(5, "<module>"), (3, "run"), (5, "<lambda>")]
+FRAMES = [(6, "<module>"), (3, "run"), (4, "<lambda>")]
+
+
+def _flag(line, tool=Tool.MYPY, code="arg-type"):
+    d = {Tool.MYPY: [], Tool.TY: [], Tool.PYRIGHT: []}
+    d[tool] = [Diagnostic(tool, line, 1, Severity.ERROR, code, "bad")]
+    return d
 
 
 def test_runtime_miss_that_follows_a_flagged_expect_error_line_is_not_reported():
-    flagged = {Tool.MYPY: [Diagnostic(Tool.MYPY, 4, 1, Severity.ERROR, "arg-type", "bad")], Tool.TY: [], Tool.PYRIGHT: []}
-    assert K.RUNTIME_MISS not in miss_kinds(EXPECT, flagged, miss_rt(FRAMES))
+    assert K.RUNTIME_MISS not in miss_kinds(EXPECT, _flag(5), miss_rt(FRAMES))
     # any of the three checkers flagging the marker is enough
-    py = {Tool.MYPY: [], Tool.TY: [], Tool.PYRIGHT: [Diagnostic(Tool.PYRIGHT, 4, 1, Severity.ERROR, "reportArgumentType", "bad")]}
-    assert K.RUNTIME_MISS not in miss_kinds(EXPECT, py, miss_rt(FRAMES))
+    assert K.RUNTIME_MISS not in miss_kinds(EXPECT, _flag(5, Tool.PYRIGHT, "reportArgumentType"), miss_rt(FRAMES))
+    # the link can also be a function on the traceback: the marked statement calls `run`, the failure is inside it
+    via_func = EXPECT.replace("use(hf)  # expect-error\nrun(hf)\n", "run(lambda v: v.bit_length2())  # expect-error\nrun(hf)\n")
+    assert K.RUNTIME_MISS not in miss_kinds(via_func, _flag(5), miss_rt(FRAMES))
 
 
 def test_runtime_miss_controls_stay():
     none = {Tool.MYPY: [], Tool.TY: [], Tool.PYRIGHT: []}
-    flagged = {Tool.MYPY: [Diagnostic(Tool.MYPY, 4, 1, Severity.ERROR, "arg-type", "bad")], Tool.TY: [], Tool.PYRIGHT: []}
     assert K.RUNTIME_MISS in miss_kinds(EXPECT, none, miss_rt(FRAMES)), "marker not flagged by any checker"
-    assert K.RUNTIME_MISS in miss_kinds(EXPECT.replace("  # expect-error", ""), flagged, miss_rt(FRAMES)), "no marker"
-    assert K.RUNTIME_MISS in miss_kinds(EXPECT, flagged, miss_rt(FRAMES, executed=(1, 2, 3, 5))), "marker never ran"
-    later = EXPECT.replace("use('a')  # expect-error\nrun(lambda v: v.bit_length2())\n",
-                           "run(lambda v: v.bit_length2())\nuse('a')  # expect-error\n")
-    flagged5 = {Tool.MYPY: [Diagnostic(Tool.MYPY, 5, 1, Severity.ERROR, "arg-type", "bad")], Tool.TY: [], Tool.PYRIGHT: []}
-    assert K.RUNTIME_MISS in miss_kinds(later, flagged5, miss_rt([(4, "<module>"), (3, "run"), (4, "<lambda>")])), \
+    assert K.RUNTIME_MISS in miss_kinds(EXPECT.replace("  # expect-error", ""), _flag(5), miss_rt(FRAMES)), "no marker"
+    assert K.RUNTIME_MISS in miss_kinds(EXPECT, _flag(5), miss_rt(FRAMES, executed=(1, 2, 3, 4, 6))), "marker never ran"
+    later = EXPECT.replace("use(hf)  # expect-error\nrun(hf)\n", "run(hf)\nuse(hf)  # expect-error\n")
+    assert K.RUNTIME_MISS in miss_kinds(later, _flag(6), miss_rt([(5, "<module>"), (3, "run"), (4, "<lambda>")])), \
         "the failing statement comes first"
+
+
+def test_runtime_miss_after_a_flagged_marker_that_shares_nothing_with_the_failure_stays():
+    # review finding: an unrelated genuine miss after a flagged `# expect-error` line must not be hidden
+    frames = [(5, "<module>"), (3, "run"), (5, "<lambda>")]
+    assert K.RUNTIME_MISS in miss_kinds(UNRELATED, _flag(4), miss_rt(frames, executed=(1, 2, 3, 4, 5)))
+    # names that every program has (builtins, `self`) are no link
+    builtin_link = UNRELATED.replace("use('a')", "print(len('a'), use('a'))").replace("cb(1)", "print(cb(1))")
+    assert K.RUNTIME_MISS in miss_kinds(builtin_link, _flag(4), miss_rt(frames, executed=(1, 2, 3, 4, 5)))
 
 
 def test_runtime_miss_traceback_starting_before_the_marker_stays():

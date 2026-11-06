@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import ast
+import builtins
 import re
 from collections import defaultdict
 
@@ -63,19 +65,41 @@ def _consequence_of_expected_error(amap: AnchorMap, runtime: RuntimeResult, all_
     checker flags, so the ``runtime_miss`` anchors on the wrong frame. It is suppressed when some line marked
     ``# expect-error`` (a) is flagged by a checker, (b) was executed and (c) comes before the OUTERMOST program frame of the
     traceback, i.e. before the statement that started the failing call chain. An unflagged marker, a marker that never ran
-    and a marker after the failing statement leave the ``runtime_miss`` alone."""
+    and a marker after the failing statement leave the ``runtime_miss`` alone. The marker must also be LINKED to the
+    failing chain: the marked statement and the statements (or function names) on the traceback share a program name
+    (``use(hf)  # expect-error`` ... ``hf.fire(1.5)``); an unrelated failure after a flagged marker stays a ``runtime_miss``."""
     if not runtime.frames or not runtime.coverage_known:
         return False
     started_at = runtime.frames[0][0]
     executed = set(runtime.executed_lines or [])
     flagged = {amap.span(amap.anchor(x.line))[0] for x in all_diags if x.is_problem and x.line}
+    chain: set[str] | None = None
     for i, text in enumerate(amap.lines, 1):
         if not _EXPECT_ERROR_MARK.search(text):
             continue
         lo, hi = amap.span(amap.anchor(i))
         if lo < started_at and lo in flagged and any(ln in executed for ln in range(lo, hi + 1)):
-            return True
+            if chain is None:
+                chain = set()
+                for ln, fn in runtime.frames:
+                    chain |= _program_names(amap, ln)
+                    if fn and not fn.startswith("<"):
+                        chain.add(fn.rsplit(".", 1)[-1])
+            if _program_names(amap, lo) & chain:
+                return True
     return False
+
+
+_GENERIC_NAMES = frozenset(dir(builtins)) | {"self", "cls"}
+
+
+def _program_names(amap: AnchorMap, line: int) -> set[str]:
+    """Names (not builtins, not ``self`` / ``cls``) used on the lines of the statement at ``line`` (header only for a compound)."""
+    st = amap.stmt(line)
+    if st is None or st.node is None:
+        return set()
+    lo, hi = amap.span(amap.anchor(line))
+    return {n.id for n in ast.walk(st.node) if isinstance(n, ast.Name) and lo <= n.lineno <= hi and n.id not in _GENERIC_NAMES}
 
 
 def pyright_runtime_relation(amap: AnchorMap, runtime: RuntimeResult, anchor: int) -> str | None:

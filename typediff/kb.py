@@ -1745,12 +1745,17 @@ def _callable_annotation(ann: ast.AST | None) -> bool:
 
 
 def _callable_receiver_methods(tree: ast.AST) -> dict[str, list[ast.FunctionDef | ast.AsyncFunctionDef]]:
-    """Program class -> its methods whose first parameter (``self`` / ``cls``) is annotated with a ``Callable`` type."""
+    """Program class -> its methods whose first parameter (``self`` / ``cls``) is annotated with a ``Callable`` type. A
+    ``@staticmethod`` has no receiver: its first parameter (``def compose(f: Callable[..], g: ..)``) is an ordinary argument."""
     from . import crash_upstream as cu
+
+    def is_static(f) -> bool:
+        return any((isinstance(x, ast.Name) and x.id == "staticmethod")
+                   or (isinstance(x, ast.Attribute) and x.attr == "staticmethod") for x in f.decorator_list)
 
     out: dict[str, list] = {}
     for c in cu._classes(tree):
-        fns = [f for f in cu._methods(c) if (f.args.posonlyargs + f.args.args)
+        fns = [f for f in cu._methods(c) if not is_static(f) and (f.args.posonlyargs + f.args.args)
                and _callable_annotation((f.args.posonlyargs + f.args.args)[0].annotation)]
         if fns:
             out[c.name] = fns
@@ -2469,15 +2474,17 @@ ENTRIES.extend([
     ),
     KBEntry(
         "CALLABLE-SELF-ATTR-STORE", "ty and pyright check `self.x = ..` against a Callable-annotated `self`; mypy defines the attribute",
-        Dismissal.DESIGN_DIVERGENCE, "https://github.com/astral-sh/ty/issues/3666",
+        Dismissal.DESIGN_DIVERGENCE, "experiment, no upstream issue: campaign/day8-pipeline.md section 1 (e1, e2)",
         "A method whose `self` is annotated `Callable[..]` (the ParamSpec family `def __init__(self: Callable[P, T], *args: "
         "P.args, **kwargs: P.kwargs): self.args = args`) stores an attribute on that parameter. ty reports "
         "`unresolved-attribute` on the callable type and pyright `reportFunctionMemberAccess` (`Cannot assign to attribute "
         "\"args\" for class \"FunctionType\"`): both check the store against the declared receiver type, which is a function "
         "type. mypy defines the attribute from the store and reports nothing (verified on mypy 2.4.0, ty 0.0.97, pyright "
-        "1.1.414, Day-8 experiments e1/e2: also for a class that really has a `__call__`). The declaration is itself invalid "
+        "1.1.414, Day-8 experiments e1/e2: also for a class that really has a `__call__`). This divergence is experiment-based: "
+        "searches of the ty and mypy trackers found no issue about the store itself (the related open ty#3666 is about "
+        "validating the declaration of `self`, not about this). The declaration is itself invalid "
         "for mypy (`The erased type of self .. is not a supertype of its class`) and pyright when the class is not callable, "
-        "which ty does not check yet (open ty#3666), so there is no reference answer. Fires only when the statement is an "
+        "which ty does not check yet (ty#3666), so there is no reference answer. Fires only when the statement is an "
         "attribute store on the annotated parameter and the only reporting-tool diagnostics are that one rule.",
         (K.ONLY_TY, K.ONLY_PYRIGHT), _callable_self_attr_store, auto=True, runtime_override=False,
     ),
