@@ -1,0 +1,72 @@
+== 1 tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_cdecbcd7.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L14: `reveal_type(value)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "'bad'" of type builtins.str does NOT inhabit ty's revealed type Literal[1]
+== 2 tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_aa1f1387.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L19: `reveal_type(value)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "'bad'" of type builtins.str does NOT inhabit ty's revealed type Literal[1]
+== 3 tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_d873ebcb.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L14: `reveal_type(value)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "'bad'" of type builtins.str does NOT inhabit ty's revealed type Literal[1]
+== 4 tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut1_cfdf17ba.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L14: `reveal_type(head)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value "'bad'" of type builtins.str does NOT inhabit ty's revealed type Literal[0]
+== 5 descriptors_properties/d4p_descriptors_readonly_prop_never__mut0_f116e46b.py rc=0
+[all] programs=1 discrepancies=2 live=2 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L40: `t.readonly = n  # expect-error` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L37: `reveal_type(t.readonly)` |
+- evidence [RUNTIME/strong/verified, supports bug]: operand `n`: runtime type builtins.int is outside ty's inferred type Never
+- evidence [RUNTIME/strong/verified, supports bug]: operand `t`: runtime type __main__.Thing is outside ty's inferred type Never
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value '5' of type builtins.int does NOT inhabit ty's revealed type Never
+== 6 descriptors_properties/d4p_descriptors_readonly_prop_never__mut1_17c399aa.py rc=0
+[all] programs=1 discrepancies=2 live=2 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L38: `c.readonly = 0  # expect-error` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L32: `reveal_type(c.readonly)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value '11' of type builtins.int does NOT inhabit ty's revealed type Never
+== 7 descriptors_properties/d3p_descriptors_decorated_get__mut0_655e135a.py rc=0
+[all] programs=1 discrepancies=1 live=1 (programs with live=1, crash findings=1) dismissed=1 tool_crashes=1
+| C1 | confirmed | BUG | pyright | CRASH | 0.99 | rule:crash:internal_error | pyright internal_error: pyright:internal:RangeError |
+| D1 | dismissed | NOT_BUG | none | SPEC_AMBIGUITY | 0.90 | kb:BOTH-GRADUAL | L22: `reveal_type(C.__get__)` |
+- evidence [STACKTRACE/strong/verified, supports bug]: An internal error occurred while type checking file "/tmp/typediff-tye3ojll/case.py": RangeError: Maximum call stack size exceeded
+== 8 overloads/rsv_overloads_d41747bd__mut0_1de657a6.py rc=0
+[all] programs=1 discrepancies=4 live=3 (programs with live=1, crash findings=0) dismissed=1 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L26: `return r` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L25: `reveal_type(r)  # Literal['A', 'B'] \| int` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L31: `reveal_type(r)  # Any` |
+| D4 | dismissed | NOT_BUG | none | DESIGN_DIVERGENCE | 0.90 | kb:LITERAL-WIDENING | L36: `reveal_type(norm(2))  # int` |
+- evidence [RUNTIME/strong/verified, supports bug]: operand `r`: runtime type builtins.str is outside ty's inferred type Literal["a", "b"] | int
+== 9 overloads/rsv_overloads_d41747bd__mut0_f7c04c87.py rc=0
+[all] programs=1 discrepancies=4 live=3 (programs with live=1, crash findings=0) dismissed=1 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L25: `return r` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L24: `reveal_type(r)  # Literal['A', 'B'] \| int` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L30: `reveal_type(r)  # Any` |
+| D4 | dismissed | NOT_BUG | none | DESIGN_DIVERGENCE | 0.90 | kb:LITERAL-WIDENING | L35: `reveal_type(norm(2))  # int` |
+- evidence [RUNTIME/strong/verified, supports bug]: operand `r`: runtime type builtins.str is outside ty's inferred type Literal["a", "b"] | int
+== 10 overloads/gen12_a368580c.py rc=0
+[all] programs=1 discrepancies=3 live=3 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L10: `def parse(kind: Literal['int'], value: str) -> int: ...` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L12: `def parse(kind: Literal['float'], value: str) -> float: ...` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L39: `reveal_type(c)` |
+- evidence [RUNTIME/strong/verified, supports bug]: runtime value '9' of type builtins.int does NOT inhabit mypy's revealed type str
+== 11 self_classmethods/self_classmethods__self_param_inherited__mut0_3a63c673.py rc=0
+[all] programs=1 discrepancies=3 live=3 (programs with live=1, crash findings=0) dismissed=0 tool_crashes=0
+| D1 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L21: `x.add(Node())  # expect-error: Node is not a Leaf (mypy and ` |
+| D2 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L22: `x.add(c=Node())  # expect-error: keyword form` |
+| D3 | review | NEEDS_HUMAN | unknown | - | 0.00 | gate | L23: `Leaf.add(Leaf(), Node())  # expect-error: unbound form` |
+- evidence [SELF_CONTRADICTION/strong/verified, supports bug]: ty reveals `x.add` as `(c: Leaf) -> Leaf` (parameter type `Leaf`), rejects `_td_probe: Leaf = Node()` (L21:19 error[invalid-assignment] Object of type `Node`
+- evidence [SELF_CONTRADICTION/strong/verified, supports bug]: ty reveals `x.add` as `(c: Leaf) -> Leaf` (parameter type `Leaf`), rejects `_td_probe: Leaf = Node()` (L22:19 error[invalid-assignment] Object of type `Node`
+== similarity
+0.74 (>=0.80: 0)  d7p_tuples_unpacking_partial_unpack_except_ty__mut0_cdecbcd7.py  closest: d7p_tuples_unpacking_partial_unpack_except_ty.py
+0.73 (>=0.80: 0)  d7p_tuples_unpacking_partial_unpack_except_ty__mut0_aa1f1387.py  closest: d7p_tuples_unpacking_partial_unpack_except_ty.py
+0.86 (>=0.80: 1)  d7p_tuples_unpacking_partial_unpack_except_ty__mut0_d873ebcb.py  closest: d7p_tuples_unpacking_partial_unpack_except_ty.py
+0.67 (>=0.80: 0)  d7p_tuples_unpacking_partial_unpack_except_ty__mut1_cfdf17ba.py  closest: d7p_tuples_unpacking_partial_unpack_except_ty.py
+0.81 (>=0.80: 1)  d4p_descriptors_readonly_prop_never__mut0_f116e46b.py  closest: d4p_descriptors_readonly_prop_never.py
+0.63 (>=0.80: 0)  d4p_descriptors_readonly_prop_never__mut1_17c399aa.py  closest: d4v_ty_attr_eq_narrow_unreachable.py
+0.58 (>=0.80: 0)  d3p_descriptors_decorated_get__mut0_655e135a.py  closest: d5p_descriptors_decorated_get_pyright_rangeerror.py
+0.34 (>=0.80: 0)  rsv_overloads_d41747bd__mut0_1de657a6.py  closest: d4p_metaclass_or_reflected_ror.py
+0.36 (>=0.80: 0)  rsv_overloads_d41747bd__mut0_f7c04c87.py  closest: d4p_metaclass_or_reflected_ror.py
+0.27 (>=0.80: 0)  gen12_a368580c.py  closest: d4p_metaclass_or_reflected_ror.py
+0.38 (>=0.80: 0)  self_classmethods__self_param_inherited__mut0_3a63c673.py  closest: d4v_ty_attr_eq_narrow_unreachable.py
