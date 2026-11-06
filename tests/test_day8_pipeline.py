@@ -25,7 +25,7 @@ import pytest
 from test_upstream_day6 import dg, ids
 from typediff.anchors import AnchorMap
 from typediff.discrepancy import find_discrepancies, handled_type_exception, pyright_runtime_relation
-from typediff.display import display_canon
+from typediff.display import defaults_match, display_canon
 from typediff.kb import matching_entries
 from typediff.models import (
     Discrepancy, DiscrepancyKind as K, RuntimeProbe, RuntimeResult, Severity, Tool,
@@ -348,6 +348,48 @@ def test_display_only_differences_are_noise(mypy_rev, ty_rev, pyr):
 ])
 def test_display_controls_stay_live(name, mypy_rev, ty_rev, pyr):
     assert "DISPLAY-EQUIVALENT" not in disp_ids(TD, "reveal_type(kwargs)", mypy_rev, ty_rev, pyr), name
+
+
+def test_a_default_value_that_differs_between_ty_and_pyright_is_not_display_noise():
+    # review finding 4 (user decision: option c): ty and pyright are compared WITH default values
+    mypy = "def (a: int =)"
+    assert "DISPLAY-EQUIVALENT" in disp_ids(TD, "reveal_type(kwargs)", mypy, "(a: int = 1) -> None", "(a: int = 1) -> None")
+    for pyr in ("(a: int = 2) -> None", "(a: int = None) -> None", "(a: int) -> None"):  # real mismatch / missing default
+        assert "DISPLAY-EQUIVALENT" not in disp_ids(TD, "reveal_type(kwargs)", mypy, "(a: int = 1) -> None", pyr), pyr
+    # only the mismatching parameter matters, in any position
+    assert "DISPLAY-EQUIVALENT" not in disp_ids(TD, "reveal_type(kwargs)", "def (a: int =, b: str =)",
+                                                "(a: int = 1, b: str = 'x') -> None", "(a: int = 1, b: str = 'y') -> None")
+
+
+FACTORY = ("from dataclasses import dataclass, field\nfrom typing import reveal_type\n\n\n@dataclass\nclass Child:\n"
+           "    a: int = 0\n    names: list[str] = field(default_factory=list)\n\n\nreveal_type(Child.__init__)\n")
+FACTORY_M = "def (self: case.Child, a: int =, names: list[str] =)"
+FACTORY_T = "(self: Child, a: int = 0, names: list[str] = ...) -> None"
+
+
+def test_default_factory_reveal_stays_display_noise():
+    # ty prints `...` and pyright the factory name for a default_factory default
+    assert "DISPLAY-EQUIVALENT" in disp_ids(FACTORY, "reveal_type(Child", FACTORY_M, FACTORY_T,
+                                            "(self: Child, a: int = 0, names: list[str] = list) -> None")
+    assert "DISPLAY-EQUIVALENT" in disp_ids(FACTORY, "reveal_type(Child", FACTORY_M, FACTORY_T,
+                                            "(self: Child, a: int = 0, names: list[str] = ...) -> None")
+
+
+def test_default_factory_reveal_controls():
+    # a real mismatch next to a factory default is still a difference
+    assert "DISPLAY-EQUIVALENT" not in disp_ids(FACTORY, "reveal_type(Child", FACTORY_M, FACTORY_T,
+                                                "(self: Child, a: int = 5, names: list[str] = list) -> None")
+    # a name that the program does not pass as default_factory is no wildcard against a printed value
+    assert "DISPLAY-EQUIVALENT" not in disp_ids(TD, "reveal_type(kwargs)", "def (a: int =)", "(a: int = 0) -> None",
+                                                "(a: int = list) -> None")
+
+
+def test_defaults_match_examples():
+    assert defaults_match("(a: int = 1, b: int = ...)", "(a: int = 1, b: int = list)")
+    assert defaults_match("(b: int = fn)", "(b: int = 7)", {"fn"})
+    assert not defaults_match("(a: int = 1)", "(a: int = 2)")
+    assert not defaults_match("(a: int = 1)", "(a: int)")
+    assert not defaults_match("(a: int = 1, b: int = ...)", "(a: int = 2, b: int = list)")
 
 
 def test_display_canon_examples():

@@ -64,7 +64,12 @@ def _strip_type_args(text: str, names: set[str]) -> str:
 
 def _drop_defaults(text: str) -> str:
     """``name: int = 0, x`` and ``name: int =, x`` -> ``name: int =, x`` (the default value is not printed by mypy)."""
-    out, i = [], 0
+    return _split_defaults(text)[0]
+
+
+def _split_defaults(text: str) -> tuple[str, list[str]]:
+    """The text with every default value removed (``=`` kept), and the removed values in order."""
+    out, values, i = [], [], 0
     while i < len(text):
         c = text[i]
         prev, nxt = text[i - 1] if i else "", text[i + 1] if i + 1 < len(text) else ""
@@ -81,11 +86,25 @@ def _drop_defaults(text: str) -> str:
                 elif text[j] == "," and depth == 0:
                     break
                 j += 1
+            values.append(text[i + 1:j].strip())
             i = j
             continue
         out.append(c)
         i += 1
-    return "".join(out)
+    return "".join(out), values
+
+
+def defaults_match(a: str, b: str, factories: frozenset[str] | set[str] = frozenset()) -> bool:
+    """Two canonical texts (``display_canon(.., defaults=True)``, ty and pyright, which both print default values) are the
+    same apart from their default values, and every pair of values is equal or involves a value the printer did not
+    spell out: ty prints ``...`` for a ``field(default_factory=list)`` default where pyright prints the factory name,
+    and ``factories`` are the names the program passes as ``default_factory=``. Any other pair of values (``0`` vs ``1``,
+    ``None`` vs ``0``) is a real difference."""
+    sa, va = _split_defaults(a)
+    sb, vb = _split_defaults(b)
+    if sa != sb or len(va) != len(vb):
+        return False
+    return all(x == y or "..." in (x, y) or x in factories or y in factories for x, y in zip(va, vb))
 
 
 def _complete_callables(text: str) -> str:
@@ -155,8 +174,9 @@ def _paramspec_lists(text: str) -> str:
 
 
 def display_canon(text: str, module: str = "case", typeddicts: frozenset[str] | set[str] = frozenset(),
-                  header: bool = True) -> str:
-    """The spelling-independent form of one revealed type (see the module docstring)."""
+                  header: bool = True, defaults: bool = False) -> str:
+    """The spelling-independent form of one revealed type (see the module docstring). Default values are dropped unless
+    ``defaults`` is true (mypy does not print them; ty and pyright do, see ``defaults_match``)."""
     t = (text or "").strip()
     t = re.sub(r"@[A-Za-z_]\w*", "", t)  # scope tags
     for prefix in (module + ".", "builtins.", "typing."):
@@ -170,7 +190,8 @@ def display_canon(text: str, module: str = "case", typeddicts: frozenset[str] | 
     t = re.sub(r"\*(\w+)\.args, \*\*\1\.kwargs", r"**\1", t)  # mypy
     t = re.sub(r",\s*/(?=[,)])", "", t)
     t = re.sub(r"\(\s*/\s*,\s*", "(", t)
-    t = _drop_defaults(t)
+    if not defaults:
+        t = _drop_defaults(t)
     t = _complete_callables(t)
     t = _unparen_callable_returns(t)
     t = re.sub(r"(?<=[\[ ])\*\*(?=\w+(?:,|\]))", "", t)  # header [**P, R] -> [P, R]

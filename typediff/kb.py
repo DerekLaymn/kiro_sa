@@ -30,7 +30,7 @@ from .concerns import (
     ty_rules_without_mypy_equivalent,
 )
 from .discrepancy import META_CODES
-from .display import display_canon
+from .display import defaults_match, display_canon
 from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner, self_call_plan
 from .inhabit import inhabits
 from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Severity, Tool
@@ -1869,8 +1869,12 @@ def m_display_equivalent(s, d):
         return False  # unequal, or no rewrite was needed (the pair would not be a mismatch)
     p_txts = [x.revealed_type for x in d.pyright if x.revealed_type is not None]
     if p_txts:
-        ref = display_canon(t_txt, s.module, tds, header=False)
-        if not any(display_canon(p, s.module, tds, header=False) == ref for p in p_txts):
+        # ty and pyright both print default values, so they are compared WITH them (only mypy hides them); a `...` or a
+        # `default_factory=` name stands for any value
+        factories = frozenset(re.findall(r"default_factory\s*=\s*([A-Za-z_][\w.]*)", s.source))
+        ref = display_canon(t_txt, s.module, tds, header=False, defaults=True)
+        if not any(defaults_match(display_canon(p, s.module, tds, header=False, defaults=True), ref, factories)
+                   for p in p_txts):
             return False
     return True
 
@@ -2468,8 +2472,9 @@ ENTRIES.extend([
         "prints a ParamSpec argument as `Runner[[a: int], str]` where ty and pyright print `Runner[(a: int), str]`; mypy "
         "expands a TypedDict, `TypedDict(case.Options, {..})`, where ty and pyright print `Options`. Fires only when, after "
         "rewriting exactly those conventions (typediff/display.py), the mypy and ty texts are equal, and pyright's text "
-        "(if it revealed anything there) equals ty's. A different parameter name, parameter type, default presence or return "
-        "type keeps the pair.",
+        "(if it revealed anything there) equals ty's, default values included (ty prints `...` and pyright the factory name "
+        "for a `default_factory=` default; that pair is equal). A different parameter name, parameter type, default presence, "
+        "default value between ty and pyright, or return type keeps the pair.",
         (K.REVEAL_MISMATCH,), m_display_equivalent, auto=True, runtime_override=False,
     ),
     KBEntry(
