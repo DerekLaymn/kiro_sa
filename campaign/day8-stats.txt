@@ -1,0 +1,18 @@
+[all] programs=250 discrepancies=208 live=155 (programs with live=104, crash findings=1) dismissed=69 tool_crashes=16
+   dismissed by category: {'DUPLICATE': 21, 'DESIGN_DIVERGENCE': 35, 'NOISE': 8, 'KNOWN_LIMITATION': 3, 'SPEC_AMBIGUITY': 2}
+   dismissed by entry: {'rule:crash:signal': 15, 'kb:LITERAL-WIDENING': 12, 'kb:TY-SELF-UPPER-BOUND': 11, 'kb:DISPLAY-EQUIVALENT': 7, 'kb:PRECISION-RUNTIME-CONSISTENT': 6, 'kb:UPSTREAM-TY-4212': 4, 'kb:UPSTREAM-MYPY-22339': 4, 'kb:JOIN-VS-UNION': 3, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 2, 'kb:BOTH-GRADUAL': 2, 'kb:REVEAL-ERROR-RECOVERY': 1, 'kb:UPSTREAM-TY-4756': 1, 'kb:UPSTREAM-PYRIGHT-11382': 1}
+   crash closures by closing reference: {'TY-4898': 8, 'MYPY-22361': 3, 'TY-4148': 3, 'TY-4882': 1}
+   live by kind: {'only_pyright': 20, 'only_mypy': 48, 'only_ty': 14, 'reveal_mismatch': 67, 'concern_mismatch': 5, 'crash': 1}
+   live without only_pyright: 135 (programs with such live=92)
+[tuning] programs=250 discrepancies=208 live=155 (programs with live=104, crash findings=1) dismissed=69 tool_crashes=16
+   dismissed by category: {'DUPLICATE': 21, 'DESIGN_DIVERGENCE': 35, 'NOISE': 8, 'KNOWN_LIMITATION': 3, 'SPEC_AMBIGUITY': 2}
+   dismissed by entry: {'rule:crash:signal': 15, 'kb:LITERAL-WIDENING': 12, 'kb:TY-SELF-UPPER-BOUND': 11, 'kb:DISPLAY-EQUIVALENT': 7, 'kb:PRECISION-RUNTIME-CONSISTENT': 6, 'kb:UPSTREAM-TY-4212': 4, 'kb:UPSTREAM-MYPY-22339': 4, 'kb:JOIN-VS-UNION': 3, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 2, 'kb:BOTH-GRADUAL': 2, 'kb:REVEAL-ERROR-RECOVERY': 1, 'kb:UPSTREAM-TY-4756': 1, 'kb:UPSTREAM-PYRIGHT-11382': 1}
+   crash closures by closing reference: {'TY-4898': 8, 'MYPY-22361': 3, 'TY-4148': 3, 'TY-4882': 1}
+   live by kind: {'only_pyright': 20, 'only_mypy': 48, 'only_ty': 14, 'reveal_mismatch': 67, 'concern_mismatch': 5, 'crash': 1}
+   live without only_pyright: 135 (programs with such live=92)
+[holdout] programs=0 discrepancies=0 live=0 (programs with live=0, crash findings=0) dismissed=0 tool_crashes=0
+   dismissed by category: {}
+   dismissed by entry: {}
+   crash closures by closing reference: {}
+   live by kind: {}
+rejected/failed: {}

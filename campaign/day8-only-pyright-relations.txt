@@ -1,0 +1,2 @@
+runs/day8/out {'runtime_contradicts': 20, 'runtime_supports': 1} total 21
+    supports: ('seed-8af1b011a91f.json', 'D1', 'runtime_supports', 0.7, 'review', 'gate', 'Desc.__delete__(Desc(), h, 1)  # expect-error: too many arguments', 'd5p_descriptors_one_decorator_dunders_pyright_rangeerror__mut1_f631bce3.py')

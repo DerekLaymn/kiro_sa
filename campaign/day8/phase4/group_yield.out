@@ -1,0 +1,75 @@
+per group:
+  name                                                               programs programs_wit         live  live_strong    dismissed tool_crashes
+  A_pyright_range                                                          12            9           12            0            0            0
+  A_ty_4898                                                                 8            0            0            0            8            8
+  A_ty_escape                                                               8            1            1            0            7            7
+  H_new                                                                     8            4            4            4            1            0
+  N_seeds_a                                                                 6            4            8            0            0            0
+  N_seeds_b                                                                32           16           20            2           22            0
+  P_pyright                                                                18            6            9            4            9            1
+  R_reserve2                                                                2            2            2            0            1            0
+  R_reserve3                                                               24           22           36            2            5            0
+  fresh                                                                   132           40           63            1           16            0
+per parent / fresh:
+  name                                                               programs programs_wit         live  live_strong    dismissed tool_crashes
+  d3p_callables_self_call_attr                                              2            1            1            0            0            0
+  d3p_descriptors_decorated_get                                             6            2            2            1            4            1
+  d3p_generics_callable_attr_contravariant                                  6            2            3            0            5            0
+  d3p_paramspec_identity_applied_to_itself                                  8            0            0            0            8            8
+  d3p_protocols_generic_protocol_stack_overflow                             2            0            0            0            1            1
+  d3p_self_classmethods_self_call_union                                     2            0            0            0            4            4
+  d4p_descriptors_readonly_prop_never                                       6            2            4            3            0            0
+  d4v_callables_mutual_call_attr                                            2            0            0            0            2            2
+  d5p_descriptors_decorated_get_pyright_rangeerror                          6            5            8            0            0            0
+  d5p_descriptors_one_decorator_dunders_pyright_rangeerror                  6            4            4            0            0            0
+  d7p_tuples_unpacking_partial_unpack_except_ty                             8            4            4            4            1            0
+  dataclasses__dataclass_transform                                          4            1            1            0            0            0
+  dataclasses__kw_only_initvar_order                                        4            2            2            0            1            0
+  dataclasses__overloaded_post_init                                         2            2            4            0            0            0
+  final_classvar__final_overrides                                           2            0            0            0            0            0
+  fresh                                                                   132           40           63            1           16            0
+  match_statement__class_sequence_patterns                                  2            2            4            0            0            0
+  overloads__literal_flag_overload                                          4            0            0            0            0            0
+  rsv_abstract_classes_ae31b752                                             3            3            6            0            0            0
+  rsv_dataclasses_223fff8f                                                  3            3            3            0            0            0
+  rsv_overloads_7ab4b09b                                                    3            2            4            0            0            0
+  rsv_overloads_d41747bd                                                    3            3            8            2            3            0
+  rsv_overloads_d6e90b34                                                    2            2            2            0            1            0
+  rsv_recursive_aliases_0bbabab4                                            3            3            4            0            0            0
+  rsv_recursive_aliases_d5395259                                            3            3            6            0            0            0
+  rsv_tuples_unpacking_b068dfad                                             3            2            2            0            0            0
+  rsv_tuples_unpacking_c98fed28                                             3            3            3            0            2            0
+  self_classmethods__self_classmethod_param                                 4            3            3            0            6            0
+  self_classmethods__self_param_inherited                                   4            2            6            2            1            0
+  self_classmethods__self_runtime_witness                                   4            4            4            0            4            0
+  tuples_unpacking__variadic_tuples                                         4            4            4            0            1            0
+  typeddict__readonly_notrequired                                           4            0            0            0            9            0
+per area dir:
+  name                                                               programs programs_wit         live  live_strong    dismissed tool_crashes
+  abstract_classes                                                         12            3            6            0            0            0
+  callables                                                                 4            1            1            0            2            2
+  dataclasses                                                              37           10           12            0            1            0
+  descriptors_properties                                                   36           18           24            4            5            1
+  final_classvar                                                            8            0            0            0            1            0
+  generics_variance                                                         6            2            3            0            5            0
+  match_statement                                                          26           11           21            0            0            0
+  overloads                                                                26           13           26            3            8            0
+  paramspec_concatenate                                                     8            0            0            0            8            8
+  protocols                                                                 2            0            0            0            1            1
+  recursive_aliases                                                        18           16           27            0            0            0
+  self_classmethods                                                        25           10           14            2           15            4
+  tuples_unpacking                                                         26           18           18            4           10            0
+  typeddict                                                                16            2            3            0           13            0
+total:
+  name                                                               programs programs_wit         live  live_strong    dismissed tool_crashes
+  ALL                                                                     250          104          155           13           69           16
+live by kind per group:
+  A_pyright_range          {'only_pyright': 12}
+  A_ty_escape              {'only_mypy': 1}
+  H_new                    {'reveal_mismatch': 4}
+  N_seeds_a                {'only_mypy': 4, 'reveal_mismatch': 3, 'only_ty': 1}
+  N_seeds_b                {'only_ty': 4, 'reveal_mismatch': 5, 'only_mypy': 9, 'only_pyright': 2}
+  P_pyright                {'only_mypy': 2, 'reveal_mismatch': 2, 'only_ty': 4, '?': 1}
+  R_reserve2               {'reveal_mismatch': 1, 'only_mypy': 1}
+  R_reserve3               {'only_mypy': 14, 'only_ty': 2, 'reveal_mismatch': 16, 'only_pyright': 4}
+  fresh                    {'reveal_mismatch': 36, 'only_mypy': 17, 'only_pyright': 2, 'only_ty': 3, 'concern_mismatch': 5}
