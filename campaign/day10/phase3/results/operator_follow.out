@@ -1,0 +1,10 @@
+group              n  __exit__  ann-only  inst-assign  either shadow
+C_pyright_range    6         0         0            0              0
+C_tvt              4         0         0            0              0
+H_new             12         8         3            3              6
+N_class           24         0         0            0              0
+N_flow            24         1         0            0              0
+N_types           24         0         0            0              0
+N_wrap            24         0         0            0              0
+O_overload         9         0         0            0              0
+R_reserve         24         8         0            0              0
