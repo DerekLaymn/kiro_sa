@@ -1,0 +1,40 @@
+##### c2ctl.py
+--- cpython 3.13.16
+Runtime type is 'tuple'
+(0, 1, 'x')
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10:13
+   |
+10 | reveal_type(prepend((1, "x")))
+   |             ^^^^^^^^^^^^^^^^^ `tuple[int, Literal[1], Literal["x"]]`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10:13
+   |
+10 | reveal_type(prepend((1, "x")))
+   |             ^^^^^^^^^^^^^^^^^ `tuple[int, Literal[1], Literal["x"]]`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10: note: Revealed type is "tuple[int, Literal[1]?, Literal['x']?]"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10: note: Revealed type is "tuple[int, Literal[1]?, Literal['x']?]"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10: note: Revealed type is "tuple[int, Literal[1]?, Literal['x']?]"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2ctl.py:10:13 - information: Type of "prepend((1, "x"))" is "tuple[int, int, str]"
+0 errors, 0 warnings, 1 information
+rc=0

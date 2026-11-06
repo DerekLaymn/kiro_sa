@@ -1,0 +1,84 @@
+##### p_tvtps_df958820.py
+--- cpython 3.13.16
+        enforce_default_ordering=enforce_default_ordering,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28:13
+   |
+28 | reveal_type(cb.fn)  # (flag: bool) -> tuple[int, str]
+   |             ^^^^^ `(bool, /) -> tuple[int, str]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32:13
+   |
+32 | reveal_type(cb2.fn)  # (s: str) -> tuple[int]
+   |             ^^^^^^ `(str, /) -> tuple[int]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37:13
+   |
+37 | reveal_type(t2.key)  # str
+   |             ^^^^^^ `str`
+
+Found 3 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28:13
+   |
+28 | reveal_type(cb.fn)  # (flag: bool) -> tuple[int, str]
+   |             ^^^^^ `(bool, /) -> tuple[int, str]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32:13
+   |
+32 | reveal_type(cb2.fn)  # (s: str) -> tuple[int]
+   |             ^^^^^^ `(str, /) -> tuple[int]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37:13
+   |
+37 | reveal_type(t2.key)  # str
+   |             ^^^^^^ `str`
+
+Found 3 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:16: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:27: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28: note: Revealed type is "def (*Any, **Any) -> tuple[Any, ...]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32: note: Revealed type is "def (str) -> tuple[int]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37: note: Revealed type is "Any"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:16: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:27: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28: note: Revealed type is "def (*Any, **Any) -> tuple[Any, ...]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32: note: Revealed type is "def (str) -> tuple[int]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37: note: Revealed type is "Any"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:16: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:27: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28: note: Revealed type is "def (*Any, **Any) -> tuple[Any, ...]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32: note: Revealed type is "def (str) -> tuple[int]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37: note: Revealed type is "Any"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:28:13 - information: Type of "cb.fn" is "(bool) -> tuple[int, str]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:32:13 - information: Type of "cb2.fn" is "(str) -> tuple[int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_df958820.py:37:13 - information: Type of "t2.key" is "str"
+0 errors, 0 warnings, 3 informations
+rc=0

@@ -1,0 +1,57 @@
+##### c3c.py
+--- cpython 3.13.16
+Runtime type is 'str'
+Runtime type is 'int'
+'lt' 7
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16:13
+   |
+16 | reveal_type(a < b)
+   |             ^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17:13
+   |
+17 | reveal_type(a > b)
+   |             ^^^^^ `int`
+
+Found 2 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16:13
+   |
+16 | reveal_type(a < b)
+   |             ^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17:13
+   |
+17 | reveal_type(a > b)
+   |             ^^^^^ `int`
+
+Found 2 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:16:13 - information: Type of "a < b" is "str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c3c.py:17:13 - information: Type of "a > b" is "int"
+0 errors, 0 warnings, 2 informations
+rc=0

@@ -1,0 +1,65 @@
+##### c2.py
+--- cpython 3.13.16
+Runtime type is 'tuple'
+(1, 'x', 2.0, None)
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-type-form]: Multiple unpacked variadic tuples are not allowed in a `tuple` specialization
+ --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7:45
+  |
+7 | def concat(a: tuple[*Ts], b: tuple[*Us]) -> tuple[*Ts, *Us]:
+  |                                             ^^^^^^---^^---^
+  |                                                   |    |
+  |                                                   |    Later unpacked variadic tuple
+  |                                                   First unpacked variadic tuple
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11:13
+   |
+11 | reveal_type(concat((1, "x"), (2.0, None)))
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `tuple[object, ...]`
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[invalid-type-form]: Multiple unpacked variadic tuples are not allowed in a `tuple` specialization
+ --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7:45
+  |
+7 | def concat(a: tuple[*Ts], b: tuple[*Us]) -> tuple[*Ts, *Us]:
+  |                                             ^^^^^^---^^---^
+  |                                                   |    |
+  |                                                   |    Later unpacked variadic tuple
+  |                                                   First unpacked variadic tuple
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11:13
+   |
+11 | reveal_type(concat((1, "x"), (2.0, None)))
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `tuple[object, ...]`
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7: error: More than one variadic Unpack in a type is not allowed  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:8: error: Incompatible return value type (got "tuple[object, ...]", expected "tuple[*Ts]")  [return-value]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11: note: Revealed type is "tuple[Literal[1]?, Literal['x']?]"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7: error: More than one variadic Unpack in a type is not allowed  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:8: error: Incompatible return value type (got "tuple[object, ...]", expected "tuple[*Ts]")  [return-value]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11: note: Revealed type is "tuple[Literal[1]?, Literal['x']?]"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7: error: More than one variadic Unpack in a type is not allowed  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:8: error: Incompatible return value type (got "tuple[object, ...]", expected "tuple[*Ts]")  [return-value]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11: note: Revealed type is "tuple[Literal[1]?, Literal['x']?]"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:7:57 - error: Type argument list can have at most one unpacked TypeVarTuple or tuple (reportInvalidTypeForm)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c2.py:11:13 - information: Type of "concat((1, "x"), (2, None))" is "tuple[int, str, float, None]"
+1 error, 0 warnings, 1 information
+rc=1

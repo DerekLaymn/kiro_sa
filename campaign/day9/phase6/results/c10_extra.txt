@@ -1,0 +1,63 @@
+##### c10 extra flags
+--- ty 0.0.97 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `result` used when possibly not defined
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c10.py:14:12
+   |
+14 |     return result
+   |            ^^^^^^
+
+Found 1 diagnostic
+rc=1
+--- ty 0.0.99 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `result` used when possibly not defined
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c10.py:14:12
+   |
+14 |     return result
+   |            ^^^^^^
+
+Found 1 diagnostic
+rc=1
+--- mypy 2.4.0 --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0
+--- mypy master --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0
+##### c10b extra flags
+--- ty 0.0.97 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `value` used when possibly not defined
+ --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c10b.py:7:12
+  |
+7 |     return value
+  |            ^^^^^
+
+Found 1 diagnostic
+rc=1
+--- ty 0.0.99 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `value` used when possibly not defined
+ --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c10b.py:7:12
+  |
+7 |     return value
+  |            ^^^^^
+
+Found 1 diagnostic
+rc=1
+--- mypy 2.4.0 --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0
+--- mypy master --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0
+##### c10ctl extra flags
+--- ty 0.0.97 --warn possibly-unresolved-reference
+All checks passed!
+rc=0
+--- ty 0.0.99 --warn possibly-unresolved-reference
+All checks passed!
+rc=0
+--- mypy 2.4.0 --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0
+--- mypy master --enable-error-code possibly-undefined
+Success: no issues found in 1 source file
+rc=0

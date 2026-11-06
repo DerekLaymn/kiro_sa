@@ -6,6 +6,7 @@ Date: 2026-11-05. Tools: ty 0.0.84 and 0.0.97 (pinned since Day 5, also the late
 Drafts 1 and 2 were verified on the ty playground by the user; Day 6 did not re-run them. Drafts 3 and 4 were re-run on ty 0.0.97, mypy 2.4.0, 2.4.1 and mypy master, with a fresh upstream search: both are still new. Draft 5 (mypy, ParamSpec default after a TypeVarTuple) was added on Day 6 from the `adbc14c6128a` "Callback" candidate. The ty half of that candidate is not a ty bug and has no draft (see "Not drafted"). The draft bodies were edited by hand on Day 6; `/tmp/cons/build.py` was not re-run.
 **Day 7 status (details: `campaign/day7-verification.md`, raw output: `campaign/day7/partD/evidence/`).** Drafts 6 (ty) and 7 (pyright) were added from the Part C candidates. They were run on CPython 3.13.16, ty 0.0.97 and 0.0.98 (0.0.98 was released on 2026-11-05 and is the latest), mypy 2.4.0, 2.4.1 and master, pyright 1.1.414 (latest). The "Day 6 verdict" column of rows 6 and 7 holds the Day 7 verdict. Drafts 1 to 5 were not re-run.
 **Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy) was added from class F. Drafts 6 and 7 were re-run with four and one more Day-8 program (ty 0.0.97/0.0.98, pyright 1.1.414) and still reproduce; see the Day 8 status at the end of this file.
+**Day 9 status (details: `campaign/day9-verification.md`, raw output: `campaign/day9/phase6/`).** Drafts 9 (mypy, comparison priority for operands of the same type) and 10 (mypy, `possibly-undefined` after a swallowing `with`) were added. Tools: CPython 3.13.16, ty 0.0.97 (the pin) and 0.0.99 (the newest release, 2026-11-06, beside the pin), mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562, pyright 1.1.414. The author listing of the drafting account (`campaign/day9/phase6/search/author.out`, 2026-11-06) shows drafts 1 to 5 filed: ty#4933 (draft 1), ty#4934 (draft 2, closed), mypy#22377 (draft 3), ty#4941 (draft 4), mypy#22375 (draft 5). Drafts 6, 7, 8 are still not filed. The Day-9 program `d4v_metaclass_reflected_op__mut0_dcb547ed` is another instance of draft 3 (mypy#22377).
 The drafts are concatenated without edits to the issue bodies from `campaign/day4/issue-drafts-v1.md` (draft 1), `-v2.md` (draft 2) and `-v3.md` (drafts 3 and 4). Each draft sits in a fenced block: copy the contents (without the fence lines) into the issue body, set the title from the "Title" line, and replace `<PLAYGROUND LINK>`. NOT FILED. Nothing here was posted anywhere, and no GitHub write call was made. (The format reference `temp/issue_drafts.md` does not exist in the repo; the format of the v1 to v3 drafts is kept.)
 
 | # | Tool | Bug | Class | Conf | Duplicate check | Day 6 verdict | Source |
@@ -18,6 +19,8 @@ The drafts are concatenated without edits to the issue bodies from `campaign/day
 | 6 | ty | `except` clause sees the old value after a nested unpacking target failed half-way through an assignment | INCORRECT_INFERENCE | 0.5 | none found (18 term sets on ty, ruff, pyright, mypy). Related: ty#225 (closed), ruff#27471 (merged, flat unpacking only) | STILL-BUG-NEW (Day 7, ty 0.0.97 and 0.0.98) | Day 7, `partial_unpack_exception` |
 | 7 | pyright | `RangeError: Maximum call stack size exceeded` when a descriptor `__get__` is decorated by a class-body function without `self` and the attribute is accessed | CRASH | 0.8 | none found. Related: open #11961 and PR #11965 (constructor path, different frames), closed #9283, #9740, #6178, #6783, #5139, #4798, #5090 | STILL-BUG-NEW (Day 7, pyright 1.1.414 = latest) | Day 7, `d3p_descriptors_decorated_get__mut1_040cc0db` |
 | 8 | mypy | overloaded `__post_init__` of a dataclass: every overload item is checked against the InitVar signature, so an item without the `InitVar` type gets `[override]` although another item takes it | FALSE_POSITIVE | 0.6 | none found (16 term sets on python/mypy, 5 on ty and pyright; read #15498, #15503, #9254, #16293, #15515, #12379) | STILL-BUG-NEW (Day 8, mypy 2.4.0, 2.4.1, master) | Day 8, class F, `rsv_dataclasses_223fff8f__mut0_3b9111ba` |
+| 9 | mypy | `a < b` for two operands of the same type tries `b.__gt__` first when `__lt__` and `__gt__` are defined in different classes of the MRO; the inferred type is that of the wrong method | FALSE_POSITIVE / INCORRECT_INFERENCE | 0.6 | none found (13 issue and 6 PR queries on python/mypy, 2+2 issue queries on ty and pyright, 1 ruff PR query). Same function, different bugs: mypy#22377 (draft 3), #19006 (fixed), #22316 and PR #22380 (message text) | STILL-BUG-NEW (Day 9, mypy 2.4.0, 2.4.1, master) | Day 9, `d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f` |
+| 10 | mypy | `possibly-undefined` does not report a name assigned in a `with` block whose `__exit__` returns `bool` (`contextlib.suppress`, user classes), although the name is unbound after a swallowed exception | FALSE_NEGATIVE (opt-in check) | 0.4 | none found (8 issue and 3 PR queries on python/mypy, 5 on ty, 3 on pyright, 2 ruff PR queries). Related: closed mypy#7577, #10896, #7726, #15715 (`Missing return statement` after such blocks, handled by the type checker) | STILL-BUG-NEW (Day 9, mypy 2.4.0, 2.4.1, master; ty and pyright report it) | Day 9, `context_managers/gen0_b82d2e9e`, `gen21_6ee04c3a` |
 
 Not drafted, with reasons (all duplicates, fixed, or not bugs):
 
@@ -621,4 +624,170 @@ Playground: <PLAYGROUND LINK>
 
 ---
 
+## 9. mypy: comparison of two operands of the same type tries the reflected method first when `__lt__` and `__gt__` come from different classes
+
+**Day 9 verdict: STILL-BUG-NEW.** Source: Day 9 program `d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f` (2 strong findings; its parent has shown the same reveal mismatch since Day 2), reduced by hand; `functools.total_ordering` is not needed. mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562 infer `int` for `a < b` and `str` for `a > b`; CPython 3.13.16 returns `'lt'` and `7`; ty 0.0.97/0.0.99 and pyright 1.1.414 agree with CPython. Evidence: `campaign/day9-verification.md` (D9-3), `campaign/day9/phase6/results/c3g.txt`, `c3c.txt`, `c3f.txt`, `c3e.txt`, `c3.txt`.
+
+**Duplicate check:** Checked: `gh search issues` (13 queries) and `gh search prs` (6 queries) on python/mypy, 2 issue queries each on ty and pyright, 1 PR query on ruff (reflected comparison, reverse comparison, `__lt__ __gt__`, `__le__ __ge__`, comparison operator, reverse operator, `check_op_reversible`, rich comparison, same type reflected, total_ordering, `op_methods_that_shortcut`, ...). Result: no issue or PR for this. Same function, different bugs: mypy#22377 (open, class objects and `covers_at_runtime`), #19006 (closed, tuple subclass priority, fixed by PR #19046), #22316 (open) and PR #22380 (open, the operator shown in the error message is flipped).
+
+**Not checked:** issue comments beyond the issues read; PRs that the search phrases did not surface; discuss.python.org; mypy-play (the `<PLAYGROUND LINK>` placeholder is still open, UNVERIFIED-PLAYGROUND). The cause below is read from mypy master, not debugged. Run one last search on the exact title before submitting.
+
+Title: `Comparison of two operands of the same type calls the reflected method first when __lt__ and __gt__ are defined in different classes`
+
+````markdown
+**Bug Report**
+
+For `a < b` where `a` and `b` have exactly the same type, CPython calls `a.__lt__(b)`. The reflected method `b.__gt__(a)` goes first only if the type of `b` is a proper subclass of the type of `a` (data model, `object.__lt__`: "If the operands are of different types, and the right operand's type is a direct or indirect subclass of the left operand's type, the reflected method of the right operand has priority"). mypy tries `b.__gt__(a)` first for operands of the same type when `__lt__` and `__gt__` are defined in different classes of the MRO, so it infers the result type of the wrong method.
+
+**To Reproduce**
+
+```python
+from typing import assert_type
+
+
+class Base:
+    def __lt__(self, other: "Base") -> str:
+        return "lt"
+
+
+class Child(Base):
+    def __gt__(self, other: "Child") -> int:
+        return 7
+
+
+a = Child()
+b = Child()
+s: str = a < b
+assert_type(a < b, str)
+assert_type(a > b, int)
+print(repr(a < b), repr(a > b))
+```
+
+**Actual Behavior**
+
+```
+$ mypy --python-version 3.13 --no-incremental test_bug.py
+test_bug.py:16: error: Incompatible types in assignment (expression has type "int", variable has type "str")  [assignment]
+test_bug.py:17: error: Expression is of type "int", not "str"  [assert-type]
+test_bug.py:18: error: Expression is of type "str", not "int"  [assert-type]
+Found 3 errors in 1 file (checked 1 source file)
+
+$ python test_bug.py
+'lt' 7
+```
+
+**Expected Behavior**
+
+No errors: `a < b` is `str` and `a > b` is `int`. pyright 1.1.414 and ty 0.0.97 report nothing for this file.
+
+What I tried:
+
+- `<=` in `Base` and `>=` in `Child`: same swap.
+- Both methods in one class: correct. The swap needs the two methods to come from different classes.
+- `__add__` in `Base` and `__radd__` in `Child` with two `Child` operands: correct, `a + b` is `str` (mypy reports the unsafe overlap of the two methods on the class, which is a separate message).
+- The right operand of a proper subclass of `Child` (`a <= c` with `class Sub(Child)`): mypy infers `int`, which is also what CPython returns, because `Sub` is a proper subclass.
+
+Cause, as far as I can tell from `check_op_reversible` in `checkexpr.py` on master: the branch for two operands of the same type is guarded by `op_name in operators.op_methods_that_shortcut`, and that set holds the arithmetic and bitwise methods (`__add__` to `__rshift__`) but no comparison. For `<` mypy therefore goes to the next branch, which puts the reflected method first when `lookup_definer(left_type, "__lt__") != lookup_definer(right_type, "__gt__")` and `covers_at_runtime(right_type, left_type)` holds. It does not check that the two types differ.
+
+**Your Environment**
+
+- Mypy version used: 2.4.0, 2.4.1 and master 2.5.0+dev.879da562
+- Mypy command-line flags: `--python-version 3.13 --no-incremental`
+- Python version used: 3.13.16
+- OS: Linux
+
+mypy-play: <PLAYGROUND LINK>
+````
+
+---
+
+## 10. mypy: `possibly-undefined` does not report a name assigned in a `with` block whose context manager can swallow the exception
+
+**Day 9 verdict: STILL-BUG-NEW (low confidence, 0.4).** Source: two Day 9 `only_pyright` rows with a `runtime_supports` relation (`context_managers/gen0_b82d2e9e`, `gen21_6ee04c3a`; weak evidence in the triage), reduced by hand to `c10.py` and `c10b.py`. CPython 3.13.16 raises `UnboundLocalError`; pyright 1.1.414 reports `reportPossiblyUnboundVariable` in its default configuration; ty 0.0.97 and 0.0.99 report `possibly-unresolved-reference` when the rule is enabled (it is off by default, so ty is not a bug here); mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562 report nothing, also with `--enable-error-code possibly-undefined`. Evidence: `campaign/day9-verification.md` (D9-10), `campaign/day9/phase6/results/c10.txt`, `c10b.txt`, `c10d.txt`, `c10e.txt` (mypy 2.4.0, 2.4.1 and master: `Missing return statement` for a function that ends in `with suppress(...): return ...`), `c10_extra.txt`, `c10d_extra.txt`.
+
+**Duplicate check:** Checked: `gh search issues` (8 queries) and `gh search prs` (3) on python/mypy, 5 queries on ty, 3 on pyright, 2 PR queries on ruff (possibly-undefined with, possibly-undefined suppress, possibly-undefined context manager, suppress possibly, swallow exceptions, context manager swallow, partially_defined, ...). Result: nothing about `possibly-undefined` and `with`. The mypy results are about "Missing return statement" after `ExitStack` or `suppress` (mypy#7577, #10896, #7726, #15715, closed), which the type checker handles. mypy's own test `testWithStmt` in `check-possibly-undefined.test` covers only names bound by the `with` targets.
+
+**Not checked:** issue comments beyond the issues read; PRs that the search phrases did not surface; discuss.python.org; mypy-play (the `<PLAYGROUND LINK>` placeholder is still open, UNVERIFIED-PLAYGROUND). The maintainers may call this a known limit of an opt-in check that runs without type information. Run one last search on the exact title before submitting.
+
+Title: `possibly-undefined: name assigned in a with block that can swallow exceptions is not reported after the block`
+
+````markdown
+**Bug Report**
+
+mypy knows that a `with` block can swallow an exception when `__exit__` returns `bool`: a function that ends in `with suppress(KeyError): return d["a"]` gets `Missing return statement`, because the code after the block is reachable. The `possibly-undefined` check does not use this. A name that is assigned inside the block is unbound after it if the exception was swallowed before the assignment, and mypy does not report the later use.
+
+**To Reproduce**
+
+```python
+from contextlib import suppress
+
+
+def get(d: dict[str, int]) -> int:
+    with suppress(KeyError):
+        value = d["a"]
+    return value
+
+
+print(get({"a": 1}))
+print(get({}))
+```
+
+```
+$ mypy --python-version 3.13 --enable-error-code possibly-undefined test_bug.py
+Success: no issues found in 1 source file
+
+$ python test_bug.py
+1
+UnboundLocalError: cannot access local variable 'value' where it is not associated with a value
+```
+
+**Expected Behavior**
+
+`test_bug.py:7: error: Name "value" may be undefined  [possibly-undefined]`
+
+pyright reports this by default (`"value" is possibly unbound`), and ty reports it with `--warn possibly-unresolved-reference`. A user-defined context manager gives the same result:
+
+```python
+class Swallow:
+    def __enter__(self) -> None:
+        return None
+
+    def __exit__(self, *args: object) -> bool:
+        return True
+
+
+def f(fail: bool) -> str:
+    with Swallow():
+        if fail:
+            raise TypeError("boom")
+        result = "ok"
+    return result
+```
+
+Controls: with `__exit__(...) -> None` nobody reports the name (the exception propagates), and `-> bool | None` is not reported by any of the three (typeshed's convention for "does not swallow"). With `-> Literal[True]` pyright and ty report it and mypy does not.
+
+Cause, read from master and not debugged: `PossiblyUndefinedVariableVisitor.visit_with_stmt` in `partially_defined.py` visits `o.body` as straight-line code. That pass works on the AST before type checking, so it does not know the return type of `__exit__`, which `TypeChecker.visit_with_stmt` uses to decide whether exceptions may be suppressed. A fix probably needs the type information, so this may be a known limitation.
+
+**Your Environment**
+
+- Mypy version used: 2.4.0, 2.4.1 and master 2.5.0+dev.879da562
+- Mypy command-line flags: `--python-version 3.13 --enable-error-code possibly-undefined`
+- Python version used: 3.13.16
+- OS: Linux
+
+mypy-play: <PLAYGROUND LINK>
+````
+
+---
+
 **Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy, overloaded `__post_init__`) was added. Draft 6 and draft 7 cover more programs now, without a new draft: the four Day-8 mutants of the partial-unpack parent (`(a, *b, c)` star target, `(first, *rest)` with an empty tuple, an attribute-chain source, a `match` in the handler) show the same `Literal[1]` / `Literal[0]` on ty 0.0.97 and 0.0.98 as draft 6; the annotated variant `d3p_descriptors_decorated_get__mut0_655e135a` with `reveal_type(C.__get__)` and a direct `C.__get__(C(), None, C)` call crashes pyright 1.1.414 like draft 7 (draft 7 already lists the direct call). Neither draft was found filed under the account that filed ty#4933, #4934, #4941 and mypy#22375, #22377 (author listing, `campaign/day8/phase6/search/out_author.txt`).
+
+**Day 9 status (details: `campaign/day9-verification.md`, raw output: `campaign/day9/phase6/`).** Drafts 9 and 10 were added. Not drafted, with reasons:
+
+- **Metaclass `__call__` return type ignored by mypy** (`constructors_metaclasses/gen1_c86958a8`): DUPLICATE of python/mypy#8595 (closed 2020-03-27, "unlikely this will be ever supported"); related open #14122 and closed #15182. ty 0.0.97/0.0.99 and pyright infer `int`.
+- **`tuple[*Ts, *Us]`** (`typevartuple_unpack/gen1_4d7d067f`): NOT-A-BUG. The signature is invalid and all three checkers say so; the odd reveal in mypy comes after the error (mypy#20386: the maintainer calls such a type unrepresentable).
+- **Reflected operator on class objects** (`d4v_metaclass_reflected_op__mut0_dcb547ed`): another instance of draft 3, filed as python/mypy#22377 (open).
+- **`class Callback[*Ts, **P = [bool]]` raises `TypeError` in CPython** (three mutants of `d3p_typevartuple_unpack_paramspec_default_after_tvt`): the runtime bug is python/typing#2211 (open, "a bug in the runtime"); the typing spec requires the checkers to accept the class, ty and pyright do (ruff#29753 and #29755 on the ty side), and mypy's subscript error is draft 5 (mypy#22375).
+- **`Any` argument reaches `n + 1` on a `str`** (`gradual_any/gen5_ade5dcc3`): NOT-A-BUG, the gradual guarantee.
+- **Annotation-only or instance-assigned special methods** (20 `only_pyright` `runtime_supports` rows, the Day-8 lead of section 4 of `day8-verification.md`): NOT-A-BUG, a known trade-off. CPython raises `TypeError` for `len(x)`, `x()`, `list(x)`, `x[0]` and `1 in x` in both forms (`d1.py`, `d2.py`). For the annotation-only form no checker rejects all five (ty rejects 2, mypy 3, pyright 2); for the instance-assigned form ty rejects all five, pyright 3 and mypy none. The ty maintainers state the trade-off in ty#4570 (instance attributes implement protocol methods, "false negatives in some cases that will raise at runtime", dunders named explicitly); for instance-assigned dunders mypy#2113 (open since 2016) is the same report. Nothing is drafted: confidence that ty or mypy would take it as a bug is below 0.3.
+- **`Need type annotation for "key"` on `self.key = key` with a constrained PEP 695 or old-style type variable** (seen in `d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_df958820`): DUPLICATE of python/mypy#19618 (open, known problem, subset of #5416).

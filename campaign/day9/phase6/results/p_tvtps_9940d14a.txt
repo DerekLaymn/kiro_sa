@@ -1,0 +1,94 @@
+##### p_tvtps_9940d14a.py
+--- cpython 3.13.16
+        enforce_default_ordering=enforce_default_ordering,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/derek/.local/share/uv/python/cpython-3.13.16-linux-x86_64-gnu/lib/python3.13/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type parameter with a default follows TypeVarTuple
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17:13
+   |
+17 | reveal_type(ok)
+   |             ^^ `Callback[int, str, (bool, /)]`
+
+error[invalid-type-form]: Int literals are not allowed in this context in a type expression
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:22:25
+   |
+22 |     bad = Callback[int, 3]()  # expect-error: 3 is not a valid ParamSpec argument
+   |                         ^ Did you mean `typing.Literal[3]`?
+info: See the following page for a reference on valid type expressions:
+info: https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions
+help: Wrap in `Literal[...]`
+   |
+5  | # hypothesis: a non-type argument in a Generic subscription that mixes a TypeVarTuple with a defaulted ParamSpec is rejected at runtime with TypeError, while checkers may not flag it.
+   - from typing import Callable, Generic, ParamSpec, TypeVarTuple, reveal_type
+6  + from typing import Callable, Generic, ParamSpec, TypeVarTuple, reveal_type, Literal
+7  |
+--------------------------------------------------------------------------------
+21 | try:
+   -     bad = Callback[int, 3]()  # expect-error: 3 is not a valid ParamSpec argument
+22 +     bad = Callback[int, Literal[3]]()  # expect-error: 3 is not a valid ParamSpec argument
+23 | except TypeError as exc:
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17:13
+   |
+17 | reveal_type(ok)
+   |             ^^ `Callback[int, str, (bool, /)]`
+
+error[invalid-type-form]: Int literals are not allowed in this context in a type expression
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:22:25
+   |
+22 |     bad = Callback[int, 3]()  # expect-error: 3 is not a valid ParamSpec argument
+   |                         ^ Did you mean `typing.Literal[3]`?
+info: See the following page for a reference on valid type expressions:
+info: https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions
+help: Wrap in `Literal[...]`
+   |
+5  | # hypothesis: a non-type argument in a Generic subscription that mixes a TypeVarTuple with a defaulted ParamSpec is rejected at runtime with TypeError, while checkers may not flag it.
+   - from typing import Callable, Generic, ParamSpec, TypeVarTuple, reveal_type
+6  + from typing import Callable, Generic, ParamSpec, TypeVarTuple, reveal_type, Literal
+7  |
+--------------------------------------------------------------------------------
+21 | try:
+   -     bad = Callback[int, 3]()  # expect-error: 3 is not a valid ParamSpec argument
+22 +     bad = Callback[int, Literal[3]]()  # expect-error: 3 is not a valid ParamSpec argument
+23 | except TypeError as exc:
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:16: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17: note: Revealed type is "p_tvtps_9940d14a.Callback[*tuple[Any, ...], Any]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:22: error: Invalid type: try using Literal[3] instead?  [valid-type]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:16: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17: note: Revealed type is "p_tvtps_9940d14a.Callback[*tuple[Any, ...], Any]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:22: error: Invalid type: try using Literal[3] instead?  [valid-type]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:16: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17: note: Revealed type is "p_tvtps_9940d14a.Callback[*tuple[Any, ...], Any]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:22: error: Invalid type: try using Literal[3] instead?  [valid-type]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_tvtps_9940d14a.py:17:13 - information: Type of "ok" is "Callback[int, str, (bool)]"
+0 errors, 0 warnings, 1 information
+rc=0

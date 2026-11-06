@@ -1,0 +1,76 @@
+##### c9ctl.py
+--- cpython 3.13.16
+Runtime type is 'str'
+Runtime type is 'str'
+Runtime type is 'str'
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22:13
+   |
+22 | reveal_type(t.key)
+   |             ^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24:13
+   |
+24 | reveal_type(t2.key)
+   |             ^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26:13
+   |
+26 | reveal_type(t3.key)
+   |             ^^^^^^ `str`
+
+Found 3 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22:13
+   |
+22 | reveal_type(t.key)
+   |             ^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24:13
+   |
+24 | reveal_type(t2.key)
+   |             ^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26:13
+   |
+26 | reveal_type(t3.key)
+   |             ^^^^^^ `str`
+
+Found 3 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24: note: Revealed type is "str"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24: note: Revealed type is "str"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24: note: Revealed type is "str"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26: note: Revealed type is "str"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:22:13 - information: Type of "t.key" is "str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:24:13 - information: Type of "t2.key" is "str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9ctl.py:26:13 - information: Type of "t3.key" is "str"
+0 errors, 0 warnings, 3 informations
+rc=0

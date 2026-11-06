@@ -1,0 +1,112 @@
+##### p_any_ade5dcc3.py
+--- cpython 3.13.16
+Runtime type is 'str'
+Traceback (most recent call last):
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py", line 26, in <module>
+    c = takes_int(a)
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py", line 15, in takes_int
+    return n + 1
+           ~~^~~
+TypeError: can only concatenate str (not "int") to str
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+error[unresolved-attribute]: Object of type `object` has no attribute `bit_length`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19:12
+   |
+19 |     return o.bit_length()  # expect-error: object has no attribute bit_length
+   |            ^^^^^^^^^^^^
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24:13
+   |
+24 | reveal_type(b)  # Any
+   |             ^ `Any`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27:13
+   |
+27 | reveal_type(c)  # int
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30:13
+   |
+30 | reveal_type(d)  # Any
+   |             ^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33:13
+   |
+33 | reveal_type(e)  # object
+   |             ^ `object`
+
+Found 5 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[unresolved-attribute]: Object of type `object` has no attribute `bit_length`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19:12
+   |
+19 |     return o.bit_length()  # expect-error: object has no attribute bit_length
+   |            ^^^^^^^^^^^^
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24:13
+   |
+24 | reveal_type(b)  # Any
+   |             ^ `Any`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27:13
+   |
+27 | reveal_type(c)  # int
+   |             ^ `int`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30:13
+   |
+30 | reveal_type(d)  # Any
+   |             ^ `Unknown`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33:13
+   |
+33 | reveal_type(e)  # object
+   |             ^ `object`
+
+Found 5 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19: error: "object" has no attribute "bit_length"  [attr-defined]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33: note: Revealed type is "object"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19: error: "object" has no attribute "bit_length"  [attr-defined]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33: note: Revealed type is "object"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19: error: "object" has no attribute "bit_length"  [attr-defined]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30: note: Revealed type is "Any"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33: note: Revealed type is "object"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:19:14 - error: Cannot access attribute "bit_length" for class "object"
+    Attribute "bit_length" is unknown (reportAttributeAccessIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:24:13 - information: Type of "b" is "Any"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:27:13 - information: Type of "c" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:30:13 - information: Type of "d" is "Literal[3]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:31:13 - error: "assert_type" mismatch: expected "Any" but received "Literal[3]" (reportAssertTypeFailure)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_any_ade5dcc3.py:33:13 - information: Type of "e" is "object"
+2 errors, 0 warnings, 4 informations
+rc=1

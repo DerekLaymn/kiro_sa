@@ -1,0 +1,14 @@
+# D9-10 mypy var-annotated for self.x = param when the parameter type is a value-restricted TypeVar
+issues|python/mypy|Need type annotation
+issues|python/mypy|constrained TypeVar
+issues|python/mypy|value restriction
+issues|python/mypy|TypeVar values attribute
+issues|python/mypy|var-annotated TypeVar
+issues|python/mypy|constrained attribute
+issues|python/mypy|PEP 695 constraints
+issues|python/mypy|self attribute TypeVar
+prs|python/mypy|constrained TypeVar
+prs|python/mypy|Need type annotation
+prs|python/mypy|var-annotated
+issues|microsoft/pyright|constrained TypeVar attribute
+issues|astral-sh/ty|constrained TypeVar attribute

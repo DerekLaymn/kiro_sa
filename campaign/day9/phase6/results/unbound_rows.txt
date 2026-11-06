@@ -1,0 +1,250 @@
+=============== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py
+# area: context_managers
+# hypothesis: A context manager whose __exit__ returns bool swallows the TypeError at runtime, so a name bound only after the raising statement is unbound afterwards, while a None-returning __exit__ lets the exception propagate.
+# origin: llm
+# hypothesis: A context manager whose __exit__ returns bool swallows exceptions at runtime, so the code after the block is reachable and a name bound only after a raising statement is possibly unbound.
+from contextlib import ExitStack, suppress
+from typing import reveal_type
+
+
+class Swallow:
+    def __enter__(self) -> int:
+        return 7
+
+    def __exit__(self, *args: object) -> bool:
+        return True
+
+
+class Strict:
+    def __enter__(self) -> None:
+        return None
+
+    def __exit__(self, *args: object) -> None:
+        return None
+
+
+def guarded(fail: bool) -> str:
+    with Swallow() as level:
+        reveal_type(level)
+        if fail:
+            raise TypeError('boom')
+        result = f'level {level}'
+    return result  # expect-error: possibly unbound when fail is True
+
+
+def strict(fail: bool) -> str:
+    with Strict():
+        if fail:
+            raise TypeError('strict')
+        result = 'fine'
+    return result
+
+
+print(guarded(False))
+try:
+    print(guarded(True))
+except (NameError, TypeError) as exc:
+    print('runtime:', type(exc).__name__)
+try:
+    print(strict(True))
+except TypeError as exc:
+    print('strict runtime:', type(exc).__name__)
+print(strict(False))
+missing: dict[str, int] = {}
+with suppress(KeyError):
+    _ = missing['absent']
+with ExitStack() as stack:
+    value = stack.enter_context(Swallow())
+    reveal_type(value)
+--- pyright 1.1.414
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:27:21 - information: Type of "level" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:31:12 - error: "result" is possibly unbound (reportPossiblyUnboundVariable)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:57:17 - information: Type of "value" is "int"
+1 error, 0 warnings, 2 informations
+--- ty 0.0.97
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:27:21
+   |
+27 |         reveal_type(level)
+   |                     ^^^^^ `int`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:57:17
+   |
+57 |     reveal_type(value)
+   |                 ^^^^^ `int`
+
+Found 2 diagnostics
+--- mypy 2.4.0
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:27: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen0_b82d2e9e.py:57: note: Revealed type is "int"
+Success: no issues found in 1 source file
+--- cpython
+Runtime type is 'int'
+level 7
+runtime: UnboundLocalError
+strict runtime: TypeError
+fine
+=============== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py
+# area: context_managers
+# hypothesis: An __exit__ annotated to return bool makes checkers treat the code after the with-block as reachable even though the body may be cut short, and at runtime the swallowed exception leaves the bound name unset.
+# origin: llm
+# area: context_managers
+# hypothesis: an __exit__ annotated to return bool makes checkers treat the code after the with-block as reachable even though the body may be cut short, and at runtime the swallowed exception leaves the bound name unset.
+from contextlib import ExitStack, suppress
+from types import TracebackType
+from typing import reveal_type
+
+
+class SwallowZero:
+    def __enter__(self) -> int:
+        return 7
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> bool:
+        return exc_type is ZeroDivisionError
+
+
+def compute(divisor: int) -> int:
+    with SwallowZero() as v:
+        result = v // divisor
+    return result
+
+
+def safe_div(a: int, b: int) -> int | None:
+    out: int | None = None
+    with suppress(ZeroDivisionError):
+        out = a // b
+    reveal_type(out)
+    return out
+
+
+def stacked() -> list[str]:
+    log: list[str] = []
+    with ExitStack() as stack:
+        stack.callback(log.append, "closed")
+        log.append("body")
+    reveal_type(log)
+    return log
+
+
+print(compute(2))
+print(safe_div(9, 0), safe_div(9, 3))
+print(stacked())
+try:
+    print(compute(0))
+except UnboundLocalError:
+    print("UnboundLocalError: swallowed exception left result unset")
+--- pyright 1.1.414
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:27:12 - error: "result" is possibly unbound (reportPossiblyUnboundVariable)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:34:17 - information: Type of "out" is "int | None"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:43:17 - information: Type of "log" is "list[str]"
+1 error, 0 warnings, 2 informations
+--- ty 0.0.97
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:34:17
+   |
+34 |     reveal_type(out)
+   |                 ^^^ `None | int`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:43:17
+   |
+43 |     reveal_type(log)
+   |                 ^^^ `list[str]`
+
+Found 2 diagnostics
+--- mypy 2.4.0
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:34: note: Revealed type is "int | None"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/context_managers/gen21_6ee04c3a.py:43: note: Revealed type is "list[str]"
+Success: no issues found in 1 source file
+--- cpython
+Runtime type is 'list'
+3
+None 3
+['body', 'closed']
+UnboundLocalError: swallowed exception left result unset
+=============== /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py
+# area: dunder_dispatch
+# hypothesis: Dunders are looked up on the type, so an instance-assigned __len__ and an annotation-only __iter__ do not make len() or iter() work, and __getattr__ does not supply dunders.
+# origin: llm
+# area: dunder_dispatch
+# hypothesis: Dunders are looked up on the type, so an instance-assigned __len__ and an annotation-only __iter__ do not make len() or iter() work, and __getattr__ does not supply dunders.
+from collections.abc import Callable, Iterator
+from typing import reveal_type
+
+
+class Base:
+    def __len__(self) -> int:
+        return 3
+
+
+class Child(Base):
+    pass
+
+
+class Bag:
+    __iter__: Callable[[], Iterator[int]]
+
+    def __init__(self) -> None:
+        self.__len__ = lambda: 5  # expect-error: cannot assign to a method
+
+    def __getattr__(self, name: str) -> int:
+        return 0
+
+
+bag = Bag()
+print('attr:', bag.anything)
+reveal_type(bag.anything)
+print('inherited:', len(Child()), 'base:', len(Base()))
+try:
+    print(len(bag))
+except TypeError as exc:
+    print('len:', type(exc).__name__)
+try:
+    print(list(bag))
+except TypeError as exc:
+    print('iter:', type(exc).__name__)
+--- pyright 1.1.414
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py:31:13 - information: Type of "bag.anything" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py:38:16 - error: Argument of type "Bag" cannot be assigned to parameter "iterable" of type "Iterable[_T@list]" in function "__init__"
+    "Bag" is incompatible with protocol "Iterable[_T@list]"
+      Could not bind method "<anonymous>" because it is missing a "self" or "cls" parameter (reportArgumentType)
+1 error, 0 warnings, 1 information
+--- ty 0.0.97
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py:31:13
+   |
+31 | reveal_type(bag.anything)
+   |             ^^^^^^^^^^^^ `int`
+
+error[invalid-argument-type]: Argument to function `len` is incorrect
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py:34:15
+   |
+34 |     print(len(bag))
+   |               ^^^ Expected `Sized`, found `Bag`
+info: type `Bag` is not assignable to protocol `Sized`
+info: └── protocol member `__len__` is not defined on type `Bag`
+info: Function defined here
+    --> stdlib/builtins.pyi:4201:5
+     |
+4201 | def len(obj: Sized, /) -> int:
+     |     ^^^ ---------- Parameter declared here
+
+Found 2 diagnostics
+--- mypy 2.4.0
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/day9/gen/dunder_dispatch/gen8_88778d35.py:31: note: Revealed type is "int"
+Success: no issues found in 1 source file
+--- cpython
+Runtime type is 'int'
+attr: 0
+inherited: 3 base: 3
+len: TypeError
+iter: TypeError

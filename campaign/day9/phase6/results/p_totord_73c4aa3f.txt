@@ -1,0 +1,79 @@
+##### p_totord_73c4aa3f.py
+--- cpython 3.13.16
+Runtime type is 'bool'
+Runtime type is 'bool'
+Runtime type is 'bool'
+True False True False
+sized 2
+probe: TypeError
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23:13
+   |
+23 | reveal_type(c1 < c2)
+   |             ^^^^^^^ `Literal[True]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24:13
+   |
+24 | reveal_type(c1 > c2)
+   |             ^^^^^^^ `Literal[False]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25:13
+   |
+25 | reveal_type(c1 <= c2)
+   |             ^^^^^^^^ `bool`
+
+Found 3 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23:13
+   |
+23 | reveal_type(c1 < c2)
+   |             ^^^^^^^ `Literal[True]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24:13
+   |
+24 | reveal_type(c1 > c2)
+   |             ^^^^^^^ `Literal[False]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25:13
+   |
+25 | reveal_type(c1 <= c2)
+   |             ^^^^^^^^ `bool`
+
+Found 3 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23: note: Revealed type is "Literal[False]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24: note: Revealed type is "Literal[True]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23: note: Revealed type is "Literal[False]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24: note: Revealed type is "Literal[True]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23: note: Revealed type is "Literal[False]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24: note: Revealed type is "Literal[True]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25: note: Revealed type is "Any"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:23:13 - information: Type of "c1 < c2" is "Literal[True]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:24:13 - information: Type of "c1 > c2" is "Literal[False]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:25:13 - information: Type of "c1 <= c2" is "bool"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_totord_73c4aa3f.py:42:15 - error: Argument of type "Probe" cannot be assigned to parameter "obj" of type "Sized" in function "len"
+    "Probe" is incompatible with protocol "Sized"
+      Could not bind method "<anonymous>" because it is missing a "self" or "cls" parameter (reportArgumentType)
+1 error, 0 warnings, 3 informations
+rc=1

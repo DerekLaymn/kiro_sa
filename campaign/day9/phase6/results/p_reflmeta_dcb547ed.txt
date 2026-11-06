@@ -1,0 +1,54 @@
+##### p_reflmeta_dcb547ed.py
+--- cpython 3.13.16
+Runtime type is 'str'
+s
+TypeError
+5
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29:17
+   |
+29 |     reveal_type(A * B)
+   |                 ^^^^^ `str`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29:17
+   |
+29 |     reveal_type(A * B)
+   |                 ^^^^^ `str`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:30: error: Expression is of type "int", not "str"  [assert-type]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:31: error: Incompatible return value type (got "int", expected "str")  [return-value]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:30: error: Expression is of type "int", not "str"  [assert-type]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:31: error: Incompatible return value type (got "int", expected "str")  [return-value]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29: note: Revealed type is "int"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:30: error: Expression is of type "int", not "str"  [assert-type]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:31: error: Incompatible return value type (got "int", expected "str")  [return-value]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:29:17 - information: Type of "A * B" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:30:17 - error: "assert_type" mismatch: expected "str" but received "int" (reportAssertTypeFailure)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:31:12 - error: Type "int" is not assignable to return type "str"
+    "int" is not assignable to "str" (reportReturnType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/p_reflmeta_dcb547ed.py:48:17 - error: Argument of type "Sized" cannot be assigned to parameter "obj" of type "Sized" in function "len"
+    "Sized" is incompatible with protocol "Sized"
+      Could not bind method "<anonymous>" because it is missing a "self" or "cls" parameter (reportArgumentType)
+3 errors, 0 warnings, 1 information
+rc=1

@@ -1,0 +1,69 @@
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checkexpr.py
+4251:    def lookup_definer(self, typ: Instance, attr_name: str) -> str | None:
+4306:        if op_name in operators.op_methods_that_shortcut and is_same_type(left_type, right_type):
+4321:                    self.lookup_definer(left_type, op_name)
+4322:                    != self.lookup_definer(right_type, rev_op_name)
+----
+83:op_methods_that_shortcut: Final = {
+84-    "__add__",
+85-    "__sub__",
+86-    "__mul__",
+87-    "__truediv__",
+88-    "__mod__",
+89-    "__divmod__",
+90-    "__floordiv__",
+91-    "__pow__",
+---- block
+
+        left_op = self.lookup_operator(op_name, left_type, context)
+        right_op = self.lookup_operator(rev_op_name, right_type, context)
+
+        # STEP 2a:
+        # We figure out in which order Python will call the operator methods. As it
+        # turns out, it's not as simple as just trying to call __op__ first and
+        # __rop__ second.
+        #
+        # We store the determined order inside the 'variants_raw' variable,
+        # which records tuples containing the method, base type, and the argument.
+
+        if op_name in operators.op_methods_that_shortcut and is_same_type(left_type, right_type):
+            # When we do "A() + A()", for example, Python will only call the __add__ method,
+            # never the __radd__ method.
+            #
+            # This is the case even if the __add__ method is completely missing and the __radd__
+            # method is defined.
+
+            variants_raw = [(op_name, left_op, left_type, right_expr)]
+        elif (
+            (
+                # Checking (A implies B) using the logically equivalent (not A or B), where
+                #    A: left and right are both `Instance` objects
+                #    B: right's __rop__ method is different from left's __op__ method
+                not (isinstance(left_type, Instance) and isinstance(right_type, Instance))
+                or (
+                    self.lookup_definer(left_type, op_name)
+                    != self.lookup_definer(right_type, rev_op_name)
+                    and (
+                        left_type.type.alt_promote is None
+                        or left_type.type.alt_promote.type is not right_type.type
+                    )
+                )
+            )
+            # Note: use `covers_at_runtime` instead of `is_subtype` (#19006)
+            and covers_at_runtime(right_type, left_type)
+        ):
+            # When we do "A() + B()" where B is a subclass of A, we'll actually try calling
+            # B's __radd__ method first, but ONLY if B explicitly defines or overrides the
+            # __radd__ method.
+            #
+            # This mechanism lets subclasses "refine" the expected outcome of the operation, even
+            # if they're located on the RHS.
+            #
+            # As a special case, the alt_promote check makes sure that we don't use the
+            # __radd__ method of int if the LHS is a native int type.
+
+            variants_raw = [
+                (rev_op_name, right_op, right_type, left_expr),
+                (op_name, left_op, left_type, right_expr),
+            ]
+        else:

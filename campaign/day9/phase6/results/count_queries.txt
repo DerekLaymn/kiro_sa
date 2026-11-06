@@ -1,0 +1,43 @@
+out_a.txt 48
+    ('issues', 'astral-sh/ty') 6
+    ('issues', 'microsoft/pyright') 3
+    ('issues', 'python/mypy') 27
+    ('prs', 'astral-sh/ruff') 1
+    ('prs', 'python/mypy') 11
+out_b.txt 51
+    ('issues', 'astral-sh/ruff') 1
+    ('issues', 'astral-sh/ty') 12
+    ('issues', 'microsoft/pyright') 10
+    ('issues', 'python/cpython') 3
+    ('issues', 'python/mypy') 14
+    ('issues', 'python/typing') 2
+    ('prs', 'astral-sh/ruff') 5
+    ('prs', 'microsoft/pyright') 1
+    ('prs', 'python/cpython') 1
+    ('prs', 'python/mypy') 2
+out_c.txt 13
+    ('issues', 'astral-sh/ty') 1
+    ('issues', 'microsoft/pyright') 1
+    ('issues', 'python/mypy') 8
+    ('prs', 'python/mypy') 3
+out_d.txt 21
+    ('issues', 'astral-sh/ty') 5
+    ('issues', 'microsoft/pyright') 3
+    ('issues', 'python/mypy') 8
+    ('prs', 'astral-sh/ruff') 2
+    ('prs', 'python/mypy') 3
+TOTAL search queries 133
+    ('issues', 'astral-sh/ruff') 1
+    ('issues', 'astral-sh/ty') 24
+    ('issues', 'microsoft/pyright') 17
+    ('issues', 'python/cpython') 3
+    ('issues', 'python/mypy') 57
+    ('issues', 'python/typing') 2
+    ('prs', 'astral-sh/ruff') 8
+    ('prs', 'microsoft/pyright') 1
+    ('prs', 'python/cpython') 1
+    ('prs', 'python/mypy') 19
+views1.out views 4
+views2.out views 5
+views3.out views 3
+TOTAL views 12

@@ -1,0 +1,7 @@
+Creating virtual environment at: /tmp/d9v/ty99
+Activate with: source /tmp/d9v/ty99/bin/activate.fish
+         If this is intentional, set `export UV_LINK_MODE=copy` or use `--link-mode=copy` to suppress this warning.
+Installed 1 package in 26ms
+ + ty==0.0.99
+ty 0.0.99
+ty 0.0.97

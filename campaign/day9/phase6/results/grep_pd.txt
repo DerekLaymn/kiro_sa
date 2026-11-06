@@ -1,0 +1,27 @@
+41:    WithStmt,
+204:        # There's always at least one scope. Within each scope, there's at least one "global" BranchingStatement.
+300:        # variables defined in every loop branch with `break`
+553:            # process try/except with branch skipping disabled. However, for the rest of the code
+554:            # after finally, we need to process try/except with branch skipping enabled.
+668:    def visit_with_stmt(self, o: WithStmt) -> None:
+---- messages
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:28:* When a function was deferred we suppress most errors, and infer all expressions as
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:528:        # a final declaration (assignment), so that some errors should be suppressed.
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:627:                                self.binder.suppress_unreachable_warnings()
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:1573:                    # We suppress reachability warnings for empty generator functions
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:1577:                    # We also suppress reachability warnings when we use TypeVars with value
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:1579:                    # marked as being suppressed in *all* of the expansions, but we currently
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:1584:                        self.binder.suppress_unreachable_warnings()
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:2821:        as bool, mypy thinks that a with statement may "swallow"
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:3369:                    self.binder.suppress_unreachable_warnings()
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:3388:            and not self.binder.is_unreachable_warning_suppressed()
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:3939:            suppress_errors=True,
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:5530:                else_map, s.msg, None, suppress_unreachable_errors=False
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:5599:            previously_suppressed = self.binder.is_unreachable_warning_suppressed()
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:5617:            if not previously_suppressed:
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:5620:                self.binder.frames[-1].suppress_unreachable_warnings = False
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:6010:        exceptions_maybe_suppressed = False
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:6017:            # Based on the return type, determine if this context manager 'swallows'
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:6035:                exceptions_maybe_suppressed = True
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:6037:        if exceptions_maybe_suppressed:
+/tmp/d3v-master/lib/python3.13/site-packages/mypy/checker.py:6703:        for example, some errors are suppressed.

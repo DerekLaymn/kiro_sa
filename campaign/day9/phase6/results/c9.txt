@@ -1,0 +1,60 @@
+##### c9.py
+--- cpython 3.13.16
+Runtime type is 'Tag'
+Runtime type is 'str'
+a
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10:13
+   |
+10 | reveal_type(t)
+   |             ^ `Tag[str]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11:13
+   |
+11 | reveal_type(t.key)
+   |             ^^^^^ `str`
+
+Found 2 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10:13
+   |
+10 | reveal_type(t)
+   |             ^ `Tag[str]`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11:13
+   |
+11 | reveal_type(t.key)
+   |             ^^^^^ `str`
+
+Found 2 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10: note: Revealed type is "c9.Tag[str]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10: note: Revealed type is "c9.Tag[str]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:6: error: Need type annotation for "key"  [var-annotated]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10: note: Revealed type is "c9.Tag[str]"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11: note: Revealed type is "Any"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:10:13 - information: Type of "t" is "Tag[str]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day9/phase6/repro/c9.py:11:13 - information: Type of "t.key" is "str"
+0 errors, 0 warnings, 2 informations
+rc=0
