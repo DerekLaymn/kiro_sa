@@ -1,0 +1,8 @@
+reserve parent                       hits closest hit                                        peer live(Day 8, Day-9 KB)
+rsv_abstract_classes_5a90804c.py     0.40 d4p_inheritance_hash_none_from_eq.py               0.34 3
+rsv_descriptors_properties_4287130f.py   0.37 d4p_descriptors_readonly_prop_never.py             0.38 1
+rsv_descriptors_properties_92c10e28.py   0.38 d6p_typevartuple_unpack_pep695_paramspec_default   0.44 2
+rsv_generics_variance_7ffc3316.py    0.56 d3p_generics_callable_attr_contravariant.py        0.43 2
+rsv_overloads_186f739e.py            0.31 d6p_typevartuple_unpack_pep695_paramspec_default   0.29 1
+rsv_self_classmethods_22a2e020.py    0.37 d4v_ty_attr_eq_narrow_unreachable.py               0.37 1
+parents: 6; flagged: 0

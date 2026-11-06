@@ -1,0 +1,38 @@
+prompts: 250
+by operator:
+  (fresh)                    109
+  dunder_instance_shadow      29
+  exit_swallow_flip           23
+  variance_flip               16
+  bound_constraint_swap       10
+  overload_reorder            10
+  async_generator_wrap         9
+  annotation_spelling_swap     6
+  feature_crossover            6
+  protocol_vs_abc              6
+  python_version_flip          6
+  qualifier_toggle             6
+  recursion_deepening          6
+  runtime_witness              6
+  invalid_type_form            2
+prompts carrying an operator instruction (Day-9 operators): 52
+by area:
+  dunder_dispatch             28
+  generics_variance           27
+  context_managers            22
+  descriptors_properties      19
+  gradual_any                 19
+  narrowing_user              18
+  protocols                   16
+  typevartuple_unpack         16
+  async_generators            15
+  constructors_metaclasses    13
+  inheritance_mro             13
+  narrowing_builtin           12
+  overloads                   10
+  self_classmethods            7
+  abstract_classes             4
+  callables                    3
+  paramspec_concatenate        3
+  tuples_unpacking             3
+  enums_literals               2

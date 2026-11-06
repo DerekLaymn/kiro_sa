@@ -1,0 +1,83 @@
+===== gen10_22a2e020.py
+  D1 only_pyright L36 stmt="wrong = HtmlBuilder.add(Builder(), 'z')  # expect-error: Bui"
+     mypy: -
+     ty:   -
+     pyr:  [reportArgumentType] Argument of type "Builder" cannot be assigned to parameter "self" of type "HtmlBuilder" in function "add"
+===== gen4_fe950119.py
+  D1 only_mypy L18 stmt="Config('svc')  # expect-error"
+     mypy: [arg-type] Argument 1 to "Config" has incompatible type "str"; expected "int"
+     ty:   -
+     pyr:  [reportCallIssue] Expected 0 positional arguments
+===== gen14_339e7a7e.py
+  D1 reveal_mismatch L33 stmt='reveal_type(Config.__init__)'
+     mypy: reveal def (self: case.Config, *, name: str, retries: int =, secret: str =)
+     ty:   reveal (self: Config, *, name: str, retries: int = 3, secret: str = "") -> None
+     pyr:  reveal (self: Config, *, name: str, retries: int = 3, secret: str = '') -> None
+===== gen1_4287130f.py
+  D1 only_pyright L55 stmt='print(b.width, b.area, b.tag, Box.width.attr)'
+     mypy: -
+     ty:   -
+     pyr:  [reportAttributeAccessIssue] Cannot access attribute "attr" for class "int"
+===== d3p_generics_callable_attr_contravariant__mut1_7ffc3316.py
+  D1 only_ty L24 stmt='hf = Handler[float](lambda x: print(x.bit_length()))'
+     mypy: -
+     ty:   [invalid-argument-type] Argument to `Handler.__init__` is incorrect: Expected `Sink[float]`, found `(x) -> None`
+     pyr:  [reportArgumentType] Argument of type "(x: float) -> None" cannot be assigned to parameter "sink" of type "Sink[float]" in function "__init__"; [repor
+  D2 only_ty L29 stmt='use(hf)  # expect-error: Handler[float] is not Handler[int]'
+     mypy: -
+     ty:   [invalid-argument-type] Argument to function `use` is incorrect: Expected `Handler[int]`, found `Handler[float]`
+     pyr:  -
+===== self_classmethods__self_param_inherited__mut0_625d747c.py
+  D1 only_mypy L23 stmt='x.add(Node())  # expect-error: Node is not a Leaf (mypy and '
+     mypy: [arg-type] Argument 1 to "add" of "Node" has incompatible type "Node"; expected "Leaf"
+     ty:   -
+     pyr:  [reportArgumentType] Argument of type "Node" cannot be assigned to parameter "c" of type "Leaf" in function "add"
+  D2 only_mypy L24 stmt='x.add(c=Node())  # expect-error: keyword form'
+     mypy: [arg-type] Argument "c" to "add" of "Node" has incompatible type "Node"; expected "Leaf"
+     ty:   -
+     pyr:  [reportArgumentType] Argument of type "Node" cannot be assigned to parameter "c" of type "Leaf" in function "add"
+  D3 only_pyright L25 stmt='Leaf.add(Leaf(), Node())  # expect-error: unbound form'
+     mypy: -
+     ty:   -
+     pyr:  [reportArgumentType] Argument of type "Node" cannot be assigned to parameter "c" of type "Leaf" in function "add"
+===== gen7_2655c013.py
+  D1 only_mypy L20 stmt='class Extras(TypedDict, extra_items=int):'
+     mypy: [call-arg] Unexpected keyword argument "extra_items" for "__init_subclass__" of "TypedDict"
+     ty:   -
+     pyr:  -
+  D2 only_mypy L60 stmt="e: Extras = {'tag': 'x', 'n': 3}"
+     mypy: [typeddict-unknown-key] Extra key "n" for TypedDict "Extras"
+     ty:   -
+     pyr:  -
+===== rsv_abstract_classes_ae31b752__mut0_5a90804c.py
+  D1 only_mypy L57 stmt="assert load(Fixed()) == 'fixed'  # expect-error: Fixed is no"
+     mypy: [arg-type] Argument 1 to "load" has incompatible type "Fixed"; expected "Source"
+     ty:   -
+     pyr:  -
+  D2 only_pyright L28 stmt="name = 'attr'"
+     mypy: -
+     ty:   -
+     pyr:  [reportIncompatibleMethodOverride] "name" incorrectly overrides property of same name in class "Source"; [reportAssignmentType] Type "Literal['attr']"
+  D3 only_pyright L33 stmt="name: str = 'data'"
+     mypy: -
+     ty:   -
+     pyr:  [reportIncompatibleMethodOverride] "name" incorrectly overrides property of same name in class "Source"
+===== d3p_descriptors_decorated_get__mut0_8d166ec7.py
+  D1 only_ty L14 stmt='LOG.append(fn.__name__)'
+     mypy: -
+     ty:   [unresolved-attribute] Object of type `F@logged` has no attribute `__name__`
+     pyr:  -
+===== gen11_8c4adaee.py
+  D1 reveal_mismatch L35 stmt='reveal_type(Temperature.fahrenheit)'
+     mypy: reveal def (self: case.Temperature) -> float
+     ty:   reveal cached_property[float]
+     pyr:  reveal cached_property[float]
+===== gen9_92c10e28.py
+  D1 only_mypy L32 stmt='print(type(prop).__name__, prop.fget is not None)'
+     mypy: [attr-defined] overloaded function has no attribute "fget"
+     ty:   -
+     pyr:  -
+  D2 reveal_mismatch L31 stmt='reveal_type(prop)'
+     mypy: reveal Overload(def (self: case.Celsius) -> float)
+     ty:   reveal property
+     pyr:  reveal property

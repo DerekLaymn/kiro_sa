@@ -1,0 +1,14 @@
+ M campaign/day7-report.md
+ M campaign/day8/phase6/results/commit.out
+?? -l
+?? .kiro/
+?? campaign/day9/answer_pending.sh
+?? campaign/day9/check_reserve.py
+?? campaign/day9/gen-pass-dryrun.sh
+?? campaign/day9/gen_pass.sh
+?? campaign/day9/gen_worker.sh
+?? campaign/day9/judge.sh
+?? campaign/day9/mk_groups.sh
+?? campaign/day9/only_pyright_relations.py
+?? campaign/day9/phase2/
+?? findings/2026-10-27-llm-run/

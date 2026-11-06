@@ -1,0 +1,37 @@
+ty rows total: 59
+ty rows in hits: 40
+ty rows in hits-dropped: 19
+ty rc by value:
+     26 0
+     21 1
+      1 101
+     11 134
+ty rows with rc>=100: 12
+ty rows rc<100: 47
+areas-without-hits-after.txt
+areas-without-hits-before.txt
+budget.out
+check_hits-after.out
+check_hits-before.out
+check_hits-final.out
+crash-parents-probe.done
+crash-parents-probe.err
+crash-parents-probe.tsv
+day8-live-by-area.txt
+day8-live-programs.txt
+gen-pass-dryrun.out
+git-status.out
+mk_groups.out
+overlap-prior.out
+probe-counts.out
+promote.out
+reserve-candidates-rows-2.txt
+reserve-candidates-rows.txt
+reserve-check.out
+runs-day9-listing.out
+shared-key.out
+step1-after.out
+step1-before.out
+step2a.done
+step3.done
+syntax.out

@@ -1,0 +1,27 @@
+===== rsv_overloads_d6e90b34__mut0_186f739e.py
+  D1 reveal_mismatch L23 stmt='reveal_type(unwrap(xs, strict=True))'
+     mypy: reveal int | str
+     ty:   reveal Unknown
+     pyr:  reveal int | str
+===== self_classmethods__self_runtime_witness__mut0_0093ebdd.py
+  D2 only_ty L28 stmt='print(c.radius())  # AttributeError at runtime if the call a'
+     mypy: -
+     ty:   [unresolved-attribute] Object of type `Shape` has no attribute `radius`
+     pyr:  -
+===== final_classvar__final_overrides__mut0_3e6fed49.py
+===== final_classvar__final_overrides__mut0_fdcd37b9.py
+===== gen16_332ed036.py
+  D1 reveal_mismatch L15 stmt='reveal_type(dx)'
+     mypy: reveal int
+     ty:   reveal int | str
+     pyr:  reveal int
+===== gen12_e098719f.py
+  D1 only_ty L21 stmt='case (name, r) if r < 0:'
+     mypy: -
+     ty:   [unsupported-operator] Operator `<` is not supported between objects of type `object` and `Literal[0]`
+     pyr:  -
+===== gen9_33458b14.py
+  D1 reveal_mismatch L19 stmt='reveal_type(build)'
+     mypy: reveal def (**kw: **TypedDict(case.Opts, {'name': str, 'retries'?: int, 'tag'=: str})) -> str
+     ty:   reveal def build(*, name: str, retries: int = ..., tag: str, **kw: object) -> str
+     pyr:  reveal (**kw: **Opts) -> str

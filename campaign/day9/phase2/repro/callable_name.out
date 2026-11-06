@@ -1,0 +1,20 @@
+== ty ty 0.0.97
+error[unresolved-attribute]: Object of type `F@logged` has no attribute `__name__`
+ --> campaign/day9/phase2/repro/callable_name.py:7:11
+  |
+7 |     print(fn.__name__)
+  |           ^^^^^^^^^^^
+
+error[unresolved-attribute]: Object of type `(...) -> Any` has no attribute `__name__`
+  --> campaign/day9/phase2/repro/callable_name.py:12:11
+   |
+12 |     print(fn.__name__)
+   |           ^^^^^^^^^^^
+help: Function objects have a `__name__` attribute, but not all callable objects are functions
+help: See this FAQ for more information: <https://docs.astral.sh/ty/reference/typing-faq/#why-does-ty-say-callable-has-no-attribute-__name__>
+
+Found 2 diagnostics
+== mypy
+Success: no issues found in 1 source file
+== pyright
+0 errors, 0 warnings, 0 informations

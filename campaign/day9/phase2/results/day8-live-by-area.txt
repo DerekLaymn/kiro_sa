@@ -1,0 +1,51 @@
+area(dir)                  progs  live  dism
+recursive_aliases             18    27     0
+overloads                     26    26     8
+descriptors_properties        36    23     6
+match_statement               26    21     0
+tuples_unpacking              26    18    10
+self_classmethods             25    12    17
+dataclasses                   37    12     1
+abstract_classes              12     6     0
+typeddict                     16     3    13
+generics_variance              6     3     5
+callables                      4     1     2
+paramspec_concatenate          8     0     8
+final_classvar                 8     0     1
+protocols                      2     0     1
+
+{
+ "case_id": "seed-019876b76792",
+ "source": "# area: descriptors_properties\n# hypothesis: A descriptor's overloaded __get__ returns the descriptor itself when accessed on the class and an int on instances, and its __set__ takes precedence over the instance dictionary.\n# origin: llm\n# Hypothesis: a descriptor's overloaded __get__ returns the descriptor itself when accessed on the class and an int on instances, and a data descriptor's __set__ takes precedence over instance attributes.\nfrom functools import cached_property\nfrom typing import overload, reveal_type\n\n\nclass Positive:\n    def __set_name__(self, owner: type, name: str) -> None:\n        self.name = '_' + name\n\n    @overload\n    def __get__(self, obj: None, objtype: type | None = None) -> 'Positive': ...\n    @overload\n    def __get__(self, obj: object, objtype: type | None = None) -> int: ...\n    def __get__(self, obj: object | None, objtype: type | None = None) -> 'Positive | int':\n        if obj is None:\n            return self\n        return int(getattr(obj, self.name, 0))\n\n    def __set__(self, obj: object, value: int) -> None:\n        if value <= 0:\n            raise ValueError('must be positive')\n        setattr(obj, self.name, value)\n\n\nclass Box:\n    width = Positive()\n\n    def __init__(self, w: int) -> None:\n        self.width = w\n\n    @property\n    def area(self) -> int:\n        return self.width * 2\n\n    @area.setter\n    def area(self, v: int) -> None:\n        self.width = v // 2\n\n    @cached_property\n    def label(self) -> str:\n        return f'box{self.width}'\n\n\ndef try_bad(bx: Box) -> None:\n    try:\n        bx.width = 'wide'  # expect-error\n    except (TypeError, ValueError):\n        pass\n\n\nb = Box(4)\nreveal_type(b.width)\nreveal_type(Box.width)\nb.area = 10\nreveal_type(b.area)\nreveal_type(b.label)\ntry_bad(b)\n",
+ "target_python": "3.13",
+ "tool_versions": {
+  "mypy": "mypy 2.4.0 (compiled: yes)",
+  "ty": "ty 0.0.97",
+  "pyright": "pyright 1.1.414",
+  "runtime": "3.13.16"
+ },
+ "flags": {
+  "mypy": [
+   "--python-version",
+   "3.13",
+   "--check-untyped-defs",
+   "--show-column-numbers",
+   "--show-error-codes",
+   "--show-error-end",
+   "--no-error-summary",
+   "--no-color-output",
+   "--hide-error-context",
+   "--no-incremental",
+   "--cache-dir",
+   "/tmp/typediff-y0sq895o/.mypy_cache"
+  ],
+  "ty": [
+   "--python-version",
+   "3.13",
+   "--output-format",
+   "concise",
+   "--no-progress",
+   "--color",
+   "never"
+  ],
+  "pyrig
