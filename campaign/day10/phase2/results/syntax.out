@@ -1,0 +1,184 @@
+ok  campaign/day10/answer_pending.sh
+ok  campaign/day10/gen-pass-dryrun.sh
+ok  campaign/day10/gen_pass.sh
+ok  campaign/day10/gen_worker.sh
+ok  campaign/day10/judge.sh
+ok  campaign/day10/mk_groups.sh
+ok  campaign/day10/phase2/scripts/alone.sh
+ok  campaign/day10/phase2/scripts/overlap_prior.sh
+ok  campaign/day10/phase2/scripts/probe_crash_parents.sh
+ok  campaign/day10/phase2/scripts/promote_retire.sh
+ok  campaign/day10/phase2/scripts/run_probe.sh
+ok  campaign/day10/phase2/scripts/shared_key.sh
+ok  campaign/day10/phase2/scripts/step3.sh
+ok  campaign/day10/phase2/scripts/step4.sh
+ok  campaign/day10/phase2/scripts/syntax.sh
+ok  campaign/day10/check_gen_sessions.py
+ok  campaign/day10/check_reserve.py
+ok  campaign/day10/live_by_area.py
+ok  campaign/day10/only_pyright_relations.py
+ok  campaign/day10/operator_follow.py
+ok  campaign/day10/phase2/scripts/budget.py
+ok  campaign/day10/phase2/scripts/live_programs.py
+ok  campaign/day10/phase2/scripts/parent_live_rows.py
+ok  campaign/day10/phase2/scripts/similarity.py
+ok  campaign/day10/phase2/scripts/strong_live.py
+ok  campaign/day10/phase2/scripts/usage_by_day.py
+ok  campaign/day10/phase2/scripts/yield_day9.py
+--- diff gen_worker.sh (day9 vs day10)
+2,3c2,3
+< # Day 9 generator: one headless kiro-cli session (claude-haiku-5.5, medium effort, agent engine v3) answers a batch of
+< # file-bridge prompts. Usage: gen_worker.sh KEY [KEY ...]   (keys = 16-hex prompt ids in runs/day9/inbox)
+---
+> # Day 10 generator: one headless kiro-cli session (claude-haiku-5.5, medium effort, agent engine v3) answers a batch of
+> # file-bridge prompts. Usage: gen_worker.sh KEY [KEY ...]   (keys = 16-hex prompt ids in runs/day10/inbox)
+5,7c5,7
+< INBOX=$ROOT/runs/day9/inbox
+< WORK=/tmp/d9/work
+< mkdir -p "$WORK" /tmp/d9/logs
+---
+> INBOX=$ROOT/runs/day10/inbox
+> WORK=/tmp/d10/work
+> mkdir -p "$WORK" /tmp/d10/logs
+14,15c14,15
+< kiro-cli chat --agent-engine v3 --model claude-haiku-5.5 --effort medium --no-interactive --trust-tools=fs_read,fs_write "$MSG" > "/tmp/d9/logs/worker-$$-$1.log" 2>&1
+< echo "rc=$? keys=$#" >> "/tmp/d9/logs/worker-$$-$1.log"
+---
+> kiro-cli chat --agent-engine v3 --model claude-haiku-5.5 --effort medium --no-interactive --trust-tools=fs_read,fs_write "$MSG" > "/tmp/d10/logs/worker-$$-$1.log" 2>&1
+> echo "rc=$? keys=$#" >> "/tmp/d10/logs/worker-$$-$1.log"
+--- diff answer_pending.sh (day9 vs day10)
+2c2
+< # Answer every pending prompt in runs/day9/inbox with the headless generator (batches of 5, 4 sessions at once).
+---
+> # Answer every pending prompt in runs/day10/inbox with the headless generator (batches of 5, 4 sessions at once).
+5c5
+< INBOX=$ROOT/runs/day9/inbox
+---
+> INBOX=$ROOT/runs/day10/inbox
+13c13
+< echo $PEND | tr ' ' '\n' | xargs -n 5 -P 4 bash campaign/day9/gen_worker.sh
+---
+> echo $PEND | tr ' ' '\n' | xargs -n 5 -P 4 bash campaign/day10/gen_worker.sh
+--- diff judge.sh (day9 vs day10)
+2,3c2,3
+< # Day 9 judge + triage (Plan §3 daily loop steps 2-3). Deterministic: no LLM. Run from anywhere, after the generation
+< # is complete (gen_pass.sh: written=250, pending=0). Judged WITH --pyright-only on ALL programs, as on Days 7 and 8:
+---
+> # Day 10 judge + triage (Plan §3 daily loop steps 2-3). Deterministic: no LLM. Run from anywhere, after the generation
+> # is complete (gen_pass.sh: written=250, pending=0). Judged WITH --pyright-only on ALL programs, as on Days 7 to 9:
+7c7
+< # Usage: judge.sh [GEN_DIR] [OUT_DIR]   (default runs/day9/gen runs/day9/out)
+---
+> # Usage: judge.sh [GEN_DIR] [OUT_DIR]   (default runs/day10/gen runs/day10/out)
+11,12c11,12
+< GEN="${1:-runs/day9/gen}"
+< OUT="${2:-runs/day9/out}"
+---
+> GEN="${1:-runs/day10/gen}"
+> OUT="${2:-runs/day10/out}"
+17,21c17,21
+< echo "kbloop_run exit=$? secs=$(( $(date +%s) - s ))" > campaign/day9/judge.done
+< $PY scripts/kbloop_stats.py "$OUT" > campaign/day9-stats.txt 2>&1
+< $TD --out "$OUT" triage "$OUT" --top 30 --details > campaign/day9-triage.txt 2>&1
+< $PY campaign/day9/only_pyright_relations.py "$OUT" > campaign/day9-only-pyright-relations.txt 2>&1
+< echo "stats+triage+relations exit=$? total_secs=$(( $(date +%s) - s ))" >> campaign/day9/judge.done
+---
+> echo "kbloop_run exit=$? secs=$(( $(date +%s) - s ))" > campaign/day10/judge.done
+> $PY scripts/kbloop_stats.py "$OUT" > campaign/day10-stats.txt 2>&1
+> $TD --out "$OUT" triage "$OUT" --top 30 --details > campaign/day10-triage.txt 2>&1
+> $PY campaign/day10/only_pyright_relations.py "$OUT" > campaign/day10-only-pyright-relations.txt 2>&1
+> echo "stats+triage+relations exit=$? total_secs=$(( $(date +%s) - s ))" >> campaign/day10/judge.done
+--- diff gen-pass-dryrun.sh (day9 vs day10)
+2c2
+< # Dry run of campaign/day9/gen_pass.sh against a scratch inbox/out (no LLM answers, nothing under runs/day9/{inbox,gen},
+---
+> # Dry run of campaign/day10/gen_pass.sh against a scratch inbox/out (no LLM answers, nothing under runs/day10/{inbox,gen},
+4c4
+< # It rebuilds runs/day9/parents with mk_groups.sh (that directory is only used by Day 9).
+---
+> # It rebuilds runs/day10/parents with mk_groups.sh (that directory is only used by Day 10).
+7c7
+< S=/tmp/d9-dryrun
+---
+> S=/tmp/d10-dryrun
+9,11c9,11
+< bash campaign/day9/mk_groups.sh || exit 1
+< export DAY9_INBOX=$S/inbox DAY9_OUT=$S/gen DAY9_GATE=$S/status.json DAY9_LOG=$S/gen-pass.log DAY9_RETRIES=1 DAY9_SLEEP=0
+< bash campaign/day9/gen_pass.sh dryrun
+---
+> bash campaign/day10/mk_groups.sh || exit 1
+> export DAY10_INBOX=$S/inbox DAY10_OUT=$S/gen DAY10_GATE=$S/status.json DAY10_LOG=$S/gen-pass.log DAY10_RETRIES=1 DAY10_SLEEP=0
+> bash campaign/day10/gen_pass.sh dryrun
+--- diff only_pyright_relations.py (day9 vs day10)
+2c2
+< usage: only_pyright_relations.py RUN_DIR  (Day 9: same script as Day 8, which checked priority (c), runtime_supports > 0)."""
+---
+> usage: only_pyright_relations.py RUN_DIR  (Day 10: same script as Days 8 and 9, which checked priority (c), runtime_supports > 0)."""
+--- diff check_reserve.py (day9 vs day10)
+1c1
+< """Day 9 morning: check the pass-2 reserve parents (runs/day9/parents/R_reserve*).
+---
+> """Day 10 morning: check the pass-2 reserve parents (runs/day10/parents/R_reserve*).
+3,4c3,4
+< to the other reserve parents, and the number of live findings its Day-8 program has in the Day-9-KB replay.
+< usage: check_reserve.py [REPLAY_RUN]  (default runs/day9/day8replay)"""
+---
+> to the other reserve parents, and the number of live findings its Day-9 program has in the Day-10-KB replay.
+> usage: check_reserve.py [REPLAY_RUN]  (default runs/day10/replay/day9)"""
+13c13
+< REPLAY = R + (sys.argv[1] if len(sys.argv) > 1 else "runs/day9/day8replay")
+---
+> REPLAY = R + (sys.argv[1] if len(sys.argv) > 1 else "runs/day10/replay/day9")
+27c27
+< files = sorted(glob.glob(R + "runs/day9/parents/R_reserve*/*.py"))
+---
+> files = sorted(glob.glob(R + "runs/day10/parents/R_reserve*/*.py"))
+29c29
+< print("%-34s %6s %-48s %6s %s" % ("reserve parent", "hits", "closest hit", "peer", "live(Day 8, Day-9 KB)"))
+---
+> print("%-34s %6s %-48s %6s %s" % ("reserve parent", "hits", "closest hit", "peer", "live(Day 9, Day-10 KB)"))
+--- diff operator_follow.py (day9 vs day10)
+1c1,2
+< """Day 9 preflight: how many generated programs follow the two new operators (plan day9-morning.md section 10).
+---
+> """Day 10 preflight: how many generated programs follow the two operators that carry their own instruction
+> (plan day10-morning.md section 8). The other operators of Day 10 are bare names and have no instruction to check.
+3,4c4,5
+< Group = the `runs/day9/parents/<GROUP>/` in the first `# origin:` comment line of each generated program.
+<   exit_swallow_flip      -> program defines `__exit__` or `__aexit__` (D_exit, H_dunder)
+---
+> Group = the `runs/day10/parents/<GROUP>/` in the first `# origin:` comment line of each generated program.
+>   exit_swallow_flip      -> program defines `__exit__` or `__aexit__` (H_new)
+6c7,8
+<                             instance / outside the class body (D_shadow, H_dunder)
+---
+>                             instance / outside the class body (H_new)
+> H_new mixes both operators (2 parents x 3 + 2 parents x 3), so read its two columns together, as for H_dunder on Day 9.
+14c16
+< gen = Path(sys.argv[1] if len(sys.argv) > 1 else "runs/day9/gen")
+---
+> gen = Path(sys.argv[1] if len(sys.argv) > 1 else "runs/day10/gen")
+20c22
+< ORIGIN = re.compile(r"^# origin: runs/day9/parents/(\w+)/", re.M)
+---
+> ORIGIN = re.compile(r"^# origin: runs/day10/parents/(\w+)/", re.M)
+--- diff check_gen_sessions.py (day9 vs day10)
+1,2c1,2
+< """Day 9: verify the generator sessions (plan day9-morning.md section 8 step 5).
+< Usage: check_gen_sessions.py SINCE_FILE   (sessions whose session.json is newer than SINCE_FILE, workspace /tmp/d9/work)
+---
+> """Day 10: verify the generator sessions (plan day10-morning.md section 8 step 5).
+> Usage: check_gen_sessions.py SINCE_FILE   (sessions whose session.json is newer than SINCE_FILE, workspace /tmp/d10/work)
+20c20
+<     if "/tmp/d9/work" not in d.get("workspacePaths", []):
+---
+>     if "/tmp/d10/work" not in d.get("workspacePaths", []):
+--- diff live_by_area.py (day9 vs day10)
+--- stale day9 / d9 paths in day10 scripts (expect only comments naming Day 9)
+campaign/day10/mk_groups.sh:2:# Day 10: split the parents into per-purpose groups (copies) under runs/day10/parents/. Adapted from campaign/day9/mk_groups.sh.
+campaign/day10/mk_groups.sh:32:rput() {  # rput GROUP AREA FILE : copy a Day-9 generated program (runs/day9/gen/AREA/FILE.py) as rsv_AREA_<hash>.py
+campaign/day10/mk_groups.sh:33:  src="runs/day9/gen/$2/$3.py"
+campaign/day10/mk_groups.sh:39:# H_new: d8p_* (Day 9 promotion, area dunder_dispatch) and d9p_* (promoted this morning, area context_managers)
+campaign/day10/mk_groups.sh:41:put H_new d9p_context_managers_swallowed_name_possibly_unbound
+campaign/day10/check_reserve.py:4:usage: check_reserve.py [REPLAY_RUN]  (default runs/day10/replay/day9)"""
+campaign/day10/check_reserve.py:13:REPLAY = R + (sys.argv[1] if len(sys.argv) > 1 else "runs/day10/replay/day9")

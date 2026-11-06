@@ -1,0 +1,21 @@
+seed-04b8fbed00e8 constructors_metaclasses/gen1_c86958a8.py D1 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value '3' of type builtins.int does NOT inhabit mypy's revealed type Widget", 'citation': 'probe line 39', 'quote': '', 'verified': True, 'st
+seed-089d54ef03d4 typevartuple_unpack/gen1_4d7d067f.py D3 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'runtime value "(1, \'x\', 2.0, None)" of type builtins.tuple does NOT inhabit mypy\'s revealed type tuple[int, str]', 'citation': 'probe line 21', 'q
+seed-089d54ef03d4 typevartuple_unpack/gen1_4d7d067f.py D4 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'runtime value "(2.0, 1, \'x\')" of type builtins.tuple does NOT inhabit mypy\'s revealed type tuple[float]', 'citation': 'probe line 26', 'quote': ''
+seed-14e035725d30 inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f.py D1 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value 'True' of type builtins.bool does NOT inhabit mypy's revealed type Literal[False]", 'citation': 'probe line 23', 'quote': '', 'verified
+seed-14e035725d30 inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f.py D2 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "runtime value 'False' of type builtins.bool does NOT inhabit mypy's revealed type Literal[True]", 'citation': 'probe line 24', 'quote': '', 'verified
+seed-19efb6e896b7 constructors_metaclasses/d4v_metaclass_reflected_op__mut0_dcb547ed.py D3 reveal_mismatch
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'runtime value "\'s\'" of type builtins.str does NOT inhabit mypy\'s revealed type int', 'citation': 'probe line 29', 'quote': '', 'verified': True, '
+seed-207a55b5d19a typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_49d4094b.py D2 runtime_miss
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(7, '<module>'), (7, '<generic
+seed-2c862412b7c1 gradual_any/gen5_ade5dcc3.py D2 runtime_miss
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'CPython raised TypeError: can only concatenate str (not "int") to str with this statement on the stack (frames [(26, \'<module>\'), (15, \'takes_int\
+seed-bbb1fec09994 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_df958820.py D5 runtime_miss
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic
+seed-c339a072a627 typevartuple_unpack/d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_9940d14a.py D3 runtime_miss
+     None {'type': 'RUNTIME', 'supports': 'bug', 'summary': "CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(12, '<module>')]). Checker ou
+strong live findings: 10 programs: 8

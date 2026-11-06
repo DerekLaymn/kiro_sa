@@ -1,0 +1,42 @@
+===== d3p_generics_callable_attr_contravariant
+===== d3p_generics_typevar_default_refers_to_itself
+   1 only_ty        [type-assertion-failure] Type _ does not match asserted type _
+===== d5p_descriptors_one_decorator_dunders_pyright_rangeerror
+   1 only_pyright   [reportCallIssue] Object of type _ is not callable
+===== d5p_descriptors_decorated_get_pyright_rangeerror
+   2 reveal_mismatch mypy: reveal Any | ty: reveal int
+   2 only_pyright   [reportAttributeAccessIssue] Cannot assign to attribute _ for class _
+   1 only_mypy      [assert-type] Expression is of type _, not _
+   1 only_ty        [invalid-context-manager] Object of type _ cannot be used with _ because it does not implement `__ent
+   1 only_ty        [not-subscriptable] Cannot subscript object of type _ with no _ method
+   1 only_pyright   [reportArgumentType] Argument of type _ cannot be assigned to parameter _ of type _ in functi
+   1 only_pyright   [reportCallIssue] Object of type _ is not callable
+===== d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript
+   5 only_mypy      [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got _
+   4 only_mypy      [assert-type] Expression is of type _, not _
+   3 reveal_mismatch mypy: reveal def (*Any, **Any) | ty: reveal (float, bool, /) -> None
+   2 only_mypy      [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got _; [valid-type] Ca
+   1 only_mypy      [call-arg] Too many arguments for _
+   1 only_mypy      [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got _; [valid-type] C
+   1 only_mypy      [assert-type] Expression is of type _, not _; [valid-t
+   1 only_mypy      [assert-type] Expression is of type _, not _; [valid-ty
+   1 reveal_mismatch mypy: reveal def (*Any, **Any) | ty: reveal (bytes, /) -> None
+===== d3p_typevartuple_unpack_paramspec_default_after_tvt
+   3 runtime_miss   mypy: - | ty: -
+   2 only_mypy      [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got _
+   1 reveal_mismatch mypy: reveal def (*Any, **Any) -> tuple[Any, ...] | ty: reveal (bool, /) -> tuple[int, str]
+   1 reveal_mismatch mypy: reveal Any | ty: reveal str
+   1 concern_mismatch mypy: [type-var] A type variable with default cannot follow TypeVarTuple | ty: [invalid-type-variable-default] Type parameter _ with a defau
+   1 reveal_mismatch mypy: reveal case.Pair@_[int, str] | ty: reveal Pair[int, str, bool]
+   1 reveal_mismatch mypy: reveal case.Callback[*tuple[Any, ...], Any] | ty: reveal Callback[int, str, (bool, /)]
+===== d4v_ty_attr_eq_narrow_unreachable
+   2 reveal_unpaired mypy: - | ty: reveal Never
+===== d7p_tuples_unpacking_partial_unpack_except_ty
+   2 reveal_mismatch mypy: reveal int | None | ty: reveal Literal[_]
+===== d3p_narrowing_user_index_assign_stale
+   1 only_ty        [unsupported-operator] Operator _ is not supported between objects of type _ and _
+===== d3p_descriptors_decorated_get
+   1 only_ty        [invalid-assignment] Object of type _ is not assignable to attribute _ of type `(int,
+   1 reveal_mismatch mypy: reveal def (int) -> int | ty: reveal (() -> int) | ((int, /) -> int)
+   1 only_pyright   [reportArgumentType] Argument of type _ cannot be assigned to parameter _ of type _ in functio
+rc=0

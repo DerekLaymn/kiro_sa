@@ -1,0 +1,19 @@
+ M campaign/day7-report.md
+ M campaign/day8/phase6/results/commit.out
+ D runs/hits/d5p_descriptors_one_decorator_dunders_pyright_rangeerror.py
+ D runs/hits/d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript.py
+?? -l
+?? .kiro/
+?? campaign/day10/answer_pending.sh
+?? campaign/day10/check_gen_sessions.py
+?? campaign/day10/check_reserve.py
+?? campaign/day10/gen-pass-dryrun.sh
+?? campaign/day10/gen_pass.sh
+?? campaign/day10/gen_worker.sh
+?? campaign/day10/judge.sh
+?? campaign/day10/live_by_area.py
+?? campaign/day10/mk_groups.sh
+?? campaign/day10/only_pyright_relations.py
+?? campaign/day10/operator_follow.py
+?? campaign/day10/phase2/
+?? findings/2026-10-27-llm-run/

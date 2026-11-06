@@ -1,0 +1,66 @@
+async_generators
+callables
+constructors_metaclasses
+dataclasses
+descriptors_properties
+enums_literals
+final_classvar
+generics_variance
+gradual_any
+harvested
+inheritance_mro
+match_statement
+narrowing_builtin
+narrowing_user
+overloads
+paramspec_concatenate
+protocols
+README.md
+recursive_aliases
+self_classmethods
+tuples_unpacking
+typeddict
+seeds/async_generators/ 1 1
+seeds/callables/ 1 1
+seeds/constructors_metaclasses/ 1 1
+seeds/dataclasses/ 3 3
+seeds/descriptors_properties/ 1 1
+seeds/enums_literals/ 1 1
+seeds/final_classvar/ 1 1
+seeds/generics_variance/ 3 3
+seeds/gradual_any/ 1 1
+seeds/harvested/ 23 0
+seeds/inheritance_mro/ 1 1
+seeds/match_statement/ 1 1
+seeds/narrowing_builtin/ 1 1
+seeds/narrowing_user/ 1 1
+seeds/overloads/ 1 1
+seeds/paramspec_concatenate/ 1 1
+seeds/protocols/ 2 2
+seeds/recursive_aliases/ 2 2
+seeds/self_classmethods/ 3 3
+seeds/tuples_unpacking/ 2 2
+seeds/typeddict/ 1 1
+---
+seeds/harvested/abstract_classes/ 32
+seeds/harvested/async_generators/ 55
+seeds/harvested/callables/ 79
+seeds/harvested/constructors_metaclasses/ 154
+seeds/harvested/dataclasses/ 57
+seeds/harvested/descriptors_properties/ 62
+seeds/harvested/enums_literals/ 182
+seeds/harvested/final_classvar/ 72
+seeds/harvested/generics_variance/ 318
+seeds/harvested/gradual_any/ 2544
+seeds/harvested/inheritance_mro/ 76
+seeds/harvested/match_statement/ 26
+seeds/harvested/narrowing_builtin/ 521
+seeds/harvested/narrowing_user/ 22
+seeds/harvested/overloads/ 102
+seeds/harvested/paramspec_concatenate/ 45
+seeds/harvested/protocols/ 113
+seeds/harvested/recursive_aliases/ 157
+seeds/harvested/self_classmethods/ 125
+seeds/harvested/tuples_unpacking/ 129
+seeds/harvested/typeddict/ 60
+seeds/harvested/typevartuple_unpack/ 198

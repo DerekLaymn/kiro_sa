@@ -1,0 +1,105 @@
+narrowing_builtin/gen2_8f398a97.py                              1 {'reveal_mismatch': 1}
+overloads/overloads__literal_flag_overload__mut0_f8a1a19c.py    1 {'only_mypy': 1}
+constructors_metaclasses/d4v_metaclass_reflected_op__mut1_936a  3 {'only_mypy': 2, 'only_pyright': 1}
+constructors_metaclasses/gen1_c86958a8.py                       1 {'reveal_mismatch': 1}
+dunder_dispatch/gen15_1750d311.py                               2 {'only_mypy': 2}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut0  1 {'only_mypy': 1}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut1  1 {'only_pyright': 1}
+gradual_any/gradual_any__gradual_guarantee__mut0_fd082080.py    1 {'reveal_mismatch': 1}
+overloads/hv_overloads__conformance__overloads_basic__mut0_f91  1 {'only_mypy': 1}
+narrowing_user/d3p_narrowing_user_index_assign_stale__mut1_f33  1 {'only_ty': 1}
+overloads/hv_overloads__conformance__overloads_basic__mut1_202  2 {'only_mypy': 2}
+inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_l  4 {'reveal_mismatch': 3, 'only_pyright': 1}
+dunder_dispatch/gen8_88778d35.py                                2 {'only_ty': 1, 'only_pyright': 1}
+context_managers/gen15_d3110ded.py                              1 {'reveal_mismatch': 1}
+constructors_metaclasses/d4v_metaclass_reflected_op__mut0_dcb5  4 {'only_mypy': 2, 'reveal_mismatch': 1, 'only_pyright': 1}
+dunder_dispatch/gen9_8f78c1ef.py                                1 {'only_pyright': 1}
+generics_variance/rsv_generics_variance_7ffc3316__mut0_3b2f9b3  2 {'only_ty': 2}
+context_managers/gen11_82bd7703.py                              1 {'only_mypy': 1}
+inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_l  1 {'only_pyright': 1}
+constructors_metaclasses/gen6_d7dc98c9.py                       1 {'only_mypy': 1}
+gradual_any/gen6_76921a4b.py                                    1 {'reveal_unpaired': 1}
+descriptors_properties/d3p_descriptors_decorated_get__mut0_100  2 {'only_ty': 1, 'reveal_mismatch': 1}
+constructors_metaclasses/constructors_metaclasses__new_returns  1 {'only_pyright': 1}
+dunder_dispatch/gen1_64b7ad78.py                                1 {'only_ty': 1}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut0  1 {'only_mypy': 1}
+gradual_any/gen5_ade5dcc3.py                                    2 {'reveal_mismatch': 1, 'runtime_miss': 1}
+protocols/hv_protocols__conformance__protocols_class_objects__  2 {'only_ty': 1, 'only_pyright': 1}
+overloads/rsv_overloads_186f739e__mut0_3a8ce4e6.py              1 {'reveal_mismatch': 1}
+inheritance_mro/inheritance_mro__override_lsp__mut0_4842df3b.p  1 {'only_pyright': 1}
+dunder_dispatch/gen3_b4b3cee2.py                                1 {'only_pyright': 1}
+narrowing_builtin/narrowing_builtin__len_in_walrus__mut0_91475  2 {'reveal_unpaired': 2}
+dunder_dispatch/gen18_e0ce6f78.py                               1 {'only_ty': 1}
+descriptors_properties/rsv_descriptors_properties_4287130f__mu  1 {'only_pyright': 1}
+descriptors_properties/rsv_descriptors_properties_4287130f__mu  1 {'only_pyright': 1}
+callables/callables__positional_only_assignability__mut2_1edea  1 {'only_mypy': 1}
+abstract_classes/rsv_abstract_classes_5a90804c__mut0_cb8ec178.  2 {'only_pyright': 2}
+dunder_dispatch/gen13_e4650008.py                               2 {'only_ty': 2}
+descriptors_properties/rsv_descriptors_properties_92c10e28__mu  2 {'only_mypy': 1, 'reveal_mismatch': 1}
+abstract_classes/rsv_abstract_classes_5a90804c__mut0_166d7acd.  2 {'only_pyright': 2}
+overloads/rsv_overloads_186f739e__mut0_fb77bcad.py              1 {'reveal_mismatch': 1}
+descriptors_properties/rsv_descriptors_properties_4287130f__mu  1 {'only_pyright': 1}
+descriptors_properties/d5p_descriptors_decorated_get_pyright_r  3 {'only_mypy': 1, 'only_ty': 1, 'reveal_mismatch': 1}
+narrowing_user/narrowing_user__typeis_generic__mut1_4f05c30e.p  1 {'reveal_unpaired': 1}
+narrowing_user/d4v_ty_attr_eq_narrow_unreachable__mut0_af88437  2 {'reveal_unpaired': 2}
+callables/callables__positional_only_assignability__mut0_94d45  2 {'only_mypy': 1, 'reveal_mismatch': 1}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut1  3 {'reveal_unpaired': 3}
+generics_variance/d3p_generics_typevar_default_refers_to_itsel  1 {'only_ty': 1}
+context_managers/gen20_fd89527d.py                              1 {'concern_mismatch': 1}
+descriptors_properties/d3p_descriptors_decorated_get__mut1_a80  1 {'only_pyright': 1}
+inheritance_mro/inheritance_mro__override_lsp__mut1_558ad747.p  2 {'only_ty': 2}
+generics_variance/rsv_generics_variance_7ffc3316__mut0_3c28536  3 {'only_ty': 3}
+dunder_dispatch/gen10_262d8aca.py                               1 {'only_ty': 1}
+protocols/gen1_21fd81b8.py                                      1 {'only_pyright': 1}
+dunder_dispatch/gen14_1e8e47e5.py                               1 {'only_pyright': 1}
+protocols/hv_protocols__conformance__protocols_explicit__mut0_  1 {'only_pyright': 1}
+generics_variance/rsv_generics_variance_7ffc3316__mut0_3e8ef2a  2 {'only_ty': 2}
+narrowing_builtin/gen1_f8b8838c.py                              3 {'only_ty': 1, 'reveal_mismatch': 2}
+overloads/hv_overloads__mypy__check_classes__testOverloadedDes  1 {'only_mypy': 1}
+narrowing_user/narrowing_user__typeis_generic__mut2_d401bfee.p  2 {'reveal_unpaired': 2}
+context_managers/gen5_c8eb51b8.py                               1 {'reveal_mismatch': 1}
+context_managers/gen21_6ee04c3a.py                              1 {'only_pyright': 1}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut2  2 {'only_ty': 1, 'only_pyright': 1}
+inheritance_mro/inheritance_mro__override_lsp__mut2_efab2ae0.p  1 {'only_pyright': 1}
+context_managers/gen0_b82d2e9e.py                               1 {'only_pyright': 1}
+self_classmethods/rsv_self_classmethods_22a2e020__mut0_5b0555c  1 {'only_pyright': 1}
+descriptors_properties/descriptors_properties__descriptor_get_  1 {'only_mypy': 1}
+self_classmethods/self_classmethods__self_runtime_witness__mut  1 {'only_ty': 1}
+dunder_dispatch/gen12_04f91a1d.py                               2 {'only_ty': 1, 'only_mypy': 1}
+dunder_dispatch/gen20_585dfcde.py                               1 {'only_ty': 1}
+dunder_dispatch/gen5_3ca3e444.py                                1 {'only_ty': 1}
+abstract_classes/rsv_abstract_classes_5a90804c__mut0_cf2683fb.  3 {'reveal_mismatch': 1, 'only_pyright': 2}
+constructors_metaclasses/d4v_metaclass_reflected_op__mut2_c5c1  2 {'only_ty': 1, 'only_pyright': 1}
+inheritance_mro/d3p_inheritance_mro_total_ordering_inherited_l  1 {'only_pyright': 1}
+generics_variance/rsv_generics_variance_7ffc3316__mut0_67c3c0d  1 {'only_ty': 1}
+paramspec_concatenate/paramspec_concatenate__decorator_signatu  1 {'reveal_mismatch': 1}
+dunder_dispatch/gen4_8e501856.py                                1 {'only_ty': 1}
+descriptors_properties/rsv_descriptors_properties_92c10e28__mu  2 {'only_mypy': 1, 'reveal_mismatch': 1}
+protocols/hv_protocols__conformance__protocols_class_objects__  2 {'only_ty': 1, 'reveal_mismatch': 1}
+overloads/rsv_overloads_186f739e__mut0_af2803b2.py              1 {'reveal_mismatch': 1}
+abstract_classes/rsv_abstract_classes_5a90804c__mut0_bd0567d0.  1 {'only_pyright': 1}
+tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty  2 {'reveal_mismatch': 2}
+descriptors_properties/d5p_descriptors_decorated_get_pyright_r  4 {'only_ty': 1, 'reveal_mismatch': 1, 'only_pyright': 2}
+dunder_dispatch/gen17_55650559.py                               1 {'only_ty': 1}
+callables/callables__positional_only_assignability__mut1_86356  2 {'only_ty': 1, 'reveal_mismatch': 1}
+descriptors_properties/descriptors_properties__descriptor_get_  1 {'only_mypy': 1}
+descriptors_properties/d5p_descriptors_decorated_get_pyright_r  2 {'only_pyright': 2}
+context_managers/gen14_ad0e6012.py                              1 {'reveal_unpaired': 1}
+dunder_dispatch/gen21_d547a9e1.py                               2 {'only_ty': 1, 'only_pyright': 1}
+narrowing_builtin/gen4_7b2192a8.py                              1 {'reveal_mismatch': 1}
+protocols/protocols__property_vs_attribute__mut1_76e4c26f.py    1 {'only_pyright': 1}
+overloads/rsv_overloads_186f739e__mut0_478dcd34.py              1 {'reveal_mismatch': 1}
+self_classmethods/rsv_self_classmethods_22a2e020__mut0_3ffb577  1 {'only_pyright': 1}
+dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut3  2 {'only_ty': 1, 'only_pyright': 1}
+self_classmethods/self_classmethods__self_runtime_witness__mut  1 {'only_ty': 1}
+protocols/hv_protocols__conformance__protocols_class_objects__  2 {'only_mypy': 1, 'only_ty': 1}
+dunder_dispatch/gen0_59c96508.py                                1 {'only_ty': 1}
+narrowing_builtin/gen8_38ff2bbd.py                              2 {'reveal_mismatch': 2}
+self_classmethods/rsv_self_classmethods_22a2e020__mut0_7dd942f  1 {'only_pyright': 1}
+constructors_metaclasses/constructors_metaclasses__new_returns  2 {'only_ty': 1, 'only_pyright': 1}
+descriptors_properties/rsv_descriptors_properties_92c10e28__mu  2 {'only_mypy': 1, 'reveal_mismatch': 1}
+descriptors_properties/rsv_descriptors_properties_92c10e28__mu  2 {'only_mypy': 1, 'reveal_mismatch': 1}
+descriptors_properties/d5p_descriptors_one_decorator_dunders_p  1 {'only_pyright': 1}
+narrowing_builtin/gen3_f348b592.py                              5 {'only_ty': 3, 'reveal_mismatch': 2}
+narrowing_builtin/gen7_46ec78af.py                              5 {'only_ty': 1, 'reveal_mismatch': 3, 'only_pyright': 1}
+rc=0

@@ -1,0 +1,307 @@
+C_pyright_range 1
+C_tvt 1
+H_new 2
+N_class 8
+N_flow 8
+N_types 8
+N_wrap 8
+O_overload 3
+R_reserve 6
+hits 39
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (narrowing_builtin): generator unavailable
+  failed (narrowing_builtin): generator unavailable
+  failed (enums_literals): generator unavailable
+  failed (enums_literals): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (narrowing_builtin): generator unavailable
+  failed (enums_literals): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (narrowing_user): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (generics_variance): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (overloads): generator unavailable
+  failed (typeddict): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (generics_variance): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (descriptors_properties): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (descriptors_properties): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (descriptors_properties): generator unavailable
+  failed (descriptors_properties): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (descriptors_properties): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (descriptors_properties): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (typevartuple_unpack): generator unavailable
+  failed (typevartuple_unpack): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (typevartuple_unpack): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (typevartuple_unpack): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+  failed (context_managers): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+  failed (dunder_dispatch): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+  failed (final_classvar): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+  failed (abstract_classes): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+  failed (typeddict): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+  failed (gradual_any): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+  failed (callables): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+  failed (paramspec_concatenate): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+  failed (inheritance_mro): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+  failed (self_classmethods): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (constructors_metaclasses): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+  failed (constructors_metaclasses): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+  failed (overloads): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (protocols): generator unavailable
+  failed (protocols): generator unavailable
+  failed (protocols): generator unavailable
+  failed (protocols): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (generics_variance): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (generics_variance): generator unavailable
+  failed (generics_variance): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+  failed (narrowing_user): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+  failed (typevartuple_unpack): generator unavailable
+  failed (typevartuple_unpack): generator unavailable
+  failed (typevartuple_unpack): generator unavailable
+done: 0 programs, 0 uncached LLM calls
+- gen pass dryrun: pending=250 written=0
+prompts=250 (retry prompts=0) answers=0 answered=0 pending=250 orphan_answers=0 malformed_keys=0
+--- prompt files
+250
+--- answers
+0
+{"pass": dryrun, "pending": 250, "written": 0}
+dryrun rc=0

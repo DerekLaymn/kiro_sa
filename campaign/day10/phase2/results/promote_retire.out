@@ -1,0 +1,17 @@
+before: 40 files in runs/hits, 20 in runs/hits-dropped
+promoted -> runs/hits/d9p_context_managers_swallowed_name_possibly_unbound.py
+retired d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript
+retired d5p_descriptors_one_decorator_dunders_pyright_rangeerror
+after: 39 files in runs/hits, 22 in runs/hits-dropped
+# area: context_managers
+# hypothesis: A with block whose __exit__ returns bool may swallow an exception raised inside the block, so a name bound after the raising statement is unbound after the block (CPython raises UnboundLocalError); pyright reports the use, ty only under an off-by-default rule, mypy not even with possibly-undefined. Vary: the __exit__ annotation (None, Literal[True], Literal[False]), contextlib.suppress, ExitStack, async with, try/finally, del of the name.
+# origin: runs/day9/gen/context_managers/gen0_b82d2e9e.py (Day-9 fresh program, draft 10: mypy does not report a possibly-undefined name after a swallowing with block)
+from contextlib import ExitStack, suppress
+from typing import reveal_type
+
+39 files; 0 with problems
+
+near-duplicate pairs (difflib ratio >= 0.8):
+check_hits rc=0
+tracked files under runs: 8
+rc=0
