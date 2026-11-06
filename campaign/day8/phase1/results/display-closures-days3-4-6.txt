@@ -1,0 +1,43 @@
+##### runs/day8/ctrl-day3
+seed-3433615f3704.json D2 reveal_type(runner)
+   mypy   : case.Runner[[int, str]]
+   ty     : Runner[(int, str, /)]
+   pyright: ['Runner[(int, str)]']
+seed-ec31f327c675.json D1 reveal_type(o)
+   mypy   : TypedDict(case.Opts, {'name': str, 'size'?: int, 'tag'?=: str})
+   ty     : Opts
+   pyright: ['Opts']
+##### runs/day8/ctrl-day4
+seed-600557f0a203.json D3 reveal_type(hi.cb)
+   mypy   : def (int)
+   ty     : (int, /) -> None
+   pyright: ['(int) -> None']
+##### runs/day8/day6replay
+seed-0a36364f2719.json D1 reveal_type(hf.slots)
+   mypy   : dict[str, def (float)]
+   ty     : dict[str, (float, /) -> None]
+   pyright: ['dict[str, (float) -> None]']
+seed-181af37cee18.json D1 reveal_type(hf.cbs)
+   mypy   : list[def (float)]
+   ty     : list[(float, /) -> None]
+   pyright: ['list[(float) -> None]']
+seed-1bfa01595d60.json D1 reveal_type(runner)
+   mypy   : case.Runner[[name: str, *, upper: bool =], str]
+   ty     : Runner[(name: str, *, upper: bool = False), str]
+   pyright: ['Runner[(name: str, *, upper: bool = False), str]']
+seed-1ee44b1a36b0.json D2 reveal_type(cb)
+   mypy   : case.Callback[int, str, [n: int, s: str]]
+   ty     : Callback[int, str, (n: int, s: str)]
+   pyright: ['Callback[int, str, (n: int, s: str)]']
+seed-2561f6e19de3.json D1 reveal_type(cb)
+   mypy   : case.Callback[[a: int, b: str], int, str]
+   ty     : Callback[(a: int, b: str), int, str]
+   pyright: ['Callback[(a: int, b: str), int, str]']
+seed-5aa3ec5c603d.json D2 reveal_type(hf.cb)
+   mypy   : def (float)
+   ty     : (float, /) -> None
+   pyright: ['(float) -> None']
+seed-b2f23a36a81f.json D4 reveal_type(g)
+   mypy   : def (bytes)
+   ty     : (bytes, /) -> None
+   pyright: ['(bytes) -> None']

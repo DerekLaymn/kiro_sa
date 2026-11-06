@@ -1,0 +1,14 @@
+rc=0
+seed-3726ea77cfc8 | d4p_inheritance_hash_none_from_eq.py | D1 reveal_unpaired L26 | 'reveal_type(Keyed().__hash__())' | NEEDS_HUMAN gate | kb=['REACHABILITY-VS-COVERAGE'] | ev=['RUNTIME/weak/neutral', 'RUNTIME/medium/bug']
+       ty:revealed-type:Revealed type: `Never`
+       pyright:None:Type of "Keyed().__hash__()" is "int"
+seed-598348a70793 | d3p_inheritance_mro_hash_none_from_eq.py | D1 runtime_miss L15 | 'B().__hash__()' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/strong/bug', 'EXPERIMENT/medium/neutral']
+       pyright:reportOptionalCall:Object of type "None" cannot be called
+seed-bdcb5d8003f5 | h1b.py | D1 only_ty L28 | 'need(Record("a"))  # runtime: TypeError (dataclass eq=True, frozen=False)' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/strong/bug', 'CONSENSUS/weak/neutral']
+       ty:invalid-argument-type:Argument to function `need` is incorrect: Expected `Hashable`, found `Record`
+       pyright:reportArgumentType:Argument of type "Record" cannot be assigned to parameter "x" of type "Hashable" in functi
+seed-c019f93da8c7 | d4v_eq_no_hash_hashable.py | D1 only_pyright L27 | 'need(obj)' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       pyright:reportArgumentType:Argument of type "Plain | Sub" cannot be assigned to parameter "x" of type "Hashable" in f
+seed-e263dc463cc7 | h1.py | D1 only_pyright L14 | 'need(B())' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       pyright:reportArgumentType:Argument of type "B" cannot be assigned to parameter "h" of type "Hashable" in function "n
+total live 5

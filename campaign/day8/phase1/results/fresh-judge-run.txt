@@ -1,0 +1,41 @@
+c3r_descriptor_vs_method.py
+c3_readonly_after_descriptor_store.py
+d3p_generics_callable_attr_contravariant__mut0_0bac40f6.py
+d3p_inheritance_mro_hash_none_from_eq.py
+d4p_descriptors_readonly_prop_never__mut1_328a328e.py
+d4p_inheritance_hash_none_from_eq.py
+d4v_eq_no_hash_hashable.py
+d4v_recursive_alias_dots.py
+h1b.py
+h1.py
+p1_gauge_level.py
+paramspec_parent_E8.py
+rc=0
+## origin=seed /tmp/d8/fresh/d4v_recursive_alias_dots.py crashes: []
+    D1 reveal_mismatch reveal_type(sample) -> review gate different ['RUNTIME/weak/neutral', 'RUNTIME/weak/neutral']
+    D2 reveal_mismatch reveal_type(n[1]) -> review gate different ['RUNTIME/weak/neutral', 'RUNTIME/weak/neutral']
+    D3 reveal_mismatch reveal_type(n[1][1]) -> review gate different ['RUNTIME/weak/neutral', 'RUNTIME/weak/neutral']
+## origin=seed /tmp/d8/fresh/d3p_inheritance_mro_hash_none_from_eq.py crashes: []
+    D1 runtime_miss B().__hash__() -> review gate None ['RUNTIME/strong/bug']
+## origin=seed /tmp/d8/fresh/p1_gauge_level.py crashes: []
+    D1 only_pyright assert_type(Gauge.level, Clamped) -> dismissed kb:UPSTREAM-PYRIGHT-11382 runtime_contradicts ['RUNTIME/weak/neutral']
+## origin=seed /tmp/d8/fresh/c3r_descriptor_vs_method.py crashes: []
+    D1 only_mypy t.readonly = 5  # expect-error -> dismissed kb:UPSTREAM-TY-2792-READONLY None ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']
+    D2 only_mypy t.readonly = 5  # expect-error -> dismissed kb:UPSTREAM-TY-2792-READONLY None ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']
+    D3 reveal_mismatch reveal_type(t.base) -> dismissed kb:UPSTREAM-TY-2792 ty_more_precise ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']
+    D4 reveal_mismatch reveal_type(t.base) -> dismissed kb:UPSTREAM-TY-2792 ty_more_precise ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']
+## origin=seed /tmp/d8/fresh/paramspec_parent_E8.py crashes: ['ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9']
+    C1 crash  -> dismissed rule:crash:panic  []
+## mp/d8/fresh/d3p_generics_callable_attr_contravariant__mut0_0bac40f6.py crashes: []
+## origin=seed /tmp/d8/fresh/h1.py crashes: []
+    D1 only_pyright need(B()) -> dismissed kb:UPSTREAM-MYPY-2455 runtime_supports ['RUNTIME/weak/neutral']
+## origin=seed /tmp/d8/fresh/d4p_inheritance_hash_none_from_eq.py crashes: []
+    D1 reveal_unpaired reveal_type(Keyed().__hash__()) -> review gate unpaired ['RUNTIME/weak/neutral', 'RUNTIME/medium/bug']
+## origin=seed /tmp/d8/fresh/h1b.py crashes: []
+    D1 only_ty need(Record("a"))  # runtime: TypeError (datacla -> review gate None ['RUNTIME/strong/bug']
+## origin=seed /tmp/d8/fresh/d4v_eq_no_hash_hashable.py crashes: []
+    D1 only_pyright need(obj) -> dismissed kb:UPSTREAM-MYPY-2455 runtime_supports ['RUNTIME/weak/neutral']
+## origin=seed /tmp/d8/fresh/c3_readonly_after_descriptor_store.py crashes: []
+    D1 only_mypy t.readonly = 5  # expect-error -> dismissed kb:UPSTREAM-TY-2792-READONLY None ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']
+## ed /tmp/d8/fresh/d4p_descriptors_readonly_prop_never__mut1_328a328e.py crashes: []
+    D1 only_mypy t.readonly = 5  # expect-error -> dismissed kb:UPSTREAM-TY-2792-READONLY None ['RUNTIME/weak/neutral', 'RUNTIME/strong/bug']

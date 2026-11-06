@@ -30,6 +30,7 @@ from .concerns import (
     ty_rules_without_mypy_equivalent,
 )
 from .discrepancy import META_CODES
+from .display import display_canon
 from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner, self_call_plan
 from .inhabit import inhabits
 from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Severity, Tool
@@ -1444,6 +1445,44 @@ def _mutating_methods(tree: ast.AST) -> dict[str, set[str]]:
     return out
 
 
+def _data_descriptors(tree: ast.AST) -> dict[str, set[str]]:
+    """Program classes that define ``__set__`` (data descriptors) -> the attributes their ``__set__`` assigns on the owner
+    instance (the second parameter: ``obj.base += value``)."""
+    from . import crash_upstream as cu
+
+    out: dict[str, set[str]] = {}
+    for c in cu._classes(tree):
+        for f in cu._methods(c):
+            if f.name != "__set__" or len(f.args.args) < 2:
+                continue
+            owner = f.args.args[1].arg
+            out[c.name] = {n.attr for n in ast.walk(f) if isinstance(n, ast.Attribute) and isinstance(n.ctx, ast.Store)
+                           and isinstance(n.value, ast.Name) and n.value.id == owner}
+    return out
+
+
+def _descriptor_attrs(tree: ast.AST) -> dict[str, tuple[str, str]]:
+    """Class-level ``name = Descriptor()`` of a program class whose value is an instance of a data descriptor of the
+    program: ``name`` -> ``(owner class, descriptor class)``. A name defined in several classes keeps the last one."""
+    from . import crash_upstream as cu
+
+    descr = _data_descriptors(tree)
+    out: dict[str, tuple[str, str]] = {}
+    for c in cu._classes(tree):
+        for st in c.body:
+            if isinstance(st, ast.Assign) and len(st.targets) == 1 and isinstance(st.targets[0], ast.Name) \
+                    and isinstance(st.value, ast.Call) and isinstance(st.value.func, ast.Name) and st.value.func.id in descr:
+                out[st.targets[0].id] = (c.name, st.value.func.id)
+    return out
+
+
+def _descriptor_store_mutations(tree: ast.AST) -> dict[str, set[str]]:
+    """Descriptor attribute name -> attributes of the owner that its ``__set__`` assigns: a store ``obj.name = v`` runs
+    ``__set__`` and changes those attributes, like a method call that assigns ``self.attr`` (ty#2792)."""
+    descr = _data_descriptors(tree)
+    return {name: descr[d] for name, (_, d) in _descriptor_attrs(tree).items() if descr.get(d)}
+
+
 def _readonly_properties(tree: ast.AST) -> set[str]:
     """Names of ``@property`` members of a program class that has no ``@<name>.setter`` for them."""
     from . import crash_upstream as cu
@@ -1522,6 +1561,12 @@ def _stale_attr_context(s, d, root: str, attr: str | None, mutating_any: bool):
     calls = [n.lineno for n in nodes
              if isinstance(n, ast.Call) and _attr_of(n.func, roots) and n.func.attr in methods
              and (mutating_any or attr in methods[n.func.attr]) and n.lineno < d.anchor]
+    # Day 8: a store into a data-descriptor attribute (``root.slot = v``) runs ``__set__``, which assigns attributes of
+    # the owner: the same stale-narrowing cause as a call to a mutating method
+    stores = _descriptor_store_mutations(tree)
+    calls += [n.lineno for n in nodes
+              if isinstance(n, ast.Attribute) and isinstance(n.ctx, ast.Store) and _attr_of(n, roots) and n.attr in stores
+              and (mutating_any or attr in stores[n.attr]) and n.lineno < d.anchor]
     return (nodes, roots, calls) if calls else None
 
 
@@ -1578,7 +1623,256 @@ def _readonly_prop_after_stale_narrowing(s, d) -> bool:
     return False
 
 
+def _unhashable_by_eq(tree: ast.AST) -> set[str]:
+    """Program classes whose instances are unhashable only because they define ``__eq__`` and no ``__hash__`` (CPython
+    sets ``__hash__ = None``), directly or through the first class of their program MRO that defines either. Classes
+    with decorators (``@dataclass`` has its own rules), keywords (metaclass) or a base that is not a program class or
+    ``object`` are left out: nothing is claimed about them."""
+    from . import crash_upstream as cu
+
+    classes = {c.name: c for c in cu._classes(tree)}
+
+    def bodynames(c: ast.ClassDef) -> set[str]:
+        out = {f.name for f in cu._methods(c)}
+        for st in c.body:
+            if isinstance(st, (ast.Assign, ast.AnnAssign)):
+                for t in (st.targets if isinstance(st, ast.Assign) else [st.target]):
+                    if isinstance(t, ast.Name):
+                        out.add(t.id)
+        return out
+
+    def lin(name: str, seen: tuple[str, ...] = ()) -> list[str] | None:
+        c = classes.get(name)
+        if c is None or name in seen or c.decorator_list or c.keywords:
+            return None
+        out = [name]
+        for b in c.bases:
+            if isinstance(b, ast.Name) and b.id == "object":
+                continue
+            sub = lin(b.id, (*seen, name)) if isinstance(b, ast.Name) else None
+            if sub is None:
+                return None
+            out += [x for x in sub if x not in out]
+        return out
+
+    result: set[str] = set()
+    for name in classes:
+        order = lin(name)
+        for cls in order or []:
+            names = bodynames(classes[cls])
+            if "__hash__" in names:
+                break
+            if "__eq__" in names:
+                result.add(name)
+                break
+    return result
+
+
+_ARG_TYPE = re.compile(r'Argument of type "(?P<t>[^"]+)" cannot be assigned to parameter "\w+" of type "Hashable"')
+
+
+def _split_union(text: str) -> list[str]:
+    parts, depth, cur = [], 0, ""
+    for ch in text:
+        depth += ch in "[(" 
+        depth -= ch in "])"
+        if ch == "|" and depth == 0:
+            parts.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    return [*parts, cur.strip()]
+
+
+def _eq_without_hash_argument(s, d) -> bool:
+    """python/mypy#2455 and astral-sh/ty#4941 (a class that defines ``__eq__`` and no ``__hash__`` is accepted where
+    ``Hashable`` is required; CPython sets ``__hash__ = None`` and raises ``TypeError: unhashable type``): pyright
+    rejects the call ("Argument of type "X" cannot be assigned to parameter ... of type "Hashable"") and mypy and ty are
+    both silent. Needs every member of the argument type named in pyright's message to be a program class that is
+    unhashable only through ``__eq__`` (``_unhashable_by_eq``). A class with its own ``__hash__``, a dataclass, a class
+    with an external base and another parameter type do not match."""
+    if s.amap.tree is None or d.kind != K.ONLY_PYRIGHT or not d.pyright:
+        return False
+    bad = _unhashable_by_eq(s.amap.tree)
+    seen = 0
+    for x in d.pyright:
+        if not x.is_problem:
+            continue
+        m = _ARG_TYPE.search(x.message)
+        if not m or not all(p in bad for p in _split_union(m["t"])):
+            return False
+        seen += 1
+    return seen > 0
+
+
+def _descriptor_set_on_instance(s, d) -> bool:
+    """microsoft/pyright#11382 (open: "class-level descriptor access has incorrect type when descriptor set on
+    instance"): a program class ``C`` has a class-level data descriptor ``name = D()`` (``D`` defines ``__set__``) and
+    a method of ``C`` assigns ``self.name = ..``; pyright then types ``C.name`` as ``D | <assigned type>`` instead of
+    ``D``. The statement reads ``C.name`` through the class and pyright's message names ``D`` as a member of a union.
+    A descriptor that is never assigned on the instance, a non-data descriptor and an instance access do not match."""
+    from . import crash_upstream as cu
+
+    tree = s.amap.tree
+    if tree is None or d.kind != K.ONLY_PYRIGHT or not d.pyright:
+        return False
+    attrs = _descriptor_attrs(tree)
+    classes = {c.name: c for c in cu._classes(tree)}
+    for n in _stmt_walk(s, d):
+        if not (isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name) and n.attr in attrs):
+            continue
+        owner, desc = attrs[n.attr]
+        if n.value.id != owner or owner not in classes:
+            continue
+        if not any(n.attr in _self_stores(f) for f in cu._methods(classes[owner])):
+            continue
+        if all(re.search(rf"(?:\| {re.escape(desc)}\b|\b{re.escape(desc)} \|)", x.message) for x in d.pyright if x.is_problem) \
+                and any(x.is_problem for x in d.pyright):
+            return True
+    return False
+
+
+def _callable_annotation(ann: ast.AST | None) -> bool:
+    """The annotation is ``Callable[..]`` / ``Callable`` (typing, collections.abc), also written as a string."""
+    if isinstance(ann, ast.Constant) and isinstance(ann.value, str):
+        try:
+            ann = ast.parse(ann.value, mode="eval").body
+        except SyntaxError:
+            return False
+    from . import crash_upstream as cu
+
+    return ann is not None and cu._head(ann) == "Callable"
+
+
+def _callable_receiver_methods(tree: ast.AST) -> dict[str, list[ast.FunctionDef | ast.AsyncFunctionDef]]:
+    """Program class -> its methods whose first parameter (``self`` / ``cls``) is annotated with a ``Callable`` type."""
+    from . import crash_upstream as cu
+
+    out: dict[str, list] = {}
+    for c in cu._classes(tree):
+        fns = [f for f in cu._methods(c) if (f.args.posonlyargs + f.args.args)
+               and _callable_annotation((f.args.posonlyargs + f.args.args)[0].annotation)]
+        if fns:
+            out[c.name] = fns
+    return out
+
+
+def _callable_self_attr_store(s, d) -> bool:
+    """Design difference (Day 8, campaign/day8-pipeline.md section 1): the statement stores an attribute on the first
+    parameter of a method whose first parameter is annotated ``Callable[..]`` (``def __init__(self: Callable[P, T], ..):
+    self.args = args``). ty (``unresolved-attribute`` on the callable type) and pyright (``reportFunctionMemberAccess``,
+    ``Cannot assign to attribute .. for class "FunctionType"``) check the store against the DECLARED receiver type, a
+    function type without that attribute; mypy defines the attribute from the ``self.x = ..`` store. Needs the store
+    target to be the annotated parameter itself and the reporting tool's diagnostics to be exactly that one rule. A store
+    on another name, a method whose receiver is not annotated with a Callable, and other diagnostics do not match."""
+    tree = s.amap.tree
+    node = _stmt_node(s, d)
+    if tree is None or not isinstance(node, (ast.Assign, ast.AugAssign, ast.AnnAssign)):
+        return False
+    if d.kind == K.ONLY_TY:
+        if not d.ty or not all(x.code == "unresolved-attribute" and "on type `(" in x.message for x in d.ty):
+            return False
+    elif d.kind == K.ONLY_PYRIGHT:
+        if not d.pyright or not all(x.code == "reportFunctionMemberAccess" for x in d.pyright if x.is_problem):
+            return False
+    else:
+        return False
+    targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+    fns = [f for fs in _callable_receiver_methods(tree).values() for f in fs
+           if f.lineno <= d.anchor <= (f.end_lineno or f.lineno)]
+    for f in fns:
+        me = (f.args.posonlyargs + f.args.args)[0].arg
+        if any(isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name) and t.value.id == me for t in targets):
+            return True
+    return False
+
+
+def _callable_self_receiver(s, d) -> bool:
+    """Spec ambiguity (Day 8): the statement is, or uses, a program class with a method whose ``self`` / ``cls`` is
+    annotated ``Callable[..]`` (``__init__(self: Callable[P, T], *args: P.args, **kwargs: P.kwargs)``, a classmethod
+    ``__call__(cls: Callable[P, T], ..)``). mypy and pyright reject the declaration itself (the annotation of ``self`` must
+    be a supertype of the class; tracked for ty in ty#3666) or cannot bind the receiver, and each checker solves the
+    ParamSpec against a different object (the constructor signature, the class, nothing), so call-site answers differ
+    in kind and wording and none is the reference. Covers: the ``def`` line of such a method, a statement inside it, a
+    statement that names the class (or a parameter / variable annotated with it), and a variable derived from a call of
+    the class (also its reveal). A class without a Callable-annotated receiver and a statement that touches no such class
+    do not match."""
+    tree = s.amap.tree
+    if tree is None or d.kind not in (K.ONLY_TY, K.ONLY_MYPY, K.ONLY_PYRIGHT, K.CONCERN_MISMATCH, K.REVEAL_MISMATCH):
+        return False
+    recv = _callable_receiver_methods(tree)
+    if not recv:
+        return False
+    node = _stmt_node(s, d)
+    if any(f is node or f.lineno <= d.anchor <= (f.end_lineno or f.lineno) for fs in recv.values() for f in fs):
+        return True
+
+    def annotated_as_class(name: str) -> bool:  # a parameter / variable declared with the class (`def probe(u: User)`)
+        for p in ast.walk(tree):
+            if isinstance(p, ast.arg) and p.arg == name and isinstance(p.annotation, ast.Name) and p.annotation.id in recv:
+                return True
+            if isinstance(p, ast.AnnAssign) and isinstance(p.target, ast.Name) and p.target.id == name \
+                    and isinstance(p.annotation, ast.Name) and p.annotation.id in recv:
+                return True
+        return False
+
+    def names_class(e: ast.AST, depth: int = 0) -> bool:
+        if isinstance(e, ast.Name):
+            if e.id in recv or annotated_as_class(e.id):
+                return True
+            v = _last_assigned_value(tree, e.id, d.anchor) if depth < 3 else None
+            return v is not None and any(names_class(x, depth + 1) for x in ast.walk(v) if isinstance(x, ast.Name))
+        return False
+
+    return any(names_class(n) for n in _stmt_walk(s, d) if isinstance(n, ast.Name))
+
+
+_TD_BASES = {"TypedDict"}
+
+
+def _typeddict_classes(tree: ast.AST) -> set[str]:
+    from . import crash_upstream as cu
+
+    classes = cu._classes(tree)
+    out: set[str] = set()
+    changed = True
+    while changed:
+        changed = False
+        for c in classes:
+            if c.name not in out and any(cu._head(b) in _TD_BASES or cu._head(b) in out for b in c.bases):
+                out.add(c.name)
+                changed = True
+    return out
+
+
+def m_display_equivalent(s, d):
+    """The two reveals spell the SAME type differently (``typediff.display``): ParamSpec / TypeVar scope tags (``P.args``
+    vs ``P@__init__.args``), mypy's ``def (..)`` callables (return ``None`` and default values not printed, ``P.args, P.kwargs``
+    for ``**P``) against ty's ``(.., /) -> None``, and a TypedDict printed as its structure by mypy and as its class name
+    by ty and pyright. After rewriting those conventions both texts must be EQUAL as strings; if pyright revealed
+    something on the statement it must equal ty's text under the same rewrite (without the generic header, which pyright does
+    not print). Anything else, including a different parameter name, type, default presence or return type, is not display
+    noise."""
+    if d.kind != K.REVEAL_MISMATCH or len(d.mypy) != 1 or len(d.ty) != 1 or s.amap.tree is None:
+        return False
+    m_txt, t_txt = d.mypy[0].revealed_type, d.ty[0].revealed_type
+    if not m_txt or not t_txt:
+        return False
+    tds = frozenset(_typeddict_classes(s.amap.tree))
+    cm, ct = display_canon(m_txt, s.module, tds), display_canon(t_txt, s.module, tds)
+    if cm != ct or cm == " ".join(t_txt.split()) and cm == " ".join(m_txt.split()):
+        return False  # unequal, or no rewrite was needed (the pair would not be a mismatch)
+    p_txts = [x.revealed_type for x in d.pyright if x.revealed_type is not None]
+    if p_txts:
+        ref = display_canon(t_txt, s.module, tds, header=False)
+        if not any(display_canon(p, s.module, tds, header=False) == ref for p in p_txts):
+            return False
+    return True
+
+
 _REQUIRES = {"tuple_subclass_comparison_fold": _tuple_subclass_comparison_fold,
+             "eq_without_hash_argument": _eq_without_hash_argument,
+             "descriptor_set_on_instance": _descriptor_set_on_instance,
              "attr_kept_after_call": _attr_kept_after_call,
              "readonly_prop_after_stale_narrowing": _readonly_prop_after_stale_narrowing,
              "flag_combo_literal_arg": _flag_combo_literal_arg,
@@ -1607,6 +1901,8 @@ def _upstream_entries() -> list[KBEntry]:
             diags = d.mypy if e["kind"] == "only_mypy" else d.ty if e["kind"] == "only_ty" else d.mypy + d.ty
             if e["kind"] == "only_ty" and e.get("silent_tool") == "ty":
                 diags = d.pyright  # pyright-only concern that ty (and mypy) miss
+            if e["kind"] == "only_pyright":
+                diags = [x for x in d.pyright if x.is_problem]  # Day 8: the reporting tool of an only_pyright finding
             hit = [x for x in diags if (not e.get("codes") or (x.code or "") in e["codes"])
                    and re.search(e.get("message", ""), x.message)]
             if not hit:
@@ -2156,6 +2452,52 @@ ENTRIES.extend([
         (K.ONLY_MYPY,), m_first_assignment_type, auto=True, runtime_override=True,
         verify=_toggle(Tool.MYPY, ["--allow-redefinition"]),
         example="def f(flag: bool) -> None:\n    y = 1\n    if flag:\n        y = \"s\"\n    print(y)\n",
+    ),
+])
+ENTRIES.extend([
+    KBEntry(  # first of the Day-8 block: a pure spelling difference wins over the broader receiver entry below
+        "DISPLAY-EQUIVALENT", "the reveals are the same type in different printer conventions (callable, ParamSpec scope, TypedDict)",
+        Dismissal.NOISE, "https://typing.python.org/en/latest/spec/callables.html",
+        "mypy prints a callable as `def (float)` (no `-> None`, default values hidden, `*P.args, **P.kwargs` for `**P`), ty as "
+        "`(float, /) -> None` and `[**P, R](..)`; mypy prints `P.args` where ty and pyright print `P@__init__.args`; mypy "
+        "prints a ParamSpec argument as `Runner[[a: int], str]` where ty and pyright print `Runner[(a: int), str]`; mypy "
+        "expands a TypedDict, `TypedDict(case.Options, {..})`, where ty and pyright print `Options`. Fires only when, after "
+        "rewriting exactly those conventions (typediff/display.py), the mypy and ty texts are equal, and pyright's text "
+        "(if it revealed anything there) equals ty's. A different parameter name, parameter type, default presence or return "
+        "type keeps the pair.",
+        (K.REVEAL_MISMATCH,), m_display_equivalent, auto=True, runtime_override=False,
+    ),
+    KBEntry(
+        "CALLABLE-SELF-ATTR-STORE", "ty and pyright check `self.x = ..` against a Callable-annotated `self`; mypy defines the attribute",
+        Dismissal.DESIGN_DIVERGENCE, "https://github.com/astral-sh/ty/issues/3666",
+        "A method whose `self` is annotated `Callable[..]` (the ParamSpec family `def __init__(self: Callable[P, T], *args: "
+        "P.args, **kwargs: P.kwargs): self.args = args`) stores an attribute on that parameter. ty reports "
+        "`unresolved-attribute` on the callable type and pyright `reportFunctionMemberAccess` (`Cannot assign to attribute "
+        "\"args\" for class \"FunctionType\"`): both check the store against the declared receiver type, which is a function "
+        "type. mypy defines the attribute from the store and reports nothing (verified on mypy 2.4.0, ty 0.0.97, pyright "
+        "1.1.414, Day-8 experiments e1/e2: also for a class that really has a `__call__`). The declaration is itself invalid "
+        "for mypy (`The erased type of self .. is not a supertype of its class`) and pyright when the class is not callable, "
+        "which ty does not check yet (open ty#3666), so there is no reference answer. Fires only when the statement is an "
+        "attribute store on the annotated parameter and the only reporting-tool diagnostics are that one rule.",
+        (K.ONLY_TY, K.ONLY_PYRIGHT), _callable_self_attr_store, auto=True, runtime_override=False,
+    ),
+    KBEntry(
+        "CALLABLE-SELF-RECEIVER", "a class whose self/cls is annotated Callable[..] has no reference answer at its call sites",
+        Dismissal.SPEC_AMBIGUITY, "https://github.com/astral-sh/ty/issues/3666",
+        "The Day-6/Day-7 ParamSpec family `d3p_paramspec_self_annotated_dunder_call` (neighbourhood of the crash ty#4899): a "
+        "method's `self` / `cls` is annotated `Callable[P, T]` or `Callable[Concatenate[int, P], T]`. The annotation of `self` "
+        "must be a supertype of the class; mypy and pyright reject the declaration for a class that is not callable as "
+        "annotated, and ty does not validate it (open ty#3666). Each checker then binds the receiver to something else: "
+        "ty solves `cls: Callable[P, T]` against the class's constructor signature, so the ParamSpec of `__init__` shows up "
+        "in `User.__call__(1)` as `Expected P@__init__.args`; pyright reports `Expected 0 positional arguments` or `Arguments "
+        "for ParamSpec \"P@__call__\" are missing`; mypy does not bind it and accepts. Day-8 experiments e3 (classmethod "
+        "alone: ty and pyright agree, mypy silent) and e1/e4. Whichever checker is silent or loud at a call site, the program "
+        "is not well-formed enough to judge, so these are not reported. Fires for the `def` line of such a method, a "
+        "statement inside it, a statement naming the class (or a parameter / variable declared with it) and a variable "
+        "derived from a call of the class (up to three assignments), also for the reveal of such a variable; a CPython "
+        "type error at the statement keeps it in review.",
+        (K.ONLY_TY, K.ONLY_MYPY, K.ONLY_PYRIGHT, K.CONCERN_MISMATCH, K.REVEAL_MISMATCH), _callable_self_receiver, auto=True,
+        runtime_override=True,
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation

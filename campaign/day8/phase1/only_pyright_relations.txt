@@ -1,0 +1,10 @@
+Day 7 before (runs/day7/out) {'runtime_contradicts': 19} total 19
+Day 7 after (Day-8 harness) {'runtime_contradicts': 18, 'runtime_supports': 1} total 19
+    supports: ('seed-5b9f92dbfa35.json', 'D1', 'runtime_supports', 0.7, 'review', 'gate', 'desc.__delete__(obj, 1)  # expect-error')
+Day 6 before (runs/day7/day6replay-pyright) {'runtime_contradicts': 37} total 37
+Day 6 after (Day-8 harness) {'runtime_contradicts': 32, 'runtime_supports': 5} total 37
+    supports: ('seed-367ca55064b4.json', 'D2', 'runtime_supports', 0.7, 'dismissed', 'kb:UPSTREAM-MYPY-2455', 'need(obj)')
+    supports: ('seed-6b3eee769a46.json', 'D2', 'runtime_supports', 0.7, 'review', 'gate', 'return {item}')
+    supports: ('seed-6b3eee769a46.json', 'D3', 'runtime_supports', 0.7, 'review', 'gate', 'return {key: 1}')
+    supports: ('seed-6b3eee769a46.json', 'D4', 'runtime_supports', 0.7, 'dismissed', 'kb:UPSTREAM-MYPY-2455', 'as_key(Plain())  # expect-error')
+    supports: ('seed-b08f94b2a4d2.json', 'D5', 'runtime_supports', 0.7, 'review', 'gate', 'return len({p}) == 1  # expect-error')

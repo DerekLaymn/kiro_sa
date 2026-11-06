@@ -1,0 +1,72 @@
+### ty#4941
+OPEN class that defines __eq__ without __hash__ is accepted where Hashable is required created 2026-11-05T21:57:16Z updated 2026-11-05T23:48:30Z by DerekLaymn labels ["bug","runtime semantics","unsoundness"]
+### Summary
+
+### Summary
+
+A class that defines `__eq__` and does not define `__hash__` gets `__hash__ = None` from Python, so its instances are unhashable. ty accepts such an instance (and an instance of a subclass that does not restore `__hash__`) for a `Hashable` parameter. ty already rejects the same call for a mutable dataclass (astral-sh/ruff#27441), which gets the same implicit `__hash__ = None`.
+
+```py
+from collections.abc import Hashable
+
+
+class Plain:
+    def __eq__(self, value: object) -> bool:
+        return True
+
+
+class Sub(Plain): ...
+
+
+class Keyed(Plain):
+    def __hash__(self) -> int:
+        return 1
+
+
+def need(x: Hashable) -> int:
+    return hash(x)
+
+
+need(Keyed())  # fine
+need(Plain())  # runtime: TypeError: unhashable type: 'Plain'
+need(Sub())    # runtime: TypeError: unhashable type: 'Sub'
+```
+
+```console
+$ ty check --python-version 3.13 test_bug.py
+All checks passed!
+
+$ python test_bug.py
+TypeError: unhashable type: 'Plain'
+```
+
+`reveal_type(Plain.__hash__)` gives `def __hash__(self) -> int`; for `@dataclass class Record` ty reveals `None`. With the same file but `need(Record("a"))`, ty reports `invalid-argument-type`.
+
+
+Separate from astral-sh/ty#3781, which is about `{obj}` and `{obj: ...}` displays; the same missing rule also lets `{Plain()}` pass, but the minimal case here is the `Hashable` protocol check that ty already implements.
+
+**Expected:** `invalid-argument-type` for `need(Plain())` and `need(Sub())`, not for `need(Keyed())`. A class that defines only `__ne__` or `__lt__` stays hashable and must not be flagged.
+
+[Playground](https://play.ty.dev/6b1fc612-c239-4de2-967e-dbbf662cd73f)
+
+### Version
+
+ty 0.0.84 and ty 0.0.97
+--- comments: 0
+
+### ty#3666
+OPEN new rule - enforce that `self` parameter on methods is a supertype of its class created 2026-06-04T23:49:39Z updated 2026-08-04T20:06:59Z by DetachHead labels ["typing semantics","method-receiver"]
+```py
+class Foo:
+    def fn(asdf: int): ...
+```
+both [pyright](https://basedpyright.com/?typeCheckingMode=all&code=MYGwhgzhAEBiD28BcAoa7oBMCmAzauAdgBQTYi5LQCWhALgJRUB0rQA) and [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeSIAxlKnHAAQBiuuiAOuvV-ZjGPWHQAKWpjCJ6EdABcAlBMKKQAGhBkATnyilC03AFsoFMtIAWudAFoAbjHVwIF%2BgF56bEAGZCARgAs7jmJNOBhpFzcQOGl1CEppAPQAbTt1XHsAXQ5eIJhKVGkYTHD3FLT3N3QIfWIoWIhpS1RsKPVUOMtqWgZXEvVU9QSqmrqGobSwnpBSgZAKodrKeu1LXkh0QsbpaIhsAFcC4qm%2BspAOfQg6KQBzSzhcXfVKGEPphPQLSxh8U1RdqIhbJZ9PlKKYXscZhx3g1NABHXYQTSYSwAaxgpEalCedHB-QSuGIMCsu3QxDaKOuuJOFSRJMwGAaeSiVJmNMKdIZHQsmHqjk4k1esw4JPW2LQ6gxlAMZJid35EUFFRFuXg4ox0lIhK56Fs9j5LPKwvQmjaP2wsANQvQJJNoKasCBINMHVozwFEMN1uN8FwUGs9pgKzpdkaUCglqVMk1GzG6gmCo9VpJfxjV3emgjHH9MQwTyBF2B0lBmcqOtQtWRvClrT06ktIAAvqo2tIATBGNAYBQ0Fg8EQyI2gA) report an error here:
+
+```
+Type of parameter "self" must be a supertype of its class "Foo"  (reportGeneralTypeIssues)
+```
+```
+ERROR sandbox.py:2:9-11: `fn` method self type `int` is not a superclass of class `Foo` [invalid-annotation]
+```
+--- comments: 0
+

@@ -167,6 +167,9 @@ class RuntimeResult:
     stdout: str = ""
     stderr: str = ""
     python_version: str | None = None
+    # Day 8: (line, exception type, message) of every exception that was raised in a frame of the program, whether or
+    # not the program handled it (deduplicated by line and type). `exc_*` / `frames` only describe the uncaught one.
+    raised: list[tuple[int, str, str]] = field(default_factory=list)
 
     @property
     def coverage_known(self) -> bool:

@@ -1,0 +1,31 @@
+seed-1393d88dedae D1 only_mypy L12 'def __init__(self: typing.Callable[P, T], x: int, *args: P.args, **kwa'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-3666
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-1393d88dedae D2 only_ty L13 'self.x = x'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-1393d88dedae D3 only_ty L16 'print(User(1).x)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-1f6673a249ae D1 only_mypy L12 'def __init__(self: typing.Callable[P, T], *args: P.args, **kwargs: P.k'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-3666
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-1f6673a249ae D2 only_ty L13 'self.stored_args = args'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-1f6673a249ae D3 only_ty L14 'self.stored_kwargs = kwargs'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-dbaca47402ae D1 only_mypy L12 'def __init__(self: typing.Callable[P, T], *args: P.args, **kwargs: P.k'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-3666
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-dbaca47402ae D2 only_ty L13 'self.args = args'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+seed-dbaca47402ae D3 only_ty L14 'self.kwargs = kwargs'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/hits/d3p_paramspec_self_annotated_dunder_call.py
+
+findings compared: 196; changed: 9
+new decided_by: {'kb:UPSTREAM-TY-3666': 3, 'kb:CALLABLE-SELF-ATTR-STORE': 5, 'kb:CALLABLE-SELF-RECEIVER': 1}
+old decided_by: {'gate': 9}

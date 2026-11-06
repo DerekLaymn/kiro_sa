@@ -182,6 +182,39 @@ _DUNDERS: dict[type, tuple[str, ...]] = {
 }
 
 
+def recursive_aliases(tree: ast.AST | None) -> set[str]:
+    """Type aliases of the program that refer to themselves, directly or through other aliases: PEP 695 ``type X = ..X..``
+    and ``X: TypeAlias = ..`` (names inside string forward references count)."""
+    if tree is None:
+        return set()
+    graph: dict[str, set[str]] = {}
+
+    def mentioned(e: ast.AST) -> set[str]:
+        out = {n.id for n in ast.walk(e) if isinstance(n, ast.Name)}
+        for n in ast.walk(e):
+            if isinstance(n, ast.Constant) and isinstance(n.value, str):
+                out |= set(re.findall(r"[A-Za-z_]\w*", n.value))
+        return out
+
+    for n in ast.walk(tree):
+        if isinstance(n, ast.TypeAlias) and isinstance(n.name, ast.Name):
+            graph[n.name.id] = mentioned(n.value)
+        elif isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name) and n.value is not None \
+                and getattr(n.annotation, "id", getattr(n.annotation, "attr", None)) == "TypeAlias":
+            graph[n.target.id] = mentioned(n.value)
+    out = set()
+    for name in graph:
+        seen, todo = set(), [name]
+        while todo:
+            for m in graph.get(todo.pop(), ()):
+                if m == name:
+                    out.add(name)
+                if m in graph and m not in seen:
+                    seen.add(m)
+                    todo.append(m)
+    return out
+
+
 def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
     rt = state.runtime
     if rt.status in ("not_run", "harness_error"):
@@ -246,6 +279,15 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
                         "call unambiguously (several reveals on one statement, loop/repeated call, or nesting): "
                         "runtime probe values not used", citation=f"line {d.anchor}", verified=True, strength="weak"))
                 continue
+            if "..." in (lst[0].revealed_type or "") and recursive_aliases(state.amap.tree):
+                # Day 8: mypy prints `...` for the recursive occurrence inside a recursive alias (`tuple[str, ...]` for
+                # `tuple[str, Left]`); read as a variadic tuple it made a correct runtime value look outside mypy's type
+                d.evidence.append(Evidence(
+                    EvidenceType.RUNTIME, "neutral",
+                    f"{tool}'s reveal contains `...` and the program defines a recursive type alias: the `...` stands for "
+                    "the recursive occurrence, not for a variadic tuple, so the runtime probe value is not compared with it",
+                    citation=f"probe line {p.line}", verified=True, strength="weak"))
+                continue
             t = normalize(lst[0].revealed_type, state.module)
             if inhabits(p.shape, t, state.nominal_classes) is False:
                 stub = _stub_callee(state, p.line) if p.shape.get("type") == "builtins.NoneType" else None
@@ -280,11 +322,16 @@ def attach_pyright_evidence(state: CaseState, d: Discrepancy) -> None:
 
         rel = pyright_runtime_relation(state.amap, state.runtime, d.anchor)
         shown = "; ".join(x.short() for x in d.pyright if x.is_problem) or "an error"
+        lo, hi = state.amap.span(d.anchor)
+        frames = {state.amap.anchor(ln) for ln, _ in state.runtime.frames}
+        on_stack = state.runtime.status == "exception" and (lo in frames or d.anchor in frames)
+        handled = rel == "supports" and not on_stack
         d.evidence.append(Evidence(
             EvidenceType.CONSENSUS, "neutral",
             f"only pyright reports a problem here ({shown}); mypy and ty are both silent. CPython: "
-            + ("raised a type-related exception with this statement on the stack, so pyright's report matches the runtime "
-               "(mypy and ty missed it)" if rel == "supports" else
+            + (("raised a type-related exception with this statement on the stack" if not handled else
+                "raised a type-related exception at this statement and the program handled it (try/except)")
+               + ", so pyright's report matches the runtime (mypy and ty missed it)" if rel == "supports" else
                "executed the statement without a type-related exception, so the runtime does not back pyright (pyright "
                "may be too strict, or the code is unsound but works)"),
             citation=f"line {d.anchor}", verified=True, strength="weak", blame=None))

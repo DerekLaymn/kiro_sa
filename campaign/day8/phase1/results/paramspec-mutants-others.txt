@@ -1,0 +1,75 @@
+##### runs/day7/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_990146c3.py
+--- cpython
+Runtime type is 'tuple'
+init (1, 2) {'flag': True}
+((1, 2), {'z': 3})
+--- mypy
+case.py:21:6: error: Argument 1 to "User" has incompatible type "int"; expected "Never"  [arg-type]
+case.py:21:9: error: Argument 2 to "User" has incompatible type "int"; expected "Never"  [arg-type]
+case.py:21:17: error: Argument "flag" to "User" has incompatible type "bool"; expected "Never"  [arg-type]
+case.py:23:13: note: Revealed type is "tuple[tuple[Any, ...], dict[str, Any]]"
+--- ty
+case.py:23:13: info[revealed-type] Revealed type: `tuple[tuple[Unknown, ...], dict[str, Unknown]]`
+Found 1 diagnostic
+--- pyright
+/tmp/d8/w.ZNOc5W/case.py
+  /tmp/d8/w.ZNOc5W/case.py:21:6 - error: Expected 0 positional arguments (reportCallIssue)
+  /tmp/d8/w.ZNOc5W/case.py:21:9 - error: Expected 0 positional arguments (reportCallIssue)
+  /tmp/d8/w.ZNOc5W/case.py:21:12 - error: No parameter named "flag" (reportCallIssue)
+  /tmp/d8/w.ZNOc5W/case.py:22:43 - error: Arguments for ParamSpec "P@__call__" are missing (reportCallIssue)
+  /tmp/d8/w.ZNOc5W/case.py:23:13 - information: Type of "r" is "tuple[P@__call__.args, P@__call__.kwargs]"
+4 errors, 0 warnings, 1 information
+##### runs/day7/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_f4be2311.py
+--- cpython
+--- mypy
+--- ty
+case.py:22:15: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[1]`
+case.py:22:18: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[2]`
+case.py:22:21: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.kwargs`, found `Literal[3]`
+case.py:23:3: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[4]`
+case.py:23:6: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[5]`
+case.py:23:9: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.kwargs`, found `Literal[6]`
+Found 6 diagnostics
+--- pyright
+/tmp/d8/w.8AKq4c/case.py
+  /tmp/d8/w.8AKq4c/case.py:21:5 - error: Arguments for ParamSpec "P@__call__" are missing (reportCallIssue)
+  /tmp/d8/w.8AKq4c/case.py:22:15 - error: Expected 0 positional arguments (reportCallIssue)
+  /tmp/d8/w.8AKq4c/case.py:22:18 - error: Expected 0 positional arguments (reportCallIssue)
+  /tmp/d8/w.8AKq4c/case.py:22:21 - error: No parameter named "k" (reportCallIssue)
+  /tmp/d8/w.8AKq4c/case.py:23:3 - error: Arguments for ParamSpec "P@__call__" are missing (reportCallIssue)
+5 errors, 0 warnings, 0 informations
+##### runs/day7/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut2_9323cd2c.py
+--- cpython
+Runtime type is 'User'
+--- mypy
+case.py:22:13: note: Revealed type is "case.User"
+--- ty
+case.py:22:13: info[revealed-type] Revealed type: `User`
+Found 1 diagnostic
+--- pyright
+/tmp/d8/w.edvEY9/case.py
+  /tmp/d8/w.edvEY9/case.py:14:24 - error: Type of parameter "self" must be a supertype of its class "User" (reportGeneralTypeIssues)
+  /tmp/d8/w.edvEY9/case.py:17:24 - error: Type of parameter "self" must be a supertype of its class "User" (reportGeneralTypeIssues)
+  /tmp/d8/w.edvEY9/case.py:21:5 - error: 
+    Could not bind method "__init__" because "User" is not assignable to parameter "self"
+      Type "User" is not assignable to type "(**P@__init__) -> T@__init__" (reportGeneralTypeIssues)
+  /tmp/d8/w.edvEY9/case.py:22:13 - information: Type of "u" is "User"
+  /tmp/d8/w.edvEY9/case.py:24:5 - error: Object of type "User" is not callable
+    Could not bind method "__call__" because "User" is not assignable to parameter "self"
+      Type "User" is not assignable to type "(int, **P@__call__) -> T@__call__" (reportCallIssue)
+4 errors, 0 warnings, 1 information
+##### runs/day7/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut1_f20f3e30.py
+--- cpython
+Runtime type is 'User'
+--- mypy
+case.py:23:13: note: Revealed type is "case.User"
+--- ty
+case.py:22:5: error[invalid-argument-type] Argument to `User.__init__` is incorrect: Expected `(...) -> ((...) -> Never)`, found `User`
+case.py:23:13: info[revealed-type] Revealed type: `User`
+case.py:25:19: error[invalid-argument-type] Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `Literal[1]`
+Found 3 diagnostics
+--- pyright
+/tmp/d8/w.iOqyHf/case.py
+  /tmp/d8/w.iOqyHf/case.py:22:5 - error: Arguments for ParamSpec "P@__call__" are missing (reportCallIssue)
+  /tmp/d8/w.iOqyHf/case.py:23:13 - information: Type of "u" is "User"
+1 error, 0 warnings, 1 information

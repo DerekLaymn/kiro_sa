@@ -220,6 +220,21 @@ the draft starts with the stance, the url and a "check the body text on the trac
 ever lowers a tier and has no network access. Searching the tracker and discuss.python.org stays a
 manual step (FUZZING_PLAN.md §6): title searches miss duplicates whose example sits in the body.
 
+**Single-tool entries (Day 8).** An entry of `known_upstream.json` with `"kind": "only_pyright"` is matched against
+pyright's diagnostics (`codes` and `message`), so a known duplicate that only pyright reports (mypy and ty silent) can be
+closed like an `only_mypy` / `only_ty` one; `MYPY-2455` / `TY-4941` (a class with `__eq__` and no `__hash__` passed as
+`Hashable`) and `PYRIGHT-11382` (class access of a data descriptor that is also assigned on the instance) are the first.
+Display-only differences between the three printers (callables, ParamSpec scope tags and arguments, TypedDict structure)
+are closed by the code-level entry `DISPLAY-EQUIVALENT` (`typediff/display.py` rewrites those conventions, then compares the
+strings); `CALLABLE-SELF-ATTR-STORE` / `CALLABLE-SELF-RECEIVER` cover the ParamSpec `self: Callable[P, T]` family
+(campaign/day8-pipeline.md section 1).
+
+**Caught exceptions (Day 8).** `runtime_harness.py` also records every exception that passes through a frame of the program,
+caught or not (`RuntimeResult.raised`). `pyright_runtime_relation` counts a type-related exception raised at the flagged
+statement and handled by the program as `supports` (generated programs wrap their `# expect-error` line in `try/except`).
+A `runtime_miss` whose traceback starts after a flagged, executed `# expect-error` line is a consequence of that line and is
+not reported. mypy's `...` in a reveal is not read as a variadic tuple when the program defines a recursive type alias.
+
 **Crash entries.** Crash findings have no discrepancy, so the KB matcher never sees them. `known_upstream.json`
 entries with `kind: "crash"` are matched instead by `crash_upstream.match_crash` from `Pipeline._judge` and close the
 finding as DUPLICATE. A crash is dismissed only when the crashing tool equals the entry's `tool`, the crash signature

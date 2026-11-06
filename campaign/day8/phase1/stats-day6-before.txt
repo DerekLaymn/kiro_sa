@@ -1,0 +1,6 @@
+[all] programs=250 discrepancies=296 live=231 (programs with live=123, crash findings=23) dismissed=127 tool_crashes=62
+   dismissed by category: {'DUPLICATE': 100, 'DESIGN_DIVERGENCE': 22, 'SPEC_AMBIGUITY': 3, 'NOISE': 1, 'KNOWN_LIMITATION': 1}
+   dismissed by entry: {'rule:crash:signal': 39, 'kb:PRECISION-RUNTIME-CONSISTENT': 13, 'kb:UPSTREAM-MYPY-16830': 10, 'kb:UPSTREAM-TY-876': 9, 'kb:UPSTREAM-TY-2792': 8, 'kb:LITERAL-WIDENING': 6, 'kb:UPSTREAM-TY-4756': 6, 'kb:UPSTREAM-MYPY-16830-REVEAL': 6, 'kb:UPSTREAM-MYPY-22339': 4, 'kb:UPSTREAM-TY-2792-READONLY': 4, 'kb:UPSTREAM-TY-2171': 4, 'kb:UPSTREAM-MYPY-21937-REVEAL': 4, 'kb:BOTH-GRADUAL': 3, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 3, 'kb:UPSTREAM-TY-2171-ASSERT': 3, 'kb:REVEAL-ERROR-RECOVERY': 1, 'kb:TY-CHECK-NOT-IMPLEMENTED': 1, 'kb:UPSTREAM-MYPY-20969': 1, 'kb:UPSTREAM-MYPY-20969-REVEAL': 1, 'kb:UPSTREAM-TY-876-ARGTYPE': 1}
+   crash closures by closing reference: {'MYPY-22361': 14, 'TY-4148': 14, 'TY-4898': 7, 'MYPY-22360': 3, 'MYPY-22344': 1}
+   live by kind: {'only_ty': 22, 'only_pyright': 37, 'reveal_mismatch': 83, 'only_mypy': 51, 'runtime_miss': 2, 'crash': 23, 'concern_mismatch': 6, 'reveal_unpaired': 7}
+   live without only_pyright: 194 (programs with such live=110)

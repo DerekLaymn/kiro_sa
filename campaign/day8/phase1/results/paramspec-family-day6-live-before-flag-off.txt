@@ -1,0 +1,45 @@
+seed-1bfa01595d60 | d3p_paramspec_self_annotated_dunder_call__mut0_49b7075c.py | D1 reveal_mismatch L22 | 'reveal_type(runner)' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       mypy:None:Revealed type is "case.Runner[[name: str, *, upper: bool =], str]"
+       ty:revealed-type:Revealed type: `Runner[(name: str, *, upper: bool = False), str]`
+       pyright:None:Type of "runner" is "Runner[(name: str, *, upper: bool = False), str]"
+seed-6653d9bfcd15 | d3p_paramspec_self_annotated_dunder_call__mut2_7c4a9402.py | D1 concern_mismatch L21 | 'made = u()' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'EXPERIMENT/medium/neutral']
+       mypy:var-annotated:Need type annotation for "made"
+       ty:missing-argument:No argument provided for required parameter 1 of bound method `User.__call__`
+       pyright:reportCallIssue:Object of type "User" is not callable
+seed-69cbe2c807d9 | d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py | D1 only_ty L13 | 'self.args = args' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Unresolved attribute `args` on type `(**P@__init__) -> T@__init__`
+       pyright:reportFunctionMemberAccess:Cannot assign to attribute "args" for class "FunctionType"
+seed-69cbe2c807d9 | d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py | D2 only_ty L14 | 'self.kwargs = kwargs' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Unresolved attribute `kwargs` on type `(**P@__init__) -> T@__init__`
+       pyright:reportFunctionMemberAccess:Cannot assign to attribute "kwargs" for class "FunctionType"
+seed-69cbe2c807d9 | d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py | D3 concern_mismatch L23 | 'made = u(2, flag=False)' | NEEDS_HUMAN gate | kb=['ERROR-CASCADE'] | ev=['RUNTIME/weak/neutral', 'EXPERIMENT/medium/neutral']
+       mypy:var-annotated:Need type annotation for "made"
+       ty:invalid-argument-type:Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `
+       ty:invalid-argument-type:Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.kwargs`, found
+       pyright:reportCallIssue:Arguments for ParamSpec "P@__call__" are missing
+seed-69cbe2c807d9 | d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py | D4 only_ty L24 | 'print(type(made).__name__, made.args, made.kwargs)' | NEEDS_HUMAN gate | kb=['GRADUAL-OPERAND', 'ERROR-CASCADE'] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Object of type `(**P@__init__) -> T@__init__` has no attribute `args`
+       ty:unresolved-attribute:Object of type `(**P@__init__) -> T@__init__` has no attribute `kwargs`
+seed-69cbe2c807d9 | d3p_paramspec_self_annotated_dunder_call__mut1_b2d02a2d.py | D5 only_ty L25 | "print(User.__call__('bob', 3).kwargs)" | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       ty:unresolved-attribute:Object of type `(**P@__init__) -> T@__init__` has no attribute `kwargs`
+       ty:invalid-argument-type:Argument to bound method `User.__call__` is incorrect: Expected `P@__init__.args`, found `
+seed-7a62f4033536 | d3p_paramspec_self_annotated_dunder_call__mut1_3242bc7d.py | D1 only_ty L13 | 'self.count = len(args) + len(kwargs)' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Unresolved attribute `count` on type `(**P@__init__) -> T@__init__`
+       pyright:reportFunctionMemberAccess:Cannot assign to attribute "count" for class "FunctionType"
+seed-7a62f4033536 | d3p_paramspec_self_annotated_dunder_call__mut1_3242bc7d.py | D2 only_ty L20 | 'u = User()' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       ty:invalid-argument-type:Argument to `User.__init__` is incorrect: Expected `(...) -> ((...) -> Never)`, found `Use
+       pyright:reportCallIssue:Arguments for ParamSpec "P@__call__" are missing
+seed-7a62f4033536 | d3p_paramspec_self_annotated_dunder_call__mut1_3242bc7d.py | D4 reveal_mismatch L23 | 'reveal_type(made)' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral']
+       mypy:None:Revealed type is "Any"
+       ty:revealed-type:Revealed type: `(**P@__init__) -> T@__init__`
+       pyright:None:Type of "made" is "User"
+seed-d7392c130efb | d3p_paramspec_self_annotated_dunder_call__mut2_50499c13.py | D1 only_mypy L14 | 'def run(self: Callable[Concatenate[int, P], T], *args: P.args, **kwargs: P.kwarg' | NEEDS_HUMAN gate | kb=['STUB-SKEW'] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral']
+       mypy:misc:The erased type of self "def (int, *Any, **Any) -> Any" is not a supertype of its class "c
+       pyright:reportGeneralTypeIssues:Type of parameter "self" must be a supertype of its class "Job"
+seed-e040843dff27 | d3p_paramspec_self_annotated_dunder_call__mut0_af97c4fd.py | D1 only_ty L13 | 'self.args = args' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Unresolved attribute `args` on type `(**P@__init__) -> None`
+       pyright:reportFunctionMemberAccess:Cannot assign to attribute "args" for class "FunctionType"
+seed-e040843dff27 | d3p_paramspec_self_annotated_dunder_call__mut0_af97c4fd.py | D2 only_ty L14 | 'self.kwargs = kwargs' | NEEDS_HUMAN gate | kb=[] | ev=['RUNTIME/weak/neutral', 'CONSENSUS/weak/neutral', 'EXPERIMENT/medium/neutral']
+       ty:unresolved-attribute:Unresolved attribute `kwargs` on type `(**P@__init__) -> None`
+       pyright:reportFunctionMemberAccess:Cannot assign to attribute "kwargs" for class "FunctionType"
+total live 13

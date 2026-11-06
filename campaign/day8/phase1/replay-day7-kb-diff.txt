@@ -1,0 +1,100 @@
+seed-06d2ca97f2e8 D2 reveal_mismatch L20 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-09c3e56f250b D2 reveal_mismatch L27 'reveal_type(hf.cb)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/P_pyright/d3p_generics_callable_attr_contravariant.py
+seed-265d08238d20 D1 only_pyright L46 'assert_type(Gauge.level, Clamped)'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-PYRIGHT-11382
+    # origin: llm
+seed-45f3728c2ebb D1 reveal_mismatch L24 'reveal_type(h.cbs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/P_pyright/d3p_generics_callable_attr_contravariant.py
+seed-462f05a81600 D2 reveal_mismatch L40 'reveal_type(s["bottom"])'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-4c6e0d1736cf D1 only_ty L14 'self.args = args'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-4c6e0d1736cf D2 only_ty L15 'self.kwargs = kwargs'
+    review/None/gate -> dismissed/DESIGN_DIVERGENCE/kb:CALLABLE-SELF-ATTR-STORE
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-4c6e0d1736cf D3 only_ty L28 'User.__call__(1)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-4c6e0d1736cf D4 reveal_mismatch L23 'reveal_type(user.args)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-4c6e0d1736cf D5 reveal_mismatch L24 'reveal_type(user.kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-53577311074a D1 only_mypy L21 'User(1, 2, flag=True)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-53577311074a D3 only_pyright L22 'r = User.__call__(lambda *a, **k: (a, k), 1, 2, z=3)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-7aa90b3fe259 D1 reveal_mismatch L27 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-7e17c9013b45 D1 only_pyright L14 'def __init__(self: Callable[P, T], *args: P.args, **kwargs: P.kwargs) '
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-7e17c9013b45 D2 only_pyright L17 'def __call__(self: Callable[Concatenate[int, P], T], *args: P.args, **'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-7e17c9013b45 D3 only_pyright L21 'u = User()'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-7e17c9013b45 D4 only_pyright L24 'u(1)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-84b258f469c3 D1 reveal_mismatch L15 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: llm
+seed-84b258f469c3 D2 reveal_mismatch L26 'reveal_type(out)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: llm
+seed-a241555c6e22 D1 reveal_mismatch L26 'reveal_type(Child.__init__)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/dataclasses__kw_only_initvar_order.py
+seed-a5f92c5ed912 D1 only_ty L22 'User.__call__(1, 2, k=3)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-a5f92c5ed912 D2 only_ty L23 'u(4, 5, k=6)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-a5f92c5ed912 D3 only_pyright L21 'u = User()'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-bf6368c5160b D1 reveal_mismatch L28 'reveal_type(applied)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_identity_applied_to_itself.py
+seed-c64aee1159c5 D2 reveal_mismatch L20 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-d1dc5d208df4 D1 reveal_mismatch L35 'reveal_type(Child.__init__)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/dataclasses__kw_only_initvar_order.py
+seed-d315f88f5f15 D1 reveal_mismatch L25 'reveal_type(double_inject)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_identity_applied_to_itself.py
+seed-db7119f98ae8 D2 reveal_mismatch L21 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-e1b149ad488c D2 reveal_mismatch L19 'reveal_type(kwargs)'
+    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
+    # origin: runs/day7/parents/N_seeds/typeddict__readonly_notrequired.py
+seed-e8ba0c239dab D1 only_ty L22 'u = User()'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-e8ba0c239dab D2 only_ty L25 'User.__call__(1)'
+    review/None/gate -> dismissed/SPEC_AMBIGUITY/kb:CALLABLE-SELF-RECEIVER
+    # origin: runs/day7/parents/A_ty_paramspec/d3p_paramspec_self_annotated_dunder_call.py
+seed-f26e2d99be2a D1 only_mypy L45 't.readonly = 5  # expect-error'
+    review/None/gate -> dismissed/DUPLICATE/kb:UPSTREAM-TY-2792-READONLY
+    # origin: runs/day7/parents/P_pyright/d4p_descriptors_readonly_prop_never.py
+
+findings compared: 182; changed: 32
+new decided_by: {'kb:DISPLAY-EQUIVALENT': 16, 'kb:UPSTREAM-PYRIGHT-11382': 1, 'kb:CALLABLE-SELF-ATTR-STORE': 2, 'kb:CALLABLE-SELF-RECEIVER': 12, 'kb:UPSTREAM-TY-2792-READONLY': 1}
+old decided_by: {'gate': 32}

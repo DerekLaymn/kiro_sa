@@ -1,0 +1,44 @@
+before [('D1', 'runtime_miss', 29, 'h.add(lambda v: print(v.bit_length()))')]
+   findings [('D1', 'review', 'gate')]
+after []
+   findings []
+exception AttributeError [[35, '<module>'], [11, 'inner'], [25, 'fire'], [29, '<lambda>']] 'float' object has no attribute 'bit_length'
+['area=generics_variance', 'origin=seed runs/day6/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut0_0bac40f6.py', 'depth=0']
+  1 # area: generics_variance
+  2 # hypothesis: A PEP 695 generic class that stores a list of Callable[[T], None] callbacks should let a Handler[float] be passed where Handler[int] is expected, and the call through the stored callback should then fail at runtime.
+  3 # origin: runs/day6/parents/P_pyright/d3p_generics_callable_attr_contravariant.py
+  4 # area: generics_variance
+  5 # hypothesis: a PEP 695 class holding a list of Callable[[T], None] callbacks accepts Handler[float] where Handler[int] is expected through a decorated method, and the later call fails at runtime on float.bit_length.
+  6 from typing import Callable
+  7 
+  8 
+  9 def logged[**P, R](fn: Callable[P, R]) -> Callable[P, R]:
+ 10     def inner(*args: P.args, **kwargs: P.kwargs) -> R:
+ 11         return fn(*args, **kwargs)
+ 12     return inner
+ 13 
+ 14 
+ 15 class Handler[T]:
+ 16     def __init__(self, cbs: list[Callable[[T], None]]) -> None:
+ 17         self.cbs = cbs
+ 18 
+ 19     def add(self, cb: Callable[[T], None]) -> None:
+ 20         self.cbs.append(cb)
+ 21 
+ 22     @logged
+ 23     def fire(self, v: T) -> None:
+ 24         for cb in self.cbs:
+ 25             cb(v)
+ 26 
+ 27 
+ 28 def use(h: Handler[int]) -> None:
+ 29     h.add(lambda v: print(v.bit_length()))
+ 30 
+ 31 
+ 32 hf = Handler[float]([lambda x: print(x.is_integer())])
+ 33 hf.fire(2.0)
+ 34 use(hf)  # expect-error
+ 35 hf.fire(1.5)  # runtime: AttributeError, 'float' has no attribute 'bit_length'
+mypy 34 arg-type Argument 1 to "use" has incompatible type "Handler[float]"; expected "Handler[int]"
+ty 34 invalid-argument-type Argument to function `use` is incorrect: Expected `Handler[int]`, found `Handler[float]`
+pyright 34 reportArgumentType Argument of type "Handler[float]" cannot be assigned to parameter "h" of type "Handler[int]" in func

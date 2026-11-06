@@ -1,0 +1,56 @@
+##### /tmp/d8/ex/e1.py
+--- cpython
+1
+--- mypy
+case.py:5:5: error: The erased type of self "def (int)" is not a supertype of its class "case.A"  [misc]
+--- ty
+case.py:6:9: error[unresolved-attribute] Unresolved attribute `x` on type `(int, /) -> None`
+case.py:9:5: error[invalid-argument-type] Argument to `A.__init__` is incorrect: Expected `(int, /) -> None`, found `A`
+Found 2 diagnostics
+--- pyright
+/tmp/d8/w.x6oIlS/case.py
+  /tmp/d8/w.x6oIlS/case.py:5:24 - error: Type of parameter "self" must be a supertype of its class "A" (reportGeneralTypeIssues)
+  /tmp/d8/w.x6oIlS/case.py:6:14 - error: Cannot assign to attribute "x" for class "FunctionType"
+    Attribute "x" is unknown (reportFunctionMemberAccess)
+  /tmp/d8/w.x6oIlS/case.py:9:5 - error: 
+    Could not bind method "__init__" because "A" is not assignable to parameter "self"
+      Type "A" is not assignable to type "(int) -> None" (reportGeneralTypeIssues)
+3 errors, 0 warnings, 0 informations
+##### /tmp/d8/ex/e2.py
+--- cpython
+1
+--- mypy
+--- ty
+case.py:8:9: error[unresolved-attribute] Unresolved attribute `y` on type `(int, /) -> None`
+Found 1 diagnostic
+--- pyright
+/tmp/d8/w.IxRnh9/case.py
+  /tmp/d8/w.IxRnh9/case.py:8:14 - error: Cannot assign to attribute "y" for class "FunctionType"
+    Attribute "y" is unknown (reportFunctionMemberAccess)
+1 error, 0 warnings, 0 informations
+##### /tmp/d8/ex/e3.py
+--- cpython
+Runtime type is 'method'
+--- mypy
+case.py:17:13: note: Revealed type is "def [P, T] (*P.args, **P.kwargs) -> T"
+--- ty
+case.py:14:19: error[too-many-positional-arguments] Too many positional arguments to bound method `User.__call__`: expected 1, got 2
+case.py:17:13: info[revealed-type] Revealed type: `bound method <class 'User'>.__call__() -> User`
+Found 2 diagnostics
+--- pyright
+/tmp/d8/w.TF0ZAl/case.py
+  /tmp/d8/w.TF0ZAl/case.py:14:19 - error: Expected 0 positional arguments (reportCallIssue)
+  /tmp/d8/w.TF0ZAl/case.py:17:13 - information: Type of "User.__call__" is "() -> User"
+1 error, 0 warnings, 1 information
+##### /tmp/d8/ex/e4.py
+--- cpython
+--- mypy
+case.py:8:5: error: The erased type of self "def (int) -> int" is not a supertype of its class "case.Job"  [misc]
+case.py:13:5: error: The erased type of self "int" is not a supertype of its class "case.Other"  [misc]
+--- ty
+All checks passed!
+--- pyright
+/tmp/d8/w.tcaPp8/case.py
+  /tmp/d8/w.tcaPp8/case.py:8:19 - error: Type of parameter "self" must be a supertype of its class "Job" (reportGeneralTypeIssues)
+  /tmp/d8/w.tcaPp8/case.py:13:19 - error: Type of parameter "self" must be a supertype of its class "Other" (reportGeneralTypeIssues)
+2 errors, 0 warnings, 0 informations

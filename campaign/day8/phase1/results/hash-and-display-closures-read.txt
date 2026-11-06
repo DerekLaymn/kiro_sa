@@ -1,0 +1,136 @@
+====================================================================================================
+seed-367ca55064b4 D2 only_pyright anchor 30 need(obj)
+  23     return hash(x)
+  24 
+  25 
+  26 need(Keyed())
+  27 print(isinstance(Plain(), Hashable), isinstance(Sub(), Hashable), isinstance(Keyed(), Hashable))
+  28 for obj in (Plain(), Sub()):
+  29     try:
+  30         need(obj)
+  31     except TypeError as exc:
+  32         print(exc)
+    pyright reportArgumentType Argument of type "Plain | Sub" cannot be assigned to parameter "x" of type "Hashable" in function "need"
+    -> dismissed DUPLICATE kb:UPSTREAM-MYPY-2455
+====================================================================================================
+seed-6b3eee769a46 D4 only_pyright anchor 40 as_key(Plain())  # expect-error
+  33 assert Plain.__hash__ is None
+  34 assert Record.__hash__ is None
+  35 assert Record('a').name == 'a'
+  36 reveal_type(Plain.__hash__)
+  37 
+  38 outcomes: list[str] = []
+  39 try:
+  40     as_key(Plain())  # expect-error
+  41 except TypeError:
+  42     outcomes.append('hashable')
+    pyright reportArgumentType Argument of type "Plain" cannot be assigned to parameter "item" of type "Hashable" in function "as_key"
+    -> dismissed DUPLICATE kb:UPSTREAM-MYPY-2455
+====================================================================================================
+seed-b08f94b2a4d2 D4 only_pyright anchor 35 keep(p)  # expect-error
+  28 
+  29 def keep(h: Hashable) -> Hashable:
+  30     return h
+  31 
+  32 
+  33 def try_hash(p: Point) -> bool:
+  34     try:
+  35         keep(p)  # expect-error
+  36         return len({p}) == 1  # expect-error
+  37     except TypeError:
+    pyright reportArgumentType Argument of type "Point" cannot be assigned to parameter "h" of type "Hashable" in function "keep"
+    -> dismissed DUPLICATE kb:UPSTREAM-MYPY-2455
+====================================================================================================
+seed-b6b291a6cfba D2 only_pyright anchor 21 label = key_of(p)
+  14 
+  15 def key_of(item: Hashable) -> str:
+  16     return type(item).__name__
+  17 
+  18 
+  19 p = Plain()
+  20 reveal_type(Plain.__hash__)
+  21 label = key_of(p)
+  22 assert label == 'Plain'
+  23 unhashable = False
+    pyright reportArgumentType Argument of type "Plain" cannot be assigned to parameter "item" of type "Hashable" in function "key_of"
+    -> dismissed DUPLICATE kb:UPSTREAM-MYPY-2455
+====================================================================================================
+seed-ec31f327c675 D1 reveal_mismatch anchor 24 reveal_type(o)
+  17 
+  18 
+  19 def show(**kwargs: Unpack[Opts]) -> str:
+  20     return f"{kwargs['name']}:{kwargs.get('size', 0)}"
+  21 
+  22 
+  23 o: Opts = {"name": "a", "tag": "t"}
+  24 reveal_type(o)
+  25 print(show(**o), show(name="b", size=3))
+  26 m: Merged = {"name": "c", "tag": "u", "extra": True}
+    mypy None Revealed type is "TypedDict(case.Opts, {'name': str, 'size'?: int, 'tag'?=: str})"
+    ty revealed-type Revealed type: `Opts`
+    pyright None Type of "o" is "Opts"
+    -> dismissed NOISE kb:DISPLAY-EQUIVALENT
+====================================================================================================
+seed-600557f0a203 D3 reveal_mismatch anchor 32 reveal_type(hi.cb)
+  25     except AttributeError:
+  26         return "AttributeError"
+  27     return "ok"
+  28 
+  29 
+  30 hi = Handler[int](show_bits)
+  31 hf = Handler[float](show_hex)
+  32 reveal_type(hi.cb)
+  33 print(run(hi, 5))
+  34 print(run(hf, 5))  # expect-error
+    mypy None Revealed type is "def (int)"
+    ty revealed-type Revealed type: `(int, /) -> None`
+    pyright None Type of "hi.cb" is "(int) -> None"
+    -> dismissed NOISE kb:DISPLAY-EQUIVALENT
+====================================================================================================
+seed-b2f23a36a81f D4 reveal_mismatch anchor 28 reveal_type(g)
+  21 
+  22     def show(x: float, y: bool) -> None:
+  23         print('show', x, y)
+  24 
+  25     foo = Foo[int, [bytes]](1)
+  26     assert_type(foo.args_seen, tuple[int])
+  27     g = foo.fn(take)
+  28     reveal_type(g)
+  29     g(b'x')
+  30     defaulted = Foo[int](2)
+    mypy None Revealed type is "def (bytes)"
+    ty revealed-type Revealed type: `(bytes, /) -> None`
+    pyright None Type of "g" is "(bytes) -> None"
+    -> dismissed NOISE kb:DISPLAY-EQUIVALENT
+====================================================================================================
+seed-0a36364f2719 D1 reveal_mismatch anchor 28 reveal_type(hf.slots)
+  21 
+  22 def use(h: Handler[int]) -> None:
+  23     h.slots["cb"] = logged(lambda v: print(v.bit_length()))
+  24 
+  25 
+  26 hf = Handler[float](logged(lambda x: print(x.is_integer())))
+  27 use(hf)  # expect-error
+  28 reveal_type(hf.slots)
+  29 try:
+  30     hf.slots["cb"](1.5)
+    mypy None Revealed type is "dict[str, def (float)]"
+    ty revealed-type Revealed type: `dict[str, (float, /) -> None]`
+    pyright None Type of "hf.slots" is "dict[str, (float) -> None]"
+    -> dismissed NOISE kb:DISPLAY-EQUIVALENT
+====================================================================================================
+seed-181af37cee18 D1 reveal_mismatch anchor 32 reveal_type(hf.cbs)
+  25 
+  26 def use(h: Handler[int]) -> None:
+  27     h.cbs.append(bits)
+  28     h.fire(5)
+  29 
+  30 
+  31 hf = Handler[float](fl)
+  32 reveal_type(hf.cbs)
+  33 try:
+  34     use(hf)  # expect-error
+    mypy None Revealed type is "list[def (float)]"
+    ty revealed-type Revealed type: `list[(float, /) -> None]`
+    pyright None Type of "hf.cbs" is "list[(float) -> None]"
+    -> dismissed NOISE kb:DISPLAY-EQUIVALENT

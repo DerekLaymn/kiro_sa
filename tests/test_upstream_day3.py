@@ -365,7 +365,8 @@ def test_prior_ty4656_unchanged_and_not_duplicated():
 
 # ------------------------------------------------------------------------------------------------ data integrity
 RAW = json.loads(PATH.read_text())
-ALLOWED_KINDS = {"only_mypy", "only_ty", "reveal_mismatch", "reveal_unpaired", "concern_mismatch", "crash"}
+ALLOWED_KINDS = {"only_mypy", "only_ty", "reveal_mismatch", "reveal_unpaired", "concern_mismatch", "crash",
+                 "only_pyright"}  # only_pyright: Day 8 (kb._upstream_entries matches pyright's diagnostics)
 
 
 def test_ids_unique_and_urls_github():

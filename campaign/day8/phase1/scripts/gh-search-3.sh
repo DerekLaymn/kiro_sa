@@ -1,0 +1,22 @@
+cd /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa
+q() { echo "### $*"; gh search issues --limit 8 "$@" --json repository,number,title,state,url --jq '.[] | "\(.state) \(.url) \(.title)"' 2>&1; sleep 4; }
+q --repo astral-sh/ty "self annotation"
+q --repo astral-sh/ty "explicit self"
+q --repo astral-sh/ty "annotated self"
+q --repo astral-sh/ty "type of self"
+q --repo astral-sh/ty "self parameter"
+q --repo astral-sh/ty "erased type of self"
+q --repo astral-sh/ty "supertype of its class"
+q --repo astral-sh/ty "invalid self type"
+q --repo astral-sh/ty "self: int"
+q --repo astral-sh/ty "cls annotation"
+q --repo astral-sh/ty "explicit self annotation"
+q --repo astral-sh/ty "self type annotation check"
+q --repo astral-sh/ruff "self annotation supertype"
+q --repo astral-sh/ty "Callable self"
+q --repo astral-sh/ty "unresolved-attribute Callable"
+q --repo astral-sh/ty "function attribute assignment"
+q --repo astral-sh/ty "attribute on Callable"
+q --repo astral-sh/ty "cls Callable ParamSpec classmethod"
+q --repo astral-sh/ty "constructor signature classmethod cls"
+echo "### 4755"; gh issue view 4755 --repo astral-sh/ty --json title,state,body --jq '"\(.state) \(.title)\n\(.body)"' 2>&1 | head -30

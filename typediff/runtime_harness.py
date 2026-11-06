@@ -25,6 +25,7 @@ import types
 
 MAX_ITEMS = 6
 MAX_PROBES = 500
+MAX_RAISED = 200
 
 
 def _qual(cls: type) -> str:
@@ -76,7 +77,8 @@ def main() -> None:
     except Exception:  # noqa: BLE001 - not available on every platform
         pass
 
-    result: dict = {"status": "success", "probes": [], "frames": [], "python_version": sys.version.split()[0]}
+    result: dict = {"status": "success", "probes": [], "frames": [], "raised": [],
+                    "python_version": sys.version.split()[0]}
     executed: set[int] = set()
 
     def probe(obj, *args, **kwargs):
@@ -96,11 +98,25 @@ def main() -> None:
     except ImportError:
         pass
 
+    raised_seen: set = set()
+
     def tracer(frame, event, arg):
         if frame.f_code.co_filename != target:
             return None
         if event == "line":
             executed.add(frame.f_lineno)
+        elif event == "exception" and len(result["raised"]) < MAX_RAISED:
+            # an exception passes through this frame: record it even if the program catches it later (a generated
+            # program wraps its `# expect-error` line in try/except, so the uncaught-exception fields never see it)
+            exc_type, exc_value = arg[0], arg[1]
+            key = (frame.f_lineno, exc_type.__qualname__)
+            if key not in raised_seen:
+                raised_seen.add(key)
+                try:
+                    msg = str(exc_value)[:300]
+                except Exception:  # noqa: BLE001 - user __str__ may raise
+                    msg = ""
+                result["raised"].append([frame.f_lineno, exc_type.__qualname__, msg])
         return tracer
 
     def on_alarm(signum, frame):

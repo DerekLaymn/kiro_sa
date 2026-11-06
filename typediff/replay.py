@@ -25,7 +25,8 @@ def _runtime(o: dict) -> RuntimeResult:
         status=o["status"], exc_type=o.get("exc_type"), exc_message=o.get("exc_message"), exc_line=o.get("exc_line"),
         frames=[(int(a), b) for a, b in o.get("frames", [])], executed_lines=o.get("executed_lines"),
         probes=[RuntimeProbe(p["line"], p["shape"]) for p in o.get("probes", [])], stdout=o.get("stdout", ""),
-        stderr=o.get("stderr", ""), python_version=o.get("python_version"))
+        stderr=o.get("stderr", ""), python_version=o.get("python_version"),
+        raised=[(int(r[0]), str(r[1]), str(r[2])) for r in o.get("raised", [])])
 
 
 def state_from_report(r: dict, runners=None) -> CaseState:

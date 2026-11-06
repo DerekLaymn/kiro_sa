@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 
 from .anchors import AnchorMap
@@ -52,6 +53,31 @@ def _runtime_miss_suppressed(amap: AnchorMap, inner: int, runtime: RuntimeResult
     return False
 
 
+_EXPECT_ERROR_MARK = re.compile(r"#\s*expect-error\b")
+
+
+def _consequence_of_expected_error(amap: AnchorMap, runtime: RuntimeResult, all_diags: list[Diagnostic]) -> bool:
+    """Day 8: True if the uncaught exception is the runtime consequence of a line the program itself marks ``# expect-error``.
+    Generated programs mark the line a checker must reject (``use(hf)  # expect-error``) and let the failure show up later
+    (``hf.fire(1.5)  # runtime: AttributeError``): the exception comes from a frame (a lambda, a stored callback) that no
+    checker flags, so the ``runtime_miss`` anchors on the wrong frame. It is suppressed when some line marked
+    ``# expect-error`` (a) is flagged by a checker, (b) was executed and (c) comes before the OUTERMOST program frame of the
+    traceback, i.e. before the statement that started the failing call chain. An unflagged marker, a marker that never ran
+    and a marker after the failing statement leave the ``runtime_miss`` alone."""
+    if not runtime.frames or not runtime.coverage_known:
+        return False
+    started_at = runtime.frames[0][0]
+    executed = set(runtime.executed_lines or [])
+    flagged = {amap.span(amap.anchor(x.line))[0] for x in all_diags if x.is_problem and x.line}
+    for i, text in enumerate(amap.lines, 1):
+        if not _EXPECT_ERROR_MARK.search(text):
+            continue
+        lo, hi = amap.span(amap.anchor(i))
+        if lo < started_at and lo in flagged and any(ln in executed for ln in range(lo, hi + 1)):
+            return True
+    return False
+
+
 def pyright_runtime_relation(amap: AnchorMap, runtime: RuntimeResult, anchor: int) -> str | None:
     """What CPython says about a statement that only pyright rejects.
 
@@ -67,9 +93,19 @@ def pyright_runtime_relation(amap: AnchorMap, runtime: RuntimeResult, anchor: in
         frames = {amap.anchor(ln) for ln, _ in runtime.frames} or ({amap.anchor(runtime.exc_line)} if runtime.exc_line else set())
         if lo in frames or anchor in frames:
             return "supports" if classify_exception(runtime.exc_type, runtime.exc_message) == "strong" else None
+    if handled_type_exception(runtime, lo, hi):
+        return "supports"
     if runtime.coverage_known and any(ln in set(runtime.executed_lines or []) for ln in range(lo, hi + 1)):
         return "contradicts"
     return None
+
+
+def handled_type_exception(runtime: RuntimeResult, lo: int, hi: int) -> bool:
+    """Day 8: a type-related exception (``classify_exception`` == strong) was raised in a frame of the program on a line of
+    the statement ``lo..hi`` and the program handled it. Generated programs wrap their ``# expect-error`` line in
+    ``try/except TypeError``, so the uncaught-exception fields (``exc_*``, ``frames``) never show it; the harness records
+    every exception that passes through a frame of the program (``RuntimeResult.raised``)."""
+    return any(lo <= ln <= hi and classify_exception(t, m) == "strong" for ln, t, m in runtime.raised)
 
 
 def find_discrepancies(
@@ -156,7 +192,8 @@ def find_discrepancies(
         flagged = {d.anchor for d in mypy + ty if d.is_problem}
         if frame_anchors and not (frame_anchors & flagged):
             inner = amap.anchor(runtime.frames[-1][0]) if runtime.frames else amap.anchor(runtime.exc_line or 1)
-            if not _runtime_miss_suppressed(amap, inner, runtime, mypy + ty + pyright):
+            if not _runtime_miss_suppressed(amap, inner, runtime, mypy + ty + pyright) \
+                    and not _consequence_of_expected_error(amap, runtime, mypy + ty + pyright):
                 new(DiscrepancyKind.RUNTIME_MISS, inner, [], [])
 
     # ---------------------------------------------------------------- pyright-only errors (opt-in; appended last so

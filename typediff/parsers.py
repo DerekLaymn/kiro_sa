@@ -395,4 +395,5 @@ def runtime_from_json(obj: dict) -> RuntimeResult:
         stdout=obj.get("stdout", ""),
         stderr=obj.get("stderr", ""),
         python_version=obj.get("python_version"),
+        raised=[(int(r[0]), str(r[1]), str(r[2])) for r in obj.get("raised", [])],
     )
