@@ -1,0 +1,12 @@
+== python/mypy: overload __post_init__
+[]
+== python/mypy: dataclass __post_init__ override InitVar
+[]
+== python/mypy: __post_init__ overloaded incompatible with supertype dataclass
+[]
+== astral-sh/ty: narrowing sequence pattern non-final class intersection
+[]
+== astral-sh/ty: match class pattern negation intersection list rest
+[]
+== astral-sh/ty#1578
+{"number":1578,"state":"CLOSED","stateReason":"NOT_PLANNED","title":"Consider unsafely assuming in narrowing that multiple inheritance won't happen"}

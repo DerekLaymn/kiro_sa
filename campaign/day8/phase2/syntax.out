@@ -1,0 +1,22 @@
+syntax ok: campaign/day8/mk_groups.sh
+syntax ok: campaign/day8/gen_pass.sh
+syntax ok: campaign/day8/answer_pending.sh
+syntax ok: campaign/day8/gen_worker.sh
+syntax ok: campaign/day8/judge.sh
+syntax ok: campaign/day8/gen-pass-dryrun.sh
+py_compile ok
+== diff vs Day 7 (path substitutions only expected in the unchanged parts)
+2c2
+< # Day 7 generator stand-in: one headless kiro-cli session (claude-haiku-5.5, medium effort) answers a batch of
+---
+> # Day 8 generator: one headless kiro-cli session (claude-haiku-5.5, medium effort, agent engine v3) answers a batch of
+2c2,3
+< # Answer every pending prompt in runs/day8/inbox with the haiku-5.5 stand-in (batches of 5, 4 sessions at once).
+---
+> # Answer every pending prompt in runs/day8/inbox with the headless generator (batches of 5, 4 sessions at once).
+> # Generator: kiro-cli --agent-engine v3 --model claude-haiku-5.5 --effort medium (see gen_worker.sh).
+== model flags in gen_worker.sh
+14:kiro-cli chat --agent-engine v3 --model claude-haiku-5.5 --effort medium --no-interactive --trust-tools=fs_read,fs_write "$MSG" > "/tmp/d8/logs/worker-$$-$1.log" 2>&1
+== --llm in gen_pass.sh
+26:  run $TD --llm file:$INBOX --python-version 3.13 generate --from-seeds "$G/$1" --n "$3" --ops "$2" --out-dir "$OUT"
+29:  run $TD --llm file:$INBOX --python-version 3.13 generate --area "$1" --n "$2" --out-dir "$OUT"

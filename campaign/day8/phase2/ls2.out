@@ -1,0 +1,59 @@
+== seeds/typeddict
+readonly_notrequired.py
+== seeds/overloads
+literal_flag_overload.py
+== seeds/dataclasses
+dataclass_transform.py
+kw_only_initvar_order.py
+overloaded_post_init.py
+== seeds/final_classvar
+final_overrides.py
+== seeds/match_statement
+class_sequence_patterns.py
+== seeds/tuples_unpacking
+partial_unpack_exception.py
+variadic_tuples.py
+== seeds/self_classmethods
+self_classmethod_param.py
+self_param_inherited.py
+self_runtime_witness.py
+== reserve candidates
+runs/day7/gen/overloads/gen7_d41747bd.py
+runs/day7/gen/overloads/gen4_7ab4b09b.py
+runs/day7/gen/overloads/gen9_d6e90b34.py
+runs/day7/gen/abstract_classes/gen9_ae31b752.py
+runs/day7/gen/tuples_unpacking/tuples_unpacking__variadic_tuples__mut0_b068dfad.py
+runs/day7/gen/tuples_unpacking/gen9_c53ea70f.py
+runs/day7/gen/dataclasses/dataclasses__overloaded_post_init__mut0_223fff8f.py
+runs/day7/gen/recursive_aliases/gen4_0bbabab4.py
+runs/day7/gen/recursive_aliases/gen3_d5395259.py
+== inbox_check usage
+#!/usr/bin/env python
+"""Account for a file-bridge inbox: prompts, answers, pending prompts, answers that match no prompt.
+
+    python scripts/inbox_check.py runs/day5/inbox
+
+Exit 1 if an answer matches no prompt or a key is not 16 hex characters (the bridge silently ignores those).
+"""
+
+from __future__ import annotations
+
+import sys
+
+from typediff.llm import inbox_status
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        print(__doc__)
+        return 2
+    s = inbox_status(sys.argv[1])
+    print(f"prompts={s['prompts']} (retry prompts={s['retry_prompts']}) answers={s['answers']} answered={s['answered']} "
+          f"pending={len(s['pending'])} orphan_answers={len(s['orphan_answers'])} malformed_keys={len(s['malformed_keys'])}")
+    for k, near in s["orphan_answers"].items():
+        print(f"ORPHAN answer {k}.answer.json: no prompt with this key; prompts one edit away: {near or 'none'}")
+    for k in s["malformed_keys"]:
+== ops
+57:CRASH_OPS = ["recursion_deepening", "invalid_type_form", "feature_crossover"]
+58:DEPTH_OPS = ["feature_crossover", "generic_nesting", "narrowing_construct_swap", "runtime_witness"]
+149:                                  mutations=[{"operator": op} for op in DEPTH_OPS[:2]] + [{"operator": CRASH_OPS[0]}],

@@ -1,0 +1,22 @@
+== ty 0.0.97
+campaign/day8/phase2/repro/m1.py:12:25: info[revealed-type] Revealed type: `list[int]`
+campaign/day8/phase2/repro/m1.py:18:25: info[revealed-type] Revealed type: `list[int] | list[object]`
+campaign/day8/phase2/repro/m1.py:26:25: info[revealed-type] Revealed type: `list[int]`
+campaign/day8/phase2/repro/m1.py:32:25: info[revealed-type] Revealed type: `dict[object, object] | dict[str, int]`
+campaign/day8/phase2/repro/m1.py:40:25: info[revealed-type] Revealed type: `(list[int] & ~Point) | (str & ~Point)`
+Found 5 diagnostics
+== mypy
+campaign/day8/phase2/repro/m1.py:12: note: Revealed type is "list[int]"
+campaign/day8/phase2/repro/m1.py:18: note: Revealed type is "list[int]"
+campaign/day8/phase2/repro/m1.py:26: note: Revealed type is "list[int]"
+campaign/day8/phase2/repro/m1.py:32: note: Revealed type is "dict[object, object]"
+campaign/day8/phase2/repro/m1.py:40: note: Revealed type is "list[int] | str"
+Success: no issues found in 1 source file
+== pyright
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py:12:25 - information: Type of "rest" is "list[int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py:18:25 - information: Type of "rest" is "list[int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py:26:25 - information: Type of "rest" is "list[int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py:32:25 - information: Type of "others" is "dict[str, int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day8/phase2/repro/m1.py:40:25 - information: Type of "s" is "list[int] | str"
+0 errors, 0 warnings, 5 informations
