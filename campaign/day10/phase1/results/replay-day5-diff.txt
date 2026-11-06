@@ -1,0 +1,100 @@
+seed-0bc328316b4c.json C1 origin=seed runs/day5/gen/callables/d3p_callables_self_call_attr__mut0_f0e02e36.py 
+    ('confirmed', 'rule:crash:signal') -> ('dismissed', 'rule:crash:signal')
+seed-0bc328316b4c.json C2 origin=seed runs/day5/gen/callables/d3p_callables_self_call_attr__mut0_f0e02e36.py 
+    ('confirmed', 'rule:crash:signal') -> ('dismissed', 'rule:crash:signal')
+seed-0c3419564a03.json D2 igin=seed runs/day5/gen/narrowing_builtin/d4p_narrowing_stale_alias_loop__mut0_fb7515e6.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-12bbb70a148b.json D1 /narrowing_user/d3p_narrowing_user_attr_narrowing_kept_after_method_call__mut0_aa52a290.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-1393d88dedae.json D1 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2fe44baa.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-3666')
+seed-1393d88dedae.json D2 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2fe44baa.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-ATTR-STORE')
+seed-1393d88dedae.json D3 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2fe44baa.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-RECEIVER')
+seed-15050f63eb1b.json D1 runs/day5/gen/enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut1_510d3e14.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-1f6673a249ae.json D1 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2dca01bd.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-3666')
+seed-1f6673a249ae.json D2 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2dca01bd.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-ATTR-STORE')
+seed-1f6673a249ae.json D3 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_2dca01bd.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-ATTR-STORE')
+seed-21e5664f55a9.json D1 origin=seed runs/day5/gen/enums_literals/d4v_ty_flag_or_else_never__mut0_9a6551dc.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-21937-REVEAL')
+seed-228c00441bc7.json D1 in=seed runs/day5/gen/tuples_unpacking/d4v_ty_tuple_subclass_dunder_fold__mut0_bf763006.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171')
+seed-228c00441bc7.json D2 in=seed runs/day5/gen/tuples_unpacking/d4v_ty_tuple_subclass_dunder_fold__mut0_bf763006.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171')
+seed-3e406bea8b95.json D2 origin=seed runs/day5/gen/enums_literals/d3p_enums_flag_or_literal_union__mut0_be2da21a.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-876')
+seed-445fbcda8148.json D1 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut0_7f6d16c9.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-5b98a456c114.json D1 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_88a6ac94.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-5b98a456c114.json D2 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_88a6ac94.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-744e0c9a2bca.json D1 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_0a0375ff.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-744e0c9a2bca.json D2 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_0a0375ff.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-7517113c9957.json D1 origin=seed runs/day5/gen/enums_literals/d4v_ty_flag_or_else_never__mut1_69341c3d.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-21937-REVEAL')
+seed-8d8891bc53da.json D2 origin=seed runs/day5/gen/enums_literals/d3p_enums_flag_or_literal_union__mut0_9a974ae5.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-876')
+seed-95565efe2d4b.json D3 igin=seed runs/day5/gen/narrowing_builtin/d4p_narrowing_stale_alias_loop__mut1_3efc6f36.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-964e3b58e60d.json D1 origin=seed runs/day5/gen/tuples_unpacking/d4p_tuples_fold_subclass_eq__mut0_00533d83.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171-ASSERT')
+seed-99f2b5bbcca2.json D1 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut1_ced90fe1.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-99f2b5bbcca2.json D2 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut1_ced90fe1.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-a58464057175.json D2 origin=seed runs/day5/gen/enums_literals/d3p_enums_flag_or_literal_union__mut1_eca6659b.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-876')
+seed-a660052c7821.json D1 runs/day5/gen/generics_variance/d3p_generics_callable_attr_contravariant__mut0_6938395f.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-22339')
+seed-b3771201cb49.json D1 origin=seed runs/day5/gen/enums_literals/d4v_ty_flag_or_else_never__mut0_ceaf468e.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-21937-REVEAL')
+seed-b962e0072c1a.json D1 in=seed runs/day5/gen/tuples_unpacking/d4v_ty_tuple_subclass_dunder_fold__mut0_31e568af.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171')
+seed-b962e0072c1a.json D2 in=seed runs/day5/gen/tuples_unpacking/d4v_ty_tuple_subclass_dunder_fold__mut0_31e568af.py 
+    ('dismissed', 'kb:LITERAL-WIDENING') -> ('dismissed', 'kb:UPSTREAM-TY-2171')
+seed-bcac6db24c36.json D1 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut1_78cb017c.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-bcac6db24c36.json D2 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut1_78cb017c.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-bd98b562f194.json D1 s/day5/gen/narrowing_builtin/d3p_narrowing_builtin_stale_alias_condition__mut0_4ef84ec6.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-bf85c3cc7d9a.json D1 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_041480f3.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-bf85c3cc7d9a.json D2 origin=seed runs/day5/gen/enums_literals/d4v_enum_value_alias__mut0_041480f3.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-c4abcbc71843.json D1 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut0_303925a5.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830')
+seed-c4abcbc71843.json D2 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut0_303925a5.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-c96335a99642.json D1 runs/day5/gen/enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut0_57d54e0d.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-c96335a99642.json D2 runs/day5/gen/enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut0_57d54e0d.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-ceb0c19d6bf2.json D2 ns/day5/gen/tuples_unpacking/d3p_tuples_unpacking_constant_fold_subclass__mut0_3a124a99.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171-ASSERT')
+seed-dbaca47402ae.json D1 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut1_dfab5191.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-3666')
+seed-dbaca47402ae.json D2 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut1_dfab5191.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-ATTR-STORE')
+seed-dbaca47402ae.json D3 /day5/gen/paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut1_dfab5191.py 
+    ('review', 'gate') -> ('dismissed', 'kb:CALLABLE-SELF-ATTR-STORE')
+seed-dc7c67cf7365.json D3 igin=seed runs/day5/gen/narrowing_builtin/d4p_narrowing_stale_alias_loop__mut0_076d67c8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-e1e7f7da5c5f.json D2 ns/day5/gen/tuples_unpacking/d3p_tuples_unpacking_constant_fold_subclass__mut0_e7211ac8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2171-ASSERT')
+seed-e5e3cbef63c0.json D1 rigin=seed runs/day5/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut0_89f5af4c.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-MYPY-16830-REVEAL')
+seed-e60cadd3ca1b.json D1 s/day5/gen/narrowing_builtin/d3p_narrowing_builtin_stale_alias_condition__mut0_3cb7e4b2.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+seed-fdca88caad43.json D1 igin=seed runs/day5/gen/narrowing_user/d4v_ty_attr_eq_narrow_unreachable__mut0_e82a1308.py 
+    ('review', 'gate') -> ('dismissed', 'kb:UPSTREAM-TY-2792')
+compared 196 changed 49 live before 136 live after 88
+new decided_by of changed findings: {'rule:crash:signal': 2, 'kb:UPSTREAM-TY-2792': 7, 'kb:UPSTREAM-TY-3666': 3, 'kb:CALLABLE-SELF-ATTR-STORE': 5, 'kb:CALLABLE-SELF-RECEIVER': 1, 'kb:UPSTREAM-MYPY-16830-REVEAL': 7, 'kb:UPSTREAM-MYPY-21937-REVEAL': 3, 'kb:UPSTREAM-TY-2171': 4, 'kb:UPSTREAM-TY-876': 3, 'kb:UPSTREAM-MYPY-16830': 10, 'kb:UPSTREAM-TY-2171-ASSERT': 3, 'kb:UPSTREAM-MYPY-22339': 1}

@@ -35,7 +35,7 @@ from .experiments import MYPY_CODE_ENABLERS, ExperimentRunner, self_call_plan
 from .inhabit import inhabits
 from .models import Discrepancy, DiscrepancyKind, Dismissal, Evidence, EvidenceType, Severity, Tool
 from .parsers import classify_exception
-from .selfparam import has_self_typed_state
+from .selfparam import has_self_typed_state, parse_string_annotation
 from .state import CaseState
 from .typenorm import (gradual_diff, has_bool_literal, is_join_vs_union, is_literal_retention, is_literal_widening,
                        normalize)
@@ -2540,6 +2540,63 @@ ENTRIES.extend([
         "type error at the statement keeps it in review.",
         (K.ONLY_TY, K.ONLY_MYPY, K.ONLY_PYRIGHT, K.CONCERN_MISMATCH, K.REVEAL_MISMATCH), _callable_self_receiver, auto=True,
         runtime_override=True,
+    ),
+])
+_ITERATOR_DEPRECATED = re.compile(
+    r"^The overload of `(contextmanager|asynccontextmanager)` is deprecated: Annotating the return type as "
+    r"`-> (Iterator|AsyncIterator)\[Foo\]` with `@\1` is deprecated\. Use `-> (?:Async)?Generator\[Foo\]` instead\.$")
+
+
+def _plain_name(node: ast.AST) -> str | None:
+    """``name`` for ``name`` and ``mod.name`` / ``a.b.name``, else None."""
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        return node.attr
+    return None
+
+
+def m_contextmanager_iterator_deprecated(s, d):
+    """Day 10: ty's warning[deprecated] for the Iterator overload of ``contextmanager`` / ``asynccontextmanager``.
+
+    ALL required: every ty diagnostic of the discrepancy is that one warning, with exactly the stub's wording; the statement
+    is a ``def`` whose decorator list holds the decorator the message names, on the line ty reported; and the return
+    annotation (also a quoted one) is ``Iterator[..]`` for ``contextmanager`` / ``AsyncIterator[..]`` for
+    ``asynccontextmanager``, so a ``Generator[..]`` function never matches."""
+    if not d.ty or any(x.code != "deprecated" for x in d.ty):
+        return False
+    node = _stmt_node(s, d)
+    if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or node.returns is None:
+        return False
+    ret = parse_string_annotation(node.returns) or node.returns
+    ret_name = _plain_name(ret.value) if isinstance(ret, ast.Subscript) else None
+    for x in d.ty:
+        m = _ITERATOR_DEPRECATED.match(x.message.strip())
+        if not m or ret_name != m.group(2):
+            return False
+        if (m.group(1) == "asynccontextmanager") != (m.group(2) == "AsyncIterator"):
+            return False
+        if not any(_plain_name(dec) == m.group(1) and dec.lineno == x.line for dec in node.decorator_list):
+            return False
+    return True
+
+
+ENTRIES.extend([
+    KBEntry(  # Day-10 block. No `example`: kb-selftest stays at the 20 Day-9 entries; tests/test_day10_pipeline.py runs the real tools
+        "TY-CONTEXTMANAGER-ITERATOR-DEPRECATED",
+        "ty reports the typeshed deprecation of the Iterator overload of @contextmanager; mypy 2.4.0's typeshed predates it",
+        Dismissal.CONFIG_ARTIFACT, "https://github.com/microsoft/pyright/issues/11402",
+        "Newer typeshed stubs (the ones ty 0.0.97 bundles) mark the `Callable[_P, Iterator[_T]]` overload of "
+        "`contextlib.contextmanager` (and the `AsyncIterator` overload of `asynccontextmanager`) as `@deprecated` and ask for "
+        "`-> Generator[Foo]`; ty shows that as a warning-level `deprecated` diagnostic (not a type error). The `contextmanager` "
+        "signature in the stubs mypy 2.4.0 ships has no such marker, and mypy reports nothing even with `--enable-error-code "
+        "deprecated` (Day-9 experiment E1), and pyright printed nothing for these programs; the same stub wording is the "
+        "subject of pyright#11402 and ruff's UP052. So the difference is the vendored typeshed snapshot, not a checker bug. "
+        "Fires only when the statement is a "
+        "`def` decorated with the decorator the message names on the reported line, with an `Iterator[..]` (or `AsyncIterator[..]`) "
+        "return annotation, and the only ty diagnostics are that warning with the stub's own wording. The program is still "
+        "valid at runtime; the entry says nothing about any other `deprecated` diagnostic.",
+        (K.ONLY_TY,), m_contextmanager_iterator_deprecated, auto=True, runtime_override=False,
     ),
 ])
 ENTRIES[:0] = _upstream_entries()  # checked first: an exact upstream match beats a generic explanation

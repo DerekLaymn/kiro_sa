@@ -1,0 +1,144 @@
+rows 25
+seed-0351a0d47dd0.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 25)] stmt= def gen_cm() -> Iterator[None]: scope= <module>
+seed-0aaa8962fab4.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 27)] stmt= def tagged(tag: str) -> Iterator[str]: scope= <module>
+seed-1d64b6385adb.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 27)] stmt= def tag(label: str) -> Iterator[str]: scope= <module>
+seed-24dadf82b48d.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 26)] stmt= def gen_cm() -> Iterator[None]: scope= <module>
+seed-383e04419c32.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 20)] stmt= def guard() -> Iterator[None]: scope= <module>
+seed-3dc808ddbad0.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 37)] stmt= def plain() -> Iterator[None]: scope= <module>
+seed-40789ebf87d2.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 35)] stmt= def guarded() -> Iterator[int]: scope= <module>
+seed-58d9ce3f35d6.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 20)] stmt= def guarded() -> Iterator[None]: scope= <module>
+seed-5a7bc1806391.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 27)] stmt= def guard() -> Iterator[None]: scope= <module>
+seed-61d0496193e3.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 36)] stmt= def swallow() -> Iterator[None]: scope= <module>
+seed-63e67d241833.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 27)] stmt= def tagged() -> Iterator[str]: scope= <module>
+seed-6672634c6b54.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 11)] stmt= def tagged(tag: str) -> Iterator[str]: scope= <module>
+seed-6dbbe098941c.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 26)] stmt= def tagged(name: str) -> Iterator[str]: scope= <module>
+seed-71191e249192.json D2 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 33)] stmt= def gen_cm() -> Iterator[None]: scope= <module>
+seed-751d84329f01.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 19)] stmt= def tagged() -> Iterator[int]: scope= <module>
+seed-8a33c93dee14.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 25)] stmt= def guarded() -> Iterator[None]: scope= <module>
+seed-90f4b6826e1a.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 35)] stmt= def guard() -> Iterator[None]: scope= <module>
+seed-90fdfaee50d4.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 35)] stmt= def tracked(log: list[str]) -> Iterator[int]: scope= <module>
+seed-9cc5fb57bdc1.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 20)] stmt= def gen_ctx() -> Iterator[None]: scope= <module>
+seed-a703e518f14a.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 25)] stmt= def guard() -> Iterator[None]: scope= <module>
+seed-ae3b400bd793.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 11)] stmt= def opened(tag: str) -> Iterator[list[str]]: scope= <module>
+seed-b5d1d344cad7.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 19)] stmt= def gen_swallow() -> Iterator[None]: scope= <module>
+seed-c464d0bc842a.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 31)] stmt= def gen_cm() -> Iterator[None]: scope= <module>
+seed-d13a46d753ff.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 36)] stmt= def tagged(tag: str) -> Iterator[str]: scope= <module>
+seed-f7d7367ca43f.json D1 only_ty decided_by= gate tier= review mypy= [] ty= [('deprecated', 26)] stmt= def guarded() -> Iterator[int]: scope= <module>
+{
+ "discrepancy_id": "D1",
+ "verdict": "NEEDS_HUMAN",
+ "tier": "review",
+ "faulty_tool": "unknown",
+ "symptom": null,
+ "dismissal": null,
+ "confidence": 0.0,
+ "decided_by": "gate",
+ "reasoning": "no LLM configured (TYPEDIFF_LLM=null): needs a human",
+ "correct_behavior": "",
+ "counter_hypothesis": "",
+ "evidence": [
+  {
+   "type": "RUNTIME",
+   "supports": "neutral",
+   "summary": "statement executed under CPython without a type-related exception (does NOT prove a rejection spurious)",
+   "citation": "line 25",
+   "quote": "",
+   "verified": true,
+   "strength": "weak",
+   "blame": null
+  },
+  {
+   "type": "CONSENSUS",
+   "supports": "neutral",
+   "summary": "pyright behaves like mypy at this statement (weak evidence)",
+   "citation": "",
+   "quote": "",
+   "verified": true,
+   "strength": "weak",
+   "blame": "ty"
+  },
+  {
+   "type": "EXPERIMENT",
+   "supports": "neutral",
+   "summary": "discrepancy persists with mypy --enable-error-code deprecated (E1) - KB explanation does not apply",
+   "citation": "E1",
+   "quote": "",
+   "verified": true,
+   "strength": "medium",
+   "blame": null
+  }
+ ],
+ "experiments": [],
+ "review_notes": [],
+ "reduced_source": null,
+ "signature": null,
+ "closed_by": null
+}
+{
+ "id": "D1",
+ "kind": "only_ty",
+ "anchor": 25,
+ "anchor_end": 26,
+ "statement": "def gen_cm() -> Iterator[None]:",
+ "scope": "<module>",
+ "mypy": [],
+ "ty": [
+  {
+   "tool": "ty",
+   "line": 25,
+   "col": 2,
+   "severity": "warning",
+   "code": "deprecated",
+   "message": "The overload of `contextmanager` is deprecated: Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.",
+   "end_line": null,
+   "end_col": null,
+   "revealed_type": null,
+   "anchor": 25,
+   "raw": "case.py:25:2: warning[deprecated] The overload of `contextmanager` is deprecated: Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead."
+  }
+ ],
+ "pyright": [],
+ "reveal_relation": null,
+ "evidence": [
+  {
+   "type": "RUNTIME",
+   "supports": "neutral",
+   "summary": "statement executed under CPython without a type-related exception (does NOT prove a rejection spurious)",
+   "citation": "line 25",
+   "quote": "",
+   "verified": true,
+   "strength": "weak",
+   "blame": null
+  },
+  {
+   "type": "CONSENSUS",
+   "supports": "neutral",
+   "summary": "pyright behaves like mypy at this statement (weak evidence)",
+   "citation": "",
+   "quote": "",
+   "verified": true,
+   "strength": "weak",
+   "blame": "ty"
+  },
+  {
+   "type": "EXPERIMENT",
+   "supports": "neutral",
+   "summary": "discrepancy persists with mypy --enable-error-code deprecated (E1) - KB explanation does not apply",
+   "citation": "E1",
+   "quote": "",
+   "verified": true,
+   "strength": "medium",
+   "blame": null
+  }
+ ],
+ "kb_hits": [
+  "MYPY-OPTIONAL-CHECK",
+  "STUB-SKEW"
+ ],
+ "features": [
+  "decorator",
+  "generator",
+  "iterator"
+ ],
+ "priority": 0.6
+}

@@ -1,0 +1,52 @@
+seed-0351a0d47dd0.json D1 =seed runs/day9/gen/narrowing_user/d3p_narrowing_user_index_assign_stale__mut2_0d823132.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-0aaa8962fab4.json D1 origin=seed runs/day9/gen/context_managers/gen13_128b9d45.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-1d64b6385adb.json D1 origin=seed runs/day9/gen/context_managers/gen11_82bd7703.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-24dadf82b48d.json D1 in=seed runs/day9/gen/narrowing_builtin/narrowing_builtin__len_in_walrus__mut1_957c9c77.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-383e04419c32.json D1 in=seed runs/day9/gen/narrowing_builtin/narrowing_builtin__len_in_walrus__mut2_f26419b5.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-3dc808ddbad0.json D1 in=seed runs/day9/gen/narrowing_builtin/narrowing_builtin__len_in_walrus__mut0_91475b3f.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-40789ebf87d2.json D1  runs/day9/gen/self_classmethods/self_classmethods__self_runtime_witness__mut2_f4e7ef79.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-58d9ce3f35d6.json D1 origin=seed runs/day9/gen/narrowing_user/narrowing_user__typeis_generic__mut1_4f05c30e.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-5a7bc1806391.json D1 igin=seed runs/day9/gen/narrowing_user/d4v_ty_attr_eq_narrow_unreachable__mut0_af884377.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-61d0496193e3.json D1 d runs/day9/gen/dunder_dispatch/d8p_dunder_dispatch_annotation_only_call__mut1_4818bdee.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-63e67d241833.json D1 origin=seed runs/day9/gen/context_managers/gen20_fd89527d.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-6672634c6b54.json D1 origin=seed runs/day9/gen/context_managers/gen8_f3de60e6.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-6dbbe098941c.json D1 origin=seed runs/day9/gen/context_managers/gen12_99ee6e81.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-71191e249192.json D2 =seed runs/day9/gen/narrowing_user/d3p_narrowing_user_index_assign_stale__mut0_eb99ab6e.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-751d84329f01.json D1 origin=seed runs/day9/gen/gradual_any/gradual_any__gradual_guarantee__mut1_cb14f1df.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-8a33c93dee14.json D1 origin=seed runs/day9/gen/gradual_any/gradual_any__gradual_guarantee__mut2_7c3606dd.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-90f4b6826e1a.json D1 origin=seed runs/day9/gen/narrowing_user/narrowing_user__typeis_generic__mut2_d401bfee.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-90fdfaee50d4.json D1 origin=seed runs/day9/gen/context_managers/gen5_c8eb51b8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-9cc5fb57bdc1.json D1  runs/day9/gen/self_classmethods/self_classmethods__self_runtime_witness__mut0_2b225532.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-a703e518f14a.json D1 /day9/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut0_70888423.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-ae3b400bd793.json D1 origin=seed runs/day9/gen/context_managers/gen1_779d9e58.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-b5d1d344cad7.json D1 /day9/gen/tuples_unpacking/d7p_tuples_unpacking_partial_unpack_except_ty__mut2_9a0f17d4.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-c464d0bc842a.json D1 origin=seed runs/day9/gen/narrowing_user/narrowing_user__typeis_generic__mut0_98f7a7a8.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-d13a46d753ff.json D1 origin=seed runs/day9/gen/context_managers/gen18_dfd80852.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+seed-f7d7367ca43f.json D1 origin=seed runs/day9/gen/context_managers/gen3_bd7cc548.py 
+    ('review', 'gate') -> ('dismissed', 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED')
+compared 339 changed 25 live before 224 live after 199
+new decided_by of changed findings: {'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED': 25}
