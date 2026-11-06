@@ -53,3 +53,12 @@ Branch `campaign/day9-p2`, local only; nothing pushed, no GitHub write, no `gh` 
 7. [§3 daily loop, plan] 250 programs: 109 fresh (44 in the new areas `dunder_dispatch` and `context_managers`, 65 in nine areas with no program on Days 7 and 8), 48 with the new operators `dunder_instance_shadow` and `exit_swallow_flip` (+4 inside the crash groups), 47 with the six operators no earlier day used (+10 inside the crash groups), 22 crash-family programs, 24 pass-2 reserve. The ten areas that took 230 of Day 8's 250 programs get 43 (`results/budget.out`). No pytest or kb-selftest run: no code, KB or pin changed in this step.
 
 Log line: Day 9 phase 2: 0 programs generated (250 planned, dry run `pending=250 written=0`), 1 program promoted to `runs/hits` (40 to 41), 0 retired by move, 0 new candidates, 0 issues filed.
+
+## Cleanup note (pre-generation)
+
+- Shell probe passed (bash script, output read back).
+- Removed untracked leftovers from the failed step: probe-d9.out, probe-d9.txt.
+- Branch campaign/day9-p2, HEAD 377d3d8 before this note.
+- Left uncommitted and unchanged: campaign/day7-report.md (stray garbled text "se=0-9rches" in one line) and campaign/day8/phase6/results/commit.out (captured git output). Neither is meaningful.
+- Untouched untracked: -l, .kiro/, findings/2026-10-27-llm-run/.
+- Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16.
