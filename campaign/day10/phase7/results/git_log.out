@@ -1,0 +1,177 @@
+### date
+Friday 06 November 2026 09:51:02 PM IST
+### branch
+campaign/day10-p2
+### git log (all, oneline w/ date)
+c6c5a9a 2026-11-06 docs: day 10 phase 6 verification (10 strong programs: 5 duplicates, 4 not-a-bug, 1 mixed; drafts 11 mypy lambda vs callback protocol, 12 pyright closed= before 3.15; 730 passed, kb-selftest 20/0)
+334ff8c 2026-11-06 feat: day 10 phase 5 morning decisions (0 promoted, 3 retired, KB entry MYPY-8595-METACLASS-CALL, 42 tests; runs/hits 39 to 36)
+550c478 2026-11-06 chore: day10 phase 4 deterministic judge results and run log
+c0e6f01 2026-11-06 chore: day 10 phase 3 generation, 250 programs via file bridge
+e00125d 2026-11-06 docs: day 10 phase 2 morning decisions (1 promoted, 2 retired, runs/hits 40 to 39; 250 programs planned, dry run pending=250 written=0, 0 keys shared with Days 3-9)
+63cd5b2 2026-11-06 fix: close ty deprecated warning on contextmanager Iterator overload (KB entry, 33 tests; day 9 live 224 to 199)
+3f6d67f 2026-11-06 docs: day 10 run log stub (branch setup, weakness chosen)
+5a16806 2026-11-06 docs: day 9 report (250 programs, 224 live, 2 new drafts; 655 passed, kb-selftest 20/0)
+02d533f 2026-11-06 docs: day 9 phase 6 verification (8 strong candidates: 1 new, 5 duplicate, 2 not a bug; drafts 9 and 10)
+ff68fa3 2026-11-06 docs: day 9 phase 5 morning decisions (0 promoted, 1 retired, 0 KB entries; runs/hits 41 to 40, check_hits 0 problems)
+9f690da 2026-11-06 chore: day9 phase 4 deterministic judge results
+08e56cc 2026-11-06 docs: day 9 phase 3 generation (250 programs written, inbox check clean, operator-follow counts, generator sessions haiku-5.5)
+b6f500e 2026-11-06 docs: day 9 pre-generation cleanup note
+377d3d8 2026-11-06 docs: day 9 phase 2 morning plan (promote dunder parent, 250-program plan with new areas and operators, day 9 scripts; dry run pending=250)
+42a7af8 2026-11-06 feat: day 9 phase 1 pipeline (quoted Self, TY-2792-READONLY nested def, dunder_instance_shadow and exit_swallow_flip operators; 655 passed, kb-selftest 20/0)
+1df508f 2026-11-06 docs: day 8 report (250 programs, 155 live, 1 new draft; 604 passed, kb-selftest 20/0)
+ddf8dc5 2026-11-06 docs: day 8 phase 6 verification (9 candidates: 3 still-bug-new, draft 8 mypy __post_init__ overloads; 604 passed, kb-selftest 20/0)
+57242ea 2026-11-06 docs: day 8 phase 6 verification (9 candidates: 3 still-bug-new, draft 8 mypy __post_init__ overloads; 604 passed, kb-selftest 20/0)
+41bb66a 2026-11-06 docs: day 8 phase 5 morning decisions (0 promoted, 2 parents retired, KB unchanged, check_hits 40/0)
+a85c3cd 2026-11-06 docs: day 8 phase 4 judge run (250 programs, 155 live), stats, triage, memory figures
+ec9d884 2026-11-06 docs: day 8 phase 3 generation log (250 programs)
+76ef19e 2026-11-06 docs: day 8 phase 2 morning decisions and generation plan (250 programs incl. 26-program reserve), campaign/day8 scripts, dry run pending=250
+0d076f9 2026-11-06 docs: day 8 review - run log item 17 (option c) and DISPLAY-EQUIVALENT entry text
+ffff035 2026-11-06 fix: day 8 review - compare ty/pyright default values in DISPLAY-EQUIVALENT, ... and default_factory names match any default
+47d5df6 2026-11-06 fix: day 8 review - skip staticmethods as Callable receivers, link expect-error marker to runtime_miss chain, reword attr-store source
+b4c6482 2026-11-06 feat: day 8 pipeline - ParamSpec self-callable family, duplicate matchers (D7-3, D7-4, H1), display noise, caught-exception evidence
+03d88a5 2026-11-06 docs: day 7 report (Day 6 vs Day 7 funnel, Part A/B effect, new-area yield, candidates, not verified)
+2530843 2026-11-06 docs: day 7 part D verification (2 new drafts: ty partial unpack, pyright RangeError; hash candidate is mypy#2455 duplicate)
+f97c4e1 2026-11-06 docs: day 7 part C run log (generation, judge, memory, morning decisions)
+41cd3ad 2026-11-06 feat: day 7 judge run (224 programs, live 107, 30 crashes auto-closed), promote tuple-unpack parent, retire 4 dismissed-only parents
+48e6e08 2026-11-06 feat: kbloop_stats prints live count without only_pyright (498 passed, 20 PASS, check_hits 45/0, Day-6 replay +37 with flag, 0 without)
+bc1f683 2026-11-06 fix: drop flatten expanding-receiver parent from capped group, give 3 programs to recursive_aliases, save gen_pass dry run (224)
+c49c5ee 2026-11-06 docs: day 7 morning plan, retire 4 dismissed parents, generation scripts, pyright replay evidence
+977007d 2026-11-06 feat: opt-in only_pyright finding kind for pyright errors that mypy and ty miss
+26499ff 2026-11-06 docs: day 7 part A run log and replay evidence (19 changed findings, controls on days 3 to 5)
+cd88cd8 2026-11-06 feat: close ty#2171 and ty#2792 known duplicates with narrow entries
+e60482f 2026-11-05 chore: start day 7 run log
+1f54286 2026-11-05 docs: day 6 report and run log (part B)
+4028428 2026-11-05 docs: day 6 judge stats, triage, evidence and helper scripts
+74b3018 2026-11-05 feat: day 6 upstream entry TY-4756 and TY-2171 prior stance with tests
+2fdbecb 2026-11-05 chore: day 6 generation scripts (haiku-5.5 stand-in via kiro-cli) and pass log
+903fa7f 2026-11-05 docs: day 6 morning plan, 3 new parents (incl. Callback shape), generation scripts
+e608653 2026-11-05 docs: day 6 re-verified issue drafts, add mypy ParamSpec-default draft
+baa499d 2026-11-05 docs: day 6 verification of drafts 3 and 4 and the Callback candidate
+622f5b7 2026-11-05 docs: day 5 ty 0.0.97 bump report
+3074ef5 2026-11-05 fix: mark TY-4883 and TY-4884 entries as fixed in ty 0.0.97, update day3 check expectations
+ff8bd5e 2026-11-05 chore: bump pinned ty from 0.0.84 to 0.0.97 in install docs and plan
+9808837 2026-11-05 docs: day 5 run log, report step
+81779d9 2026-11-05 chore: day 5 judge marker and pipeline review
+792da5e 2026-11-05 docs: day 5 report
+a62d72c 2026-11-05 docs: day 5 morning decisions, new pyright RangeError parent
+6c9825a 2026-11-05 feat: day 5 morning upstream entries (enum aliases, Flag else reveal, ~Flag, property setter, local C1 crash)
+f548ee7 2026-11-05 chore: day 5 judge script, stats and triage
+e200e99 2026-11-05 chore: day 5 generation pass script
+f596af5 2026-11-05 chore: promote verified Day-4 section 5 parent to runs/hits, add C1 regression program
+29129ab 2026-11-05 docs: day 5 step 1 verification results
+3263e9f 2026-11-05 docs: day 5 step 1 run log
+8ad46bb 2026-11-05 feat: inbox_status and inbox_check report answers that match no prompt
+3b1cf93 2026-11-05 fix: match every C1 __call__ self-reference shape for TY-4148 and MYPY-22361
+3aab933 2026-11-05 fix: auto-close crashes only by a known_upstream entry and record the closing reference
+afe5df3 2026-11-05 feat: add 'Variant k of n' line to generate prompts when n > 1
+a403712 2026-11-05 docs: day 4 report, stats, triage and judge script
+059988a 2026-11-05 chore: day4 gen pass script and pass-0 log
+cc2af62 2026-11-05 docs: day 4 morning decisions (parents, retire entries, replay numbers)
+78a6546 2026-11-05 feat: add known_upstream entries TY-4148 (crash) and TY-876-ARGTYPE with tests
+3383e2f 2026-11-05 docs: day 3 verification summary and issue drafts (day 4 consolidate)
+c39a355 2026-11-05 docs: day 4 verification v3 (IntEnum alias, metaclass reflected operator, recursive alias reveal, __hash__ None)
+9b9491d 2026-11-05 docs: day 4 verification v2 (stale alias, tuple fold, read-only property, Flag)
+18f6ddd 2026-11-05 docs: day 4 verification v1 (ty crash candidates) and issue draft
+adead10 2026-11-05 chore: log ty#4656 re-check and flaky-test fix
+1c3cd05 2026-11-05 fix: de-flake test_timeout_kills_grandchild (poll pidfile, longer timeout, /proc race, cleanup)
+074ceb4 2026-11-05 docs: record ty#4656 as closed design difference, not a bug; ty#4673 closed duplicate
+4f8b960 2026-11-05 chore: add day 4 setup log
+7d4488d 2026-11-05 docs: note flaky timeout test in day 3 report
+1063c68 2026-11-05 docs: day 3 report
+a8eb441 2026-11-05 chore: day3 judge and triage outputs
+a05fd35 2026-11-05 docs: day 3 morning - replay, 32 promoted parents, pattern verdicts
+032bf3d 2026-11-05 fix: kill the whole process group when a checker times out
+dc51a60 2026-11-05 fix: generate --n yields distinct variants (seed=k) and stable filenames
+17279ee 2026-11-05 docs: dedupe day 3 run log header
+4f41c46 2026-11-05 docs: start day 3 run log
+594a0c7 2026-11-05 docs: start day 3 run log
+b46fb6e 2026-11-05 docs: add day-3 upstream plan and review artefacts
+4a159db 2026-11-05 docs: finalize day-3 upstream entries report and run log
+4c3f4cc 2026-11-05 docs: re-verified day-3 upstream entries after review iteration 1
+ee5e6ac 2026-11-05 fix: accept SIGKILL for TY-4899 and tighten PYRIGHT-11961, TY-3765 matchers
+603a895 2026-11-05 docs: record Day-2 replay results for day-3 upstream entries
+97c7bd8 2026-11-05 docs: day-3 upstream entries report, design notes and run log
+ca5f30b 2026-11-05 feat: record team-filed discrepancy bugs and prior stances in known_upstream.json
+ce63f5c 2026-11-05 feat: record team-filed upstream crashes as kind=crash entries (ty, mypy, pyright)
+096a153 2026-11-02 docs: list branch commits in the final report
+4055e85 2026-11-02 docs: day-2 P1 final run report
+5c4a525 2026-11-02 chore: add remaining campaign/tmp helper scripts and probe outputs
+1e860b7 2026-11-02 docs: add reviewer verdicts and review docs for rounds 1-3, round-1 run markers
+528bd1a 2026-11-02 docs: log stage 3 round 3 (NameError policy, stale alias, binding recovery, replay, calibration) and round-3 campaign outputs
+d924841 2026-11-02 feat: REVEAL-ERROR-RECOVERY also covers a gradual reveal through a name the same tool flagged at its binding
+a4147b3 2026-11-02 fix: NameError on a flagged name is strong evidence in both code paths (blames the silent tool); hint-only MYPY-UNBOUND-OPT-IN-CHECK verified by mypy opt-in toggle
+10dd9b1 2026-11-02 fix: stale-alias guard for MYPY-13807, pyright-independent REVEAL-ERROR-RECOVERY negative, calibrate reports dismissed must_stay_live programs
+13aae01 2026-11-02 docs: log stage 3 round 2 (triage, KB changes, replay, calibration) and round-2 campaign outputs
+69f5ff6 2026-11-02 fix: REVEAL-ERROR-RECOVERY never dismisses a statement CPython raised on (any exception type)
+ba8fbe0 2026-11-02 feat: MYPY-13807-ALIASED-CONDITIONS KB entry (mypy does not narrow through aliased conditions)
+1b708d4 2026-11-02 fix: typenorm treats intersections, LiteralString, type[X] and Never as refinements instead of 'different'
+9456642 2026-11-02 feat: REVEAL-ERROR-RECOVERY KB entry (gradual reveal inside an expression the same tool reports an error in)
+c1d243b 2026-11-02 fix: close the constant-fold hole in assert_type retention, require pyright agreement, record annotation-only read as tracked mypy limitation
+d479c03 2026-11-02 docs: log stage 3 round 1 (triage, KB changes, replay, calibration)
+0cd8539 2026-11-02 docs: cite the conformance suite's 'either is acceptable' note in ASSERT-TYPE-LITERAL-RETENTION
+fbf9b12 2026-11-02 feat: KB entries for assert_type literal retention and mypy first-assignment typing; multi-name annotation-only read
+d171b92 2026-11-02 fix: normalise bytes literal spelling and add literal-retention helper in typenorm
+b4bf9e8 2026-11-02 docs: log stage 2 corpus run and split baselines
+7f2969d 2026-11-02 chore: stage 1 setup and day 1 run log
+90a50ef 2026-11-02 docs: updated progress deck (16 slides), crash triage report with repros, kb-loop summary, variance-bug report, stage audit
+dfd5180 2026-11-02 merge: kb-loop rounds (origin oracle, crash detection fixes, KB entries, docs)
+3116e08 2026-11-02 merge: day-1/day-2 triage fixes and mdtest version fix (progress/pipeline-fixes-day2)
+bf17f8b 2026-11-02 Revert the 2026-10-27 external changes (restore the tree of 0e2b90c)
+cd363ad 2026-11-02 docs: kb-loop iteration 2 log and final numbers
+8018a8f 2026-11-01 wip: iteration 2 review fixes (oracle hint-only, anchored headers, #948 note); tests unconfirmed after last json edit
+da1124f 2026-11-01 docs: kb-loop round 2 log, candidates, final verification, handoff
+da2a1a3 2026-11-01 feat: EXPECTED-ERROR-ORACLE hint (ty mdtest expects the reported rule)
+8e3f2c0 2026-11-01 feat: PYRIGHT-REVEAL-EXPECTED-KWARG entry; docs: handoff entry 4
+cf67b1d 2026-11-01 docs: handoff entry 4
+0c88ddd 2026-11-01 feat: SUITE-EXPECTS-ERROR hint entry
+178a862 2026-11-01 fix: crash detection (signals, pyright internal errors, no double count, head+tail excerpts, finer signatures, rerun note, harvest skew record)
+274a21c 2026-11-01 docs: kb-loop round 1 log, candidates and handoff
+d7c4967 2026-11-01 docs: handoff entry 2; chore: calibration subset runner
+ff38de3 2026-11-01 fix: suite-header requirement for origin oracle and MYPY-948 (calibration: ty#4841, mypy#7935)
+42e5b45 2026-11-01 fix: origin oracle never dismisses inside spec-defined narrowing
+c324ac6 2026-11-01 docs: kb-loop handoff log; feat: replay --rerun-runtime
+0d517b7 2026-11-01 feat: origin oracle, MYPY-948 and suite-empty-bodies KB entries, pipeline defect fixes, replay tooling
+74a782a 2026-10-31 chore: parallel corpus runner and fixed-seed 20% hold-out split for kb-loop
+0f1d39b 2026-10-31 feat: integrate selected friend work (mypy#9658 matcher, public_issues, pyright/typeshed harvest) and kb-loop baseline log
+851b5fb 2026-10-27 Merge LLM fuzz run findings and agentic pipeline (2026-10-27)
+1957d9c 2026-10-27 Merge pull request #2 from DerekLaymn/fuzz/llm-run-2026-10-27
+7d91795 2026-10-27 docs: agentic LLM fuzzing pipeline description and full run artifacts
+0fe82c6 2026-10-27 feat: add 2026-10-25 findings, new seeds, and known-upstream KB entries
+92bc106 2026-10-27 docs: add 2026-10-27 LLM run findings, reproducers and review
+e754518 2026-10-27 feat: add LLM-generated fuzz programs and run notes for 2026-10-27 campaign
+94bd563 2026-10-14 docs: add day-1/day-2 harvest triage results and campaign handoff notes
+918bb2e 2026-10-14 merge fixE-mdtest-version: skip mdtest snippets not targeting Python 3.13
+d79bc7d 2026-10-13 feat: add plan and updates slides to deck
+61460d7 2026-10-13 docs: add typediff progress deck slides 1-5
+e69c295 2026-10-10 fix: skip mdtest snippets whose environment differs from 3.13 target
+ef69046 2026-10-10 Merge branch 'integration-fixes'
+9c34db0 2026-10-10 merge fixD-kb
+f7004f6 2026-10-10 merge fixC-provenance
+17b9c7b 2026-10-10 merge fixB-runtime-miss
+5326641 2026-10-10 merge fixA-evidence
+73749f2 2026-10-10 feat: narrow KB entries for annotation-only reads, __new__ non-subtype, callable joins, mdtest TODOs
+0ce4f37 2026-10-10 fix: stop blaming silent tool for reporter-confirmed NameError and stub-bodied probe values
+c18a248 2026-10-10 fix: suppress runtime_miss on compound headers with body diagnostics or ignore comments
+11b70e1 2026-10-10 feat: record harvest provenance (repo SHAs, tool versions) and prefer matching tags
+### known_upstream paths
+typediff/data/known_upstream.json
+### commits touching known_upstream.json
+42a7af8 2026-11-06 feat: day 9 phase 1 pipeline (quoted Self, TY-2792-READONLY nested def, dunder_instance_shadow and exit_swallow_flip operators; 655 passed, kb-selftest 20/0)
+b4c6482 2026-11-06 feat: day 8 pipeline - ParamSpec self-callable family, duplicate matchers (D7-3, D7-4, H1), display noise, caught-exception evidence
+cd88cd8 2026-11-06 feat: close ty#2171 and ty#2792 known duplicates with narrow entries
+74b3018 2026-11-05 feat: day 6 upstream entry TY-4756 and TY-2171 prior stance with tests
+3074ef5 2026-11-05 fix: mark TY-4883 and TY-4884 entries as fixed in ty 0.0.97, update day3 check expectations
+6c9825a 2026-11-05 feat: day 5 morning upstream entries (enum aliases, Flag else reveal, ~Flag, property setter, local C1 crash)
+3b1cf93 2026-11-05 fix: match every C1 __call__ self-reference shape for TY-4148 and MYPY-22361
+78a6546 2026-11-05 feat: add known_upstream entries TY-4148 (crash) and TY-876-ARGTYPE with tests
+074ceb4 2026-11-05 docs: record ty#4656 as closed design difference, not a bug; ty#4673 closed duplicate
+ee5e6ac 2026-11-05 fix: accept SIGKILL for TY-4899 and tighten PYRIGHT-11961, TY-3765 matchers
+ca5f30b 2026-11-05 feat: record team-filed discrepancy bugs and prior stances in known_upstream.json
+ce63f5c 2026-11-05 feat: record team-filed upstream crashes as kind=crash entries (ty, mypy, pyright)
+8018a8f 2026-11-01 wip: iteration 2 review fixes (oracle hint-only, anchored headers, #948 note); tests unconfirmed after last json edit
+ff38de3 2026-11-01 fix: suite-header requirement for origin oracle and MYPY-948 (calibration: ty#4841, mypy#7935)
+0d517b7 2026-11-01 feat: origin oracle, MYPY-948 and suite-empty-bodies KB entries, pipeline defect fixes, replay tooling
+0f1d39b 2026-10-31 feat: integrate selected friend work (mypy#9658 matcher, public_issues, pyright/typeshed harvest) and kb-loop baseline log
+0e2b90c 2026-10-09 feat: narrow Self-parameter handling, prior-stance cap, spec-desugar and LSP probes, runtime-faithful reducer
+dda8221 2026-10-07 Record ty maintainers' verdict on the Self-parameter report (intended; display bug ty#4673)
+a842334 2026-10-03 Add 15-day fuzzing plan, seed corpus and fuzzing tooling

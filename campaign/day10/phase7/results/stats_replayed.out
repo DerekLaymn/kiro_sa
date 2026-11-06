@@ -1,0 +1,19 @@
+[all] programs=250 discrepancies=247 live=168 (programs with live=99, crash findings=0) dismissed=79 tool_crashes=0
+   dismissed by category: {'DESIGN_DIVERGENCE': 47, 'DUPLICATE': 9, 'NOISE': 6, 'KNOWN_LIMITATION': 5, 'CONFIG_ARTIFACT': 12}
+   dismissed by entry: {'kb:PRECISION-RUNTIME-CONSISTENT': 22, 'kb:LITERAL-WIDENING': 14, 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED': 12, 'kb:DISPLAY-EQUIVALENT': 6, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 5, 'kb:UPSTREAM-TY-876': 5, 'kb:MYPY-8595-METACLASS-CALL': 4, 'kb:UPSTREAM-TY-4212': 4, 'kb:UPSTREAM-MYPY-22339': 2, 'kb:UPSTREAM-MYPY-21937-REVEAL': 2, 'kb:MYPY-SKIPS-UNREACHABLE': 1, 'kb:TY-SELF-UPPER-BOUND': 1, 'kb:JOIN-VS-UNION': 1}
+   crash closures by closing reference: {}
+   live by kind: {'only_mypy': 36, 'only_ty': 39, 'reveal_mismatch': 53, 'only_pyright': 30, 'concern_mismatch': 4, 'reveal_unpaired': 5, 'runtime_miss': 1}
+   live without only_pyright: 138 (programs with such live=89)
+[tuning] programs=250 discrepancies=247 live=168 (programs with live=99, crash findings=0) dismissed=79 tool_crashes=0
+   dismissed by category: {'DESIGN_DIVERGENCE': 47, 'DUPLICATE': 9, 'NOISE': 6, 'KNOWN_LIMITATION': 5, 'CONFIG_ARTIFACT': 12}
+   dismissed by entry: {'kb:PRECISION-RUNTIME-CONSISTENT': 22, 'kb:LITERAL-WIDENING': 14, 'kb:TY-CONTEXTMANAGER-ITERATOR-DEPRECATED': 12, 'kb:DISPLAY-EQUIVALENT': 6, 'kb:ASSERT-TYPE-LITERAL-RETENTION': 5, 'kb:UPSTREAM-TY-876': 5, 'kb:MYPY-8595-METACLASS-CALL': 4, 'kb:UPSTREAM-TY-4212': 4, 'kb:UPSTREAM-MYPY-22339': 2, 'kb:UPSTREAM-MYPY-21937-REVEAL': 2, 'kb:MYPY-SKIPS-UNREACHABLE': 1, 'kb:TY-SELF-UPPER-BOUND': 1, 'kb:JOIN-VS-UNION': 1}
+   crash closures by closing reference: {}
+   live by kind: {'only_mypy': 36, 'only_ty': 39, 'reveal_mismatch': 53, 'only_pyright': 30, 'concern_mismatch': 4, 'reveal_unpaired': 5, 'runtime_miss': 1}
+   live without only_pyright: 138 (programs with such live=89)
+[holdout] programs=0 discrepancies=0 live=0 (programs with live=0, crash findings=0) dismissed=0 tool_crashes=0
+   dismissed by category: {}
+   dismissed by entry: {}
+   crash closures by closing reference: {}
+   live by kind: {}
+rejected/failed: {}
+rc=0

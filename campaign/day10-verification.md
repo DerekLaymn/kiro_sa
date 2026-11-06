@@ -91,6 +91,8 @@ Raw output `results3/pp_*.txt`, one-line summaries `results3/*.sum.txt`. Per pro
 - The 5 medium-evidence and the 13 `only_pyright` rows were reduced or run per program, not each reduced to a minimal file, except the ones that led to drafts.
 - Harness leads, not changed here (outside this phase): (a) the `SELF_CONTRADICTION` row of D10-9 fires although mypy rejects the call with `call-arg`; (b) the unpaired rows of D10-11 are dismissed by the KB hint but still counted as medium evidence.
 
+Correction (phase 7, 2026-11-06): the count "21 `only_ty` rows" for D10-13 (sections above, and in the draft 11 text) does not match the saved reports. `campaign/day10/phase7/gv_rows.py runs/day10/out` (`phase7/results/gv_rows.out`) gives 3 + 3 + 4 = 10 live `only_ty` findings in the three named mutants and 12 in all four mutants of `rsv_generics_variance_3c28536f`; `ty check` on the same files (`phase7/results/ty_count_gv.out`) prints 3, 3 and 4 diagnostics (and 2 for the fourth). Where 21 came from is not known. The verdict does not depend on the count; draft 11 now says 10.
+
 ## 5. Re-run of the interrupted results and final checks
 
 `scripts/rerun_check.sh` re-ran all 30 programs of the interrupted run (`repro/`) into `results_rerun/` and compared the one-line summaries with `results/` (`results_rerun/compare.out`): see the line at the end of that file, copied here:
