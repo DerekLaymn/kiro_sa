@@ -62,3 +62,25 @@ Log line: Day 9 phase 2: 0 programs generated (250 planned, dry run `pending=250
 - Left uncommitted and unchanged: campaign/day7-report.md (stray garbled text "se=0-9rches" in one line) and campaign/day8/phase6/results/commit.out (captured git output). Neither is meaningful.
 - Untouched untracked: -l, .kiro/, findings/2026-10-27-llm-run/.
 - Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16.
+
+## Phase 3: generation via the file bridge
+
+Branch `campaign/day9-p2`, local only; nothing pushed, no GitHub write, no `gh` call. Pins unchanged. Plan: `campaign/day9-morning.md` section 8. Evidence: `campaign/day9/phase3/results/`. `runs/` is git-ignored, so `runs/day9/gen` (250 programs) and `runs/day9/inbox` (250 prompts, 250 answers) stay on disk and are not committed; the status gate JSON and the check outputs are copied into `phase3/results/`.
+
+Shell: fish garbles stdout of chained commands. Every command ran as a bash script or `bash -c`, with output redirected to files and read back with the file tool. Long steps ran with `nohup` in the background, polled with `sleep 30` loops of at most 5 polls.
+
+1. [Shell probe, task instruction] `echo ok > /tmp/probe-day9-gen.txt` via `bash /tmp/probe-day9-gen.sh`; file read back: `ok`. Passed on attempt 1.
+2. [Section 8 step 1] `timeout 900 bash campaign/day9/mk_groups.sh`: rc 0, no hang. Group sizes equal the expected list: C_generic_rec 2, C_pyright_range 2, C_tvt 2, D_exit 7, D_shadow 7, H_dunder 1, O_async 3, O_generics 6, O_overload 4, O_protocol 3, O_version 3, R_reserve 6 (hits 41). `results/mk_groups.out`.
+3. [Section 8 step 2, pass 0] `gen_pass.sh 0`: emitted 250 prompts, `pending=250 written=0` (`results/gen-pass-0.out`). Then `answer_pending.sh` (250 pending, 5 prompts per session, 4 sessions at once, `kiro-cli --agent-engine v3 --model claude-haiku-5.5 --effort medium`): rc 0, 250 answers (`results/answer-0.out`).
+4. [Section 8 step 2, pass 1] `gen_pass.sh 1`: `pending=0 written=250` (`results/gen-pass-1.out`, `results/day9-gen-status.json`). No retry prompts were needed, so no third pass. Programs per area equal the plan of morning section 3 (dunder_dispatch 28, generics_variance 27, context_managers 22, ...; `results/gen_by_area.out`).
+5. [Section 8 step 3] `scripts/inbox_check.py runs/day9/inbox`: `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0`. Clean (`results/inbox_check.out`).
+6. [Section 8 step 4, risk in section 10] Operator-follow counts from `campaign/day9/operator_follow.py` (group = `# origin:` line of each program; `__exit__`/`__aexit__` defined; annotation-only dunder in a class body, or a dunder assigned on an instance; regex heuristics, not a type check) (`results/operator_follow.out`):
+   * `D_exit` (`exit_swallow_flip`): 19 of 21 define `__exit__`.
+   * `D_shadow` (`dunder_instance_shadow`): 20 of 21 have an annotation-only or instance-assigned dunder (annotation-only 17, instance-assigned 10).
+   * `H_dunder` (4 `dunder_instance_shadow` + 2 `exit_swallow_flip`; the origin line does not record the operator): 5 of 6 have an annotation-only or instance-assigned dunder; 1 of 6 defines `__exit__`. The 2 `exit_swallow_flip` programs cannot be told apart from the other 4 without the prompts, so the `__exit__` rate of this group is only known as 1 of 2 at best (below half if the one `__exit__` program is an `exit_swallow_flip` one).
+   * `C_pyright_range` (4 `dunder_instance_shadow` + 2 `overload_reorder`): 2 of 6 have a shadow dunder.
+   All three main groups are at or above half except the `__exit__` rate of `H_dunder`; that small group is a 2-program slot and is reported here, not hidden.
+7. [Section 8 step 5] `campaign/day9/check_gen_sessions.py` over the worker sessions created after `mk_groups.sh` (workspace `/tmp/d9/work`): 50 sessions (250 prompts / 5), all `modelId claude-haiku-5.5`; 49 with `effortLevel medium`, **1 with no `effortLevel` field** (`sess_18c01ae7-5887-48d7-badb-936729cc5cc9`, session.json written without the key although the command passed `--effort medium` like the others; model correct). No session mentions opus, `gpt-*` or `sol-5.6`. A first, looser grep reported "opus" in 3 sessions; all 3 were substrings of base64 signature blobs in `messages.jsonl`, not model names, and the whole-word check was used instead (`results/gen_sessions.out`).
+8. [Section 8 step 6] Commit: helper scripts (`operator_follow.py`, `check_gen_sessions.py`), `gen-pass.log`, `phase3/results/`, this run log. Nothing pushed.
+
+Log line: Day 9 phase 3: 250 programs generated (`pending=0 written=250`, 2 gen passes, 1 answer round), inbox_check clean (prompts=250 answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0), operator-follow D_exit 19/21 `__exit__`, D_shadow 20/21 shadow dunder, H_dunder 5/6 shadow and 1/6 `__exit__`, generator claude-haiku-5.5 in 50/50 sessions (effort medium in 49), 0 issues filed.
