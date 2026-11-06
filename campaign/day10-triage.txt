@@ -1,0 +1,370 @@
+
+##    8 findings (3 with strong bug evidence)  reveal_mismatch | different
+     * eed runs/day10/gen/constructors_metaclasses/gen1_37b4e5f8.py  D2 L26: reveal_type(b)
+         mypy: reveal case.Box
+         ty:   reveal str
+         [RUNTIME/strong, supports bug] runtime value "'wrapped:10'" of type builtins.str does NOT inhabit mypy's revealed type Box
+         full report: runs/day10/out/seed-1c8a2fd6ab6f.md
+     * n/enums_literals/d4v_ty_flag_or_else_never__mut0_d156e44d.py  D3 L44: reveal_type(c)
+         mypy: reveal Literal[case.I.B]
+         ty:   reveal I & ~Literal[I.A]
+         [RUNTIME/strong, supports bug] runtime value '<I.A|B: 3>' of type __main__.I does NOT inhabit mypy's revealed type Literal[I.B]
+         full report: runs/day10/out/seed-ec6c6ea6d53f.md
+     * __conformance__constructors_call_metaclass__mut1_2cca6936.py  D2 L32: reveal_type(b)
+         mypy: reveal case.Bottom
+         ty:   reveal int
+         [RUNTIME/strong, supports bug] runtime value '1' of type builtins.int does NOT inhabit mypy's revealed type Bottom
+         full report: runs/day10/out/seed-ff3db5b9951b.md
+
+##    6 findings (1 with strong bug evidence)  reveal_mismatch | ty_more_precise
+     * rloads__conformance__overloads_definitions__mut1_59eaed87.py  D2 L46: reveal_type(sq.area(3))
+         mypy: reveal int
+         ty:   reveal Never
+         [RUNTIME/strong, supports bug] runtime value '12' of type builtins.int does NOT inhabit ty's revealed type Never
+         full report: runs/day10/out/seed-26b2a4f748fa.md
+       ext_managers/rsv_context_managers_c8eb51b8__mut0_d234c0dd.py  D2 L30: reveal_type(x)
+         mypy: reveal int | None
+         ty:   reveal Literal[1, 2]
+         full report: runs/day10/out/seed-22af7a1bfee0.md
+       ext_managers/rsv_context_managers_c8eb51b8__mut0_811bef31.py  D1 L30: reveal_type(x)
+         mypy: reveal int | None
+         ty:   reveal Literal[1, 2]
+         full report: runs/day10/out/seed-518c3991ef5e.md
+
+##    6 findings (1 with strong bug evidence)  reveal_mismatch | mypy_more_precise
+     * g_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py  D3 L39: reveal_type(value)
+         mypy: reveal str
+         ty:   reveal Equal | str
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         [RUNTIME/strong, supports bug] runtime value '<__main__.Equal object at 0x7f74fd6ddfd0>' of type __main__.Equal does NOT inhabit mypy's revealed type str
+         full report: runs/day10/out/seed-45c6a699024f.md
+       ract_classes/rsv_abstract_classes_cf2683fb__mut0_8f632c7f.py  D1 L41: reveal_type(x)
+         mypy: reveal case.AttrSource | case.DataSource
+         ty:   reveal AttrSource | DataSource | (Fixed & Source)
+         full report: runs/day10/out/seed-2cbc30d6a3ce.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py  D4 L47: reveal_type(value)
+         mypy: reveal int
+         ty:   reveal object
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day10/out/seed-45c6a699024f.md
+
+##    2 findings (1 with strong bug evidence)  only_mypy | ('assert-type',) | expression is of type _, not _
+     * __conformance__constructors_call_metaclass__mut1_2cca6936.py  D1 L33: assert_type(b, int)
+         mypy: [assert-type] Expression is of type "Bottom", not "int"
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] operand `b`: runtime type builtins.int is outside mypy's inferred type case.Bottom
+         full report: runs/day10/out/seed-ff3db5b9951b.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut0_f2ffd661.py  D1 L44: assert_type(value, Any)
+         mypy: [assert-type] Expression is of type "int", not "Any"
+         ty:   (nothing)
+         KB hints: GRADUAL-OPERAND   decided by: gate
+         full report: runs/day10/out/seed-5d4db6ee5d18.md
+
+##    1 findings (1 with strong bug evidence)  concern_mismatch | ('type-var',) | a type variable with default cannot follow typevartuple
+     * artuple_unpack_paramspec_default_after_tvt__mut0_b16712de.py  D1 L11: class Pair(Generic[*Ts, D]):
+         mypy: [type-var] A type variable with default cannot follow TypeVarTuple
+         ty:   [invalid-type-variable-default] Type parameter `D` with a default follows TypeVarTuple `Ts`
+         [RUNTIME/strong, supports bug] CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(11, '<module>')]). Checker output here: L11:1 error[type-var] A type 
+         full report: runs/day10/out/seed-2e0b1cffe401.md
+
+##    1 findings (1 with strong bug evidence)  only_ty | ('unresolved-reference',) | name _ used when not defined
+     * seed runs/day10/gen/abstract_classes/gen1_5c366404.py  D1 L16: def scale(self, k: float) -> Shape: ...
+         mypy: (nothing)
+         ty:   [unresolved-reference] Name `Shape` used when not defined
+         [RUNTIME/strong, supports bug] CPython raised NameError: name 'Shape' is not defined on a name that ty reports as undefined/unbound: the reporting tool is right and the silent tool (mypy) missed it (a default-off or unim
+         full report: runs/day10/out/seed-4268a2d22c79.md
+
+##    1 findings (1 with strong bug evidence)  runtime_miss | () | 
+     * artuple_unpack_paramspec_default_after_tvt__mut1_b0772641.py  D7 L9: class Callback[*Ts, **P = [bool]]:
+         mypy: (nothing)
+         ty:   (nothing)
+         [RUNTIME/strong, supports bug] CPython raised TypeError: Type parameter with a default follows TypeVarTuple with this statement on the stack (frames [(9, '<module>'), (9, '<generic parameters of Callback>')]). Checker ou
+         full report: runs/day10/out/seed-503004be8701.md
+
+##    1 findings (1 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument is incorrect: expected _, found _
+     * conformance__generics_paramspec_components__mut0_66a0b5b8.py  D1 L47: label('t2', 6)  # expect-error: 6 is not str and width is missing
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument is incorrect: Expected `str`, found `Literal[6]`
+         [SELF_CONTRADICTION/strong, supports bug] mypy reveals `label` as `(str, name: str, width: int) -> str` (parameter type `str`), rejects `_td_probe: str = 6` (L47:22 error[assignment] Incompatible types in assignment (exp
+         full report: runs/day10/out/seed-a54a82219f01.md
+
+##    1 findings (1 with strong bug evidence)  only_ty | ('unknown-argument',) | the _ parameter of _ was added in python n.n
+     * peddict/hv_typeddict__pyright__typedDict10__mut1_5eeeb41b.py  D1 L8: class Config(TypedDict, closed=True):
+         mypy: (nothing)
+         ty:   [unknown-argument] The `closed` parameter of `typing.TypedDict` was added in Python 3.15
+         KB hints: STUB-SKEW   decided by: gate
+         [RUNTIME/strong, supports bug] CPython raised TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'closed' with this statement on the stack (frames [(8, '<module>')]). Checker output here: L8:25 error[
+         full report: runs/day10/out/seed-ce0470298975.md
+
+##   30 findings (0 with strong bug evidence)  only_pyright | () | 
+       seed runs/day10/gen/overloads/gen4_9b023d69.py  D2 L30: def dup(x: int) -> int: ...
+         mypy: (nothing)
+         ty:   (nothing)
+         full report: runs/day10/out/seed-2b8d1d15afaf.md
+       seed runs/day10/gen/dunder_dispatch/gen4_c0f3dbed.py  D3 L55: return str(len(AnnotationOnly()))
+         mypy: (nothing)
+         ty:   (nothing)
+         full report: runs/day10/out/seed-2c6d23293e75.md
+       ract_classes/rsv_abstract_classes_cf2683fb__mut0_8f632c7f.py  D2 L18: name = 'attr'
+         mypy: (nothing)
+         ty:   (nothing)
+         full report: runs/day10/out/seed-2cbc30d6a3ce.md
+
+##   28 findings (0 with strong bug evidence)  reveal_mismatch | uncomparable
+       allables__conformance__callables_subtyping__mut1_689b7f50.py  D1 L42: reveal_type(a)
+         mypy: reveal def (int) -> float
+         ty:   reveal def wide(x: float, /) -> int
+         full report: runs/day10/out/seed-14eeed1e0b19.md
+       atenate/rsv_paramspec_concatenate_29247984__mut0_3d63aad0.py  D1 L29: reveal_type(narrow)
+         mypy: reveal def (name: str) -> str
+         ty:   reveal (...) -> Unknown
+         full report: runs/day10/out/seed-209863a34997.md
+       artuple_unpack_paramspec_default_after_tvt__mut0_d8c80c15.py  D3 L19: reveal_type(Callback[int, str])
+         mypy: reveal def () -> case.Callback@15[*tuple[Any, ...], Any]
+         ty:   reveal <class 'Callback[int, str, (bool, /)]'>
+         full report: runs/day10/out/seed-253c57730624.md
+
+##   12 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to function _ is incorrect: expected _, found _
+       seed runs/day10/gen/dunder_dispatch/gen7_7fb423ad.py  D2 L39: print(len(Assigned()))  # expect-error: instance __len__ is ignored
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `len` is incorrect: Expected `Sized`, found `Assigned`
+         full report: runs/day10/out/seed-051d3ad14e9c.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_8c29e5e6.py  D3 L28: set_int_sink(hf)  # expect-error: Handler[float] is not Handler[int]
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `set_int_sink` is incorrect: Expected `Handler[int]`, found `Handler[float]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day10/out/seed-082a84280f4d.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_1333b1ed.py  D3 L31: set_int_sink(hf)  # expect-error: Handler[float | str] is not Handler[
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to function `set_int_sink` is incorrect: Expected `Handler[int]`, found `Handler[float | str]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day10/out/seed-2621849a93a5.md
+
+##    7 findings (0 with strong bug evidence)  only_mypy | ('operator',) | unsupported operand types for + (_ and _)
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut1_697162fc.py  D1 L21: total += box.x + 1  # expect-error
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         full report: runs/day10/out/seed-37206213b229.md
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut1_697162fc.py  D2 L34: total += x + 1
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         full report: runs/day10/out/seed-37206213b229.md
+       rrowing_builtin/d4v_ty_alias_loop_backedge__mut0_9d76374c.py  D1 L20: total += a.x + 1  # expect-error
+         mypy: [operator] Unsupported operand types for + ("None" and "int")
+         ty:   (nothing)
+         full report: runs/day10/out/seed-97aac2a6faad.md
+
+##    7 findings (0 with strong bug evidence)  reveal_mismatch | gradual
+       __conformance__exceptions_context_managers__mut0_1045eef2.py  D1 L36: reveal_type(x)
+         mypy: reveal Any
+         ty:   reveal Any & ~int
+         full report: runs/day10/out/seed-3dc0da89cf86.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py  D1 L23: reveal_type(value)
+         mypy: reveal dict[str, int] | tuple[int, int]
+         ty:   reveal Any
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day10/out/seed-45c6a699024f.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d.py  D2 L33: reveal_type(value)
+         mypy: reveal int
+         ty:   reveal Any
+         full report: runs/day10/out/seed-45c6a699024f.md
+
+##    6 findings (0 with strong bug evidence)  only_mypy | ('overload-cannot-match',) | overloaded function signature n will never be matched: signature n's parameter type(s) are the same or broader
+       erloads__conformance__overloads_evaluation__mut2_8b02e301.py  D1 L11: def parse(x: int) -> int: ...
+         mypy: [overload-cannot-match] Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-05aa9dd3fa8a.md
+       rloads__conformance__overloads_consistency__mut0_cc4ff0c9.py  D1 L13: def convert(value: Literal[0]) -> bool: ...  # expect-error
+         mypy: [overload-cannot-match] Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-14d51abbbceb.md
+       rloads__conformance__overloads_definitions__mut1_59eaed87.py  D1 L14: def describe(x: int) -> int: ...
+         mypy: [overload-cannot-match] Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-26b2a4f748fa.md
+
+##    5 findings (0 with strong bug evidence)  only_ty | ('invalid-argument-type',) | argument to _ is incorrect: expected _, found _
+       cs_variance/rsv_generics_variance_3c28536f__mut0_8c29e5e6.py  D2 L25: hf = Handler[float](lambda x: print('float', x))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to `Handler.__init__` is incorrect: Expected `Sink[float]`, found `(x) -> None`
+         full report: runs/day10/out/seed-082a84280f4d.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_1333b1ed.py  D2 L25: hf = Handler[float | str](lambda x: print('float', x))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to `Handler.__init__` is incorrect: Expected `Sink[float | str]`, found `(x) -> None`
+         full report: runs/day10/out/seed-2621849a93a5.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_46b898b3.py  D2 L25: hi = Handler[int](lambda x: print('int', x))
+         mypy: (nothing)
+         ty:   [invalid-argument-type] Argument to `Handler.__init__` is incorrect: Expected `Sink[int]`, found `(x) -> None`
+         full report: runs/day10/out/seed-26bf783f5458.md
+
+##    5 findings (0 with strong bug evidence)  only_ty | ('invalid-return-type',) | return type does not match returned value: expected _, found _
+       eed runs/day10/gen/constructors_metaclasses/gen1_37b4e5f8.py  D1 L22: return kind(n)
+         mypy: (nothing)
+         ty:   [invalid-return-type] Return type does not match returned value: expected `Box`, found `str`
+         full report: runs/day10/out/seed-1c8a2fd6ab6f.md
+       peddict/hv_typeddict__pyright__typedDict10__mut0_e3778399.py  D1 L15: return {'year': 1982}  # expect-error
+         mypy: (nothing)
+         ty:   [invalid-return-type] Return type does not match returned value: expected `Movie`, found `dict[Literal["year"], int]`
+         full report: runs/day10/out/seed-485218ccac4d.md
+       seed runs/day10/gen/typeddict/gen2_7c09af40.py  D1 L43: return {'host': 'a', 'port': 1, 'extra': 2}  # expect-error
+         mypy: (nothing)
+         ty:   [invalid-return-type] Return type does not match returned value: expected `Strict`, found `dict[str, str | int]`
+         full report: runs/day10/out/seed-89b23673aab9.md
+
+##    5 findings (0 with strong bug evidence)  reveal_unpaired | unpaired
+       0/gen/gradual_any/rsv_gradual_any_76921a4b__mut0_ad89194c.py  D1 L43: reveal_type(obj)
+         mypy: (nothing)
+         ty:   reveal Never
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 43, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day10/out/seed-3b32997d3bf5.md
+       seed runs/day10/gen/narrowing_user/gen3_cbc25173.py  D1 L53: reveal_type(items)
+         mypy: (nothing)
+         ty:   reveal Never
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 53, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day10/out/seed-7a4e31d81a55.md
+       seed runs/day10/gen/narrowing_user/gen1_0cecd6f5.py  D1 L43: reveal_type(value)
+         mypy: (nothing)
+         ty:   reveal Never
+         KB hints: REACHABILITY-VS-COVERAGE   decided by: gate
+         [RUNTIME/medium, supports bug] mypy produced no reveal_type output at line 43, which CPython executed: mypy treats reachable code as unreachable (checking is disabled there)
+         full report: runs/day10/out/seed-86c3c3d3f859.md
+
+##    4 findings (0 with strong bug evidence)  only_ty | ('invalid-assignment',) | object of type _ is not assignable to attribute _ of type _
+       cs_variance/rsv_generics_variance_3c28536f__mut0_8c29e5e6.py  D1 L21: h.sink = lambda x: print('bits', x.bit_length())
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `(x) -> None` is not assignable to attribute `sink` of type `Sink[int]`
+         full report: runs/day10/out/seed-082a84280f4d.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_1333b1ed.py  D1 L22: h.sink = lambda x: print('bits', x.bit_length())
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `(x) -> None` is not assignable to attribute `sink` of type `Sink[int]`
+         full report: runs/day10/out/seed-2621849a93a5.md
+       cs_variance/rsv_generics_variance_3c28536f__mut0_46b898b3.py  D1 L22: h.sink = lambda x: print('bits', x.bit_length())
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `(x) -> None` is not assignable to attribute `sink` of type `Sink[int]`
+         full report: runs/day10/out/seed-26bf783f5458.md
+
+##    4 findings (0 with strong bug evidence)  only_ty | ('type-assertion-failure',) | type _ does not match asserted type _
+       g_user/s3r1_ty_type_equality_narrowing_any__mut0_8d6b5530.py  D1 L19: assert_type(value, int)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Any` does not match asserted type `int`
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day10/out/seed-3f271458fb62.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut0_8d6b5530.py  D2 L27: assert_type(value, Tagged)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Any` does not match asserted type `Tagged`
+         KB hints: TY-STRICT-EQUALITY   decided by: gate
+         full report: runs/day10/out/seed-3f271458fb62.md
+       g_user/s3r1_ty_type_equality_narrowing_any__mut0_8d6b5530.py  D3 L35: assert_type(value, str)
+         mypy: (nothing)
+         ty:   [type-assertion-failure] Type `Any` does not match asserted type `str`
+         full report: runs/day10/out/seed-3f271458fb62.md
+
+##    4 findings (0 with strong bug evidence)  only_mypy | ('overload-overlap',) | overloaded function signatures n and n overlap with incompatible return types
+       seed runs/day10/gen/overloads/gen3_82a973ac.py  D1 L9: def tag(x: Literal['a']) -> int: ...
+         mypy: [overload-overlap] Overloaded function signatures 1 and 3 overlap with incompatible return types
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-4aa84384a09c.md
+       seed runs/day10/gen/overloads/gen3_82a973ac.py  D2 L11: def tag(x: Literal['b']) -> str: ...
+         mypy: [overload-overlap] Overloaded function signatures 2 and 3 overlap with incompatible return types
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-4aa84384a09c.md
+       erloads__conformance__overloads_evaluation__mut0_64765729.py  D1 L9: def pick(x: bool) -> str: ...
+         mypy: [overload-overlap] Overloaded function signatures 1 and 2 overlap with incompatible return types
+         ty:   (nothing)
+         KB hints: TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-82fe84623083.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('misc',) | attribute function _ with type _ does not accept self argument
+       seed runs/day10/gen/dunder_dispatch/gen7_7fb423ad.py  D3 L47: for x in Assigned():  # expect-error: annotation-only __iter__ is not 
+         mypy: [misc] Attribute function "__iter__" with type "Callable[[], Iterator[int]]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day10/out/seed-051d3ad14e9c.md
+       h/d8p_dunder_dispatch_annotation_only_call__mut1_f6199e86.py  D1 L26: for item in bag:  # expect-error: Bag is not iterable
+         mypy: [misc] Attribute function "__iter__" with type "Callable[[], Iterator[int]]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day10/out/seed-9526d91f37ae.md
+       h/d8p_dunder_dispatch_annotation_only_call__mut1_9618c710.py  D1 L24: for x in b:  # expect-error: Bag has no __iter__ on its type
+         mypy: [misc] Attribute function "__iter__" with type "Callable[[], Iterator[int]]" does not accept self argument
+         ty:   (nothing)
+         full report: runs/day10/out/seed-e7929058be9e.md
+
+##    3 findings (0 with strong bug evidence)  only_mypy | ('misc',) | can only replace paramspec with a parameter types list or another paramspec, got _
+       artuple_unpack_paramspec_default_after_tvt__mut0_d8c80c15.py  D1 L19: reveal_type(Callback[int, str])
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-253c57730624.md
+       artuple_unpack_paramspec_default_after_tvt__mut0_d8c80c15.py  D2 L20: reveal_type(Callback[tuple[int, str], bytes])
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "bytes"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-253c57730624.md
+       artuple_unpack_paramspec_default_after_tvt__mut1_b0772641.py  D1 L30: cb = Callback[int, str](to_pair)
+         mypy: [misc] Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-503004be8701.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('type-abstract',) | only concrete class can be given where _ is expected
+       ntingAbstractMethodWithMultipleBaseClasses__mut0_a7809a1c.py  D1 L65: assert try_instantiate(Shape) == 'rejected'
+         mypy: [type-abstract] Only concrete class can be given where "type[Shape]" is expected
+         ty:   (nothing)
+         KB hints: TY-STRICT-EQUALITY, TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-434b1bf34d94.md
+       ntingAbstractMethodWithMultipleBaseClasses__mut0_a7809a1c.py  D2 L66: assert try_instantiate(HasSides) == 'rejected'
+         mypy: [type-abstract] Only concrete class can be given where "type[Shape]" is expected
+         ty:   (nothing)
+         KB hints: TY-STRICT-EQUALITY, TY-CHECK-MISSING-JUDGE-MYPY   decided by: gate
+         full report: runs/day10/out/seed-434b1bf34d94.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ has incompatible type _; expected _
+       artuple_unpack_paramspec_default_after_tvt__mut1_b0772641.py  D2 L33: boxed = Box(Callback[int](to_one))
+         mypy: [arg-type] Argument 1 to "Callback" has incompatible type "Callable[[bool], tuple[int]]"; expected "def (*int, **int) -> tuple[()]"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-503004be8701.md
+       seed runs/day10/gen/gradual_any/gen5_9a27631a.py  D1 L40: return take_int(o)  # expect-error
+         mypy: [arg-type] Argument 1 to "take_int" has incompatible type "object"; expected "int"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-a2cf2d628cf3.md
+
+##    2 findings (0 with strong bug evidence)  only_mypy | ('arg-type',) | argument n to _ of _ has incompatible type _; expected _
+       /self_classmethods__self_classmethod_param__mut0_de35b75c.py  D2 L41: Left.make().pair((Right(), 2))  # expect-error: Right is not Left
+         mypy: [arg-type] Argument 1 to "pair" of "Base" has incompatible type "tuple[Right, int]"; expected "tuple[Left, int]"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-ba90871022d9.md
+       /self_classmethods__self_classmethod_param__mut1_bcacf112.py  D1 L45: Left().same(Right())  # expect-error: Right is not a Left
+         mypy: [arg-type] Argument 1 to "same" of "Root" has incompatible type "Right"; expected "Left"
+         ty:   (nothing)
+         full report: runs/day10/out/seed-e3cd1dd5e704.md
+
+##    1 findings (0 with strong bug evidence)  only_mypy | ('assignment',) | incompatible types in assignment (expression has type _, base class _ defined the type as _)
+       seed runs/day10/gen/dunder_dispatch/gen7_7fb423ad.py  D1 L27: __len__ = None  # expect-error: None is not a valid __len__
+         mypy: [assignment] Incompatible types in assignment (expression has type "None", base class "Control" defined the type as "Callable[[], int]")
+         ty:   (nothing)
+         KB hints: PARTIAL-TYPES   decided by: gate
+         full report: runs/day10/out/seed-051d3ad14e9c.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('call-non-callable',) | object of type _ is not callable
+       seed runs/day10/gen/dunder_dispatch/gen4_c0f3dbed.py  D2 L48: return InstanceAssigned()()  # expect-error
+         mypy: (nothing)
+         ty:   [call-non-callable] Object of type `InstanceAssigned` is not callable
+         full report: runs/day10/out/seed-2c6d23293e75.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('invalid-assignment',) | object of type _ is not assignable to _
+       artuple_unpack_paramspec_default_after_tvt__mut0_b16712de.py  D2 L24: p1: Pair[int, str, bool] = Pair(1, 'a', True)
+         mypy: (nothing)
+         ty:   [invalid-assignment] Object of type `Pair[int, str, bool, bool]` is not assignable to `Pair[int, str, bool]`
+         KB hints: ERROR-CASCADE   decided by: gate
+         full report: runs/day10/out/seed-2e0b1cffe401.md
+
+##    1 findings (0 with strong bug evidence)  only_ty | ('assert-type-unspellable-subtype',) | type _ does not match asserted type _
+       ing_user__conformance__narrowing_typeguard__mut0_8d09b306.py  D1 L18: assert_type(v, object)
+         mypy: (nothing)
+         ty:   [assert-type-unspellable-subtype] Type `~str` does not match asserted type `object`
+         full report: runs/day10/out/seed-4942c85ff360.md
+
+172 findings in 42 patterns (* = strong verified bug evidence; triage those patterns first)
