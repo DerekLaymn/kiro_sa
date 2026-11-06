@@ -21,7 +21,7 @@ from __future__ import annotations
 import ast
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Callable
 
@@ -1601,7 +1601,8 @@ def _readonly_prop_after_stale_narrowing(s, d) -> bool:
     unreachable for ty. Needs: a statement that assigns a read-only ``@property`` of the program through a name, a
     narrowing of some ``obj.p``, then such a call, then a read of ``obj.p``, all before the statement, with no store into
     ``obj.p`` and no rebinding of ``obj`` in between. Assigning a property that has a setter, no method call in between
-    and a call placed before the narrowing do not match."""
+    and a call placed before the narrowing do not match. Day 9: the chain may also stand in an enclosing scope before the
+    ``def`` of the function that holds the statement (``_stale_chain_before`` with the line above the ``def``)."""
     tree = s.amap.tree
     node = _stmt_node(s, d)
     if tree is None or not isinstance(node, ast.Assign) or len(node.targets) != 1:
@@ -1609,11 +1610,40 @@ def _readonly_prop_after_stale_narrowing(s, d) -> bool:
     t = node.targets[0]
     if not (isinstance(t, ast.Attribute) and isinstance(t.value, ast.Name)) or t.attr not in _readonly_properties(tree):
         return False
-    ctx = _stale_attr_context(s, d, t.value.id, None, mutating_any=True)
+    if _stale_chain_before(s, d, t.value.id):
+        return True
+    # Day 9: the statement sits in a function that is DEFINED after the chain (``def try_write(c): c.readonly = 0`` below
+    # module-level asserts around ``c.bump()``). ty treats the code after the contradiction as unreachable, a ``def``
+    # included, so the chain only has to precede the ``def``; its receiver need not be the name the function uses.
+    # Walks outwards, one enclosing function at a time, up to the module.
+    from . import crash_upstream as cu
+
+    tree_fns = cu._functions(tree)
+    anchor = d.anchor
+    while True:
+        enclosing = [f for f in tree_fns if f.lineno <= anchor <= (f.end_lineno or f.lineno)]
+        if not enclosing:
+            return False
+        fn = min(enclosing, key=lambda f: (f.end_lineno or 0) - f.lineno)
+        # half a line above the ``def`` (or its first decorator): the line above may hold the last statement of the chain,
+        # and the ``def`` itself must not count as the scope that holds the position
+        anchor = min([fn.lineno, *[dec.lineno for dec in fn.decorator_list]]) - 0.5
+        before = replace(d, anchor=anchor)
+        outer = [f for f in tree_fns if f.lineno <= anchor <= (f.end_lineno or f.lineno)]
+        scope = min(outer, key=lambda f: (f.end_lineno or 0) - f.lineno) if outer else tree
+        names = {n.value.id for n in _scope_walk(scope) if isinstance(n, ast.Attribute) and isinstance(n.value, ast.Name)}
+        if any(_stale_chain_before(s, before, name) for name in sorted(names)):
+            return True
+
+
+def _stale_chain_before(s, d, root: str) -> bool:
+    """The chain of ``_readonly_prop_after_stale_narrowing`` for the receiver name ``root`` in the scope that holds line
+    ``d.anchor``: a narrowing of some ``root.p``, then a call that assigns ``self`` attributes, then a read of ``root.p``,
+    all before that line, with no store into ``root.p`` and no rebinding of ``root`` in between."""
+    ctx = _stale_attr_context(s, d, root, None, mutating_any=True)
     if ctx is None:
         return False
     nodes, roots, calls = ctx
-    root = t.value.id
     for attr in {n.attr for n in nodes if _attr_of(n, roots) and isinstance(n.ctx, ast.Load)}:
         reads = [x.lineno for x in nodes if _attr_of(x, roots, attr) and isinstance(x.ctx, ast.Load)]
         for call in calls:

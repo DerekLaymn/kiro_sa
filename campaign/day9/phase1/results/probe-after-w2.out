@@ -1,0 +1,17 @@
+== /tmp/d9/out_after/seed-243ae3f85cd4.json
+D1 only_mypy 40 ['Property "readonly" defined in "Thing" is read-only'] []
+D2 reveal_mismatch 37 ['Revealed type is "int"'] ['Revealed type: `Never`']
+D1 review None None no LLM configured (TYPEDIFF_LLM=null): needs a human
+D2 review None None no LLM configured (TYPEDIFF_LLM=null): needs a human
+== /tmp/d9/out_after/seed-87fc3975f9a6.json
+D1 only_mypy 21 ['Argument 1 to "add" of "Node" has incompatible type "Node"; expected "Leaf"'] []
+D2 only_mypy 22 ['Argument "c" to "add" of "Node" has incompatible type "Node"; expected "Leaf"'] []
+D3 only_pyright 23 [] []
+D1 dismissed DESIGN_DIVERGENCE None ty solves Self in a method signature as a TypeVar bounded by the defining class. Source: https://github.com/astral-sh/ty/issues/4656
+D2 dismissed DESIGN_DIVERGENCE None ty solves Self in a method signature as a TypeVar bounded by the defining class. Source: https://github.com/astral-sh/ty/issues/4656
+D3 review None None no LLM configured (TYPEDIFF_LLM=null): needs a human
+== /tmp/d9/out_after/seed-93c7f0ca06bf.json
+D1 only_mypy 38 ['Property "readonly" defined in "Counter" is read-only'] []
+D2 reveal_mismatch 32 ['Revealed type is "int"'] ['Revealed type: `Never`']
+D1 dismissed DUPLICATE None already reported upstream: same root cause as TY-2792 (open; state as of 2026-11-05), the row where the stale narrowing ends in Never: mypy and pyright reject the assignment to a read-only property of
+D2 review None None no LLM configured (TYPEDIFF_LLM=null): needs a human

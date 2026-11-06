@@ -266,7 +266,8 @@ Mutation operators (name them exactly; give concrete instructions):
   variance_flip, bound_constraint_swap, generic_nesting, union_widen, literal_injection, gradual_injection,
   narrowing_construct_swap, annotation_spelling_swap, scope_relocation, protocol_vs_abc, qualifier_toggle,
   overload_reorder, recursion_deepening, invalid_type_form, python_version_flip, feature_crossover,
-  runtime_witness, inheritance_diamond, descriptor_property, decorator_wrapping, async_generator_wrap
+  runtime_witness, inheritance_diamond, descriptor_property, decorator_wrapping, async_generator_wrap,
+  dunder_instance_shadow, exit_swallow_flip
 Rules of thumb:
 - Known divergences (KB ids) are not progress: add their trigger pattern to avoid_patterns.
 - Crash hunting: recursion_deepening, invalid_type_form, feature_crossover on constructs that need fix-point \

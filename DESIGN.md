@@ -270,7 +270,7 @@ and size limits.
 
 ## 6. Search strategy (`strategy.py`)
 
-- 22 feature areas (generics/variance, ParamSpec, TypedDict, overloads, narrowing, match, Self,
+- 24 feature areas (22 until Day 8; Day 9 added `dunder_dispatch` and `context_managers`) (generics/variance, ParamSpec, TypedDict, overloads, narrowing, match, Self,
   descriptors, recursive aliases …). UCB1 picks areas. Reward = 10·confirmed + 4·candidate +
   1·review + 6·crash, scaled down when no new signature was found.
 - **Hard rules** (the LLM can't override):
@@ -286,6 +286,11 @@ and size limits.
   `overload_reorder`, `recursion_deepening` / `invalid_type_form` / `feature_crossover`
   (crash hunting), `python_version_flip`, `runtime_witness`, `inheritance_diamond`,
   `descriptor_property`, `decorator_wrapping`, `async_generator_wrap`.
+  Since Day 9, `typediff/operators.py` holds operators that carry their own instruction text (`generate --ops`
+  adds an `instruction` to the mutation): `dunder_instance_shadow` (a special method that exists only on the
+  instance or only as an annotation; CPython looks dunders up on the type) and `exit_swallow_flip` (the
+  `__exit__` return annotation versus code after a `with`). The older operators stay bare names, so their
+  prompts are unchanged.
 
 ---
 

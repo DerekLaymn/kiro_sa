@@ -23,6 +23,7 @@ from .generator import blocking, generate, preflight
 from .kb import ENTRIES
 from .llm import NullLLM, CachedLLM, from_env
 from .models import Tier, to_jsonable
+from .operators import mutation_spec
 from .pipeline import Pipeline, PipelineConfig
 from .report import draft_issue, render_summary
 from .runners import Runners, ToolConfig
@@ -156,7 +157,7 @@ def cmd_generate(args) -> int:
     written = 0
     for previous, area, origin in parents:
         brief = (_seed_header(previous, "hypothesis") if previous else "") or AREAS[area]
-        mutations = [{"operator": op} for op in (args.ops.split(",") if args.ops else [])]
+        mutations = [mutation_spec(op) for op in (args.ops.split(",") if args.ops else [])]
         for k in range(args.n):
             if args.max_llm_calls and llm.calls >= args.max_llm_calls:
                 print(f"stopping: LLM call budget reached ({llm.calls})")

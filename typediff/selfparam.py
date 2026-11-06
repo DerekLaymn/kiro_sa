@@ -60,9 +60,37 @@ def decorator_names(fn: ast.AST) -> set[str]:
     return {d.id if isinstance(d, ast.Name) else getattr(d, "attr", "") for d in getattr(fn, "decorator_list", [])}
 
 
+def parse_string_annotation(node: ast.AST) -> ast.expr | None:
+    """The expression inside a quoted annotation (``'Self'``, ``'list[Self] | None'``), or None when ``node`` is no string
+    constant or the string is not a Python expression."""
+    if not (isinstance(node, ast.Constant) and isinstance(node.value, str)):
+        return None
+    try:
+        return ast.parse(node.value.strip(), mode="eval").body
+    except SyntaxError:
+        return None
+
+
+def _is_literal_subscript(node: ast.AST) -> bool:
+    return isinstance(node, ast.Subscript) and (
+        (isinstance(node.value, ast.Name) and node.value.id == "Literal")
+        or (isinstance(node.value, ast.Attribute) and node.value.attr == "Literal"))
+
+
 def mentions_self(ann: ast.AST | None) -> bool:
-    return ann is not None and any((isinstance(x, ast.Name) and x.id == "Self") or (isinstance(x, ast.Attribute) and x.attr == "Self")
-                                   for x in ast.walk(ann))
+    """``Self`` appears in the annotation, also inside a quoted forward reference (``c: 'Self'``). Strings inside
+    ``Literal[..]`` are values, not annotations."""
+    if ann is None or _is_literal_subscript(ann):
+        return False
+    if (isinstance(ann, ast.Name) and ann.id == "Self") or (isinstance(ann, ast.Attribute) and ann.attr == "Self"):
+        return True
+    inner = parse_string_annotation(ann)
+    if inner is not None:
+        return mentions_self(inner)
+    if isinstance(ann, ast.Subscript) and _base_name(ann) == "Annotated":  # only the first argument is a type
+        first = ann.slice.elts[0] if isinstance(ann.slice, ast.Tuple) and ann.slice.elts else ann.slice
+        return mentions_self(ann.value) or mentions_self(first)
+    return any(mentions_self(c) for c in ast.iter_child_nodes(ann))
 
 
 def nonreceiver_params(fn: ast.FunctionDef | ast.AsyncFunctionDef) -> list[ast.arg]:

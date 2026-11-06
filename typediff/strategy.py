@@ -38,6 +38,10 @@ AREAS: dict[str, str] = {
     "inheritance_mro": "multiple inheritance, super(), method override compatibility (LSP), diamond MRO",
     "tuples_unpacking": "fixed vs variadic tuples, indexing/slicing, unpacking assignments, NamedTuple",
     "gradual_any": "Any propagation, object vs Any, gradual guarantee, cast/assert_type interplay",
+    "dunder_dispatch": "special methods looked up on the type: call/iter/len/getitem/enter through annotation-only, "
+                       "instance-assigned or inherited dunders, __getattr__ fallbacks that do not apply to dunders",
+    "context_managers": "with / async with, __exit__ return type (bool vs None) and exception swallowing, reachability and "
+                        "narrowing after the block, contextlib.contextmanager / suppress / ExitStack",
 }
 
 AVOID_FOR_KB = {

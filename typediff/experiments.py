@@ -707,6 +707,16 @@ class _SelfToTypeVar(ast.NodeTransformer):
     def visit_Attribute(self, node: ast.Attribute) -> ast.AST:
         return ast.copy_location(ast.Name(self.name, ast.Load()), node) if node.attr == "Self" else self.generic_visit(node)
 
+    def visit_Constant(self, node: ast.Constant) -> ast.AST:
+        """A quoted forward reference (``c: 'Self'``) is rewritten inside the string and stays a string."""
+        inner = selfparam.parse_string_annotation(node)
+        if inner is None or not selfparam.mentions_self(inner):
+            return node
+        return ast.copy_location(ast.Constant(ast.unparse(self.visit(inner))), node)
+
+    def visit_Subscript(self, node: ast.Subscript) -> ast.AST:
+        return node if selfparam._is_literal_subscript(node) else self.generic_visit(node)
+
 
 def _desugar_self(tree: ast.Module, cls_name: str) -> int:
     """In place: replace ``Self`` in the signatures of ``cls_name``'s instance methods by a TypeVar bound to the class
@@ -732,8 +742,9 @@ def _desugar_self(tree: ast.Module, cls_name: str) -> int:
         anns += [fn.returns] if fn.returns is not None else []
         if not any(selfparam.mentions_self(x) for x in anns):
             continue
-        if any(isinstance(c, ast.Constant) and isinstance(c.value, str) and "Self" in c.value for x in anns for c in ast.walk(x)):
-            raise ExperimentError("spec_desugar: string annotations containing Self are not supported")
+        if any(isinstance(c, ast.Constant) and isinstance(c.value, str) and "Self" in c.value
+               and selfparam.parse_string_annotation(c) is None for x in anns for c in ast.walk(x)):
+            raise ExperimentError("spec_desugar: string annotations containing Self that are not expressions are not supported")
         if not pos or pos[0].annotation is not None:
             continue
         for p in [*pos[1:], *a.kwonlyargs, a.vararg, a.kwarg]:
