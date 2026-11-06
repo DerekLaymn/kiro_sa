@@ -1,0 +1,32 @@
+--- cpython 3.13.16
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_abs1.py", line 1, in <module>
+      class Shape:
+          def scale(self, k: float) -> Shape:
+              return self
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_abs1.py", line 2, in Shape
+      def scale(self, k: float) -> Shape:
+                                   ^^^^^
+  NameError: name 'Shape' is not defined
+  rc=1
+--- ty 0.0.97 (.venv, the pin)
+  L2 error[unresolved-reference] Name `Shape` used when not defined 
+  Found 1 diagnostic
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L2 error[unresolved-reference] Name `Shape` used when not defined 
+  Found 1 diagnostic
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+  c_abs1.py
+  c_abs1.py:2:34 - error: "Shape" is not defined (reportUndefinedVariable)
+1 error, 0 warnings, 0 informations
+rc=1

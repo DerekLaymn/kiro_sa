@@ -1,0 +1,40 @@
+--- cpython 3.13.16
+  Runtime type is 'int'
+  Runtime type is 'str'
+  suppress: UnboundLocalError
+  5
+  async: UnboundLocalError
+  2
+  PLAIN
+  strict: RuntimeError
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L27 warning[deprecated] The overload of `contextmanager` is deprecated | Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+  L42 info[revealed-type] Revealed type | `int`
+  L73 info[revealed-type] Revealed type | `str`
+  Found 3 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L27 warning[deprecated] The overload of `contextmanager` is deprecated | Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+  L42 info[revealed-type] Revealed type | `int`
+  L73 info[revealed-type] Revealed type | `str`
+  Found 3 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/pp_gen9_44fe19eb.py:42: note: Revealed type is "int"
+  repro3/pp_gen9_44fe19eb.py:73: note: Revealed type is "str"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/pp_gen9_44fe19eb.py:42: note: Revealed type is "int"
+  repro3/pp_gen9_44fe19eb.py:73: note: Revealed type is "str"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/pp_gen9_44fe19eb.py:42: note: Revealed type is "int"
+  repro3/pp_gen9_44fe19eb.py:73: note: Revealed type is "str"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+2 errors, 0 warnings, 2 informations
+rc=1

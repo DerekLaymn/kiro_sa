@@ -1,0 +1,46 @@
+issues|python/mypy|forward reference
+issues|python/mypy|unquoted annotation
+issues|python/mypy|NameError annotation
+issues|python/mypy|used-before-def annotation
+issues|python/mypy|used-before-def class
+issues|python/mypy|annotation quotes
+issues|python/mypy|forward reference quotes
+issues|python/mypy|undefined annotation runtime
+issues|python/mypy|self-referential annotation
+issues|python/mypy|class name annotation inside class
+issues|python/mypy|annotations deferred
+issues|python/mypy|PEP 649
+issues|python/mypy|PEP 749
+issues|python/mypy|from __future__ annotations
+prs|python/mypy|used-before-def
+prs|python/mypy|forward reference quotes
+prs|python/mypy|forward reference annotation
+issues|astral-sh/ty|unresolved-reference annotation
+issues|astral-sh/ty|forward reference
+issues|microsoft/pyright|forward reference
+issues|microsoft/pyright|unquoted forward
+issues|python/typeshed|forward reference quotes
+issues|python/mypy|type(x) == narrowing
+issues|python/mypy|type() == narrowing
+issues|astral-sh/ty|type() ==
+issues|astral-sh/ty|type equality
+issues|astral-sh/ty|type(x) ==
+issues|microsoft/pyright|type equality narrowing
+issues|python/mypy|metaclass __eq__
+issues|python/mypy|closed TypedDict
+issues|microsoft/pyright|closed TypedDict
+issues|astral-sh/ty|TypedDict closed
+issues|python/mypy|Callback TypeVarTuple ParamSpec default
+issues|python/mypy|ParamSpec default TypeVarTuple
+issues|python/mypy|Can only replace ParamSpec
+prs|python/mypy|ParamSpec default TypeVarTuple
+issues|python/mypy|Flag
+issues|python/mypy|IntFlag
+issues|python/mypy|enum Flag
+issues|astral-sh/ty|enum.Flag
+issues|astral-sh/ty|Flag expansion
+issues|microsoft/pyright|enum Flag
+issues|python/mypy|metaclass __call__
+prs|python/mypy|metaclass __call__
+issues|astral-sh/ty|metaclass __call__
+issues|microsoft/pyright|metaclass __call__

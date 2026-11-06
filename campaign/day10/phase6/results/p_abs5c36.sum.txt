@@ -1,0 +1,51 @@
+--- cpython 3.13.16
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py", line 10, in <module>
+      class Shape(ABC):
+      ...<5 lines>...
+          def scale(self, k: float) -> Shape: ...
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py", line 16, in Shape
+      def scale(self, k: float) -> Shape: ...
+                                   ^^^^^
+  NameError: name 'Shape' is not defined
+  rc=1
+--- ty 0.0.97 (.venv, the pin)
+  L16 error[unresolved-reference] Name `Shape` used when not defined 
+  L46 error[call-non-callable] Cannot instantiate abstract class `Lazy` | `area` is unimplemented
+  L47 info[revealed-type] Revealed type | `Lazy`
+  L54 info[revealed-type] Revealed type | `float`
+  Found 4 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L16 error[unresolved-reference] Name `Shape` used when not defined 
+  L46 error[call-non-callable] Cannot instantiate abstract class `Lazy` | `area` is unimplemented
+  L47 info[revealed-type] Revealed type | `Lazy`
+  L54 info[revealed-type] Revealed type | `float`
+  Found 4 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+  p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+  p_abs5c36.py:54: note: Revealed type is "float"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+  p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+  p_abs5c36.py:54: note: Revealed type is "float"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+  p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+  p_abs5c36.py:54: note: Revealed type is "float"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+  p_abs5c36.py
+  p_abs5c36.py:16:34 - error: "Shape" is not defined (reportUndefinedVariable)
+  p_abs5c36.py:46:15 - error: Cannot instantiate abstract class "Lazy"
+    "Shape.area" is not implemented (reportAbstractUsage)
+  p_abs5c36.py:47:21 - information: Type of "obj" is "Lazy"
+  p_abs5c36.py:54:13 - information: Type of "sq.area" is "float"
+2 errors, 0 warnings, 2 informations
+rc=1

@@ -1,0 +1,35 @@
+--- cpython 3.13.16
+  Runtime type is 'str'
+  wrapped:10
+  wrapped:10
+  Box 1
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L22 error[invalid-return-type] Return type does not match returned value | expected `Box`, found `str`
+  L26 info[revealed-type] Revealed type | `str`
+  Found 2 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L22 error[invalid-return-type] Return type does not match returned value | expected `Box`, found `str`
+  L26 info[revealed-type] Revealed type | `str`
+  Found 2 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro/p_meta37b4.py:26: note: Revealed type is "p_meta37b4.Box"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro/p_meta37b4.py:26: note: Revealed type is "p_meta37b4.Box"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro/p_meta37b4.py:26: note: Revealed type is "p_meta37b4.Box"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+  p_meta37b4.py
+  p_meta37b4.py:22:12 - error: Type "str" is not assignable to return type "Box"
+    "str" is not assignable to "Box" (reportReturnType)
+  p_meta37b4.py:26:13 - information: Type of "b" is "str"
+1 error, 0 warnings, 1 information
+rc=1

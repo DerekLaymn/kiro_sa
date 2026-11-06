@@ -1,0 +1,125 @@
+##### l4.py
+--- cpython 3.13.16
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:11:5
+   |
+11 | use(lambda x: None)
+   |     ^^^^^^^^^^^^^^ Expected `Sink`, found `(x) -> None`
+info: type `(x) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:12:5
+   |
+12 | use(lambda *args: None)
+   |     ^^^^^^^^^^^^^^^^^^ Expected `Sink`, found `(*args) -> None`
+info: type `(*args) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `value` is missing
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:13:5
+   |
+13 | use(lambda x, **kw: None)
+   |     ^^^^^^^^^^^^^^^^^^^^ Expected `Sink`, found `(x, **kw) -> None`
+info: type `(x, **kw) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x, **kw) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+Found 3 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:11:5
+   |
+11 | use(lambda x: None)
+   |     ^^^^^^^^^^^^^^ Expected `Sink`, found `(x) -> None`
+info: type `(x) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:12:5
+   |
+12 | use(lambda *args: None)
+   |     ^^^^^^^^^^^^^^^^^^ Expected `Sink`, found `(*args) -> None`
+info: type `(*args) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `value` is missing
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `use` is incorrect
+  --> repro2/l4.py:13:5
+   |
+13 | use(lambda x, **kw: None)
+   |     ^^^^^^^^^^^^^^^^^^^^ Expected `Sink`, found `(x, **kw) -> None`
+info: type `(x, **kw) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x, **kw) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+info: Function defined here
+ --> repro2/l4.py:8:5
+  |
+8 | def use(s: Sink) -> None: ...
+  |     ^^^ ------- Parameter declared here
+
+Found 3 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro2/l4.py:13: error: Argument 1 to "use" has incompatible type "def <lambda>(x: Any, **kw: Any) -> None"; expected "Sink"  [arg-type]
+repro2/l4.py:13: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro2/l4.py:13: error: Argument 1 to "use" has incompatible type "def <lambda>(x: Any, **kw: Any) -> None"; expected "Sink"  [arg-type]
+repro2/l4.py:13: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro2/l4.py:13: error: Argument 1 to "use" has incompatible type "def <lambda>(x: Any, **kw: Any) -> None"; expected "Sink"  [arg-type]
+repro2/l4.py:13: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l4.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l4.py:11:5 - error: Argument of type "(x: int) -> None" cannot be assigned to parameter "s" of type "Sink" in function "use"
+    Type "(x: int) -> None" is not assignable to type "(value: int) -> None"
+      Parameter name mismatch: "value" versus "x" (reportArgumentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l4.py:12:5 - error: Argument of type "(*args: Unknown) -> None" cannot be assigned to parameter "s" of type "Sink" in function "use"
+    Type "(*args: Unknown) -> None" is not assignable to type "(value: int) -> None"
+      Missing keyword parameter "value" (reportArgumentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l4.py:13:5 - error: Argument of type "(x: int, **kw: Unknown) -> None" cannot be assigned to parameter "s" of type "Sink" in function "use"
+    Type "(x: int, **kw: Unknown) -> None" is not assignable to type "(value: int) -> None"
+      Parameter name mismatch: "value" versus "x" (reportArgumentType)
+3 errors, 0 warnings, 0 informations
+rc=1

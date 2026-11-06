@@ -1,0 +1,144 @@
+##### issues python/mypy :: NameError
+18393	open	2026-10-06	mypy doesn't catch inheritance of outer class
+21210	open	2026-08-08	Incorrect type parameter scope inference with nested classes
+327	open	2022-03-24	Allow type aliases be used as variables
+17610	open	2024-07-30	Referencing name not defined yet allowed by mypy, yet error at runtime.
+12818	open	2022-05-20	Incorrect status of name in class def or module level, before being assigned or after being deleted.
+6104	open	2026-02-21	MyPy should report error if variable imported in TYPE_CHECKING block?
+17387	open	2024-06-15	possibly-undefined not catching unbound variable in try/finally block
+8178	open	2019-12-20	NamedTuple with dependent default values causes unexpected 'Name is not defined' errors
+13693	open	2025-04-08	Recursive Generic Type Support
+14539	open	2023-08-14	mypy reports `used-before-def` with `TypeAlias`es despite `from __future__ import annotations`
+15416	open	2023-06-11	Mypy not reporting "undefined" variable.
+18987	open	2025-05-05	Non-inline `__init_subclass__` definition not recognized, despite giving type hints.
+##### issues python/mypy :: unquoted
+15194	open	2023-05-05	Sequence[Mapping[str, Any]] won't allow dict with different layouts
+948	open	2022-03-19	Detect if required string literal escapes are missing from a type
+18507	closed	2025-10-20	Crash if a class is generic over a PEP-695 parameter that has the same name as an old-style `TypeVar` that is also in scope and the old-style TypeVar has a bound which uses an unquoted forward reference
+##### issues python/mypy :: without quotes
+9531	open	2022-03-27	Runtime use of type_check_only classes should give an error
+12527	closed	2022-05-16	Crash when TypeVar of Generic dataclass has undefined bound
+10190	closed	2021-03-10	Type inference not made when implementing __getitem__() and slicing on self
+7539	closed	2019-10-21	`OrderedDict` fails disallow_any_generics, but `OrderedDict[Any, Any]` doesn't run
+##### issues python/mypy :: string annotation required
+
+##### issues python/mypy :: not defined at runtime
+17387	open	2024-06-15	possibly-undefined not catching unbound variable in try/finally block
+6104	open	2026-02-21	MyPy should report error if variable imported in TYPE_CHECKING block?
+7818	closed	2023-04-10	Supporting Ellipsis as a value
+11006	closed	2021-08-21	Mypy misses conditional name not defined errors
+##### issues python/mypy :: runtime error annotation
+
+##### issues python/mypy :: report forward reference
+
+##### issues python/mypy :: undefined at runtime
+6104	open	2026-02-21	MyPy should report error if variable imported in TYPE_CHECKING block?
+##### issues python/mypy :: used before definition
+16397	open	2023-11-02	Wrapped methods are not properly resolved until after the class definition
+15335	open	2024-03-06	Unexpected used-before-def error when walrus operator is used to capture the matching item in an `any` comprehension
+14539	open	2023-08-14	mypy reports `used-before-def` with `TypeAlias`es despite `from __future__ import annotations`
+14668	open	2023-02-10	spurious used-before-def on admittedly odd wildcard import
+19690	closed	2026-01-18	`try: except: continue` inside `for: else:` causes spurious used-before-def
+17607	closed	2024-07-30	(🐞) 1.11 regression - crash when quoted type in decorator used before definition
+15314	closed	2023-06-17	used-before-def and TYPE_CHECKING
+12190	closed	2023-06-01	Types not narrowed with constrained TypeVar and walrus
+15145	closed	2023-04-27	Closure using parent-scope vars incorrectly reports used-before-def after if statements
+14913	closed	2023-03-17	Type not narrowed in walrus assignment inside match
+14213	closed	2023-03-01	Improve handling of global scope for partially defined check
+14626	closed	2023-02-08	Reusing variable previously defined with walrus operator triggers used-before-def error
+##### issues python/mypy :: PEP 563
+563	closed	2015-01-26	Only support @overload in stubs
+948	open	2022-03-19	Detect if required string literal escapes are missing from a type
+9932	open	2022-03-19	Type annotation "List"[int] generates runtime error but is accepted by mypy
+12570	open	2025-08-28	Mypy misunderstands class-level namespace (spurious `Variable "module.Class.attribute" is not valid as a type`)
+19722	closed	2026-05-18	Incorrect error for unions syntax in comments and strings (Python 3.9)
+9773	closed	2025-11-03	TypeForm[T]: Spelling for regular types (int, str) & special forms (Union[int, str], Literal['foo'], etc)
+17690	closed	2024-08-20	Raise errors when importing from the `typing` package instead of using the built-in types.  
+7915	closed	2024-03-02	Is there a way to import type from a stub file?
+1775	closed	2023-03-04	Attribute with the same name as a class in type annotation
+5541	closed	2022-07-29	feature_request(clize): Clize syntax support
+4440	closed	2021-05-05	Proper way to type circular dependency
+9610	closed	2021-04-01	Support PEP 604 - union types as X | Y
+##### issues python/mypy :: deferred annotations
+
+##### prs python/mypy :: NameError
+22125	open	2026-10-06	Reject inheritance from an enclosing class
+16715	open	2025-09-01	Support name mangling
+13791	open	2022-10-03	Changed type in alias_type_in_runtime_context function
+19886	open	2025-10-22	feat: constant fold common builtin call expressions [3/3]
+14717	open	2024-11-18	Disallow item access of NotRequired TypedDict entries.
+20581	closed	2026-05-10	Bump virtualenv from 20.34.0 to 20.36.1
+10237	closed	2025-12-15	Pass literals as kwargs
+19395	merged	2025-07-08	[mypyc] Raise NameError on undefined names
+19293	merged	2025-06-13	Fix tests in master
+18212	closed	2024-12-04	Move the join-based narrowing logic towards a union-based narrowing logic.
+16249	merged	2023-10-23	Add `|=` and `|` operators support for `TypedDict`
+15029	merged	2023-04-11	Clarify "Using types...but not at runtime" docs
+##### prs python/mypy :: unquoted
+
+##### prs python/mypy :: PEP 649
+16715	open	2025-09-01	Support name mangling
+18469	closed	2025-05-13	Ignore PEP 649 + 695 implementation details in stubtest
+19074	merged	2025-05-12	Fix stubtest tests on 3.14
+18915	merged	2025-04-12	Docs: added information about deprecated pep 563
+17258	merged	2024-05-17	[PEP 695] Implement new scoping rules for type parameters
+##### issues microsoft/pyright :: NameError annotation
+
+##### issues astral-sh/ty :: NameError
+4878	open	2026-11-01	Report unresolved names in class-body deletions
+4787	open	2026-10-26	Report deferred reads of deleted enclosing names
+4946	open	2026-11-06	Keep scope declarations and uses in sync when a Python file is renamed
+162	closed	2026-07-25	walrus expressions in a comprehension scope "leak" into the comprehension's enclosing scope
+3484	closed	2026-05-19	ty misses NameError when assigning a class to itself inside the class body
+3542	closed	2026-05-26	consider equivalents to `ruff` F524, F502 and F503 rules to issue an error
+2019	closed	2025-12-17	Unresolved reference on default function argument that gets a class attribute
+107	closed	2025-08-15	type parameters scope of a generic class is an eager scope (in a non-stub file)
+692	closed	2025-08-28	too many cycle iterations in cyclic dependent attributes
+793	closed	2025-07-16	`ty` incorrectly skips over definitions that are not bindings when checking not-local loads
+##### issues astral-sh/ty :: unresolved-reference
+1297	open	2026-05-22	Unresolved references of IPython builtins in notebooks
+4878	open	2026-11-01	Report unresolved names in class-body deletions
+4787	open	2026-10-26	Report deferred reads of deleted enclosing names
+2281	open	2026-05-21	No unresolved-reference error when definition exists but is not reachable
+4860	open	2026-11-06	Rename skips calls of a method of a `@final` generic class through a specialized instance
+2665	open	2026-01-30	improve `unresolved-reference` for cases where a variable is declared but unbound
+2471	open	2026-10-22	Consider renaming `unresolved-attribute` as `missing-attribute`
+4856	open	2026-10-28	Rename / find references of an attribute skip accesses in platform-dependent unreachable code
+4923	open	2026-11-04	Exhaustiveness checking does not reduce type[T] to Never after narrowing a closed union-bounded type parameter
+3162	open	2026-08-04	Unreachable names leak into lazy scopes as `Never`
+3837	open	2026-10-01	[panic] Recursive TypeOf across multiple union arms exhausts cycle iterations
+3967	open	2026-10-13	Forward reference in plain assignment in stub is not accepted
+##### issues astral-sh/ty :: deferred annotations
+3850	open	2026-06-24	Support implicit `__class__` cells across nested and annotation scopes
+3914	closed	2026-07-06	Redeclaration of type aliases with forward annotations
+2324	closed	2026-05-13	[panic] Interaction between the `__call__` method, decoraters, callable annotations, and self referential return types on 3.14
+899	closed	2025-12-07	`type: type = …` fails with deferred annotations
+2891	closed	2026-03-25	call-non-callable in not TYPE_CHECKING scope only on Python 3.14
+627	closed	2025-06-13	Freeze when checking project
+##### issues python/mypy :: match Flag
+16992	open	2026-05-01	`possibly-undefined` false positive when assigning variable for every case in match statement for all possible values
+20240	closed	2025-11-18	`match` statement on enum is considered non-exhaustive
+20251	closed	2025-11-18	Unreachable `match` wildcard case is not reported
+##### issues python/mypy :: match enum.Flag
+
+##### issues python/mypy :: Flag members exhaustive
+
+##### issues astral-sh/ty :: Flag match
+
+##### issues astral-sh/ty :: assert unreachable
+
+##### issues astral-sh/ty :: always-false comparison
+
+##### issues astral-sh/ty :: Literal[False] comparison
+
+##### issues astral-sh/ty :: disjoint comparison
+
+##### issues astral-sh/ty :: comparison unreachable
+
+##### issues astral-sh/ty :: equality inference
+4039	closed	2026-07-19	Membership and equality narrowing are inconsistent
+##### prs astral-sh/ruff :: ty equality inference disjoint
+
+##### prs astral-sh/ruff :: ty strict-literal-narrowing
+
+finished

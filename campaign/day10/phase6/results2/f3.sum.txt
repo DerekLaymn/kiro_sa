@@ -1,0 +1,44 @@
+--- cpython 3.13.16
+  Runtime type is 'F'
+  Runtime type is 'F'
+  Runtime type is 'F'
+  Runtime type is 'F'
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L11 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  L12 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  L13 info[revealed-type] Revealed type | `Literal[F.R]`
+  L14 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  Found 4 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L11 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  L12 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  L13 info[revealed-type] Revealed type | `Literal[F.R]`
+  L14 info[revealed-type] Revealed type | `Literal[F.R, F.W]`
+  Found 4 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  campaign/day10/phase6/repro2/f3.py:11: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:12: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:13: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:14: note: Revealed type is "f3.F"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  campaign/day10/phase6/repro2/f3.py:11: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:12: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:13: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:14: note: Revealed type is "f3.F"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  campaign/day10/phase6/repro2/f3.py:11: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:12: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:13: note: Revealed type is "f3.F"
+  campaign/day10/phase6/repro2/f3.py:14: note: Revealed type is "f3.F"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+0 errors, 0 warnings, 4 informations
+rc=0

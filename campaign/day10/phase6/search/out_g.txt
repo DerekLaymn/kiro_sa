@@ -1,0 +1,35 @@
+##### issues python/mypy :: lambda callback protocol
+
+##### issues python/mypy :: lambda protocol
+6909	closed	2019-06-02	False positive on await for AbstractEventLoop.create_connection (regression in 0.700)
+##### issues python/mypy :: lambda parameter name
+
+##### issues python/mypy :: lambda argument names
+
+##### issues python/mypy :: callback protocol argument names
+
+##### issues python/mypy :: callback protocol parameter name
+
+##### issues python/mypy :: lambda keyword argument
+
+##### prs python/mypy :: lambda argument names
+
+##### prs python/mypy :: lambda callback protocol
+
+##### issues astral-sh/ty :: lambda protocol
+
+##### issues astral-sh/ty :: lambda callback protocol
+
+##### issues astral-sh/ty :: lambda parameter name
+
+##### issues astral-sh/ty :: callback protocol
+4746	open	2026-10-19	Protocol methods with `self` annotated as the protocol reject valid implementations (regression in 0.0.65)
+4098	open	2026-08-04	ty 0.0.64 false-positives on lambdas passed to overloaded-callable Protocol union members (regression from 0.0.63)
+1889	open	2026-11-03	Type system feature overview
+1257	closed	2026-03-25	Incomplete assignability implementation between two `Callable` types where one `Callable` type has `*args: Any, **kwargs: Any`
+2981	closed	2026-03-12	[failing property test] subclass-of types cannot be considered subtypes of the `Callable` type of their constructors
+##### issues microsoft/pyright :: lambda parameter name protocol
+
+##### issues python/typing :: lambda callback protocol parameter name
+
+finished

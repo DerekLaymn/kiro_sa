@@ -7,6 +7,7 @@ Drafts 1 and 2 were verified on the ty playground by the user; Day 6 did not re-
 **Day 7 status (details: `campaign/day7-verification.md`, raw output: `campaign/day7/partD/evidence/`).** Drafts 6 (ty) and 7 (pyright) were added from the Part C candidates. They were run on CPython 3.13.16, ty 0.0.97 and 0.0.98 (0.0.98 was released on 2026-11-05 and is the latest), mypy 2.4.0, 2.4.1 and master, pyright 1.1.414 (latest). The "Day 6 verdict" column of rows 6 and 7 holds the Day 7 verdict. Drafts 1 to 5 were not re-run.
 **Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy) was added from class F. Drafts 6 and 7 were re-run with four and one more Day-8 program (ty 0.0.97/0.0.98, pyright 1.1.414) and still reproduce; see the Day 8 status at the end of this file.
 **Day 9 status (details: `campaign/day9-verification.md`, raw output: `campaign/day9/phase6/`).** Drafts 9 (mypy, comparison priority for operands of the same type) and 10 (mypy, `possibly-undefined` after a swallowing `with`) were added. Tools: CPython 3.13.16, ty 0.0.97 (the pin) and 0.0.99 (the newest release, 2026-11-06, beside the pin), mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562, pyright 1.1.414. The author listing of the drafting account (`campaign/day9/phase6/search/author.out`, 2026-11-06) shows drafts 1 to 5 filed: ty#4933 (draft 1), ty#4934 (draft 2, closed), mypy#22377 (draft 3), ty#4941 (draft 4), mypy#22375 (draft 5). Drafts 6, 7, 8 are still not filed. The Day-9 program `d4v_metaclass_reflected_op__mut0_dcb547ed` is another instance of draft 3 (mypy#22377).
+**Day 10 status (details: `campaign/day10-verification.md`, raw output: `campaign/day10/phase6/`).** Drafts 11 (mypy, lambda against a callback protocol) and 12 (pyright, `closed=` before Python 3.15) were added from the 10 strong-evidence programs of the Day-10 triage and the review of the live rows around them. Tools: CPython 3.13.16, ty 0.0.97 (the pin) and 0.0.99 (still the newest release on 2026-11-06, beside the pin), mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562, pyright 1.1.414 (latest). None of the 10 strong programs gave a new bug by itself; the two drafts come from a ty `only_ty` family (21 rows) and from the `closed=True` row. The author listing of the drafting account (`campaign/day10/phase6/search/author.out`, 2026-11-06) now shows drafts 1 to 9 filed: ty#4933 (1), ty#4934 (2, closed), mypy#22377 (3), ty#4941 (4), mypy#22375 (5), ty#4958 (6), pyright#11984 (7), mypy#22385 (8), mypy#22386 (9). Draft 10 and the new drafts 11 and 12 are not filed. Nothing was posted in this step, and no GitHub write call was made.
 The drafts are concatenated without edits to the issue bodies from `campaign/day4/issue-drafts-v1.md` (draft 1), `-v2.md` (draft 2) and `-v3.md` (drafts 3 and 4). Each draft sits in a fenced block: copy the contents (without the fence lines) into the issue body, set the title from the "Title" line, and replace `<PLAYGROUND LINK>`. NOT FILED. Nothing here was posted anywhere, and no GitHub write call was made. (The format reference `temp/issue_drafts.md` does not exist in the repo; the format of the v1 to v3 drafts is kept.)
 
 | # | Tool | Bug | Class | Conf | Duplicate check | Day 6 verdict | Source |
@@ -21,6 +22,8 @@ The drafts are concatenated without edits to the issue bodies from `campaign/day
 | 8 | mypy | overloaded `__post_init__` of a dataclass: every overload item is checked against the InitVar signature, so an item without the `InitVar` type gets `[override]` although another item takes it | FALSE_POSITIVE | 0.6 | none found (16 term sets on python/mypy, 5 on ty and pyright; read #15498, #15503, #9254, #16293, #15515, #12379) | STILL-BUG-NEW (Day 8, mypy 2.4.0, 2.4.1, master) | Day 8, class F, `rsv_dataclasses_223fff8f__mut0_3b9111ba` |
 | 9 | mypy | `a < b` for two operands of the same type tries `b.__gt__` first when `__lt__` and `__gt__` are defined in different classes of the MRO; the inferred type is that of the wrong method | FALSE_POSITIVE / INCORRECT_INFERENCE | 0.6 | none found (13 issue and 6 PR queries on python/mypy, 2+2 issue queries on ty and pyright, 1 ruff PR query). Same function, different bugs: mypy#22377 (draft 3), #19006 (fixed), #22316 and PR #22380 (message text) | STILL-BUG-NEW (Day 9, mypy 2.4.0, 2.4.1, master) | Day 9, `d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f` |
 | 10 | mypy | `possibly-undefined` does not report a name assigned in a `with` block whose `__exit__` returns `bool` (`contextlib.suppress`, user classes), although the name is unbound after a swallowed exception | FALSE_NEGATIVE (opt-in check) | 0.4 | none found (8 issue and 3 PR queries on python/mypy, 5 on ty, 3 on pyright, 2 ruff PR queries). Related: closed mypy#7577, #10896, #7726, #15715 (`Missing return statement` after such blocks, handled by the type checker) | STILL-BUG-NEW (Day 9, mypy 2.4.0, 2.4.1, master; ty and pyright report it) | Day 9, `context_managers/gen0_b82d2e9e`, `gen21_6ee04c3a` |
+| 11 | mypy | a `lambda` with other parameter names (or positional-only parameters) is accepted for a callback protocol whose `__call__` names its parameter, while the equivalent `def` is rejected | FALSE_NEGATIVE | 0.5 | none found (19 issue and 7 PR queries on python/mypy about lambda, callback protocol and argument names, 4 on ty, 2 on pyright). Related: mypy#8805 (closed, docs: argument names in `__call__` must be identical) | STILL-BUG-NEW (Day 10, mypy 2.4.0, 2.4.1, master; ty and pyright reject) | Day 10, `generics_variance/rsv_generics_variance_3c28536f__mut0_8c29e5e6`, `__mut0_1333b1ed`, `__mut0_46b898b3` (21 `only_ty` rows) |
+| 12 | pyright | `closed=True` and `extra_items=` on a `typing.TypedDict` class are accepted for `pythonVersion` below 3.15, where CPython raises `TypeError` | FALSE_NEGATIVE | 0.35 | none found (12 issue and 1 PR queries on pyright, 2 on ty, 1 each on typeshed and typing). Same report: mypy#21747 (open), ty#4031 (closed, fixed) | STILL-BUG-NEW (Day 10, pyright 1.1.414 = latest) | Day 10, `typeddict/hv_typeddict__pyright__typedDict10__mut1_5eeeb41b` |
 
 Not drafted, with reasons (all duplicates, fixed, or not bugs):
 
@@ -780,6 +783,135 @@ mypy-play: <PLAYGROUND LINK>
 
 ---
 
+## 11. mypy: a lambda is accepted for a callback protocol even when its parameter names differ from `__call__`
+
+**Day 10 verdict: STILL-BUG-NEW (confidence 0.5).** Source: three Day-10 mutants of `rsv_generics_variance_3c28536f` (`__mut0_8c29e5e6`, `__mut0_1333b1ed`, `__mut0_46b898b3`): ty reported 21 `only_ty` rows such as `Argument to Handler.__init__ is incorrect: Expected Sink[float], found (x) -> None`, and mypy reported nothing. The program stores a callback protocol `Sink[T]` with `def __call__(self, value: T)` and passes `lambda x: ...`. Reduced by hand to `test_bug.py`. mypy 2.4.0, 2.4.1 and master 2.5.0+dev.879da562 reject the `def` and accept the lambdas; ty 0.0.97/0.0.99 and pyright 1.1.414 reject all of them; CPython raises `TypeError` for a keyword call. Evidence: `campaign/day10-verification.md` (D10-13), `campaign/day10/phase6/results2/draft11.txt`, `l1.txt` to `l7.txt`, `results3/gv_8c29e5e6.txt`.
+
+**Duplicate check:** Checked: `gh search issues` (19 queries) and `gh search prs` (7) on python/mypy (lambda callback protocol, lambda protocol, lambda parameter name, lambda argument names, callback protocol argument or parameter names, lambda keyword, lambda positional-only, lambda `__call__`, lambda false negative, lambda ParamSpec, protocol `__call__` argument name, `infer_lambda_type_using_context`, ...), 4 queries on ty, 2 on pyright, 1 each on typing and ruff. Result: nothing about lambdas and callback protocol names. Related: mypy#8805 (closed, documentation: parameter names in `__call__` must be identical for all parameters that are not positional-only). The cause below is read from the source, not debugged.
+
+**Not checked:** issue comments beyond the issues read; PRs that the search phrases did not surface; discuss.python.org; mypy-play (the `<PLAYGROUND LINK>` placeholder is still open, UNVERIFIED-PLAYGROUND). A maintainer may call the leniency deliberate. Run one last search on the exact title before submitting.
+
+Title: `Lambda with different parameter names is accepted for a callback protocol, the equivalent def is rejected`
+
+````markdown
+**Bug Report**
+
+The mypy docs say that the parameter names in a callback protocol's `__call__` must be identical unless the parameters are positional-only, and mypy enforces this for functions. It does not enforce it for lambdas. A lambda with other parameter names, a positional-only lambda, and a lambda with extra defaulted parameters are all accepted, although a call by keyword raises `TypeError` at runtime.
+
+**To Reproduce**
+
+```python
+from typing import Protocol
+
+
+class Sink(Protocol):
+    def __call__(self, value: int) -> None: ...
+
+
+def call_by_keyword(sink: Sink) -> None:
+    sink(value=1)
+
+
+def named_x(x: int) -> None: ...
+
+
+def with_def() -> None:
+    call_by_keyword(named_x)  # mypy: error
+
+
+s1: Sink = lambda x, /: None  # mypy: no error
+s2: Sink = lambda y, z=0: None  # mypy: no error
+call_by_keyword(lambda x: None)  # mypy: no error
+```
+
+**Actual Behavior**
+
+```
+$ mypy --python-version 3.13 --no-incremental test_bug.py
+test_bug.py:16: error: Argument 1 to "call_by_keyword" has incompatible type "Callable[[int], None]"; expected "Sink"  [arg-type]
+test_bug.py:16: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+
+$ python test_bug.py
+TypeError: <lambda>() got an unexpected keyword argument 'value'
+```
+
+**Expected Behavior**
+
+The same error for the lambdas on lines 19, 20 and 21 as for the `def` on line 16. pyright reports all four (`Parameter name mismatch: "value" versus "x"`, and `Missing keyword parameter "value"` for the positional-only lambda), and ty reports all four as well.
+
+What I tried:
+
+- `lambda value: ...` is accepted, which is right.
+- `lambda *, value: ...` is rejected by mypy ("def <lambda>(*, value: Any) -> None"), so the check exists for some lambda shapes.
+- The same with a PEP 695 protocol, `class Sink[T](Protocol)` with `def __call__(self, value: T)`, and a `Handler[float](lambda x: ...)` constructor argument or a `h.sink = lambda x: ...` assignment: accepted by mypy, rejected by ty and pyright.
+
+I did not find the reason. `infer_lambda_type_using_context` in `checkexpr.py` has a comment that the type of a lambda must keep its own argument names so that lambdas in a `ParamSpec` context do not give false negatives; the protocol case seems to be missing something similar.
+
+**Your Environment**
+
+- Mypy version used: 2.4.0, 2.4.1 and master 2.5.0+dev.879da562
+- Mypy command-line flags: `--python-version 3.13 --no-incremental`
+- Python version used: 3.13.16
+- OS: Linux
+
+mypy-play: <PLAYGROUND LINK>
+````
+
+---
+
+## 12. pyright: `closed=True` and `extra_items=` on `typing.TypedDict` are accepted before Python 3.15
+
+**Day 10 verdict: STILL-BUG-NEW (low confidence, 0.35).** Source: the Day-10 program `typeddict/hv_typeddict__pyright__typedDict10__mut1_5eeeb41b` (a `class Config(TypedDict, closed=True)` that ty rejects with `unknown-argument`; strong runtime evidence in the triage, KB hint STUB-SKEW). Reduced to `test_bug2.py`. CPython 3.13.16 raises `TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'closed'`; ty 0.0.97/0.0.99 report it ("added in Python 3.15"); mypy 2.4.0, 2.4.1 and master accept `closed=True` (python/mypy#21747, open, label bug); pyright 1.1.414 (latest) accepts both `closed=True` and `extra_items=int` for `--pythonversion 3.12`, `3.13`, `3.14` and `3.15`. Evidence: `campaign/day10-verification.md` (D10-10), `campaign/day10/phase6/results2/draft12.txt`, `td_versions.txt` (`t1.py`, `t2.py`, `t3.py`), `results/c_td1.txt` to `c_td3.txt`.
+
+**Duplicate check:** Checked: `gh search issues` (12 queries) and `gh search prs` (1) on microsoft/pyright (PEP 728, `closed=True`, `extra_items`, TypedDict closed, closed TypedDict version, TypedDict closed 3.15, closed typing.TypedDict, TypedDict keyword argument, class keyword Python version, typing_extensions TypedDict closed), 2 queries on ty, 1 on typeshed, 1 on typing. Result: nothing about a Python version check. Related: pyright#10803 and PR #10804 (PEP 728 is no longer experimental), pyright#9928 (closed, `TypedDict` silently accepted the arguments before support), mypy#21747 (open, same report for mypy) and ty#4031 (closed, fixed in ty).
+
+**Not checked:** issue comments beyond the issues read; PRs that the search phrases did not surface; discuss.python.org; the pyright playground (the `<PLAYGROUND LINK>` placeholder is still open, UNVERIFIED-PLAYGROUND). The reporter of mypy#21747 and ty#4031 suggests allowing it in stub files, so the check may be wanted only for source files. Run one last search on the exact title before submitting.
+
+Title: `closed=True and extra_items= on a typing.TypedDict class are not reported when pythonVersion is below 3.15`
+
+````markdown
+### Summary
+
+`typing.TypedDict` accepts the class arguments `closed` and `extra_items` only from Python 3.15 (PEP 728). On older versions they come from `typing_extensions.TypedDict`. With `from typing import TypedDict` pyright accepts both arguments for every `pythonVersion`, so a class that fails at import on 3.12 to 3.14 passes.
+
+```py
+from typing import TypedDict
+
+
+class Config(TypedDict, closed=True):
+    name: str
+
+
+bad: Config = {"name": "a", "extra": 1}
+```
+
+```console
+$ pyright --pythonversion 3.13 test_bug2.py
+test_bug2.py:8:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+
+$ python test_bug2.py
+TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'closed'
+```
+
+The only error is the one on line 8, which uses the closed semantics; nothing is reported for the class statement on line 4. The output is the same for `--pythonversion 3.12`, `3.14` and `3.15`. `class Config(TypedDict, extra_items=int)` gives no error at all on any version. With `from typing_extensions import TypedDict` the same class is valid at runtime on 3.13 and pyright's output is unchanged, as it should be.
+
+ty reports the class on 3.13 (`The closed parameter of typing.TypedDict was added in Python 3.15`, astral-sh/ty#4031) and stays quiet from `--python-version 3.15`. mypy accepts it (python/mypy#21747, open).
+
+**Expected:** an error on `closed=True` / `extra_items=...` when `typing.TypedDict` is used with a `pythonVersion` below 3.15, and none for `typing_extensions.TypedDict`.
+
+Playground: <PLAYGROUND LINK>
+
+### Version
+
+pyright 1.1.414
+````
+
+---
+
 **Day 8 status (details: `campaign/day8-verification.md`, raw output: `campaign/day8/phase6/`).** Draft 8 (mypy, overloaded `__post_init__`) was added. Draft 6 and draft 7 cover more programs now, without a new draft: the four Day-8 mutants of the partial-unpack parent (`(a, *b, c)` star target, `(first, *rest)` with an empty tuple, an attribute-chain source, a `match` in the handler) show the same `Literal[1]` / `Literal[0]` on ty 0.0.97 and 0.0.98 as draft 6; the annotated variant `d3p_descriptors_decorated_get__mut0_655e135a` with `reveal_type(C.__get__)` and a direct `C.__get__(C(), None, C)` call crashes pyright 1.1.414 like draft 7 (draft 7 already lists the direct call). Neither draft was found filed under the account that filed ty#4933, #4934, #4941 and mypy#22375, #22377 (author listing, `campaign/day8/phase6/search/out_author.txt`).
 
 **Day 9 status (details: `campaign/day9-verification.md`, raw output: `campaign/day9/phase6/`).** Drafts 9 and 10 were added. Not drafted, with reasons:
@@ -791,3 +923,17 @@ mypy-play: <PLAYGROUND LINK>
 - **`Any` argument reaches `n + 1` on a `str`** (`gradual_any/gen5_ade5dcc3`): NOT-A-BUG, the gradual guarantee.
 - **Annotation-only or instance-assigned special methods** (20 `only_pyright` `runtime_supports` rows, the Day-8 lead of section 4 of `day8-verification.md`): NOT-A-BUG, a known trade-off. CPython raises `TypeError` for `len(x)`, `x()`, `list(x)`, `x[0]` and `1 in x` in both forms (`d1.py`, `d2.py`). For the annotation-only form no checker rejects all five (ty rejects 2, mypy 3, pyright 2); for the instance-assigned form ty rejects all five, pyright 3 and mypy none. The ty maintainers state the trade-off in ty#4570 (instance attributes implement protocol methods, "false negatives in some cases that will raise at runtime", dunders named explicitly); for instance-assigned dunders mypy#2113 (open since 2016) is the same report. Nothing is drafted: confidence that ty or mypy would take it as a bug is below 0.3.
 - **`Need type annotation for "key"` on `self.key = key` with a constrained PEP 695 or old-style type variable** (seen in `d3p_typevartuple_unpack_paramspec_default_after_tvt__mut0_df958820`): DUPLICATE of python/mypy#19618 (open, known problem, subset of #5416).
+
+**Day 10 status (details: `campaign/day10-verification.md`, raw output: `campaign/day10/phase6/`).** Drafts 11 and 12 were added. Not drafted, with reasons:
+
+- **Metaclass `__call__` return type** (`constructors_metaclasses/gen1_37b4e5f8`, `..call_metaclass__mut1_2cca6936`, 3 strong findings): DUPLICATE of python/mypy#8595 (closed, "unlikely this will be ever supported"), open #14122. The Day-10 KB entry `MYPY-8595-METACLASS-CALL` already closes these rows.
+- **mypy narrows `enum.Flag` / `IntFlag` by `==` and `is`, and in `match`** (`enums_literals/d4v_ty_flag_or_else_never__mut0_d156e44d`): DUPLICATE of python/mypy#21937 (open); the open fix PR #21942 changes `narrow_type_by_identity_equality`, which `visit_value_pattern` also calls, so it covers `match` too. The ty side (`F.R | F.W` as `Literal[F.R, F.W]`, `~F.R` as `Literal[F.R]`) is the Flag item of ty#876.
+- **ty reveals `Never` for every name inside `assert f(x) == 4` when `f(x)` is a `str`** (`overloads/..overloads_definitions__mut1_59eaed87`): NOT-A-BUG. It is not specific to overloads (a plain `def f(x: object) -> str` does the same). ty infers `str == Literal[4]` as `Literal[False]` and treats the code after the assert as unreachable, where every name is `Never` and no diagnostic is reported; ty decided to ignore a subclass that overrides `__eq__` (ty#3419, closed completed 2026-07-22). The odd display (`Never` instead of skipping the reveal) is related to the open ty#4051 and ty#3162.
+- **mypy and pyright narrow `type(x) == C`, ty does not** (`narrowing_user/s3r1_ty_type_equality_narrowing_any__mut1_14fa674d`): NOT-A-BUG. ty's own tests state that no narrowing happens for `type(x) == C` because the metaclass may define `__eq__`; the program is built on exactly such a metaclass.
+- **`Generic[*Ts, D]` with a defaulted TypeVar** (`typevartuple_unpack/..mut0_b16712de`): NOT-A-BUG. mypy, ty and pyright all report the class (`type-var`, `invalid-type-variable-default`, `reportGeneralTypeIssues`); CPython raises `TypeError`. The later differences follow the error.
+- **`class Callback[*Ts, **P = [bool]]`** (`typevartuple_unpack/..mut1_b0772641`): DUPLICATE of python/typing#2211 (runtime) and mypy#22375 (draft 5). A variant that is not in the draft 5 text: `Foo[int]` on `class Foo[*Ts, **P = [float, bool]]` gives no error in mypy but `foo.args()` is `tuple[()]` and `foo.fn()` is `def (*int, **int)`, so the single argument is bound to the `ParamSpec` (same cause; ty and pyright infer `Foo[int, (float, bool)]`). Raw output: `campaign/day10/phase6/results/c_tvt1.txt`.
+- **Unquoted forward reference to the enclosing class** (`abstract_classes/gen1_5c366404`): NOT-A-BUG for ty and pyright (they are right); mypy's silence is the open feature request python/mypy#948 (priority-1-normal) and is described in the mypy docs ("Class name forward references"); related open #17610.
+- **mypy `Missing positional argument "name"` for `label('t2', 6)`** (`paramspec_concatenate/..generics_paramspec_components__mut0_66a0b5b8`, a `SELF_CONTRADICTION` row): NOT-A-BUG. The call is rejected by all three tools. mypy's message comes from `_detect_missing_positional_arg` (python/mypy PR #20591, merged 2026-03-30), which guesses the skipped parameter by type alignment; the same message appears for a plain `def`. The strong row is a harness false positive.
+- **`class Config(TypedDict, closed=True)` on 3.13** (`typeddict/..typedDict10__mut1_5eeeb41b`): ty is right (ty#4031, fixed); mypy's silence is python/mypy#21747 (open); pyright's silence is draft 12.
+- **Medium-evidence `reveal_unpaired` rows** (4 programs: `gradual_any/rsv_gradual_any_76921a4b__mut0_ad89194c`, `__mut0_00d85d59`, `narrowing_user/gen1_0cecd6f5`, `gen3_cbc25173`): NOT-A-BUG. The code after an unsound `TypeIs`, a `cast(int, str_value)` followed by `assert not isinstance(.., int)`, or `Any`-to-`object` flow is unreachable for every tool; ty prints `Never` where mypy and pyright print nothing (ty#4051, ty#3162).
+- **13 `only_pyright` `runtime_supports` rows**: 9 are draft 10 (6 `return` of a name assigned in a `with` that can swallow the exception, 3 reveals after such a block; the `async with` form of `gen9_44fe19eb` behaves the same, checked in `campaign/day10/phase6/results2/w1.txt`: mypy 2.4.0, 2.4.1 and master are silent with `possibly-undefined` enabled, pyright reports, ty reports with the rule on), 3 are the annotation-only special-method trade-off of Day 9 (D9-9), 1 (`Slot.__delete__(..)`) follows a class-body decorator misuse that all three tools report on the decorator line.

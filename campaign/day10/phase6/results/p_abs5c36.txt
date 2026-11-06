@@ -1,0 +1,102 @@
+##### p_abs5c36.py
+--- cpython 3.13.16
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py", line 10, in <module>
+    class Shape(ABC):
+    ...<5 lines>...
+        def scale(self, k: float) -> Shape: ...
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py", line 16, in Shape
+    def scale(self, k: float) -> Shape: ...
+                                 ^^^^^
+NameError: name 'Shape' is not defined
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+error[unresolved-reference]: Name `Shape` used when not defined
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:16:34
+   |
+16 |     def scale(self, k: float) -> Shape: ...
+   |                                  ^^^^^
+
+error[call-non-callable]: Cannot instantiate abstract class `Lazy`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46:15
+   |
+46 |         obj = Lazy()  # expect-error: Lazy leaves abstract property area unimplemented
+   |               ^^^^^^ `area` is unimplemented
+   |
+  ::: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:13:9
+   |
+13 |     def area(self) -> float: ...
+   |         ---- `area` declared as abstract on superclass `Shape`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47:21
+   |
+47 |         reveal_type(obj)
+   |                     ^^^ `Lazy`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54:13
+   |
+54 | reveal_type(sq.area)
+   |             ^^^^^^^ `float`
+
+Found 4 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[unresolved-reference]: Name `Shape` used when not defined
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:16:34
+   |
+16 |     def scale(self, k: float) -> Shape: ...
+   |                                  ^^^^^
+
+error[call-non-callable]: Cannot instantiate abstract class `Lazy`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46:15
+   |
+46 |         obj = Lazy()  # expect-error: Lazy leaves abstract property area unimplemented
+   |               ^^^^^^ `area` is unimplemented
+   |
+  ::: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:13:9
+   |
+13 |     def area(self) -> float: ...
+   |         ---- `area` declared as abstract on superclass `Shape`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47:21
+   |
+47 |         reveal_type(obj)
+   |                     ^^^ `Lazy`
+
+info[revealed-type]: Revealed type
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54:13
+   |
+54 | reveal_type(sq.area)
+   |             ^^^^^^^ `float`
+
+Found 4 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54: note: Revealed type is "float"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54: note: Revealed type is "float"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46: error: Cannot instantiate abstract class "Lazy" with abstract attribute "area"  [abstract]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47: note: Revealed type is "p_abs5c36.Lazy"
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54: note: Revealed type is "float"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:16:34 - error: "Shape" is not defined (reportUndefinedVariable)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:46:15 - error: Cannot instantiate abstract class "Lazy"
+    "Shape.area" is not implemented (reportAbstractUsage)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:47:21 - information: Type of "obj" is "Lazy"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_abs5c36.py:54:13 - information: Type of "sq.area" is "float"
+2 errors, 0 warnings, 2 informations
+rc=1

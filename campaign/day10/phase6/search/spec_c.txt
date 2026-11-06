@@ -1,0 +1,24 @@
+issues|astral-sh/ty|narrowing Never
+issues|astral-sh/ty|assert Never
+issues|astral-sh/ty|equality narrowing
+issues|astral-sh/ty|narrowing call
+issues|astral-sh/ty|narrowing callee
+issues|astral-sh/ty|comparison narrowing
+issues|astral-sh/ty|literal narrowing
+issues|astral-sh/ty|len narrowing
+issues|astral-sh/ty|narrowing disjoint
+issues|astral-sh/ty|falsely narrowed
+issues|astral-sh/ty|narrowed Never
+issues|astral-sh/ty|spurious Never
+issues|astral-sh/ty|function Never
+issues|astral-sh/ty|callable narrowed Never
+issues|astral-sh/ty|assert
+issues|astral-sh/ty|== narrowing
+prs|astral-sh/ruff|ty equality narrowing
+prs|astral-sh/ruff|ty narrowing call
+prs|astral-sh/ruff|ty len narrowing
+prs|astral-sh/ruff|ty narrowing Never
+prs|astral-sh/ruff|[ty] narrow
+issues|astral-sh/ruff|narrowing Never
+issues|microsoft/pyright|assert call narrowing
+issues|python/mypy|assert call narrowing

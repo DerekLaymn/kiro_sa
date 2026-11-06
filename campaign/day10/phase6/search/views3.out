@@ -1,0 +1,187 @@
+################ python/mypy#22375
+subscripting a class with a TypeVarTuple followed by a defaulted ParamSpec reports "Can only replace ParamSpec" and infers Any | OPEN  | created 2026-11-05 closed - | labels: bug | author DerekLaymn
+--- body
+**Bug Report**
+
+PEP 696 and the typing spec (section "Defaults following TypeVarTuple") allow a `ParamSpec` with a default after a `TypeVarTuple`. The spec's example also gives the `TypeVarTuple` a default; the result below is the same with and without it. mypy accepts the class definition, but subscripting it gives an error: the last type argument is taken as the argument for the `ParamSpec`, and the result is `Foo[*tuple[Any, ...], Any]`.
+
+**To Reproduce**
+
+```python
+from collections.abc import Callable
+from typing import assert_type
+
+
+class Foo[*Ts, **P = [float, bool]]:
+    def args(self) -> tuple[*Ts]:
+        raise NotImplementedError
+
+    def fn(self) -> Callable[P, None]:
+        raise NotImplementedError
+
+
+foo = Foo[int, str]()
+assert_type(foo.args(), tuple[int, str])
+assert_type(foo.fn(), Callable[[float, bool], None])
+
+bar = Foo[int, str, [bytes]]()
+assert_type(bar.args(), tuple[int, str])
+assert_type(bar.fn(), Callable[[bytes], None])
+```
+
+The old-style spelling (`Ts = TypeVarTuple("Ts")`, `P = ParamSpec("P", default=[float, bool])`, `class Foo(Generic[Unpack[Ts], P])`, a parameter annotated `Foo[int, str]`) gives the same message on the subscript.
+
+**Actual Behavior**
+
+```
+t.py:13: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+t.py:14: error: Expression is of type "tuple[Any, ...]", not "tuple[int, str]"  [assert-type]
+t.py:15: error: Expression is of type "def (*Any, **Any) -> None", not "Callable[[float, bool], None]"  [assert-type]
+t.py:17: error: Can only replace ParamSpec with a parameter types list or another ParamSpec, got "str"  [misc]
+t.py:18: error: Expression is of type "tuple[Any, ...]", not "tuple[int, str]"  [assert-type]
+t.py:19: error: Expression is of type "def (*Any, **Any) -> None", 
+--- comments (0)
+################ python/typing#2211
+`generics_defaults.py` mandates that type checkers should allow a class that raises `TypeError` at runtime | OPEN  | created 2026-03-08 closed - | labels: topic: conformance tests | author AlexWaygood
+--- body
+This test mandates that type checkers should allow classes that have `ParamSpec`s-with-defaults following `TypeVarTuple`s: https://github.com/python/typing/blob/22d9392a5ead302cc02c47ecbbcf3aa40106fd9f/conformance/tests/generics_defaults.py#L191-L200
+
+But these fail at runtime. Using Python 3.11 syntax:
+
+```pytb
+% uvx python3.14       
+Python 3.14.0 (main, Oct 10 2025, 12:54:13) [Clang 20.1.4 ] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from typing import *
+>>> Ts = TypeVarTuple("Ts")
+>>> P = ParamSpec("P", default=[int, str])
+>>> class A(Generic[*Ts, P]): ...
+... 
+Traceback (most recent call last):
+  File "<python-input-3>", line 1, in <module>
+    class A(Generic[*Ts, P]): ...
+            ~~~~~~~^^^^^^^^
+  File "/Users/alexw/Library/Application Support/uv/python/cpython-3.14.0-macos-aarch64-none/lib/python3.14/typing.py", line 402, in inner
+    return func(*args, **kwds)
+  File "/Users/alexw/Library/Application Support/uv/python/cpython-3.14.0-macos-aarch64-none/lib/python3.14/typing.py", line 1157, in _generic_class_getitem
+    return _GenericAlias(cls, args)
+  File "/Users/alexw/Library/Application Support/uv/python/cpython-3.14.0-macos-aarch64-none/lib/python3.14/typing.py", line 1334, in __init__
+    self.__parameters__ = _collect_type_parameters(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~^
+        args,
+        ^^^^^
+        enforce_default_ordering=enforce_default_ordering,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/alexw/Library/Application Support/uv/python/cpython-3.14.0-macos-aarch64-none/lib/python3.14/typing.py", line 291, in _collect_type_parameters
+    raise TypeError('Type parameter with a default'
+                    ' follows TypeVarTuple')
+TypeError: Type par
+--- comments (2)
+[JelleZijlstra 2026-03-08] I think this is a bug in the runtime, yes.
+~~
+[JelleZijlstra 2026-03-08] The relevant spec section is https://typing.python.org/en/latest/spec/generics.html#defaults-following-typevartuple, deriving from PEP 696 https://peps.python.org/pep-0696/#defaults-following-typevartuple
+################ python/mypy#18176
+Add support for TypedDict extra_items= and closed= (PEP 728) | OPEN  | created 2024-11-21 closed - | labels: feature,topic-typed-dict,priority-0-high | author mharding-hpe
+--- body
+Edit from maintainers: mypy supports closed TypedDicts since version 2.2
+
+---
+
+**Feature**
+
+[PEP 728](https://peps.python.org/pep-0728/) proposes changes to `TypedDict`, including the ability to specify the types of unspecified keys.
+
+This has been [implemented in `typing_extensions` with the `__extra_items__` keyword](https://typing-extensions.readthedocs.io/en/latest/index.html#typing_extensions.TypedDict.__extra_items__) since version 4.10.
+
+I would like to see support for this added to `mypy`.
+
+**Pitch**
+
+I am working on using mypy to validate Python code associated with rest API services. It is not uncommon for the OpenAPI specs we use to include objects whose `additionalProperties` values map to schemas. This is how OpenAPI handles the case of objects whose keywords are not known in advance, but whose values must be of a particular type.
+
+I want to be able to type annotate these schemas in Python, but currently there is no good mechanism for doing this. That is one of the problems that PEP 728 attempts to solve.
+
+Currently with mypy I have found a few ways to handle this (in the absence of adding the requested support):
+
+1. As noted in the PEP, one can always suppress the `typeddict-unknown-key` errors. But of course that means no type checking is happening for the additional keys being used.
+2. I haven't coded it up yet, but I suspect with overloading I could probably come up with something that works for this. Basically, I could overload the getitem/setitem methods in a Protocol, specifying the correct return types for the various pre-defined keys (as Literals), and then add "generic" fallback get/set item methods for the "extra key type".
+3. It's possible I could come up with some Frankensteining of TypedDicts and defaultdicts that accomplishes this. Although t
+--- comments (5)
+[layday 2024-11-22] The PEP has been updated and no longer specifies the `__extra_items__` *property*.  `typing_extensions` does not yet support the new parametrised form.
+~~
+[mharding-hpe 2024-11-22] Good catch -- I missed that. In that case, I think it makes sense to wait for `typing_extensions` to catch up with the PEP before supporting it in mypy. 
+
+I have opened [a `typing_extensions` issue for this](https://github.com/python/typing_extensions/issues/511), as I do not see one currently open.
+~~
+[mharding-hpe 2025-03-21] The `typing_extensions` work just got completed for this 
+~~
+[JukkaL 2025-06-05] I think all the prerequisites are ready to start work on the implementation -- we just need somebody who has time and interest to work on this.
+~~
+[peacefulotter 2026-01-07] Any news on this? Thanks ! 
+################ python/mypy#20591
+Improve error messages when positional argument is missing | MERGED  | created 2026-01-16 closed 2026-03-30T16:57:24Z | labels:  | author KevinRK29
+--- body
+## Summary
+
+This PR improves error messages when positional argument is missing from a function call. 
+
+Previously when a user forgets a positional argument, mypy would previously emit multiple type errors because the subsequent arguments would be "shifted" and mismatched with their expected types. Instead of showing multiple type errors, it emits a single consolidated message that suggests which argument might be missing.
+--- comments (9)
+[github-actions 2026-01-16] Diff from [mypy_primer](https://github.com/hauntsaninja/mypy_primer), showing the effect of this PR on open source code:
+```diff
+spark (https://github.com/apache/spark)
++ python/pyspark/streaming/dstream.py:236: error: Unused "type: ignore[arg-type]" comment  [unused-ignore]
++ python/pyspark/streaming/dstream.py:410: error: Unused "type: ignore[arg-type]" comment  [unused-ignore]
++ python/pyspark/streaming/dstream.py:453: error: Unused "type: ignore[arg-type]" comment  [unused-ignore]
+
+prefect (https://github.com/PrefectHQ/prefect)
++ src/prefect/cli/work_pool.py:206: error: Incompatible arguments for "provision"; check for missing arguments  [call-arg]
+- src/prefect/cli/work_pool.py:206: err
+~~
+[github-actions 2026-01-23] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-01-30] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-02-06] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-02-13] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-02-25] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-03-16] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-03-16] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+~~
+[github-actions 2026-03-16] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+################ python/mypy#19354
+Fix wrong names listed in "too few arguments" message | OPEN  | created 2025-06-29 closed - | labels:  | author sterliakov
+--- body
+Fixes #12755. When some arguments are passed as keywords, only report everything before them as positional, report per-item missing kwargs for the rest. This logic craves for more tests, let's see if I got the idea right first.
+--- comments (1)
+[github-actions 2025-06-29] Diff from [mypy_primer](https://github.com/hauntsaninja/mypy_primer), showing the effect of this PR on open source code:
+```diff
+ibis (https://github.com/ibis-project/ibis)
+- ibis/expr/datatypes/core.py:284: error: Too few arguments for "Struct"  [call-arg]
++ ibis/expr/datatypes/core.py:284: error: Missing named argument "fields" for "Struct"  [call-arg]
+- ibis/expr/datatypes/core.py:959: error: Too few arguments for "Struct"  [call-arg]
++ ibis/expr/datatypes/core.py:959: error: Missing named argument "fields" for "Struct"  [call-arg]
+- ibis/backends/sql/datatypes.py:208: error: Too few arguments for "Array"  [call-arg]
++ ibis/backends/sql/datatypes.py:208: error: Missing named argument "val
+################ python/mypy#14122
+Support __call__ on metaclasses | OPEN  | created 2022-11-17 closed - | labels: bug,priority-2-low,topic-protocols | author ilevkivskyi
+--- body
+Currently we don't handle `__call__()` on metaclasses correctly. For example:
+
+```python
+class M(type):
+    def __call__(self, x: int) -> Any: ...
+
+class C(metaclass=M): ...
+
+C(x=1)
+```
+results in a false positive. Also similarly handling of metaclass `__call__()` in protocols is not very principled, see e.g. https://github.com/python/mypy/pull/14121
+--- comments (0)
+finished

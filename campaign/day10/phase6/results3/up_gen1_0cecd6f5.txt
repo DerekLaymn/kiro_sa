@@ -1,0 +1,154 @@
+##### up_gen1_0cecd6f5.py
+--- cpython 3.13.16
+Runtime type is 'int'
+Runtime type is 'int'
+Runtime type is 'str'
+Runtime type is 'str'
+Runtime type is 'str'
+3/1
+hi/a
+5 3
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:29:21
+   |
+29 |         reveal_type(box.item)
+   |                     ^^^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:31:21
+   |
+31 |         reveal_type(box.item)
+   |                     ^^^^^^^^ `int`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:33:21
+   |
+33 |         reveal_type(items[0])
+   |                     ^^^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:35:21
+   |
+35 |         reveal_type(items[0])
+   |                     ^^^^^^^^ `int | str`
+
+error[type-assertion-failure]: Argument does not have asserted type `int`
+  --> repro3/up_gen1_0cecd6f5.py:41:9
+   |
+41 |         assert_type(value, int)
+   |         ^^^^^^^^^^^^-----^^^^^^
+   |                     |
+   |                     Inferred type is `int | str`
+info: `int` and `int | str` are not equivalent types
+
+error[unsupported-operator]: Unsupported `+` operation
+  --> repro3/up_gen1_0cecd6f5.py:42:16
+   |
+42 |         return value + 1
+   |                -----^^^-
+   |                |       |
+   |                |       Has type `Literal[1]`
+   |                Has type `int | str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:43:17
+   |
+43 |     reveal_type(value)
+   |                 ^^^^^ `Never`
+
+Found 7 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:29:21
+   |
+29 |         reveal_type(box.item)
+   |                     ^^^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:31:21
+   |
+31 |         reveal_type(box.item)
+   |                     ^^^^^^^^ `int`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:33:21
+   |
+33 |         reveal_type(items[0])
+   |                     ^^^^^^^^ `str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:35:21
+   |
+35 |         reveal_type(items[0])
+   |                     ^^^^^^^^ `int | str`
+
+error[type-assertion-failure]: Argument does not have asserted type `int`
+  --> repro3/up_gen1_0cecd6f5.py:41:9
+   |
+41 |         assert_type(value, int)
+   |         ^^^^^^^^^^^^-----^^^^^^
+   |                     |
+   |                     Inferred type is `int | str`
+info: `int` and `int | str` are not equivalent types
+
+error[unsupported-operator]: Unsupported `+` operation
+  --> repro3/up_gen1_0cecd6f5.py:42:16
+   |
+42 |         return value + 1
+   |                -----^^^-
+   |                |       |
+   |                |       Has type `Literal[1]`
+   |                Has type `int | str`
+
+info[revealed-type]: Revealed type
+  --> repro3/up_gen1_0cecd6f5.py:43:17
+   |
+43 |     reveal_type(value)
+   |                 ^^^^^ `Never`
+
+Found 7 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro3/up_gen1_0cecd6f5.py:29: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:31: note: Revealed type is "int"
+repro3/up_gen1_0cecd6f5.py:33: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:35: note: Revealed type is "int | str"
+repro3/up_gen1_0cecd6f5.py:41: error: Expression is of type "int | str", not "int"  [assert-type]
+repro3/up_gen1_0cecd6f5.py:42: error: Unsupported operand types for + ("str" and "int")  [operator]
+repro3/up_gen1_0cecd6f5.py:42: note: Left operand is of type "int | str"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro3/up_gen1_0cecd6f5.py:29: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:31: note: Revealed type is "int"
+repro3/up_gen1_0cecd6f5.py:33: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:35: note: Revealed type is "int | str"
+repro3/up_gen1_0cecd6f5.py:41: error: Expression is of type "int | str", not "int"  [assert-type]
+repro3/up_gen1_0cecd6f5.py:42: error: Unsupported operand types for + ("str" and "int")  [operator]
+repro3/up_gen1_0cecd6f5.py:42: note: Left operand is of type "int | str"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro3/up_gen1_0cecd6f5.py:29: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:31: note: Revealed type is "int"
+repro3/up_gen1_0cecd6f5.py:33: note: Revealed type is "str"
+repro3/up_gen1_0cecd6f5.py:35: note: Revealed type is "int | str"
+repro3/up_gen1_0cecd6f5.py:41: error: Expression is of type "int | str", not "int"  [assert-type]
+repro3/up_gen1_0cecd6f5.py:42: error: Unsupported operand types for + ("str" and "int")  [operator]
+repro3/up_gen1_0cecd6f5.py:42: note: Left operand is of type "int | str"
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:29:21 - information: Type of "box.item" is "str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:31:21 - information: Type of "box.item" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:33:21 - information: Type of "items[0]" is "str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:35:21 - information: Type of "items[0]" is "int | str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:41:21 - error: "assert_type" mismatch: expected "int" but received "int | str" (reportAssertTypeFailure)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/up_gen1_0cecd6f5.py:42:16 - error: Operator "+" not supported for types "int | str" and "Literal[1]"
+    Operator "+" not supported for types "str" and "Literal[1]" when expected type is "int" (reportOperatorIssue)
+2 errors, 0 warnings, 4 informations
+rc=1

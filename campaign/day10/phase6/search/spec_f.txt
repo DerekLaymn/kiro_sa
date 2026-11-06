@@ -1,0 +1,14 @@
+issues|microsoft/pyright|PEP 728
+issues|microsoft/pyright|closed=True
+issues|microsoft/pyright|extra_items
+issues|microsoft/pyright|TypedDict closed
+issues|microsoft/pyright|closed TypedDict version
+issues|microsoft/pyright|TypedDict closed 3.15
+issues|microsoft/pyright|closed typing.TypedDict
+issues|microsoft/pyright|TypedDict keyword argument
+issues|microsoft/pyright|class keyword Python version
+issues|microsoft/pyright|typing_extensions TypedDict closed
+prs|microsoft/pyright|PEP 728
+issues|astral-sh/ty|PEP 728
+issues|python/typeshed|TypedDict closed
+issues|python/typing|TypedDict closed 3.15

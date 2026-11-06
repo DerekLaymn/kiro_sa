@@ -1,0 +1,101 @@
+##### m4.py
+--- cpython 3.13.16
+Traceback (most recent call last):
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m4.py", line 5, in <module>
+    K().m("x", 1)
+    ~~~~~^^^^^^^^
+TypeError: K.m() missing 1 required positional argument: 'c'
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+error[missing-argument]: No argument provided for required parameter `c` of bound method `K.m`
+ --> campaign/day10/phase6/repro2/m4.py:5:1
+  |
+5 | K().m("x", 1)
+  | ^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m4.py:2:33
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |                                 ^^^^^^
+
+error[invalid-argument-type]: Argument to bound method `K.m` is incorrect
+ --> campaign/day10/phase6/repro2/m4.py:5:12
+  |
+5 | K().m("x", 1)
+  |            ^ Expected `str`, found `Literal[1]`
+info: Method defined here
+ --> campaign/day10/phase6/repro2/m4.py:2:9
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |         ^               ------ Parameter declared here
+
+error[missing-argument]: No argument provided for required parameter `c` of bound method `K.m`
+ --> campaign/day10/phase6/repro2/m4.py:6:1
+  |
+6 | K().m("x", "y")
+  | ^^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m4.py:2:33
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |                                 ^^^^^^
+
+Found 3 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[missing-argument]: No argument provided for required parameter `c` of bound method `K.m`
+ --> campaign/day10/phase6/repro2/m4.py:5:1
+  |
+5 | K().m("x", 1)
+  | ^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m4.py:2:33
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |                                 ^^^^^^
+
+error[invalid-argument-type]: Argument to bound method `K.m` is incorrect
+ --> campaign/day10/phase6/repro2/m4.py:5:12
+  |
+5 | K().m("x", 1)
+  |            ^ Expected `str`, found `Literal[1]`
+info: Method defined here
+ --> campaign/day10/phase6/repro2/m4.py:2:9
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |         ^               ------ Parameter declared here
+
+error[missing-argument]: No argument provided for required parameter `c` of bound method `K.m`
+ --> campaign/day10/phase6/repro2/m4.py:6:1
+  |
+6 | K().m("x", "y")
+  | ^^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m4.py:2:33
+  |
+2 |     def m(self, a: str, b: str, c: int) -> None: ...
+  |                                 ^^^^^^
+
+Found 3 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+campaign/day10/phase6/repro2/m4.py:5: error: Missing positional argument "b" in call to "m" of "K"  [call-arg]
+campaign/day10/phase6/repro2/m4.py:6: error: Missing positional argument "c" in call to "m" of "K"  [call-arg]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+campaign/day10/phase6/repro2/m4.py:5: error: Missing positional argument "b" in call to "m" of "K"  [call-arg]
+campaign/day10/phase6/repro2/m4.py:6: error: Missing positional argument "c" in call to "m" of "K"  [call-arg]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+campaign/day10/phase6/repro2/m4.py:5: error: Missing positional argument "b" in call to "m" of "K"  [call-arg]
+campaign/day10/phase6/repro2/m4.py:6: error: Missing positional argument "c" in call to "m" of "K"  [call-arg]
+Found 2 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m4.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m4.py:5:1 - error: Argument missing for parameter "c" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m4.py:6:1 - error: Argument missing for parameter "c" (reportCallIssue)
+2 errors, 0 warnings, 0 informations
+rc=1

@@ -1,0 +1,109 @@
+##### c_pc4.py
+--- cpython 3.13.16
+Traceback (most recent call last):
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py", line 19, in <module>
+    label("t2", "n")
+    ~~~~~^^^^^^^^^^^
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py", line 9, in wrapper
+    return f(*args, **kwargs)
+TypeError: label() missing 1 required positional argument: 'width'
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+error[missing-argument]: No argument provided for required parameter `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19:1
+   |
+19 | label("t2", "n")
+   | ^^^^^^^^^^^^^^^^
+
+error[missing-argument]: No arguments provided for required parameters `name`, `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20:1
+   |
+20 | label("t2")
+   | ^^^^^^^^^^^
+
+error[too-many-positional-arguments]: Too many positional arguments: expected 3, got 4
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21:21
+   |
+21 | label("t2", "n", 3, 4)
+   |                     ^
+
+error[missing-argument]: No argument provided for required parameter `name`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22:1
+   |
+22 | label("t2", width=3)
+   | ^^^^^^^^^^^^^^^^^^^^
+
+error[missing-argument]: No argument provided for required parameter `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23:1
+   |
+23 | label("t2", name="n")
+   | ^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[missing-argument]: No argument provided for required parameter `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19:1
+   |
+19 | label("t2", "n")
+   | ^^^^^^^^^^^^^^^^
+
+error[missing-argument]: No arguments provided for required parameters `name`, `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20:1
+   |
+20 | label("t2")
+   | ^^^^^^^^^^^
+
+error[too-many-positional-arguments]: Too many positional arguments: expected 3, got 4
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21:21
+   |
+21 | label("t2", "n", 3, 4)
+   |                     ^
+
+error[missing-argument]: No argument provided for required parameter `name`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22:1
+   |
+22 | label("t2", width=3)
+   | ^^^^^^^^^^^^^^^^^^^^
+
+error[missing-argument]: No argument provided for required parameter `width`
+  --> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23:1
+   |
+23 | label("t2", name="n")
+   | ^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+Found 5 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+Found 5 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+Found 5 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:19:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:20:1 - error: Arguments missing for parameters "name", "width" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:21:21 - error: Expected 3 positional arguments (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:22:1 - error: Argument missing for parameter "name" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py:23:1 - error: Argument missing for parameter "width" (reportCallIssue)
+5 errors, 0 warnings, 0 informations
+rc=1

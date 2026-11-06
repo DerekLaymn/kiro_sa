@@ -1,0 +1,82 @@
+##### issues microsoft/pyright :: PEP 728
+728	closed	2020-06-17	Pyright cannot pick the right overload for some decorator function factories.
+10805	open	2025-09-01	Remove unsafe type narrowing for non-closed TypedDicts
+10996	closed	2025-10-23	Missing kwargs in signature help when using Unpack (PEP 692) with extra items (PEP 728)
+10803	closed	2025-08-25	Make PEP 728 no longer experimental
+10755	closed	2025-07-29	PEP-728 arguments rejected from `typing_extensions.TypedDict`
+10859	closed	2025-09-03	False negative: `closed=False` not allowed when subclassing from non-open `TypedDict`
+10966	closed	2025-09-27	Protocol TypedDict Unpack not assignable with extra parameters that have defaults
+10517	closed	2025-08-15	Regression in support for idiomatic TypedDict discrimination?
+10922	closed	2025-09-22	Composed TypedDicts don't work with `.update()`
+10664	closed	2025-07-01	Pylance does not handle "subset " typeddicts
+10352	closed	2025-04-23	Pep 728 support for TypedDict with Unpack does not allow extra items
+10377	closed	2025-05-21	False negative when accessing TypedDict with `extra_items=Never`
+##### issues microsoft/pyright :: closed=True
+11228	open	2026-01-27	Slow code analysis
+10805	open	2025-09-01	Remove unsafe type narrowing for non-closed TypedDicts
+11518	closed	2026-08-11	Closed TypedDicts losing type discrimination
+5397	closed	2026-08-28	Typecheck `dataclasses.replace` semantically
+607	closed	2026-04-29	Plugins?
+3013	closed	2026-03-20	Strict Setting for Return Types
+10922	closed	2025-09-22	Composed TypedDicts don't work with `.update()`
+10966	closed	2025-09-27	Protocol TypedDict Unpack not assignable with extra parameters that have defaults
+1118	closed	2026-01-10	reportUnusedVariable ignore pattern
+10901	closed	2025-09-06	1.1.405 not respecting PYTHONPATH and PYTHONEXECUTABLE anymore
+10493	closed	2025-05-23	Follow-up on #10482, backwards incomaptible change to type narrowing with TypedDict
+10377	closed	2025-05-21	False negative when accessing TypedDict with `extra_items=Never`
+##### issues microsoft/pyright :: extra_items
+11116	open	2025-11-17	"key" in typed_dict checks for non-closed TypedDict doesn't allow typed_dict["key"] afterwards
+11150	open	2025-12-03	TypedDict w/ extra items accepts `str` key but not `LiteralString`
+11438	closed	2026-08-24	TypedDict with extra_items breaks control flow analyis of `in` operator
+11037	closed	2025-10-22	ReadOnly field can be added when subclassing a TypedDict with mutable extra_items
+10998	closed	2025-11-02	Unable to provide extra items with unpacked TypedDict that subclasses another TypedDict
+10996	closed	2025-10-23	Missing kwargs in signature help when using Unpack (PEP 692) with extra items (PEP 728)
+10966	closed	2025-09-27	Protocol TypedDict Unpack not assignable with extra parameters that have defaults
+10755	closed	2025-07-29	PEP-728 arguments rejected from `typing_extensions.TypedDict`
+10545	closed	2025-06-10	Type not resolved for generic TypedDict with `extra_items=T`
+10377	closed	2025-05-21	False negative when accessing TypedDict with `extra_items=Never`
+10493	closed	2025-05-23	Follow-up on #10482, backwards incomaptible change to type narrowing with TypedDict
+10352	closed	2025-04-23	Pep 728 support for TypedDict with Unpack does not allow extra items
+##### issues microsoft/pyright :: TypedDict closed
+11518	closed	2026-08-11	Closed TypedDicts losing type discrimination
+10922	closed	2025-09-22	Composed TypedDicts don't work with `.update()`
+10966	closed	2025-09-27	Protocol TypedDict Unpack not assignable with extra parameters that have defaults
+10482	closed	2025-05-21	TypedDict narrowing now too pessamistic?
+10377	closed	2025-05-21	False negative when accessing TypedDict with `extra_items=Never`
+10664	closed	2025-07-01	Pylance does not handle "subset " typeddicts
+10493	closed	2025-05-23	Follow-up on #10482, backwards incomaptible change to type narrowing with TypedDict
+10424	closed	2025-05-09	Union of final closed TypedDicts not narrowed with TypeIs or match
+9928	closed	2025-02-25	`TypedDict` silently accepts experimental PEP 728 arguments but ignores them
+8503	closed	2024-07-24	[PEP 728] "closed" `TypedDict` with `__extra_items__` cannot be type-checked correctly as an `TypedDict` attribute
+7784	closed	2024-05-01	Spurious error when using closed `TypedDict` with `__extra_items__`
+8089	closed	2024-06-06	`**kwargs` with `Unpack` loses type information for values inside the function.
+##### issues microsoft/pyright :: closed TypedDict version
+
+##### issues microsoft/pyright :: TypedDict closed 3.15
+
+##### issues microsoft/pyright :: closed typing.TypedDict
+
+##### issues microsoft/pyright :: TypedDict keyword argument
+
+##### issues microsoft/pyright :: class keyword Python version
+
+##### issues microsoft/pyright :: typing_extensions TypedDict closed
+
+##### prs microsoft/pyright :: PEP 728
+11611	merged	2026-10-09	Fix type inference for TypedDict unpacking in dictionary displays
+11610	closed	2026-08-25	Fix TypedDict in narrowing wrongly eliminating subtype for extra_items keys
+10804	merged	2025-08-15	Made PEP 728 (TypedDict with extra items) no longer experimental sinc…
+10579	merged	2025-06-10	Reverted narrowing behavior for discriminating between TypedDicts. Th…
+7313	merged	2024-02-21	Implemented provisional support for PEP 728 (support for extra items …
+##### issues astral-sh/ty :: PEP 728
+728	closed	2025-07-01	Nonlocal names do not respect star-import reachability constraints
+1889	open	2026-11-03	Type system feature overview
+3096	closed	2026-06-12	Support `closed` and `extra_items` for TypedDicts (PEP 728)
+2853	closed	2026-02-19	TypedDict cannot be used in dict.update
+168	closed	2025-10-17	type context (bidirectional checking)
+##### issues python/typeshed :: TypedDict closed
+15888	open	2026-06-10	type annotation for `{dict_keys,dict_items}.is_disjoint` argument is too narrow
+14462	open	2025-08-22	How important is the `@_dispatchable` decorator in networkx?
+##### issues python/typing :: TypedDict closed 3.15
+
+finished

@@ -1,0 +1,77 @@
+##### pp_mut1_15083425.py
+--- cpython 3.13.16
+Runtime type is 'int'
+set 5
+7
+deleted
+deleted
+rejected
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-argument-type]: Argument to function `Slot.logged` is incorrect
+  --> repro3/pp_mut1_15083425.py:19:5
+   |
+19 |     @logged
+   |     ^^^^^^^ Expected `Slot`, found `def __delete__(self, obj: object) -> None`
+info: Function defined here
+  --> repro3/pp_mut1_15083425.py:10:9
+   |
+10 |     def logged(fn):
+   |         ^^^^^^ -- Parameter declared here
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_15083425.py:29:13
+   |
+29 | reveal_type(h.slot)
+   |             ^^^^^^ `int`
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[invalid-argument-type]: Argument to function `Slot.logged` is incorrect
+  --> repro3/pp_mut1_15083425.py:19:5
+   |
+19 |     @logged
+   |     ^^^^^^^ Expected `Slot`, found `def __delete__(self, obj: object) -> None`
+info: Function defined here
+  --> repro3/pp_mut1_15083425.py:10:9
+   |
+10 |     def logged(fn):
+   |         ^^^^^^ -- Parameter declared here
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_15083425.py:29:13
+   |
+29 | reveal_type(h.slot)
+   |             ^^^^^^ `int`
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:10:16 - warning: Instance methods should take a "self" parameter (reportSelfClsParameterName)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:19:6 - error: Argument of type "(self: Self@Slot, obj: object) -> None" cannot be assigned to parameter "fn" of type "Self@Slot" in function "logged"
+    Type "(self: Self@Slot, obj: object) -> None" is not assignable to type "Self@Slot" (reportArgumentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:29:13 - information: Type of "h.slot" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:32:7 - error: Cannot delete attribute "slot" for class "Holder" (reportAttributeAccessIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:33:1 - error: Object of type "int" is not callable
+    Attribute "__call__" is unknown (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_15083425.py:35:5 - error: Object of type "int" is not callable
+    Attribute "__call__" is unknown (reportCallIssue)
+4 errors, 1 warning, 1 information
+rc=1

@@ -1,0 +1,103 @@
+##### t1.py
+--- cpython 3.13.16
+        name: str
+TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'closed'
+--- pyright 1.1.414 --pythonversion 3.12
+t1.py
+  t1.py:9:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.13
+t1.py
+  t1.py:9:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.14
+t1.py
+  t1.py:9:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.15
+t1.py
+  t1.py:9:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- mypy 2.4.0 --python-version 3.13
+campaign/day10/phase6/repro2/t1.py:9: error: Extra key "extra" for TypedDict "Config"  [typeddict-unknown-key]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.13
+error[unknown-argument]: The `closed` parameter of `typing.TypedDict` was added in Python 3.15
+error[invalid-key]: Unknown key "extra" for TypedDict `Config`
+Found 2 diagnostics
+--- mypy 2.4.0 --python-version 3.15
+campaign/day10/phase6/repro2/t1.py:9: error: Extra key "extra" for TypedDict "Config"  [typeddict-unknown-key]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.15
+error[invalid-key]: Unknown key "extra" for TypedDict `Config`
+Found 1 diagnostic
+##### t2.py
+--- cpython 3.13.16
+        name: str
+TypeError: _TypedDictMeta.__new__() got an unexpected keyword argument 'extra_items'
+--- pyright 1.1.414 --pythonversion 3.12
+0 errors, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.13
+0 errors, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.14
+0 errors, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.15
+0 errors, 0 warnings, 0 informations
+--- mypy 2.4.0 --python-version 3.13
+campaign/day10/phase6/repro2/t2.py:4: error: Unexpected keyword argument "extra_items" for "__init_subclass__" of "TypedDict"  [call-arg]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.13
+error[unknown-argument]: The `extra_items` parameter of `typing.TypedDict` was added in Python 3.15
+Found 1 diagnostic
+--- mypy 2.4.0 --python-version 3.15
+campaign/day10/phase6/repro2/t2.py:4: error: Unexpected keyword argument "extra_items" for "__init_subclass__" of "TypedDict"  [call-arg]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.15
+All checks passed!
+##### t3.py
+--- cpython 3.13.16
+<class '__main__.Config'>
+--- pyright 1.1.414 --pythonversion 3.12
+t3.py
+  t3.py:8:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.13
+t3.py
+  t3.py:8:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.14
+t3.py
+  t3.py:8:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- pyright 1.1.414 --pythonversion 3.15
+t3.py
+  t3.py:8:29 - error: Type "dict[str, str | int]" is not assignable to declared type "Config"
+    Type "Literal[1]" is not assignable to item "extra_items"
+      Type "Literal[1]" is not assignable to type "Never" (reportAssignmentType)
+1 error, 0 warnings, 0 informations
+--- mypy 2.4.0 --python-version 3.13
+campaign/day10/phase6/repro2/t3.py:8: error: Extra key "extra" for TypedDict "Config"  [typeddict-unknown-key]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.13
+error[invalid-key]: Unknown key "extra" for TypedDict `Config`
+Found 1 diagnostic
+--- mypy 2.4.0 --python-version 3.15
+campaign/day10/phase6/repro2/t3.py:8: error: Extra key "extra" for TypedDict "Config"  [typeddict-unknown-key]
+Found 1 error in 1 file (checked 1 source file)
+--- ty 0.0.97 --python-version 3.15
+error[invalid-key]: Unknown key "extra" for TypedDict `Config`
+Found 1 diagnostic

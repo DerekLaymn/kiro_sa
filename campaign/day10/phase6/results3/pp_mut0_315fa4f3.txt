@@ -1,0 +1,43 @@
+##### pp_mut0_315fa4f3.py
+--- cpython 3.13.16
+TypeError
+3
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut0_315fa4f3.py:28:21
+   |
+28 |         reveal_type(n)
+   |                     ^ `int`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut0_315fa4f3.py:28:21
+   |
+28 |         reveal_type(n)
+   |                     ^ `int`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+repro3/pp_mut0_315fa4f3.py:28: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro3/pp_mut0_315fa4f3.py:28: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro3/pp_mut0_315fa4f3.py:28: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut0_315fa4f3.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut0_315fa4f3.py:27:17 - error: Argument of type "Sized" cannot be assigned to parameter "obj" of type "Sized" in function "len"
+    "Sized" is incompatible with protocol "Sized"
+      Could not bind method "<anonymous>" because it is missing a "self" or "cls" parameter (reportArgumentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut0_315fa4f3.py:28:21 - information: Type of "n" is "int"
+1 error, 0 warnings, 1 information
+rc=1

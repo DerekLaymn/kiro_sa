@@ -1,0 +1,142 @@
+##### p_eq14fa.py
+--- cpython 3.13.16
+Runtime type is 'str'
+Runtime type is 'Equal'
+Runtime type is 'int'
+matched
+different
+eq
+int
+not int
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:23:21
+   |
+23 |         reveal_type(value)
+   |                     ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:25:17
+   |
+25 |     reveal_type(value)
+   |                 ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:31:21
+   |
+31 |         reveal_type(value)
+   |                     ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:33:17
+   |
+33 |     reveal_type(value)
+   |                 ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:39:21
+   |
+39 |         reveal_type(value)
+   |                     ^^^^^ `Equal | str`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:41:17
+   |
+41 |     reveal_type(value)
+   |                 ^^^^^ `Equal | str`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:47:21
+   |
+47 |         reveal_type(value)
+   |                     ^^^^^ `object`
+
+Found 7 diagnostics
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:23:21
+   |
+23 |         reveal_type(value)
+   |                     ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:25:17
+   |
+25 |     reveal_type(value)
+   |                 ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:31:21
+   |
+31 |         reveal_type(value)
+   |                     ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:33:17
+   |
+33 |     reveal_type(value)
+   |                 ^^^^^ `Any`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:39:21
+   |
+39 |         reveal_type(value)
+   |                     ^^^^^ `Equal | str`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:41:17
+   |
+41 |     reveal_type(value)
+   |                 ^^^^^ `Equal | str`
+
+info[revealed-type]: Revealed type
+  --> repro/p_eq14fa.py:47:21
+   |
+47 |         reveal_type(value)
+   |                     ^^^^^ `object`
+
+Found 7 diagnostics
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+repro/p_eq14fa.py:25: note: Revealed type is "Any"
+repro/p_eq14fa.py:31: note: Revealed type is "Any"
+repro/p_eq14fa.py:33: note: Revealed type is "int"
+repro/p_eq14fa.py:39: note: Revealed type is "str"
+repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+repro/p_eq14fa.py:47: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+repro/p_eq14fa.py:25: note: Revealed type is "Any"
+repro/p_eq14fa.py:31: note: Revealed type is "Any"
+repro/p_eq14fa.py:33: note: Revealed type is "int"
+repro/p_eq14fa.py:39: note: Revealed type is "str"
+repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+repro/p_eq14fa.py:47: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+repro/p_eq14fa.py:25: note: Revealed type is "Any"
+repro/p_eq14fa.py:31: note: Revealed type is "Any"
+repro/p_eq14fa.py:33: note: Revealed type is "int"
+repro/p_eq14fa.py:39: note: Revealed type is "str"
+repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+repro/p_eq14fa.py:47: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:23:21 - information: Type of "value" is "dict[str, int] | tuple[int, int]"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:25:17 - information: Type of "value" is "Any"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:31:21 - information: Type of "value" is "Any"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:33:17 - information: Type of "value" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:39:21 - information: Type of "value" is "Equal | str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:41:17 - information: Type of "value" is "Equal | str"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/p_eq14fa.py:47:21 - information: Type of "value" is "int"
+0 errors, 0 warnings, 7 informations
+rc=0

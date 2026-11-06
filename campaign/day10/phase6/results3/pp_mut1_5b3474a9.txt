@@ -1,0 +1,60 @@
+##### pp_mut1_5b3474a9.py
+--- cpython 3.13.16
+Runtime type is 'int'
+shadowed: TypeError
+-1
+7
+level 7
+unbound: UnboundLocalError
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-context-manager]: Object of type `Shadowed` cannot be used with `with` because it does not implement `__enter__`
+  --> repro3/pp_mut1_5b3474a9.py:28:14
+   |
+28 |         with Shadowed(lambda: 1) as value:  # expect-error
+   |              ^^^^^^^^^^^^^^^^^^^
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_5b3474a9.py:37:21
+   |
+37 |         reveal_type(value)
+   |                     ^^^^^ `int`
+
+Found 2 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[invalid-context-manager]: Object of type `Shadowed` cannot be used with `with` because it does not implement `__enter__`
+  --> repro3/pp_mut1_5b3474a9.py:28:14
+   |
+28 |         with Shadowed(lambda: 1) as value:  # expect-error
+   |              ^^^^^^^^^^^^^^^^^^^
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_5b3474a9.py:37:21
+   |
+37 |         reveal_type(value)
+   |                     ^^^^^ `int`
+
+Found 2 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro3/pp_mut1_5b3474a9.py:37: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro3/pp_mut1_5b3474a9.py:37: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro3/pp_mut1_5b3474a9.py:37: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_5b3474a9.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_5b3474a9.py:28:14 - error: Object of type "Shadowed" cannot be used with "with" because it does not correctly implement __enter__
+    Attribute "__enter__" is unknown (reportGeneralTypeIssues)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_5b3474a9.py:37:21 - information: Type of "value" is "int"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_5b3474a9.py:39:12 - error: "result" is possibly unbound (reportPossiblyUnboundVariable)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_5b3474a9.py:47:12 - error: "result" is possibly unbound (reportPossiblyUnboundVariable)
+3 errors, 0 warnings, 1 information
+rc=1

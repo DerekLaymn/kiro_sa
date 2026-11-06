@@ -1,0 +1,32 @@
+--- cpython 3.13.16
+  assertion failed
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  All checks passed!
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  All checks passed!
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  campaign/day10/phase6/repro2/r1.py:7: error: "int" has no attribute "no_such_attribute"  [attr-defined]
+  campaign/day10/phase6/repro2/r1.py:8: error: Too many arguments for "name"  [call-arg]
+  campaign/day10/phase6/repro2/r1.py:9: error: Argument 1 to "name" has incompatible type "str"; expected "int"  [arg-type]
+  Found 3 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  campaign/day10/phase6/repro2/r1.py:7: error: "int" has no attribute "no_such_attribute"  [attr-defined]
+  campaign/day10/phase6/repro2/r1.py:8: error: Too many arguments for "name"  [call-arg]
+  campaign/day10/phase6/repro2/r1.py:9: error: Argument 1 to "name" has incompatible type "str"; expected "int"  [arg-type]
+  Found 3 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  campaign/day10/phase6/repro2/r1.py:7: error: "int" has no attribute "no_such_attribute"  [attr-defined]
+  campaign/day10/phase6/repro2/r1.py:8: error: Too many arguments for "name"  [call-arg]
+  campaign/day10/phase6/repro2/r1.py:9: error: Argument 1 to "name" has incompatible type "str"; expected "int"  [arg-type]
+  Found 3 errors in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+    Attribute "no_such_attribute" is unknown (reportAttributeAccessIssue)
+    "Literal['not an int']" is not assignable to "int" (reportArgumentType)
+3 errors, 0 warnings, 0 informations
+rc=1

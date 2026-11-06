@@ -1,0 +1,43 @@
+--- cpython 3.13.16
+  Traceback (most recent call last):
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/o1.py", line 12, in <module>
+      assert describe(3) == 4
+             ^^^^^^^^^^^^^^^^
+  AssertionError
+  rc=1
+--- ty 0.0.97 (.venv, the pin)
+  L13 info[revealed-type] Revealed type | `Never`
+  L14 info[revealed-type] Revealed type | `Never`
+  L15 info[revealed-type] Revealed type | `Never`
+  Found 3 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L13 info[revealed-type] Revealed type | `Never`
+  L14 info[revealed-type] Revealed type | `Never`
+  L15 info[revealed-type] Revealed type | `Never`
+  Found 3 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  campaign/day10/phase6/repro2/o1.py:7: error: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader  [overload-cannot-match]
+  campaign/day10/phase6/repro2/o1.py:13: note: Revealed type is "str"
+  campaign/day10/phase6/repro2/o1.py:14: note: Revealed type is "Overload(def (x: object) -> str, def (x: int) -> int)"
+  campaign/day10/phase6/repro2/o1.py:15: note: Revealed type is "str"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  campaign/day10/phase6/repro2/o1.py:7: error: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader  [overload-cannot-match]
+  campaign/day10/phase6/repro2/o1.py:13: note: Revealed type is "str"
+  campaign/day10/phase6/repro2/o1.py:14: note: Revealed type is "Overload(def (x: object) -> str, def (x: int) -> int)"
+  campaign/day10/phase6/repro2/o1.py:15: note: Revealed type is "str"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  campaign/day10/phase6/repro2/o1.py:7: error: Overloaded function signature 2 will never be matched: signature 1's parameter type(s) are the same or broader  [overload-cannot-match]
+  campaign/day10/phase6/repro2/o1.py:13: note: Revealed type is "str"
+  campaign/day10/phase6/repro2/o1.py:14: note: Revealed type is "Overload(def (x: object) -> str, def (x: int) -> int)"
+  campaign/day10/phase6/repro2/o1.py:15: note: Revealed type is "str"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+1 error, 0 warnings, 3 informations
+rc=1

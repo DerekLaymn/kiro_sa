@@ -1,0 +1,60 @@
+--- cpython 3.13.16
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L10 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L15 info[revealed-type] Revealed type | `Never`
+  L20 info[revealed-type] Revealed type | `Never`
+  L25 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L30 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L35 info[revealed-type] Revealed type | `Never`
+  L40 info[revealed-type] Revealed type | `Never`
+  L45 info[revealed-type] Revealed type | `Never`
+  Found 8 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L10 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L15 info[revealed-type] Revealed type | `Never`
+  L20 info[revealed-type] Revealed type | `Never`
+  L25 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L30 info[revealed-type] Revealed type | `def g(x: int) -> str`
+  L35 info[revealed-type] Revealed type | `Never`
+  L40 info[revealed-type] Revealed type | `Never`
+  L45 info[revealed-type] Revealed type | `Never`
+  Found 8 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  campaign/day10/phase6/repro2/q3.py:10: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:15: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:20: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:25: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:30: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:35: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:40: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:45: note: Revealed type is "def (x: int) -> str"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  campaign/day10/phase6/repro2/q3.py:10: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:15: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:20: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:25: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:30: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:35: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:40: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:45: note: Revealed type is "def (x: int) -> str"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  campaign/day10/phase6/repro2/q3.py:10: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:15: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:20: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:25: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:30: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:35: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:40: note: Revealed type is "def (x: int) -> str"
+  campaign/day10/phase6/repro2/q3.py:45: note: Revealed type is "def (x: int) -> str"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+0 errors, 0 warnings, 8 informations
+rc=0

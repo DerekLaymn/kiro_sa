@@ -1,0 +1,71 @@
+--- cpython 3.13.16
+  Runtime type is 'str'
+  Runtime type is 'Equal'
+  Runtime type is 'int'
+  matched
+  different
+  eq
+  int
+  not int
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L23 info[revealed-type] Revealed type | `Any`
+  L25 info[revealed-type] Revealed type | `Any`
+  L31 info[revealed-type] Revealed type | `Any`
+  L33 info[revealed-type] Revealed type | `Any`
+  L39 info[revealed-type] Revealed type | `Equal | str`
+  L41 info[revealed-type] Revealed type | `Equal | str`
+  L47 info[revealed-type] Revealed type | `object`
+  Found 7 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L23 info[revealed-type] Revealed type | `Any`
+  L25 info[revealed-type] Revealed type | `Any`
+  L31 info[revealed-type] Revealed type | `Any`
+  L33 info[revealed-type] Revealed type | `Any`
+  L39 info[revealed-type] Revealed type | `Equal | str`
+  L41 info[revealed-type] Revealed type | `Equal | str`
+  L47 info[revealed-type] Revealed type | `object`
+  Found 7 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+  repro/p_eq14fa.py:25: note: Revealed type is "Any"
+  repro/p_eq14fa.py:31: note: Revealed type is "Any"
+  repro/p_eq14fa.py:33: note: Revealed type is "int"
+  repro/p_eq14fa.py:39: note: Revealed type is "str"
+  repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+  repro/p_eq14fa.py:47: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+  repro/p_eq14fa.py:25: note: Revealed type is "Any"
+  repro/p_eq14fa.py:31: note: Revealed type is "Any"
+  repro/p_eq14fa.py:33: note: Revealed type is "int"
+  repro/p_eq14fa.py:39: note: Revealed type is "str"
+  repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+  repro/p_eq14fa.py:47: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro/p_eq14fa.py:23: note: Revealed type is "dict[str, int] | tuple[int, int]"
+  repro/p_eq14fa.py:25: note: Revealed type is "Any"
+  repro/p_eq14fa.py:31: note: Revealed type is "Any"
+  repro/p_eq14fa.py:33: note: Revealed type is "int"
+  repro/p_eq14fa.py:39: note: Revealed type is "str"
+  repro/p_eq14fa.py:41: note: Revealed type is "p_eq14fa.Equal | str"
+  repro/p_eq14fa.py:47: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+  p_eq14fa.py
+  p_eq14fa.py:23:21 - information: Type of "value" is "dict[str, int] | tuple[int, int]"
+  p_eq14fa.py:25:17 - information: Type of "value" is "Any"
+  p_eq14fa.py:31:21 - information: Type of "value" is "Any"
+  p_eq14fa.py:33:17 - information: Type of "value" is "int"
+  p_eq14fa.py:39:21 - information: Type of "value" is "Equal | str"
+  p_eq14fa.py:41:17 - information: Type of "value" is "Equal | str"
+  p_eq14fa.py:47:21 - information: Type of "value" is "int"
+0 errors, 0 warnings, 7 informations
+rc=0

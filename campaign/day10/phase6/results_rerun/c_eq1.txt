@@ -1,0 +1,40 @@
+##### c_eq1.py
+--- cpython 3.13.16
+Runtime type is 'A'
+str
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+info[revealed-type]: Revealed type
+  --> repro/c_eq1.py:18:21
+   |
+18 |         reveal_type(v)
+   |                     ^ `A | str`
+
+Found 1 diagnostic
+rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+info[revealed-type]: Revealed type
+  --> repro/c_eq1.py:18:21
+   |
+18 |         reveal_type(v)
+   |                     ^ `A | str`
+
+Found 1 diagnostic
+rc=0
+--- mypy 2.4.0 (.venv, the pin)
+repro/c_eq1.py:18: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro/c_eq1.py:18: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro/c_eq1.py:18: note: Revealed type is "str"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_eq1.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_eq1.py:18:21 - information: Type of "v" is "str"
+0 errors, 0 warnings, 1 information
+rc=0

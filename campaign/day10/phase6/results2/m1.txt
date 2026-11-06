@@ -1,0 +1,210 @@
+##### m1.py
+--- cpython 3.13.16
+Traceback (most recent call last):
+  File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py", line 5, in <module>
+    label("t2", 6)
+    ~~~~~^^^^^^^^^
+TypeError: label() missing 1 required positional argument: 'width'
+rc=1
+--- ty 0.0.97 (.venv, the pin)
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:5:1
+  |
+5 | label("t2", 6)
+  | ^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:5:13
+  |
+5 | label("t2", 6)
+  |             ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:6:1
+  |
+6 | label("t2", "n")
+  | ^^^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:7:1
+  |
+7 | label(1, 6)
+  | ^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:7:7
+  |
+7 | label(1, 6)
+  |       ^ Expected `str`, found `Literal[1]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^ -------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:7:10
+  |
+7 | label(1, 6)
+  |          ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:8:13
+  |
+8 | label("t2", 6, 7, 8)
+  |             ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[too-many-positional-arguments]: Too many positional arguments to function `label`: expected 3, got 4
+ --> campaign/day10/phase6/repro2/m1.py:8:19
+  |
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:5:1
+  |
+5 | label("t2", 6)
+  | ^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:5:13
+  |
+5 | label("t2", 6)
+  |             ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:6:1
+  |
+6 | label("t2", "n")
+  | ^^^^^^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[missing-argument]: No argument provided for required parameter `width` of function `label`
+ --> campaign/day10/phase6/repro2/m1.py:7:1
+  |
+7 | label(1, 6)
+  | ^^^^^^^^^^^
+info: Parameter declared here
+ --> campaign/day10/phase6/repro2/m1.py:1:32
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |                                ^^^^^^^^^^
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:7:7
+  |
+7 | label(1, 6)
+  |       ^ Expected `str`, found `Literal[1]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^ -------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:7:10
+  |
+7 | label(1, 6)
+  |          ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[invalid-argument-type]: Argument to function `label` is incorrect
+ --> campaign/day10/phase6/repro2/m1.py:8:13
+  |
+8 | label("t2", 6, 7, 8)
+  |             ^ Expected `str`, found `Literal[6]`
+info: Function defined here
+ --> campaign/day10/phase6/repro2/m1.py:1:5
+  |
+1 | def label(tag: str, name: str, width: int) -> str:
+  |     ^^^^^           --------- Parameter declared here
+
+error[too-many-positional-arguments]: Too many positional arguments to function `label`: expected 3, got 4
+ --> campaign/day10/phase6/repro2/m1.py:8:19
+  |
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+campaign/day10/phase6/repro2/m1.py:5: error: Missing positional argument "name" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:6: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 1 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:8: error: Too many arguments for "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:8: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+Found 7 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+campaign/day10/phase6/repro2/m1.py:5: error: Missing positional argument "name" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:6: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 1 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:8: error: Too many arguments for "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:8: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+Found 7 errors in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+campaign/day10/phase6/repro2/m1.py:5: error: Missing positional argument "name" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:6: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Missing positional argument "width" in call to "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 1 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:7: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+campaign/day10/phase6/repro2/m1.py:8: error: Too many arguments for "label"  [call-arg]
+campaign/day10/phase6/repro2/m1.py:8: error: Argument 2 to "label" has incompatible type "int"; expected "str"  [arg-type]
+Found 7 errors in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py:5:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py:6:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py:7:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m1.py:8:19 - error: Expected 3 positional arguments (reportCallIssue)
+4 errors, 0 warnings, 0 informations
+rc=1

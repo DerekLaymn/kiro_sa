@@ -1,0 +1,75 @@
+##### pp_mut1_1d6b71d0.py
+--- cpython 3.13.16
+Runtime type is 'int'
+Runtime type is 'int'
+Runtime type is 'NoneType'
+ok 1 1
+bool: UnboundLocalError
+None None 1
+none: ValueError
+ctl: ValueError
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+warning[deprecated]: The overload of `contextmanager` is deprecated
+  --> repro3/pp_mut1_1d6b71d0.py:35:2
+   |
+35 | @contextmanager
+   |  ^^^^^^^^^^^^^^ Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_1d6b71d0.py:54:17
+   |
+54 |     reveal_type(x)
+   |                 ^ `None | Literal[1]`
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_1d6b71d0.py:64:17
+   |
+64 |     reveal_type(x)
+   |                 ^ `Literal[1]`
+
+Found 3 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+warning[deprecated]: The overload of `contextmanager` is deprecated
+  --> repro3/pp_mut1_1d6b71d0.py:35:2
+   |
+35 | @contextmanager
+   |  ^^^^^^^^^^^^^^ Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_1d6b71d0.py:54:17
+   |
+54 |     reveal_type(x)
+   |                 ^ `None | Literal[1]`
+
+info[revealed-type]: Revealed type
+  --> repro3/pp_mut1_1d6b71d0.py:64:17
+   |
+64 |     reveal_type(x)
+   |                 ^ `Literal[1]`
+
+Found 3 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro3/pp_mut1_1d6b71d0.py:54: note: Revealed type is "int | None"
+repro3/pp_mut1_1d6b71d0.py:64: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro3/pp_mut1_1d6b71d0.py:54: note: Revealed type is "int | None"
+repro3/pp_mut1_1d6b71d0.py:64: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro3/pp_mut1_1d6b71d0.py:54: note: Revealed type is "int | None"
+repro3/pp_mut1_1d6b71d0.py:64: note: Revealed type is "int"
+Success: no issues found in 1 source file
+rc=0
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_1d6b71d0.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_1d6b71d0.py:45:12 - error: "result" is possibly unbound (reportPossiblyUnboundVariable)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_1d6b71d0.py:54:17 - information: Type of "x" is "Literal[1] | None"
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro3/pp_mut1_1d6b71d0.py:64:17 - information: Type of "x" is "Literal[1]"
+1 error, 0 warnings, 2 informations
+rc=1

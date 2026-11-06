@@ -1,0 +1,15 @@
+issues|python/mypy|lambda callback protocol
+issues|python/mypy|lambda protocol
+issues|python/mypy|lambda parameter name
+issues|python/mypy|lambda argument names
+issues|python/mypy|callback protocol argument names
+issues|python/mypy|callback protocol parameter name
+issues|python/mypy|lambda keyword argument
+prs|python/mypy|lambda argument names
+prs|python/mypy|lambda callback protocol
+issues|astral-sh/ty|lambda protocol
+issues|astral-sh/ty|lambda callback protocol
+issues|astral-sh/ty|lambda parameter name
+issues|astral-sh/ty|callback protocol
+issues|microsoft/pyright|lambda parameter name protocol
+issues|python/typing|lambda callback protocol parameter name

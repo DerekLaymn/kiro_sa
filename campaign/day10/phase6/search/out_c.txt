@@ -1,0 +1,105 @@
+##### issues astral-sh/ty :: narrowing Never
+2188	open	2026-08-04	Improve predictability of instance attribute type inference
+##### issues astral-sh/ty :: assert Never
+4672	open	2026-10-05	`assert_never` could have a friendlier error message
+3312	open	2026-08-13	Server markes `assert_never` in exhaustive match statements as unnecessary
+4923	open	2026-11-04	Exhaustiveness checking does not reduce type[T] to Never after narrowing a closed union-bounded type parameter
+4662	open	2026-10-08	Consider treating enums with custom metaclasses as exhaustive
+1060	open	2026-10-19	Rules for not exhaustive `match` case statements
+4925	closed	2026-11-04	Narrowing type[T] incorrectly affects unrelated variables during pattern matching
+4893	closed	2026-11-04	Cubic time narrowing a large enum through `match` or-patterns
+1948	open	2026-08-04	Warn on (accidentally) unreachable code blocks
+2574	open	2026-10-20	support a `Module` type in `ty_extensions` for typing specific modules
+995	open	2025-08-18	multi-line unknown-argument suppression
+1889	open	2026-11-03	Type system feature overview
+1273	open	2025-11-18	a way to explicitly specify variance using the new generic syntax
+##### issues astral-sh/ty :: equality narrowing
+4051	open	2026-08-04	Equality narrowing for strings/ints/bytes is inconsistent with reachability analysis
+4039	closed	2026-07-19	Membership and equality narrowing are inconsistent
+3419	closed	2026-07-22	Consider allowing equality narrowing to ignore the possibility of a subclass overriding `__eq__`
+4100	closed	2026-07-28	Tagged-union (literal-attribute) narrowing doesn't distribute over a prior AlwaysFalsy intersection
+1566	closed	2026-07-10	Narrow non-literal type to literal based on equality check
+939	closed	2025-09-03	eliminate definitely-impossible types from union in equality narrowing
+456	closed	2025-09-25	Support `isinstance` narrowing of specialized generic classes
+##### issues astral-sh/ty :: narrowing call
+
+##### issues astral-sh/ty :: narrowing callee
+
+##### issues astral-sh/ty :: comparison narrowing
+4256	closed	2026-08-14	ty 0.0.71 exponential memory blowup resolving a discriminated union narrowed through `Any`
+3842	closed	2026-06-24	False `invalid-argument-type` on `__getitem__` after `isinstance(x, np.ndarray)` narrows `Sequence[Any]` to `... & ndarray[object, object]`
+##### issues astral-sh/ty :: literal narrowing
+4051	open	2026-08-04	Equality narrowing for strings/ints/bytes is inconsistent with reachability analysis
+4214	closed	2026-08-10	clarify semantics of LiteralString, string Literal, narrowing, and set-theoretic types
+3567	closed	2026-06-03	invalid-assignment false positive: dict literal narrowing fails through nested generic type alias in union
+3419	closed	2026-07-22	Consider allowing equality narrowing to ignore the possibility of a subclass overriding `__eq__`
+1566	closed	2026-07-10	Narrow non-literal type to literal based on equality check
+##### issues astral-sh/ty :: len narrowing
+
+##### issues astral-sh/ty :: narrowing disjoint
+
+##### issues astral-sh/ty :: falsely narrowed
+
+##### issues astral-sh/ty :: narrowed Never
+2188	open	2026-08-04	Improve predictability of instance attribute type inference
+##### issues astral-sh/ty :: spurious Never
+
+##### issues astral-sh/ty :: function Never
+3580	closed	2026-07-13	Internally raised Exceptions and Type Narrowing
+2480	closed	2026-03-26	Missing type narrowing for `NoReturn` control flow at module scope
+##### issues astral-sh/ty :: callable narrowed Never
+
+##### issues astral-sh/ty :: assert
+4672	open	2026-10-05	`assert_never` could have a friendlier error message
+3312	open	2026-08-13	Server markes `assert_never` in exhaustive match statements as unnecessary
+4923	open	2026-11-04	Exhaustiveness checking does not reduce type[T] to Never after narrowing a closed union-bounded type parameter
+3401	open	2026-05-07	Check if an `assert` condition is always True
+4896	open	2026-11-03	Closed `TypedDict` rejects a key narrowed to a union of valid field names
+1719	open	2025-12-02	Add a `static_assert_eq` mdtest helper
+4871	open	2026-10-29	Multi-inference can silence or introduce incorrect diagnostics
+4750	open	2026-10-19	Chain `or`/`and` short-circuiting inferring type that can't ever occur at runtime
+4580	open	2026-09-23	calling a type with overloads on `__new__` is not handled in a consistent way
+4654	open	2026-10-02	Generic equivalence does not account for declared bounds
+4519	open	2026-10-23	Follow-up tasks for `redundant-condition(-strict)` rules
+4523	open	2026-09-14	`is`-narrowing against a generic class object pins the class's typevars for the rest of the scope
+##### issues astral-sh/ty :: == narrowing
+4908	open	2026-11-03	(regression) Strict generic narrowing rejects copying a narrowed Mapping inside another call
+4876	open	2026-11-02	Generator expressions retain narrowing across later rebinding
+4753	open	2026-10-19	Support tagged-union narrowing via membership tests
+4825	open	2026-10-26	Narrowing lost in a comprehension inside a nested function
+4665	open	2026-10-07	False positive on global variable narrowing
+4841	open	2026-10-28	Generic call narrowing is overly aggressive in the presence of gradual types
+4923	open	2026-11-04	Exhaustiveness checking does not reduce type[T] to Never after narrowing a closed union-bounded type parameter
+4814	open	2026-10-23	Per-key dictionary narrowing is not retained when assigning a subscript expression to a variable
+4040	open	2026-11-03	Reachability analysis for `in` is inconsistent with type narrowing
+3935	open	2026-10-29	Generic call inference narrowing conflicts with typed dict inference
+2726	open	2026-10-30	Incorrect type narrowing for generic variable with bound
+4376	open	2026-08-24	Support tagged-union narrowing via `isinstance` checks
+##### prs astral-sh/ruff :: ty equality narrowing
+20285	merged	2025-09-08	[ty] equality narrowing on enums that don't override `__eq__` or `__ne__`
+##### prs astral-sh/ruff :: ty narrowing call
+
+##### prs astral-sh/ruff :: ty len narrowing
+
+##### prs astral-sh/ruff :: ty narrowing Never
+
+##### prs astral-sh/ruff :: [ty] narrow
+23435	open	2026-02-20	[ty] narrow builtins and string literals
+27210	open	2026-07-27	[ty] narrow `TypeGuard` targets to an intersection of the previous type and the narrowed type to avoid unintended widening and for consistency with `TypeIs`
+29394	closed	2026-10-14	[ty] Narrow with generic aliases in isinstance() and issubclass()
+29125	merged	2026-10-06	[ty] Narrow tuple unions through truthiness and type checks
+28960	merged	2026-10-01	[ty] Narrow later match cases after always-true guards
+28658	merged	2026-09-17	[ty] Narrow type context during tuple inference
+28264	merged	2026-09-03	[ty] Narrow types with ordered length comparisons
+28103	merged	2026-08-27	[ty] Narrow functional enum members in `==` and `match`
+26949	merged	2026-07-17	[ty] Narrow walrus expression values
+27130	merged	2026-07-25	[ty] Narrow tagged unions using identity comparisons
+27226	merged	2026-07-28	[ty] Narrow tagged unions through all type kinds
+26887	merged	2026-07-16	[ty] Narrow tagged unions by tag truthiness
+##### issues astral-sh/ruff :: narrowing Never
+
+##### issues microsoft/pyright :: assert call narrowing
+
+##### issues python/mypy :: assert call narrowing
+
+finished

@@ -1,0 +1,56 @@
+--- cpython 3.13.16
+  Runtime type is 'str'
+  iter error TypeError
+  len error TypeError
+  getitem error TypeError
+  attr ok 42
+  enter error TypeError
+  child ok base
+  instcall ok base
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L34 error[invalid-context-manager] Object of type `Fallback` cannot be used with `with` because it does not implement `__enter__` and `__exit__` 
+  L46 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `InstanceDunder`
+  L47 error[not-subscriptable] Cannot subscript object of type `Fallback` with no `__getitem__` method 
+  L50 info[revealed-type] Revealed type | `str`
+  L53 error[invalid-assignment] Object of type `() -> Literal["instance"]` is not assignable to attribute `__call__` of type `def __call__(self) -> str` 
+  Found 5 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L34 error[invalid-context-manager] Object of type `Fallback` cannot be used with `with` because it does not implement `__enter__` and `__exit__` 
+  L46 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `InstanceDunder`
+  L47 error[not-subscriptable] Cannot subscript object of type `Fallback` with no `__getitem__` method 
+  L50 info[revealed-type] Revealed type | `str`
+  Found 4 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__enter__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__exit__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:47: error: Value of type "Fallback" is not indexable  [index]
+  repro3/pp_gen0_19c44353.py:50: note: Revealed type is "str"
+  repro3/pp_gen0_19c44353.py:53: error: Cannot assign to a method  [method-assign]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__enter__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__exit__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:47: error: Value of type "Fallback" is not indexable  [index]
+  repro3/pp_gen0_19c44353.py:50: note: Revealed type is "str"
+  repro3/pp_gen0_19c44353.py:53: error: Cannot assign to a method  [method-assign]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__enter__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:34: error: "Fallback" has no attribute "__exit__"  [attr-defined]
+  repro3/pp_gen0_19c44353.py:47: error: Value of type "Fallback" is not indexable  [index]
+  repro3/pp_gen0_19c44353.py:50: note: Revealed type is "str"
+  repro3/pp_gen0_19c44353.py:53: error: Cannot assign to a method  [method-assign]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+    Attribute "__enter__" is unknown (reportGeneralTypeIssues)
+    Attribute "__exit__" is unknown (reportGeneralTypeIssues)
+    "AnnOnly" is incompatible with protocol "_GetItemIterable[_T@iter]"
+      "__getitem__" is not present (reportArgumentType)
+5 errors, 0 warnings, 1 information
+rc=1

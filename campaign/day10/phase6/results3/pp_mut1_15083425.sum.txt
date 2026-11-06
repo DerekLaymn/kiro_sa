@@ -1,0 +1,39 @@
+--- cpython 3.13.16
+  Runtime type is 'int'
+  set 5
+  7
+  deleted
+  deleted
+  rejected
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L19 error[invalid-argument-type] Argument to function `Slot.logged` is incorrect | Expected `Slot`, found `def __delete__(self, obj: object) -> None`
+  L29 info[revealed-type] Revealed type | `int`
+  Found 2 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L19 error[invalid-argument-type] Argument to function `Slot.logged` is incorrect | Expected `Slot`, found `def __delete__(self, obj: object) -> None`
+  L29 info[revealed-type] Revealed type | `int`
+  Found 2 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+  repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+  repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/pp_mut1_15083425.py:19: error: Argument 1 to "logged" has incompatible type "Callable[[Slot, object], None]"; expected "Slot"  [arg-type]
+  repro3/pp_mut1_15083425.py:29: note: Revealed type is "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+    Type "(self: Self@Slot, obj: object) -> None" is not assignable to type "Self@Slot" (reportArgumentType)
+    Attribute "__call__" is unknown (reportCallIssue)
+    Attribute "__call__" is unknown (reportCallIssue)
+4 errors, 1 warning, 1 information
+rc=1

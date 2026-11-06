@@ -1,0 +1,33 @@
+--- cpython 3.13.16
+  Runtime type is 'F'
+  Runtime type is 'F'
+  not R other
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L13 info[revealed-type] Revealed type | `F & ~Literal[F.R]`
+  L23 info[revealed-type] Revealed type | `F & ~Literal[F.R] & ~Literal[F.W]`
+  Found 2 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L13 info[revealed-type] Revealed type | `F & ~Literal[F.R]`
+  L23 info[revealed-type] Revealed type | `F & ~Literal[F.R] & ~Literal[F.W]`
+  Found 2 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  c_flag2.py:13: note: Revealed type is "Literal[c_flag2.F.W]"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  c_flag2.py:13: note: Revealed type is "Literal[c_flag2.F.W]"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  c_flag2.py:13: note: Revealed type is "Literal[c_flag2.F.W]"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+  c_flag2.py
+  c_flag2.py:13:17 - information: Type of "c" is "F"
+  c_flag2.py:23:21 - information: Type of "c" is "F"
+0 errors, 0 warnings, 2 informations
+rc=0

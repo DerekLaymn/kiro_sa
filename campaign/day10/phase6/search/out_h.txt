@@ -1,0 +1,44 @@
+##### issues python/mypy :: lambda ParamSpec
+
+##### prs python/mypy :: lambda ParamSpec
+
+##### prs python/mypy :: lambda names
+21009	merged	2026-03-18	[mypyc] Fix lambda inside comprehension
+##### issues python/mypy :: lambda positional-only
+
+##### issues python/mypy :: lambda keyword
+
+##### issues python/mypy :: lambda __call__
+8230	closed	2022-06-18	Crash in lambda expression as generic argument
+##### issues python/mypy :: lambda Protocol
+6909	closed	2019-06-02	False positive on await for AbstractEventLoop.create_connection (regression in 0.700)
+##### issues python/mypy :: lambda assignable
+
+##### issues python/mypy :: lambda false negative
+
+##### prs python/mypy :: lambda false negative
+
+##### prs python/mypy :: lambda protocol
+
+##### issues python/mypy :: callback protocol lambda
+
+##### issues python/mypy :: callable protocol keyword
+
+##### issues python/mypy :: callback protocol keyword
+8805	closed	2022-07-16	Protocol documentation for arguments is misleading
+##### issues python/mypy :: protocol __call__ argument name
+
+##### issues python/mypy :: infer_lambda_type_using_context
+8230	closed	2022-06-18	Crash in lambda expression as generic argument
+2222	closed	2017-04-03	Type error in mypy? 
+2567	closed	2017-01-04	Deoptionalization not detected
+##### prs python/mypy :: infer_lambda_type_using_context
+20166	merged	2025-11-03	Do not cache fast container types inside lambdas
+19505	merged	2025-07-28	Try simple-minded call expression cache
+13576	merged	2022-09-05	Ensure we always infer a valid fallback type for lambda callables
+11417	merged	2021-10-31	Do not auto-infer `TypeGuard` return type for `lambda`, refs #9927
+##### issues microsoft/pyright :: lambda callback protocol
+
+##### issues astral-sh/ruff :: lambda callback protocol
+
+finished

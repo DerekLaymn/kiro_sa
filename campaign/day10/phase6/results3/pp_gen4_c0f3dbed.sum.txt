@@ -1,0 +1,51 @@
+--- cpython 3.13.16
+  Runtime type is 'int'
+  3
+  TypeError
+  TypeError
+  TypeError
+  TypeError
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L35 info[revealed-type] Revealed type | `int`
+  L41 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `InstanceAssigned`
+  L48 error[call-non-callable] Object of type `InstanceAssigned` is not callable 
+  L62 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `Fallback`
+  Found 4 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L35 info[revealed-type] Revealed type | `int`
+  L41 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `InstanceAssigned`
+  L48 error[call-non-callable] Object of type `InstanceAssigned` is not callable 
+  L62 error[invalid-argument-type] Argument to function `len` is incorrect | Expected `Sized`, found `Fallback`
+  Found 4 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/pp_gen4_c0f3dbed.py:35: note: Revealed type is "int"
+  repro3/pp_gen4_c0f3dbed.py:62: error: Argument 1 to "len" has incompatible type "Fallback"; expected "Sized"  [arg-type]
+  repro3/pp_gen4_c0f3dbed.py:62: note: Following member(s) of "Fallback" have conflicts:
+  repro3/pp_gen4_c0f3dbed.py:62: note:     __len__: expected "Callable[[], int]", got "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/pp_gen4_c0f3dbed.py:35: note: Revealed type is "int"
+  repro3/pp_gen4_c0f3dbed.py:62: error: Argument 1 to "len" has incompatible type "Fallback"; expected "Sized"  [arg-type]
+  repro3/pp_gen4_c0f3dbed.py:62: note: Following member(s) of "Fallback" have conflicts:
+  repro3/pp_gen4_c0f3dbed.py:62: note:     __len__: expected "Callable[[], int]", got "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/pp_gen4_c0f3dbed.py:35: note: Revealed type is "int"
+  repro3/pp_gen4_c0f3dbed.py:62: error: Argument 1 to "len" has incompatible type "Fallback"; expected "Sized"  [arg-type]
+  repro3/pp_gen4_c0f3dbed.py:62: note: Following member(s) of "Fallback" have conflicts:
+  repro3/pp_gen4_c0f3dbed.py:62: note:     __len__: expected "Callable[[], int]", got "int"
+  Found 1 error in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+    Attribute "__call__" is unknown (reportCallIssue)
+    "AnnotationOnly" is incompatible with protocol "Sized"
+      Could not bind method "<anonymous>" because it is missing a "self" or "cls" parameter (reportArgumentType)
+    "Fallback" is incompatible with protocol "Sized"
+      "__len__" is not present (reportArgumentType)
+3 errors, 0 warnings, 1 information
+rc=1

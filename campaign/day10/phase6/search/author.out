@@ -1,0 +1,20 @@
+##### issues
+python/mypy#22386	open	2026-11-06	comparison of two operands of the same type calls the reflected method first when __lt__ and __gt__ are defined in different classes
+python/mypy#22385	open	2026-11-06	overloaded __post_init__ in a dataclass: [override] error for an overload item that does not take the InitVar type
+microsoft/pyright#11984	open	2026-11-06	maximum call stack size exceeded when accessing a descriptor whose __get__ is decorated by a function defined in the class body
+astral-sh/ty#4958	open	2026-11-06	except clause does not see the earlier targets of a tuple assignment whose nested unpacking raises
+astral-sh/ty#4941	open	2026-11-05	class that defines __eq__ without __hash__ is accepted where Hashable is required
+python/mypy#22377	open	2026-11-05	binary operator on class objects ignores the right operand's reflected method when its metaclass subclasses the left operand's metaclass
+python/mypy#22375	open	2026-11-05	subscripting a class with a TypeVarTuple followed by a defaulted ParamSpec reports "Can only replace ParamSpec" and infers Any
+astral-sh/ty#4934	closed	2026-11-05	aliased conditional narrowing is not invalidated when the target is reassigned later in the same loop body
+astral-sh/ty#4933	open	2026-11-05	Stack overflow when a class is assigned to a protocol whose method annotates self as a nested specialization of the protocol.
+astral-sh/ty#4899	open	2026-11-03	Abort (memory blowup) or panic with a Callable[P, T]-annotated self in __init__ and a ParamSpec __call__
+python/mypy#22360	open	2026-11-03	contravariant generic with a self-referential base
+astral-sh/ty#4884	closed	2026-11-02	TypeVar solver fails to infer type argument from generic TypedDict
+python/mypy#22339	open	2026-10-31	PEP 695 variance inference treats a writable Callable[[T], None] attribute as contravariant.
+astral-sh/ty#4656	closed	2026-10-03	False negative: Self parameter is not enforced on inherited methods
+##### prs
+DerekLaymn/kiro_sa#2	merged	2026-10-27	Fuzz/llm run 2026 10 27
+PASS-IITG/cs5187-homework-2-dereklaymn#1	open	2026-10-26	Feedback
+PASS-IITG/cs5187-homework-1-dereklaymn#1	open	2026-08-28	Feedback
+finished

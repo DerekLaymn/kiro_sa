@@ -1,0 +1,15 @@
+################ python/mypy#8805
+Protocol documentation for arguments is misleading | CLOSED COMPLETED | created 2020-05-12 closed 2022-07-16T09:16:54Z | labels: documentation,topic-protocols,good-first-issue | author silviogutierrez
+--- body
+Very happy to be using protocols. One small note, in the documentation here:
+
+https://mypy.readthedocs.io/en/stable/protocols.html#callback-protocols
+
+`Keyword argument names in __call__ methods must be identical, unless a double underscore prefix is used`
+
+Really, I think this should say "Arguments" and not "Keyword" arguments. Unless I'm missing something, this applies to *all* argument names, not just keyword ones.
+--- comments (2)
+[JelleZijlstra 2020-05-13] I'm guessing it also doesn't apply to the name of `*args` and `**kwargs`. Maybe a precise wording would be "Arguments that can be used as keyword arguments".
+~~
+[msullivan 2020-05-19] Yeah that seems reasonable. Do you want to submit a PR?
+finished

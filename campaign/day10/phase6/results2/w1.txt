@@ -1,0 +1,31 @@
+--- cpython
+1
+UnboundLocalError
+--- ty 0.0.97 default
+All checks passed!
+--- ty 0.0.97 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `value` used when possibly not defined
+  --> campaign/day10/phase6/repro2/w1.py:18:12
+   |
+18 |     return value
+   |            ^^^^^
+
+Found 1 diagnostic
+--- ty 0.0.99 --warn possibly-unresolved-reference
+warning[possibly-unresolved-reference]: Name `value` used when possibly not defined
+  --> campaign/day10/phase6/repro2/w1.py:18:12
+   |
+18 |     return value
+   |            ^^^^^
+
+Found 1 diagnostic
+--- mypy 2.4.0 possibly-undefined
+Success: no issues found in 1 source file
+--- mypy 2.4.1 possibly-undefined
+Success: no issues found in 1 source file
+--- mypy master possibly-undefined
+Success: no issues found in 1 source file
+--- pyright 1.1.414
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/w1.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/w1.py:18:12 - error: "value" is possibly unbound (reportPossiblyUnboundVariable)
+1 error, 0 warnings, 0 informations

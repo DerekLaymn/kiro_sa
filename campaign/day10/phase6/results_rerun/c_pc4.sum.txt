@@ -1,0 +1,58 @@
+--- cpython 3.13.16
+  Traceback (most recent call last):
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py", line 19, in <module>
+      label("t2", "n")
+      ~~~~~^^^^^^^^^^^
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro/c_pc4.py", line 9, in wrapper
+      return f(*args, **kwargs)
+  TypeError: label() missing 1 required positional argument: 'width'
+  rc=1
+--- ty 0.0.97 (.venv, the pin)
+  L19 error[missing-argument] No argument provided for required parameter `width` 
+  L20 error[missing-argument] No arguments provided for required parameters `name`, `width` 
+  L21 error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4 
+  L22 error[missing-argument] No argument provided for required parameter `name` 
+  L23 error[missing-argument] No argument provided for required parameter `width` 
+  Found 5 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L19 error[missing-argument] No argument provided for required parameter `width` 
+  L20 error[missing-argument] No arguments provided for required parameters `name`, `width` 
+  L21 error[too-many-positional-arguments] Too many positional arguments: expected 3, got 4 
+  L22 error[missing-argument] No argument provided for required parameter `name` 
+  L23 error[missing-argument] No argument provided for required parameter `width` 
+  Found 5 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+  repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+  repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+  Found 5 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+  repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+  repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+  Found 5 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro/c_pc4.py:19: error: Missing positional argument "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:20: error: Missing positional arguments "name", "width" in call to "label"  [call-arg]
+  repro/c_pc4.py:21: error: Too many arguments for "label"  [call-arg]
+  repro/c_pc4.py:22: error: Missing positional argument "name" in call to "label"  [call-arg]
+  repro/c_pc4.py:23: error: Missing positional argument "width" in call to "label"  [call-arg]
+  Found 5 errors in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+  c_pc4.py
+  c_pc4.py:19:1 - error: Argument missing for parameter "width" (reportCallIssue)
+  c_pc4.py:20:1 - error: Arguments missing for parameters "name", "width" (reportCallIssue)
+  c_pc4.py:21:21 - error: Expected 3 positional arguments (reportCallIssue)
+  c_pc4.py:22:1 - error: Argument missing for parameter "name" (reportCallIssue)
+  c_pc4.py:23:1 - error: Argument missing for parameter "width" (reportCallIssue)
+5 errors, 0 warnings, 0 informations
+rc=1

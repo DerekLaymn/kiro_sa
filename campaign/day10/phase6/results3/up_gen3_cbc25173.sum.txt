@@ -1,0 +1,65 @@
+--- cpython 3.13.16
+  Runtime type is 'str'
+  Runtime type is 'int'
+  Runtime type is 'str'
+  Runtime type is 'list'
+  Runtime type is 'list'
+  3 a
+  41 b
+  2 -1
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L29 info[revealed-type] Revealed type | `str`
+  L31 info[revealed-type] Revealed type | `int | str`
+  L34 info[revealed-type] Revealed type | `int`
+  L40 info[revealed-type] Revealed type | `str`
+  L43 info[revealed-type] Revealed type | `str`
+  L45 info[revealed-type] Revealed type | `int`
+  L51 info[revealed-type] Revealed type | `list[int | str]`
+  L53 info[revealed-type] Revealed type | `Never`
+  Found 8 diagnostics
+  rc=0
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L29 info[revealed-type] Revealed type | `str`
+  L31 info[revealed-type] Revealed type | `int | str`
+  L34 info[revealed-type] Revealed type | `int`
+  L40 info[revealed-type] Revealed type | `str`
+  L43 info[revealed-type] Revealed type | `str`
+  L45 info[revealed-type] Revealed type | `int`
+  L51 info[revealed-type] Revealed type | `list[int | str]`
+  L53 info[revealed-type] Revealed type | `Never`
+  Found 8 diagnostics
+  rc=0
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/up_gen3_cbc25173.py:29: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:31: note: Revealed type is "int | str"
+  repro3/up_gen3_cbc25173.py:34: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:40: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:43: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:45: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:51: note: Revealed type is "list[int | str]"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/up_gen3_cbc25173.py:29: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:31: note: Revealed type is "int | str"
+  repro3/up_gen3_cbc25173.py:34: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:40: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:43: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:45: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:51: note: Revealed type is "list[int | str]"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/up_gen3_cbc25173.py:29: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:31: note: Revealed type is "int | str"
+  repro3/up_gen3_cbc25173.py:34: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:40: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:43: note: Revealed type is "str"
+  repro3/up_gen3_cbc25173.py:45: note: Revealed type is "int"
+  repro3/up_gen3_cbc25173.py:51: note: Revealed type is "list[int | str]"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+0 errors, 0 warnings, 7 informations
+rc=0

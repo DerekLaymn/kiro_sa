@@ -1,0 +1,317 @@
+################ python/mypy#21937
+Incorrect narrowing of Enum.Flag | OPEN REOPENED | created 2026-09-04 closed - | labels: bug,topic-enum,topic-type-narrowing | author zedzhen
+--- body
+**Bug Report**
+
+Incorrect narrowing of Enum.Flag
+
+**To Reproduce**
+
+```python
+from enum import Flag, auto
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+
+def p1(path: str) -> None: ...
+def p2(path: str) -> None: ...
+def p2_fast(data: str) -> str: ... # type: ignore[empty-body]
+def p3(path: str) -> None: ...
+
+
+class Programs(Flag):
+    NONE = 0
+    P1 = auto()
+    P2 = auto()
+    P3 = auto()
+    ALL = P1 | P2 | P3
+
+
+def f(data: str, programs: Programs) -> str:
+    if programs == Programs.NONE:
+        return data
+    if programs == Programs.P2:
+        return p2_fast(data)
+    with NamedTemporaryFile("w", encoding="utf-8", delete=False) as tmp:
+        tmp.write(data)
+        tmp.close()
+        if Programs.P1 in programs:
+            p1(tmp.name)
+        if Programs.P3 in programs:
+            p3(tmp.name)
+        if Programs.P2 in programs:
+            p2(tmp.name)
+        return Path(tmp.name).read_text("utf-8")
+```
+
+**Expected Behavior**
+
+no warning
+
+**Actual Behavior**
+
+
+main.py:32: error: Unsupported operand types for in ("Programs" and "Literal[Programs.P1, Programs.P3, Programs.ALL]")  [operator]
+
+**Your Environment**
+
+- Mypy version used: 2.3.1
+- Mypy command-line flags: no 
+- Mypy configuration options from `mypy.ini` (and other config files): no
+- Python version used: 3.14
+
+--- comments (2)
+[A5rocks 2026-09-05] This is because `programs` cannot be `Programs.P2`, so mypy is telling you that.
+~~
+[A5rocks 2026-09-05] Wait sorry, I misread the issue. Sorry! I think something must be wrong with narrowing logic, since it doesn't make sense to narrow flags like that!
+################ python/mypy#21942
+Do not narrow Flag enums by member equality | OPEN  | created 2026-09-05 closed - | labels:  | author istoolsfox
+--- body
+Fixes #21937
+
+## Description
+
+`narrow_type_by_identity_equality` (used for `==`/`!=`/`is`/`is not` narrowing) expands an enum-typed expression into a union of member literals and, in the negative branch, rules out the compared-away member. For `enum.Flag` subclasses this is unsound: a Flag value can hold any combination of members, so the declared members are not an exhaustive value set.
+
+The reported repro:
+
+```python
+class Programs(Flag):
+    NONE = 0
+    P1 = auto()
+    P2 = auto()
+    P3 = auto()
+    ALL = P1 | P2 | P3
+
+def f(programs: Programs) -> None:
+    if programs == Programs.NONE:
+        return
+    if programs == Programs.P2:
+        return
+    if Programs.P2 in programs:  # error: Unsupported operand types for in
+        ...
+```
+
+After the two `==` checks, mypy narrows `programs` to `Literal[Programs.P1, Programs.P3, Programs.ALL]` -- a type that a runtime value like `Programs.P1 | Programs.P2` cannot inhabit. The subsequent `Programs.P2 in programs` is then rejected: typeshed defines `Flag.__contains__(self, other: Self)`, and no member of the narrowed union accepts a `P2` value, even though `Programs.P2 in Programs.P1 | Programs.P2` is `True` at runtime.
+
+This change skips equality/identity narrowing when either operand is a Flag value (an instance of, or a member of, an `enum.Flag`/`enum.IntFlag` subclass): the sound type for such a value is the enum class itself. Narrowing for regular enums is unchanged, since their members do form an exhaustive value set.
+
+## Checklist
+
+- [x] Added tests for all changed behaviour: 3 new cases in `check-enum.test`; they fail without the fix
+- [x] Full `testcheck.py` suite passes locally (8207 passed, 15 skipped, 7 xfailed); `check-narrowing`, `check-expressions`, `check-literal`, `check-unreachable-code` also pass
+- [x]
+--- comments (1)
+[github-actions 2026-09-05] According to [mypy_primer](https://github.com/hauntsaninja/mypy_primer), this change doesn't affect type check results on a corpus of open source code. ✅
+################ astral-sh/ty#876
+Enums: advanced features | OPEN  | created 2025-07-23 closed - | labels: typing semantics,enums | author sharkdp
+--- body
+We have basic support for enums, but there is a long tail of things that could be improved:
+
+- [x] Infer type for [member names](https://typing.python.org/en/latest/spec/enums.html#member-names) and [member values](https://typing.python.org/en/latest/spec/enums.html#member-values).
+- [x] Special-case handling of `IntEnum`, `StrEnum`, or other custom classes that derive from both `Enum` and some other class (infer appropriate types for member values)
+- [x] `auto()` values
+- [ ] Handling of `enum.Flag` (enum expansion may not be performed for subclasses of `enum.Flag`)
+- [x] Custom `__new__` or `__init__` methods in enums.
+- [x] Support for `_generate_next_value_`
+- [ ] Special-case handling for call to enum class to retrieve member by value (e.g. `Color("red")`)
+- [x] Function syntax to create Enums
+--- comments (11)
+[Andre-Medina 2025-09-03] Noticed enums weren't typed quite right in the `ty` VSC extension, glad to see it being worked on.
+
+should also consider `EnumClass.ITEM.name` being type `str`
+
+```python
+from enum import StrEnum, IntEnum
+
+class TempTest(StrEnum):
+    ITEM = "data"
+    ITEM_2 = "more_data"
+
+
+should_be_enum_type = TempTest.ITEM
+should_be_str = TempTest.ITEM.value
+should_be_str_also = TempTest.ITEM.name
+
+class TestInt(IntEnum):
+
+    ITEM = 1
+    ITEM_2 = 2
+
+should_be_enum_type_also = TestInt.ITEM
+should_be_int = TestInt.ITEM.value
+should_be_str_still = TestInt.ITEM.name
+```
+
+With the extension in its current state, `ty` confusing some type hints:
+<img width="993" height="686" alt="Image" src="https://github.co
+~~
+[sharkdp 2025-09-03] @Andre-Medina It looks like `StrEnum` can't be imported? It's only available on 3.11 and later. How did you configure your Python version?
+
+Once you have fixed that, `should_be_enum_type` should indeed be of type `Literal[TempTest.ITEM]`. Accessing `.value` and `.name` with more precise types is not yet supported, but it's listed as the first item in the enumeration above.
+~~
+[Andre-Medina 2025-09-03] > It looks like StrEnum can't be imported? It's only available on 3.11 and later. How did you configure your Python version?
+
+Unsure, probably an issue with my local env, but good to hear `.value` and `.name` will be supported :)
+~~
+[aidandj 2025-09-18] There is a backported package [backports.strenum](https://pypi.org/project/backports.strenum/) that I've been using for legacy code.
+
+I was testing out the latest main, and there is a regression. Using that `StrEnum` package, I used to get a `str` for the revealed type on alpha20. But on the latest main (in ruff) I get `Literal[<index of item>]`
+
+```
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
+from enum import Enum, auto
+
+
+class SomeEnum(StrEnum):
+    A = auto()
+    B = auto()
+    C = auto()
+    D = auto()
+
+
+reveal_type(SomeEnum.A.value)
+```
+
+With alpha 20, I get type string. With ruff commit: `706be0a6e7e09936511198f2ff8982915
+~~
+[thejchap 2025-09-19] ah - [this](https://github.com/thejchap/ruff/blob/bc89d0394ca2ee3161df37b8fa3de307d001e54f/crates/ty_python_semantic/src/types/enums.rs#L151) is being exposed now
+
+it does look like the type could actually be `Literal['a']` instead of `builtins.str`
+
+from the docs:
+> Note Using [auto](https://docs.python.org/3/library/enum.html#enum.auto) with [StrEnum](https://docs.python.org/3/library/enum.html#enum.StrEnum) results in the lower-cased member name as the value.
+
+https://docs.python.org/3/library/enum.html#enum.StrEnum
+~~
+[aidandj 2025-09-19] I didn't actually test it with 3.11 I'm realizing. I'll do that later.
+
+Confirmed same behavior on 3.12 and commit `706be0a6e7e09936511198f2ff8982915520d138`
+~~
+[sharkdp 2025-09-19] Thank you for reporting this. We should fix this. That's why the *"Special-case handling of IntEnum, StrEnum"* and *"auto() values"* items are still unchecked in the description above. We could either patch this by not inferring a precise type for `.value` if we derive from `StrEnum`. Or we could implement the actual `auto` behavior for `StrEnum`, like @thejchap suggested, if it's not too hard.
+~~
+[thejchap 2025-09-19] i can take a look at this next week
+~~
+[spaceone 2025-12-18] I guess another example for this issue is:
+
+```sh
+$ ty check t.py 
+t.py:10:22: error[invalid-type-form] Type arguments for `Literal` must be `None`, a literal value (int, bool, str, or bytes), or an enum member
+Found 1 diagnostic
+$ cat t.py
+```
+```python
+import enum
+from typing import Literal
+
+
+class Foo(enum.IntEnum):
+    foo = 1
+    bar = 2
+
+
+def foo(bar: Literal[Foo.foo | Foo.bar]) -> None:
+    pass
+```
+~~
+[AlexWaygood 2025-12-18] @spaceone that looks like a true positive to me. `Foo.foo | Foo.bar` is not an enum member. `|` unions are not allowed inside `Literal[]` slices. You probably meant to write `Literal[Foo.foo, Foo.bar]` (a comma instead of a `|`).
+
+We could probably improve our diagnostic for that case.
+~~
+[spaceone 2025-12-18] @AlexWaygood ah thank you. Then it's a undetected case of mypy.
+
+→https://github.com/python/mypy/issues/20438
+################ astral-sh/ty#3765
+`enum.IntFlag` type narrowed too much when left operand is of type `int` and right operand is a canonical flag | CLOSED DUPLICATE | created 2026-06-14 closed 2026-06-17T07:51:37Z | labels: enums | author jonathandung
+--- body
+### Summary
+
+[Playground](https://play.ty.dev/8f250914-79e5-473c-aba1-5fd3eb725359)
+
+### Version
+
+ty 0.0.49 (b669da87d 2026-06-11)
+--- comments (4)
+[jonathandung 2026-06-14] In the above example, I expected the revealed type to be `Flags` rather than `Literal[Flags.A]`, because it does not hold that `int() & Flags.A == Flags.A`.
+~~
+[jonathandung 2026-06-14] The stubs in typeshed are as follows:
+
+```python
+class IntFlag(int, ReprEnum, Flag, boundary=KEEP):  # type: ignore[misc]  # complaints about incompatible bases
+    def __new__(cls, value: int) -> Self: ...
+    def __or__(self, other: int) -> Self: ...
+    def __and__(self, other: int) -> Self: ...
+    def __xor__(self, other: int) -> Self: ...
+    def __invert__(self) -> Self: ...
+    __ror__ = __or__
+    __rand__ = __and__
+    __rxor__ = __xor__
+```
+
+It may be the `Self` return value in `__rand__` triggering this fault, because the type of `Flags.A`, even in this context, is `Literal[Flags.A]` and not `Flags`. I will see whether this issue should be moved to typeshed after testing with oth
+~~
+[jonathandung 2026-06-14] Correct:
+
+- [mypy](https://gist.github.com/mypy-play/0c29d5580d780221622b7d8af6221996)
+
+Wrong (revealed as `int` rather than `Flags`:
+
+- [pyright](https://pyright-play.net/?code=GYJw9gtgBApgdgV2gSwgBzCALlAhgrMAGigEk4sAxAG1wHMBYAKAGNaBndqG%2B9gCnJVadAJQAuZlClQAglAC8eAmD4jJ0gEIKlhVcxAwAbjFzUA%2BlgCeaGH2QVVUAGTdh7AHQyRQA)
+- [basedpyright](https://basedpyright.com/?typeCheckingMode=all&code=GYJw9gtgBApgdgV2gSwgBzCALlAhgrMAGigEk4sAxAG1wHMBYAKAGNaBndqG%2B9gCnJVadAJQAuZlClQAglAC8eAmD4jJ0gEIKlhVcxAwAbjFzUA%2BlgCeaGH2QVVUAGTdh7AHQyRQA)
+- [pyrefly](https://pyrefly.org/sandbox/?project=N4IgZglgNgpgziAXKOBDAdgEwEYHsAeAdAA4CeS4ATrgLYAEM6ArvRDcbpQC52pNe4ANHQCS6LgDEoqAOYAddAGNpcOHSmy4ACjGTpMgJSIFdU3QCCdALy
+~~
+[sharkdp 2026-06-17] We do not support `enum.Flag` yet, please see https://github.com/astral-sh/ty/issues/876
+################ python/mypy#8595
+Metaclass __call__ ignores return type | CLOSED COMPLETED | created 2020-03-26 closed 2020-03-27T23:32:52Z | labels:  | author DevilXD
+--- body
+* Are you reporting a bug, or opening a feature request?
+Bug/Feature request ?
+
+* Minimal repro:
+```py
+class BaseMeta(type):
+    # make it so that constructing a class' instance will return a string instead
+    def __call__(cls, *args, **kwargs) -> str:
+        return "test"
+
+class Base(metaclass=BaseMeta):
+    pass
+
+inst = Base()
+reveal_type(inst)  # revealed type is 'Base' instance
+print(inst)  # prints 'test' at runtime
+```
+
+* What is the actual behavior/output?
+As explained by the comments in the example above
+
+* What is the behavior/output you expect?
+Revealed type would be `str`, as the `__call__` return type specifies.
+
+* What are the versions of mypy and Python you are using?
+* Do you see the same issue after installing mypy from Git master?
+Python 3.8. Happens on the current Git master, and the previous version of MyPy I was using (it was like 0.76X).
+
+* What are the mypy flags you are using? (For example --strict-optional)
+Default configuration for VSCode, which would be:
+`follow-imports=silent`
+`ignore-missing-imports`
+`show-column-numbers`
+Personal addition:
+`check-untyped-defs`
+
+I know this is a rather non-standard usage case (as the `__call__` normally would return a class instance), but I figured this should be relatively easy to support.
+--- comments (4)
+[ilevkivskyi 2020-03-27] It is unlikely this will be ever supported, so doesn't really make sense to keep this open.
+~~
+[DevilXD 2020-03-28] Why is that so? Can I get a better explanation? Inspecting the metaclass for the `__call__` return type should be easy to do, I'd think =/
+~~
+[DevilXD 2020-03-30] @ilevkivskyi Can you please respond to this?
+
+Are meta classes something that cannot be statically analyzed?
+~~
+[pinghedm 2020-04-30] I'm doing a very similar thing - curious if there is any further information available as well.
+finished

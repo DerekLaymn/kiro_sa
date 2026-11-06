@@ -1,0 +1,6 @@
+## reveal_unpaired 5
+    seed-3b32997d3bf5 gradual_any/rsv_gradual_any_76921a4b__mut0_ad89194c.py D1 {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'mypy produced no reveal_type output at line 43, which CPython executed: mypy treats reachable code as unreachable (chec
+    seed-7a4e31d81a55 narrowing_user/gen3_cbc25173.py D1 {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'mypy produced no reveal_type output at line 53, which CPython executed: mypy treats reachable code as unreachable (chec
+    seed-86c3c3d3f859 narrowing_user/gen1_0cecd6f5.py D1 {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'mypy produced no reveal_type output at line 43, which CPython executed: mypy treats reachable code as unreachable (chec
+    seed-ddabb84b3b2c gradual_any/rsv_gradual_any_76921a4b__mut0_00d85d59.py D1 {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'mypy produced no reveal_type output at line 30, which CPython executed: mypy treats reachable code as unreachable (chec
+    seed-ec6c6ea6d53f enums_literals/d4v_ty_flag_or_else_never__mut0_d156e44d.py D2 {'type': 'RUNTIME', 'supports': 'bug', 'summary': 'mypy produced no reveal_type output at line 37, which CPython executed: mypy treats reachable code as unreachable (chec

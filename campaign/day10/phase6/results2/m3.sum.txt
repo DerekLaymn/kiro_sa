@@ -1,0 +1,45 @@
+--- cpython 3.13.16
+  Traceback (most recent call last):
+    File "/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/m3.py", line 4, in <module>
+      f("x")
+      ~^^^^^
+  TypeError: f() missing 1 required positional argument: 'b'
+  rc=1
+--- ty 0.0.97 (.venv, the pin)
+  L4 error[missing-argument] No argument provided for required parameter `b` of function `f` 
+  L4 error[invalid-argument-type] Argument to function `f` is incorrect | Expected `int`, found `Literal["x"]`
+  L5 error[missing-argument] No argument provided for required parameter `b` of function `f` 
+  L6 error[missing-argument] No arguments provided for required parameters `a`, `b` of function `f` 
+  Found 4 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L4 error[missing-argument] No argument provided for required parameter `b` of function `f` 
+  L4 error[invalid-argument-type] Argument to function `f` is incorrect | Expected `int`, found `Literal["x"]`
+  L5 error[missing-argument] No argument provided for required parameter `b` of function `f` 
+  L6 error[missing-argument] No arguments provided for required parameters `a`, `b` of function `f` 
+  Found 4 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  campaign/day10/phase6/repro2/m3.py:4: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:4: error: Argument 1 to "f" has incompatible type "str"; expected "int"  [arg-type]
+  campaign/day10/phase6/repro2/m3.py:5: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:6: error: Missing positional arguments "a", "b" in call to "f"  [call-arg]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  campaign/day10/phase6/repro2/m3.py:4: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:4: error: Argument 1 to "f" has incompatible type "str"; expected "int"  [arg-type]
+  campaign/day10/phase6/repro2/m3.py:5: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:6: error: Missing positional arguments "a", "b" in call to "f"  [call-arg]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  campaign/day10/phase6/repro2/m3.py:4: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:4: error: Argument 1 to "f" has incompatible type "str"; expected "int"  [arg-type]
+  campaign/day10/phase6/repro2/m3.py:5: error: Missing positional argument "b" in call to "f"  [call-arg]
+  campaign/day10/phase6/repro2/m3.py:6: error: Missing positional arguments "a", "b" in call to "f"  [call-arg]
+  Found 4 errors in 1 file (checked 1 source file)
+  rc=1
+--- pyright 1.1.414 (.venv, the pin)
+3 errors, 0 warnings, 0 informations
+rc=1

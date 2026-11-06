@@ -1,0 +1,152 @@
+##### l7.py
+--- cpython 3.13.16
+rc=0
+--- ty 0.0.97 (.venv, the pin)
+error[invalid-assignment]: Object of type `(x) -> None` is not assignable to `Sink`
+ --> repro2/l7.py:8:12
+  |
+8 | s1: Sink = lambda x: None
+  |     ----   ^^^^^^^^^^^^^^ Incompatible value of type `(x) -> None`
+  |     |
+  |     Declared type
+info: type `(x) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-assignment]: Object of type `(x, /) -> None` is not assignable to `Sink`
+ --> repro2/l7.py:9:12
+  |
+9 | s2: Sink = lambda x, /: None
+  |     ----   ^^^^^^^^^^^^^^^^^ Incompatible value of type `(x, /) -> None`
+  |     |
+  |     Declared type
+info: type `(x, /) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `x` is positional-only but must also accept keyword arguments
+help: `(x, /) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-assignment]: Object of type `(*, value) -> None` is not assignable to `Sink`
+  --> repro2/l7.py:10:12
+   |
+10 | s3: Sink = lambda *, value: None
+   |     ----   ^^^^^^^^^^^^^^^^^^^^^ Incompatible value of type `(*, value) -> None`
+   |     |
+   |     Declared type
+info: type `(*, value) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `value` is keyword-only but must also accept positional arguments
+
+error[invalid-assignment]: Object of type `(y, z=0) -> None` is not assignable to `Sink`
+  --> repro2/l7.py:11:12
+   |
+11 | s4: Sink = lambda y, z=0: None
+   |     ----   ^^^^^^^^^^^^^^^^^^^ Incompatible value of type `(y, z=0) -> None`
+   |     |
+   |     Declared type
+info: type `(y, z=0) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `y` does not match `value` (and can be used as a keyword parameter)
+help: `(y, z=0) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-parameter-default]: Default value of type `(x) -> None` is not assignable to annotated parameter type `Sink`
+  --> repro2/l7.py:14:12
+   |
+14 | def holder(s: Sink = lambda x: None) -> None: ...
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+error[invalid-assignment]: Object of type `(x) -> None` is not assignable to `Sink`
+ --> repro2/l7.py:8:12
+  |
+8 | s1: Sink = lambda x: None
+  |     ----   ^^^^^^^^^^^^^^ Incompatible value of type `(x) -> None`
+  |     |
+  |     Declared type
+info: type `(x) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `x` does not match `value` (and can be used as a keyword parameter)
+help: `(x) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-assignment]: Object of type `(x, /) -> None` is not assignable to `Sink`
+ --> repro2/l7.py:9:12
+  |
+9 | s2: Sink = lambda x, /: None
+  |     ----   ^^^^^^^^^^^^^^^^^ Incompatible value of type `(x, /) -> None`
+  |     |
+  |     Declared type
+info: type `(x, /) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `x` is positional-only but must also accept keyword arguments
+help: `(x, /) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-assignment]: Object of type `(*, value) -> None` is not assignable to `Sink`
+  --> repro2/l7.py:10:12
+   |
+10 | s3: Sink = lambda *, value: None
+   |     ----   ^^^^^^^^^^^^^^^^^^^^^ Incompatible value of type `(*, value) -> None`
+   |     |
+   |     Declared type
+info: type `(*, value) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── parameter `value` is keyword-only but must also accept positional arguments
+
+error[invalid-assignment]: Object of type `(y, z=0) -> None` is not assignable to `Sink`
+  --> repro2/l7.py:11:12
+   |
+11 | s4: Sink = lambda y, z=0: None
+   |     ----   ^^^^^^^^^^^^^^^^^^^ Incompatible value of type `(y, z=0) -> None`
+   |     |
+   |     Declared type
+info: type `(y, z=0) -> None` is not assignable to protocol `Sink`
+info: └── protocol member `__call__` is incompatible
+info:     └── the parameter named `y` does not match `value` (and can be used as a keyword parameter)
+help: `(y, z=0) -> None` might be assignable to `Sink` if the parameter `value` were made positional-only in `Sink.__call__`
+
+error[invalid-parameter-default]: Default value of type `(x) -> None` is not assignable to annotated parameter type `Sink`
+  --> repro2/l7.py:14:12
+   |
+14 | def holder(s: Sink = lambda x: None) -> None: ...
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+Found 5 diagnostics
+rc=1
+--- mypy 2.4.0 (.venv, the pin)
+repro2/l7.py:10: error: Incompatible types in assignment (expression has type "def <lambda>(*, value: Any) -> None", variable has type "Sink")  [assignment]
+repro2/l7.py:10: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy 2.4.1 (/tmp/d3v-latest)
+repro2/l7.py:10: error: Incompatible types in assignment (expression has type "def <lambda>(*, value: Any) -> None", variable has type "Sink")  [assignment]
+repro2/l7.py:10: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+repro2/l7.py:10: error: Incompatible types in assignment (expression has type "def <lambda>(*, value: Any) -> None", variable has type "Sink")  [assignment]
+repro2/l7.py:10: note: "Sink.__call__" has type "def __call__(self, value: int) -> None"
+Found 1 error in 1 file (checked 1 source file)
+rc=1
+--- pyright 1.1.414 (.venv, the pin)
+/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py:8:12 - error: Type "(x: int) -> None" is not assignable to declared type "Sink"
+    Type "(x: int) -> None" is not assignable to type "(value: int) -> None"
+      Parameter name mismatch: "value" versus "x" (reportAssignmentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py:9:12 - error: Type "(x: int, /) -> None" is not assignable to declared type "Sink"
+    Type "(x: int, /) -> None" is not assignable to type "(value: int) -> None"
+      Missing keyword parameter "value"
+        Position-only parameter mismatch; parameter "value" is not position-only
+        Position-only parameter mismatch; expected 1 but received 0 (reportAssignmentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py:10:12 - error: Type "(*, value: Unknown) -> None" is not assignable to declared type "Sink"
+    Type "(*, value: Unknown) -> None" is not assignable to type "(value: int) -> None"
+      Function accepts too few positional parameters; expected 1 but received 0
+        Parameter "value" is missing default argument (reportAssignmentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py:11:12 - error: Type "(y: int, z: Literal[0] = 0) -> None" is not assignable to declared type "Sink"
+    Type "(y: int, z: Literal[0] = 0) -> None" is not assignable to type "(value: int) -> None"
+      Parameter name mismatch: "value" versus "y" (reportAssignmentType)
+  /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/day10/phase6/repro2/l7.py:14:22 - error: Expression of type "(x: int) -> None" cannot be assigned to parameter of type "Sink"
+    Type "(x: int) -> None" is not assignable to type "(value: int) -> None"
+      Parameter name mismatch: "value" versus "x" (reportArgumentType)
+5 errors, 0 warnings, 0 informations
+rc=1

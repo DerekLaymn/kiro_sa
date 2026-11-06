@@ -1,0 +1,40 @@
+--- cpython 3.13.16
+  Runtime type is 'int'
+  Runtime type is 'int'
+  level 7
+  runtime: UnboundLocalError
+  strict runtime: TypeError
+  fine
+  gen runtime: ValueError
+  gen
+  rc=0
+--- ty 0.0.97 (.venv, the pin)
+  L27 warning[deprecated] The overload of `contextmanager` is deprecated | Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+  L34 info[revealed-type] Revealed type | `int`
+  L77 info[revealed-type] Revealed type | `int`
+  Found 3 diagnostics
+  rc=1
+--- ty 0.0.99 (/tmp/d9v/ty99, newest release, verification only)
+  L27 warning[deprecated] The overload of `contextmanager` is deprecated | Annotating the return type as `-> Iterator[Foo]` with `@contextmanager` is deprecated. Use `-> Generator[Foo]` instead.
+  L34 info[revealed-type] Revealed type | `int`
+  L77 info[revealed-type] Revealed type | `int`
+  Found 3 diagnostics
+  rc=1
+--- mypy 2.4.0 (.venv, the pin)
+  repro3/pp_mut2_ecc6e133.py:34: note: Revealed type is "int"
+  repro3/pp_mut2_ecc6e133.py:77: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy 2.4.1 (/tmp/d3v-latest)
+  repro3/pp_mut2_ecc6e133.py:34: note: Revealed type is "int"
+  repro3/pp_mut2_ecc6e133.py:77: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- mypy master 2.5.0+dev.879da562 (/tmp/d3v-master)
+  repro3/pp_mut2_ecc6e133.py:34: note: Revealed type is "int"
+  repro3/pp_mut2_ecc6e133.py:77: note: Revealed type is "int"
+  Success: no issues found in 1 source file
+  rc=0
+--- pyright 1.1.414 (.venv, the pin)
+1 error, 0 warnings, 2 informations
+rc=1
