@@ -1,6 +1,6 @@
 # area: enums_literals
 # hypothesis: Enum members that repeat an earlier member's value are aliases at runtime (E.B is E.A); ty models them, mypy and pyright treat them as separate members, which gives a false positive on a Literal assignment and on assert_never.
-# origin: campaign/day4/verify-v3.md section 1 (day-3 seed-0de4710c02b5, d3p_enums_literals_intenum_true_aliases_one__mut1_2f2cf71e)
+# origin: results/bugs.md section 1 (day-3 seed-0de4710c02b5, d3p_enums_literals_intenum_true_aliases_one__mut1_2f2cf71e)
 from enum import Enum
 from typing import Literal, assert_never, assert_type
 

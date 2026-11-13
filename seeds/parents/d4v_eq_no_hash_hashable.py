@@ -1,6 +1,6 @@
 # area: inheritance_mro
 # hypothesis: A class that defines __eq__ without __hash__ gets __hash__ = None at runtime, so it is not Hashable; pyright rejects Plain() and Sub() for a Hashable parameter, mypy and ty accept them (ty does reject a mutable dataclass).
-# origin: campaign/day4/verify-v3.md section 4 (day-3 seed-a43a619b6518, d3p_inheritance_mro_hash_none_from_eq__mut1_fdf751d0)
+# origin: results/bugs.md section 4 (day-3 seed-a43a619b6518, d3p_inheritance_mro_hash_none_from_eq__mut1_fdf751d0)
 from collections.abc import Hashable
 
 

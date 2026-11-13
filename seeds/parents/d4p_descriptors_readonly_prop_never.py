@@ -1,6 +1,6 @@
 # area: descriptors_properties
 # hypothesis: A read-only property assignment after contradictory attribute asserts and a __dict__ write: ty infers the receiver as Never and skips the AttributeError line; mypy and pyright report it. Vary: bump through a method, a descriptor, a local int.
-# origin: runs/day3/gen/descriptors_properties/gen7_14eb1842.py (seed-4aa8be0814f0); campaign/day3-report.md section 5 item 1
+# origin: runs/day3/gen/descriptors_properties/gen7_14eb1842.py (seed-4aa8be0814f0); results/days/day3-report.md section 5 item 1
 class Doubled:
     def __get__(self, obj: object | None, objtype: type | None = None) -> int:
         if obj is None:
