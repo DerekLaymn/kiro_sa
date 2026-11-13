@@ -1,4 +1,7 @@
-# typediff — design
+# typediff: design rationale
+
+This page explains why typediff is built the way it is. For the components and data flow see
+[architecture.md](architecture.md); for commands see [usage.md](usage.md).
 
 Adjudication pipeline for **mypy vs ty** differential testing (pyright is an optional, weak
 tie-breaker). Its input is a Python program, mypy stdout/stderr, ty stdout/stderr and the CPython
@@ -6,13 +9,15 @@ result. For every disagreement it decides: **real bug (and in which tool)**, **e
 difference** (with an auditable reason), or **undecided → human queue**. It then advises what to
 generate next.
 
-Calibrated against **ty 0.0.84, mypy 2.4.0, pyright 1.1.414, CPython 3.12** (Oct 2026).
+The calibration run (section 7) used **ty 0.0.84, mypy 2.4.0, pyright 1.1.414, CPython 3.12**
+(October 2026). The published campaign results use **ty 0.0.97, mypy 2.4.0, pyright 1.1.414 and
+CPython 3.13**; see [reproducibility.md](reproducibility.md).
 
 ---
 
 ## 1. Cost model: the one rule everything follows
 
-- A false report costs maintainer time and your credibility.
+- A false report costs maintainer time and the reporter's credibility.
 - A dismissed real bug is gone for good.
 
 So the pipeline is **asymmetric**:
@@ -29,9 +34,10 @@ advocate, so you can measure how often the KB wrongly dismisses something.
 
 ---
 
-## 2. Taxonomy: are your four categories enough?
+## 2. Taxonomy: why three axes
 
-Your four categories mix two separate questions: **what went wrong** and **how we know**.
+A natural first scheme has four categories: soundness failure, spurious rejection, spec violation and engine crash.
+It mixes two separate questions: **what went wrong** and **how we know**.
 
 - *Soundness Failure* and *Spurious Rejection* describe **what went wrong**.
 - *Spec Violation* describes **how we know**. Every soundness failure or spurious rejection is
@@ -57,7 +63,7 @@ The fix is three orthogonal axes:
 `HEURISTIC`. *Spec Violation* lives here now: it is a `SPEC` evidence item attached to a
 FALSE_NEGATIVE / FALSE_POSITIVE / INCORRECT_INFERENCE finding.
 
-**Axis C — Dismissal (only for NOT_BUG). This is what you need to remove false positives:**
+**Axis C — Dismissal (only for NOT_BUG). This is what removes false positives:**
 `DESIGN_DIVERGENCE`, `SPEC_AMBIGUITY`, `KNOWN_LIMITATION` (ty `@Todo`, "None yet" checks),
 `CONFIG_ARTIFACT` (flags, python-version, optional checks, environment, typeshed skew),
 `INVALID_TEST`, `NOISE`, `DUPLICATE`.
@@ -65,7 +71,7 @@ FALSE_NEGATIVE / FALSE_POSITIVE / INCORRECT_INFERENCE finding.
 Plus a `faulty_tool` field (`ty | mypy | both | none`). "Both accept code that crashes at runtime"
 is a real outcome that a pure differential setup never shows (it appears as `RUNTIME_MISS`).
 
-**Do you need fewer?** No. Merging INCORRECT_INFERENCE into the others loses the most common ty
+**Fewer symptoms?** No. Merging INCORRECT_INFERENCE into the others loses the most common ty
 bug class. **More?** Not at the top level. Finer splits (e.g. narrowing vs. overload) belong in
 the *feature tags* stored with each finding.
 
@@ -214,13 +220,13 @@ THAT entry's own toggle ran for this discrepancy and removed it. Another entry's
 verified experiment, does not count.
 
 **Prior upstream stance.** Before any CONFIRMED/CANDIDATE finding is reported or an issue is drafted,
-`priors.py` consults `data/known_upstream.json` (`stance`: open / intended / not_planned /
+`priors.py` consults `typediff/data/known_upstream.json` (`stance`: open / intended / not_planned /
 duplicate-of, plus url). A near-match by signature OR by feature tags caps the finding at REVIEW and
 the draft starts with the stance, the url and a "check the body text on the tracker" warning. It only
 ever lowers a tier and has no network access. Searching the tracker and discuss.python.org stays a
 manual step: title searches miss duplicates whose example sits in the body.
 
-**Single-tool entries (Day 8).** An entry of `known_upstream.json` with `"kind": "only_pyright"` is matched against
+**Single-tool entries.** An entry of `known_upstream.json` with `"kind": "only_pyright"` is matched against
 pyright's diagnostics (`codes` and `message`), so a known duplicate that only pyright reports (mypy and ty silent) can be
 closed like an `only_mypy` / `only_ty` one; `MYPY-2455` / `TY-4941` (a class with `__eq__` and no `__hash__` passed as
 `Hashable`) and `PYRIGHT-11382` (class access of a data descriptor that is also assigned on the instance) are the first.
@@ -229,7 +235,7 @@ are closed by the code-level entry `DISPLAY-EQUIVALENT` (`typediff/display.py` r
 strings); `CALLABLE-SELF-ATTR-STORE` / `CALLABLE-SELF-RECEIVER` cover the ParamSpec `self: Callable[P, T]` family
 (results/days/day8-pipeline.md section 1).
 
-**Caught exceptions (Day 8).** `runtime_harness.py` also records every exception that passes through a frame of the program,
+**Caught exceptions.** `runtime_harness.py` also records every exception that passes through a frame of the program,
 caught or not (`RuntimeResult.raised`). `pyright_runtime_relation` counts a type-related exception raised at the flagged
 statement and handled by the program as `supports` (generated programs wrap their `# expect-error` line in `try/except`).
 A `runtime_miss` whose traceback starts after a flagged, executed `# expect-error` line is a consequence of that line and is
@@ -268,10 +274,10 @@ and size limits.
 
 ---
 
-## 6. Search strategy (`strategy.py`)
+## 6. Search strategy
 
-- 24 feature areas (22 until Day 8; Day 9 added `dunder_dispatch` and `context_managers`) (generics/variance, ParamSpec, TypedDict, overloads, narrowing, match, Self,
-  descriptors, recursive aliases …). UCB1 picks areas. Reward = 10·confirmed + 4·candidate +
+- 24 feature areas (generics/variance, ParamSpec, TypedDict, overloads, narrowing, match, Self,
+  descriptors, recursive aliases, dunder dispatch, context managers …; `strategy.py`). UCB1 picks areas. Reward = 10·confirmed + 4·candidate +
   1·review + 6·crash, scaled down when no new signature was found.
 - **Hard rules** (the LLM can't override):
   - **CONTINUE** on a bug candidate: make close variants to generalise it.
@@ -286,7 +292,7 @@ and size limits.
   `overload_reorder`, `recursion_deepening` / `invalid_type_form` / `feature_crossover`
   (crash hunting), `python_version_flip`, `runtime_witness`, `inheritance_diamond`,
   `descriptor_property`, `decorator_wrapping`, `async_generator_wrap`.
-  Since Day 9, `typediff/operators.py` holds operators that carry their own instruction text (`generate --ops`
+  `typediff/operators.py` holds operators that carry their own instruction text (`generate --ops`
   adds an `instruction` to the mutation): `dunder_instance_shadow` (a special method that exists only on the
   instance or only as an annotation; CPython looks dunders up on the type) and `exit_swallow_flip` (the
   `__exit__` return annotation versus code after a `with`). The older operators stay bare names, so their
@@ -301,8 +307,8 @@ and size limits.
 2. **Negatives:** documented differences: `calibration/negatives/*.py` plus every KB example.
    Two more program sets are checked by pytest: `calibration/known_duplicates/*.py` (real discrepancies that an open
    upstream issue already tracks; each is closed by exactly the entry named in `tests/test_stage3_round2.py` /
-   `test_stage3_round3.py`) and `calibration/must_stay_live/*.py` (no dismissal may touch them; empty since Day 7,
-   when the two programs it held moved to `known_duplicates/` after the ty#2171 / ty#2792 entries were added).
+   `test_stage3_round3.py`) and `calibration/must_stay_live/*.py` (no dismissal may touch them; empty in the final
+   state: its two programs moved to `known_duplicates/` once narrow entries for ty#2171 and ty#2792 existed).
 3. **Per-case outcome:**
    - `kept`: some finding is confirmed, candidate or review.
    - `dismissed`: everything was dismissed, so this is a candidate false dismissal.
