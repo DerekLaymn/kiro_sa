@@ -10,7 +10,7 @@ from typediff.state import CaseState
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = (ROOT / "findings/2026-10-25/lambda_rebinding.py").read_text()
+SOURCE = (ROOT / "tests/data/known_closure/lambda_rebinding.py").read_text()
 
 
 def matches(source):
@@ -49,7 +49,7 @@ def test_other_expression_in_lambda_is_not_duplicate():
 
 
 def test_variadic_limitation_is_prior_only():
-    source = (ROOT / "findings/2026-10-25/variadic_callback.py").read_text()
+    source = (ROOT / "tests/data/known_closure/variadic_callback.py").read_text()
     line = len(source.splitlines())
     diagnostic = Diagnostic(Tool.MYPY, line, 14, Severity.ERROR, "arg-type", "Argument 1 has incompatible type")
     state = CaseState("test", source, "3.13", {Tool.MYPY: [diagnostic], Tool.TY: []},
