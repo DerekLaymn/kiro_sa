@@ -22,9 +22,9 @@ The study ran the pipeline against **mypy 2.4.0, ty 0.0.97 and pyright 1.1.414**
 |---|---|
 | Programs checked | about 7,000: 29 hand-written seeds, 5,086 harvested from upstream test suites, and 1,880 mutants written by a model over eight rounds |
 | New bugs found and verified | **12**: 4 in ty, 6 in mypy, 2 in pyright (2 crashes, 5 false negatives, 5 false positives or wrong inferences) |
-| Reported upstream | **24 issues** (ty 11, mypy 9, pyright 4), all found with this pipeline. Of these, 9 are filed drafts of the 12 verified bugs (ty 4, mypy 4, pyright 1; the other 3 drafts are written up and unfiled). The other 15 come from earlier runs of the same pipeline; see below |
+| Reported upstream | **24 issues** (ty 11, mypy 9, pyright 4), all found with this pipeline. Of these, 9 are filed drafts of the 12 verified bugs (ty 4, mypy 4, pyright 1; the other 3 drafts are written up and unfiled). The other 15 were found by running the seed corpus through the pipeline without LLM mutation; see below |
 | Fixed upstream | Of the 12 verified bugs, 2: [ty#4934](https://github.com/astral-sh/ty/issues/4934) (ruff#30074) and [ty#4958](https://github.com/astral-sh/ty/issues/4958) (ruff#30206). Of all 24 issues, 5 are closed with a merged fix PR |
-| Issues from earlier runs | 15 crash and discrepancy issues on ty, mypy and pyright, found by earlier runs of the same pipeline; they also seeded the KB. Listed in [results/FINAL-SUMMARY.md](results/FINAL-SUMMARY.md#6-other-filed-issues-from-earlier-runs-of-the-pipeline) |
+| Issues from seed-corpus runs | 15 crash and discrepancy issues on ty, mypy and pyright, found by running the seed corpus (hand-written and harvested programs) through the pipeline without LLM mutation or generation; they also seeded the KB. Listed in [results/FINAL-SUMMARY.md](results/FINAL-SUMMARY.md#6-other-filed-issues-from-seed-corpus-runs) |
 | Knowledge base | 48 code entries, 27 upstream discrepancy entries, 12 crash entries, 7 prior stances |
 | Calibration | First run (ty 0.0.84): 156 open bug reports, **0 of 80 ty reports** and 4 of 76 mypy reports dismissed (3 no longer reproduce, 1 is a deliberate policy). A re-run on the final KB is a different experiment: see [calibration/README.md](calibration/README.md) |
 | Tests | 762 passed; `typediff kb-selftest` 20 PASS, 0 FAIL |
@@ -38,7 +38,8 @@ not mean a maintainer confirmed it. Per-bug status, links and reproducers: [resu
 All 24 issues authored by the three GitHub accounts were found with the typediff pipeline (LLM program generation, running
 mypy, ty and pyright, CPython ground truth, the KB-filtered judge, and manual verification). The 12 "verified bugs" are
 the write-ups made in the later rounds with the full verification record (reduction, version matrix, duplicate search);
-9 of them are filed. The other 15 filed issues come from earlier runs of the same pipeline. States were read from the
+9 of them are filed. The other 15 filed issues were found by running the seed corpus through the deterministic judge and
+triage, before the mutation rounds and without an LLM. The seed-corpus runs already surfaced 15 reportable bugs without any model, and the LLM mutation and generation rounds added 9 more filed issues plus 3 unfiled drafts. States were read from the
 GitHub API on 2026-11-13 (full list with labels and linked PRs: [results/bugs.md](results/bugs.md)). Counts: Fixed (merged) = closed as completed with a merged linked PR.
 Fix PR open = open issue with an open linked PR. Open = open issue with no open linked PR (some have only PRs that
 were closed unmerged). Closed as intended = closed as not planned. None was closed as a duplicate.
