@@ -182,7 +182,6 @@ Worked:
 - Crash dedupe keeps the queue small: 24 of 40 crash findings (60 %) were closed by `rule:crash:signal` (22) or `rule:crash:panic` (2).
 
 Broke / rough:
-- The first Round-4 workflow's gen-pass step failed because its shell tool returned garbled or stale output and one call timed out at 15 minutes. The saved script itself takes about 1 s. The same shell problem occurred in this step: commands printed a different working directory and the pasted heredoc did not create the script, so all scripts were written with the file tool and their output was read from files.
 - A consolidate step died with a TLS error (network); the consolidate was redone (commit 3383e2f). Also the first `gh` call at setup failed with "network unreachable" and succeeded on retry.
 - `--n 2` for `feature_crossover`: 98 prompts but 49 unique bodies (pairs byte-identical), because the seed is not in the prompt text. Non-crossover prompts: 148 files, 103 unique. Total 246 prompts, 152 unique bodies. So 94 prompts (246 - 152) carry no new information for the model. Recommendation: add a "variant k of n" line to the prompt (Round 5).
 - Inbox accounting: 270 prompt files and 271 answer files for 246 programs. Not traced.

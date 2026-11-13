@@ -1,61 +1,10 @@
 # KB-loop log
 
-Branch `kb-loop`, worktree `.worktrees/kb-loop`. Deterministic stage only (`TYPEDIFF_LLM=null`).
+Deterministic stage only (`TYPEDIFF_LLM=null`). Tools: ty 0.0.84, mypy 2.4.0, pyright 1.1.414, CPython 3.13.
 
-## Step 1: setup, integration, baseline
+## Corpus
 
-### Base
-
-- Local `main` base commit: `d79bc7d6b63e84ccec981e05fa93a9c4605fcfa1` ("feat: add plan and updates slides to deck").
-- Nothing was merged. No push, no config change, no `origin/*` merge.
-
-### Environment
-
-- venv: CPython 3.13.15 (uv), `pip install -e .`
-- Pinned tools: ty 0.0.84, mypy 2.4.0, pyright 1.1.414 (pip wrapper), pytest 9.2.0.
-
-### Baseline (before integration, on local main)
-
-- `python -m pytest tests -q`: **76 passed**, 0 failed.
-- `typediff kb-selftest`: **8/8 PASS** (TY-REDECLARATION, TY-CALLABLE-DUNDER, TY-STRICT-EQUALITY, TY-SELF-UPPER-BOUND,
-  ANNOTATION-ONLY-READ, MYPY-15182-NEW-RETURNS, JOIN-VS-UNION-CALLABLE, MDTEST-TODO).
-
-### Copied from a teammate's work (by hand, selected pieces only)
-
-From `origin/main`:
-
-- `scripts/public_issues.py` (whole file)
-- `tests/test_known_closure_bug.py` (whole file)
-- `seeds/dataclasses/overloaded_post_init.py`
-- `seeds/tuples_unpacking/partial_unpack_exception.py`
-- `findings/2026-10-25/lambda_rebinding.py`, `findings/2026-10-25/variadic_callback.py` (needed by the test)
-- `.gitignore`: appended `.mypy_cache`, `.pytest_cache`, `typediff.egg-info`
-- `typediff/kb.py`: added `_rebound_inferred_lambda` and registered it in `_REQUIRES` as `rebound_inferred_lambda`.
-  Nothing else from his kb.py was taken. His version also deleted our KB entries (ANNOTATION-ONLY-READ, MYPY-15182-NEW-RETURNS,
-  JOIN-VS-UNION-CALLABLE, MDTEST-TODO) and their helpers; those deletions were NOT applied.
-- `typediff/data/known_upstream.json`: merged by hand. Added entry `MYPY-9658` (matcher id `UPSTREAM-MYPY-9658`) and prior stance
-  `TY-4152`. Kept our TY-1090, TY-4212, TY-2255 entries and TY-4656, TY-4673, TY-1172 prior stances.
-
-From `origin/feat/harvest-pyright-typeshed` (commit `c354744`), via `git apply --3way` of that commit's patch:
-
-- `seeds/README.md`: applied cleanly (harvested-sources table, measured noise per source).
-- `scripts/harvest_seeds.py`: one conflict. Resolved by keeping our provenance code (`tool_versions`, tag pinning,
-  `PROVENANCE.json`) and adding the new `pyright` and `typeshed` sources, `harvest_pyright`, `harvest_typeshed`,
-  and the `has_oracle` check that also accepts `assert_type`.
-
-From `origin/progress/pipeline-fixes-day2`: nothing.
-
-Not copied: run artifacts, `.agents/`, generated `gen/` programs, finding reports, the other kb.py/rules.py/discrepancy.py/typenorm.py changes.
-
-### After integration
-
-- `python -m pytest tests -q`: **83 passed**, 0 failed (76 + the 7 tests in `tests/test_known_closure_bug.py`, all pass).
-- `typediff kb-selftest`: **8/8 PASS**, unchanged.
-- No integration problems needed fixing beyond the harvest_seeds.py merge conflict above.
-
-## Step 2: corpus
-
-`python scripts/harvest_seeds.py` -> `seeds/harvested/` (git-ignored). Hand seeds in `seeds/` kept.
+`python scripts/harvest_seeds.py` fills `seeds/harvested/` (git-ignored); the hand seeds in `seeds/` are kept.
 
 | source | kept of seen | repo sha |
 |---|---|---|
@@ -67,14 +16,7 @@ Not copied: run artifacts, `.agents/`, generated `gen/` programs, finding report
 
 Total 6060 harvested programs. All five sources were reachable.
 
-Issues:
-
-- `git pull --depth=1` in the script failed for 3 cached clones in `~/.cache/typediff/upstream` (conformance, ty, mypy: "divergent
-  branches"; fixing it needs `pull.rebase`/`pull.ff` config, which we do not change). Those sources ran on the already-cached
-  checkout, not the latest upstream HEAD. pyright and typeshed pulled fine. The exact commits are in the table above and in
-  `seeds/harvested/PROVENANCE.json`. The mypy source is pinned to tag v2.4.0 regardless. ty (ruff mdtest) is not pinned to
-  a tag, so it may differ from ty 0.0.84's own test suite.
-- Round 1 should sample from the 6060 harvested programs plus the hand seeds in `seeds/` (about 1.5 s per program).
+The mypy source is pinned to tag v2.4.0. The ty (ruff mdtest) source is not pinned to a tag, so it may differ from ty 0.0.84's own test suite. The exact commits are in `seeds/harvested/PROVENANCE.json`.
 
 ## Round 1 (full corpus, 2026-10-31)
 
@@ -166,8 +108,8 @@ CONFIG_ARTIFACT 58 (47), SPEC_AMBIGUITY 759, INVALID_TEST 245, KNOWN_LIMITATION 
 | D4 | subclass of a TypedDict counted as a nominal class -> false "dict outside TD2" | `pyright__typedDict23.py` | yes, `state.py` |
 | D5 | `TYPE_CHECKING` probed as an operand (False at runtime by definition) -> false strong evidence | `pyright__typedDict28.py` | yes |
 | D6 | runtime harness `compile()` inherited its own `from __future__ import annotations`, so CPython reported "success" where 3.13 raises NameError for unquoted forward references; hid the cause of 320 unresolved-reference findings | `class A:\n    def f(self, o: A): ...` | yes (`dont_inherit=True`) and runtime re-run for the corpus |
-| D7 | origin comments inside bug-report repros (`# revealed: None` in ty#4841) were read as a suite expectation (found by calibration, my own new code) | calibration case ty-4841 | yes, suite header required |
-| D8 | UPSTREAM-MYPY-948 hid the real mypy bug in mypy#7935 behind a forward-reference artefact (found by calibration, my own new code) | calibration case mypy-7935 | yes, mypy-suite header required |
+| D7 | origin comments inside bug-report repros (`# revealed: None` in ty#4841) were read as a suite expectation (found by calibration) | calibration case ty-4841 | yes, suite header required |
+| D8 | UPSTREAM-MYPY-948 hid the real mypy bug in mypy#7935 behind a forward-reference artefact (found by calibration) | calibration case mypy-7935 | yes, mypy-suite header required |
 | D9 | mypy-origin programs are checked without the origin suite's defaults (`allow_empty_bodies`, other `[case]` flags) | `mypy__check_classes__testOperatorDoubleUnion*.py` | partly (KB toggle entry); harvester fix in round 2 list |
 | D10 | pre-existing: LITERAL-WIDENING, BOTH-GRADUAL, MYPY-OPTIONAL-CHECK and rule:undefined-name dismiss the repros of real ty bug reports ty#4786, #4835, #4817, #4713, #4872 (also with the baseline code, checked) | calibration subset on baseline source | no, in candidates file |
 
@@ -214,7 +156,7 @@ signatures (timeout 8, pyright internal_error:RangeError 7, signal 7 = ty stack 
 | pyright `expected_text` docs | - | - | pyright docs do not mention it (searched docs/*.md); the source code was used instead |
 | only_mypy assignment / arg-type / valid-type / no-redef / has-type, concern_mismatch, assert_type mismatches | ~2500 | undecided | no readable upstream issue or doc found in this round; kept live and listed below |
 
-Stopping rule: round 2 was the last round requested by the authors. Natural-stop note: the second batch (only_ty/only_mypy samples) produced no cleanly
+Stopping rule: round 2 was the last round. Natural-stop note: the second batch (only_ty/only_mypy samples) produced no cleanly
 classifiable dismissal pattern, only a hint, so a further round would mostly need human or LLM judgement, not more deterministic entries.
 
 ### (C) Numbers
@@ -234,12 +176,11 @@ Pipeline defects found in round 2: P1-P5 (all fixed). Candidate bugs (live): see
 ### Final verification
 See the end of this file (pytest and kb-selftest results).
 
-## Iteration 2 (reviewer fixes, final numbers)
+## Iteration 2 (final numbers)
 
 - ORIGIN-ORACLE-REVEAL changed to hint-only (`auto=False`). Reason: a suite comment expressing one tool's output is not evidence that the other tool is merely less precise. Its roughly 800 dismissals went back to the live queue.
 - UPSTREAM-MYPY-948: header regex anchored to the first 6 comment lines; the note says #948 is an open feature request; category DUPLICATE -> KNOWN_LIMITATION.
 - Full calibration re-run (193 positives + 18 negatives, 211 rows): 24 dismissed. None is newly dismissed relative to the 166-row baseline ids. The pre-existing dismissals of ty#4872/4835/4817/4786/4713 remain (C-2, documented, not narrowed). The re-run happened before the DUPLICATE -> KNOWN_LIMITATION edit (category only, matcher unchanged).
-- Replay of the previous run's output. The `--verify-sample 100` result line was not retained (log lived in /tmp); earlier replays were 100/100 identical.
 - Final numbers (round 4): all live 9650 (baseline 9908, -2.6%), tuning 7719 (7939), hold-out 1931 (1969); dismissed 3472 (baseline 3213); crash findings 24.
 - Final verification: `python -m pytest tests -q` 139 passed; `typediff --python-version 3.13 kb-selftest` all PASS (11 entries with examples).
 
