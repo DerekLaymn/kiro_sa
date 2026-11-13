@@ -52,7 +52,10 @@ def test_timeout_kills_grandchild(tmp_path):
     finally:
         pid = pid or _read_pid(pidfile)
         if pid is not None and _alive(pid):
-            os.kill(pid, signal.SIGKILL)
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except ProcessLookupError:  # exited between the check and the kill
+                pass
 
 
 def test_normal_exit_unchanged(tmp_path):
