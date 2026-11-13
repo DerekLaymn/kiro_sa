@@ -15,7 +15,7 @@
 #   JOBS=4                parallel jobs of the replay
 #   STRICT_PINS=1         stop if an installed tool differs from the pinned version (default: warn and go on)
 #   WORK=runs/reproduce   output directory (git-ignored)
-#   TYPEDIFF_TOOL_MEM_MB=4096   memory limit per mypy / ty process (default here: 4096; 0 = unlimited; Linux). One seed
+#   TYPEDIFF_TOOL_MEM_MB=2048   memory limit per mypy / ty process (default here: 2048; 0 = unlimited; Linux). One seed
 #                         program makes mypy use many GB; the limit kills it and records a mypy:signal-SIGKILL crash
 #                         finding (as in the reference numbers) without exhausting the machine.
 set -euo pipefail
@@ -27,7 +27,7 @@ command -v "$PY" >/dev/null 2>&1 || PY=python
 WORK="${WORK:-runs/reproduce}"
 TD=("$PY" -m typediff.cli)
 export TYPEDIFF_LLM=null   # the judge never needs an LLM; this also ignores a TYPEDIFF_LLM in .env
-export TYPEDIFF_TOOL_MEM_MB="${TYPEDIFF_TOOL_MEM_MB:-4096}"
+export TYPEDIFF_TOOL_MEM_MB="${TYPEDIFF_TOOL_MEM_MB:-2048}"
 
 echo "== 1/4 install and tool versions"
 "$PY" -c "import typediff" 2>/dev/null || { echo "typediff is not installed: run  pip install -e \".[tools,test]\" -c constraints.txt"; exit 1; }

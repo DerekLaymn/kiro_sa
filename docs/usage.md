@@ -74,7 +74,7 @@ Runs a seed corpus: every `*.py` file under `SEEDS`, recursively. A sub-folder n
 | `--max-llm-calls N` | `0` (no limit) | Stop after `N` uncached LLM calls. |
 
 ```bash
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/
 ```
 
 `TYPEDIFF_TOOL_MEM_MB` limits the memory of each mypy and ty process (default: unlimited). The seeds contain a mypy crash

@@ -62,7 +62,7 @@ expected and are not a defect of the checkout.
 ## 3. Judge the seeds (no LLM, no API key)
 
 ```bash
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce --audit-rate 0 --out runs/seeds-out seeds seeds/
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce --audit-rate 0 --out runs/seeds-out seeds seeds/
 ```
 
 **Memory.** `seeds/parents/d3p_crash_mypy_segv_recursive_tvt_default_alias.py` is a mypy crash reproducer. Without a limit,
@@ -70,8 +70,9 @@ mypy grows past 8 GB on it (until the 120 s checker timeout or the SIGSEGV), whi
 `TYPEDIFF_TOOL_MEM_MB` makes typediff watch the resident memory of each mypy and ty process (Linux only, read from
 `/proc`; pyright is not watched) and SIGKILL it above the limit. That is recorded as a `mypy:signal-SIGKILL` crash finding,
 which the reference numbers contain for this program. The default is unlimited;
-`reproduce.sh` and `replay_day10.sh` use 4096 unless you set the variable. Use 4096 or more for your own corpora and keep
-`--jobs` at 6 or fewer: the limit is per process, not for the whole run.
+`reproduce.sh` and `replay_day10.sh` use 2048 unless you set the variable. The other seed programs stay below
+250 MB per checker process, and the replay gives its reference numbers at 2048. For your own corpora raise the value if a legitimate program needs more, and keep `--jobs` at 6
+or fewer: the limit is per process, not for the whole run.
 
 `scripts/reproduce.sh` does this on a copy of `seeds/` without `seeds/harvested/` and prints the tier counts. Expected on
 the pinned versions:
@@ -104,7 +105,7 @@ Sources: the python/typing conformance tests, ty's mdtests (in the ruff reposito
 pyright's sample files and typeshed's `@tests/test_cases`. mypy and pyright are taken at the pinned tags (`v2.4.0`,
 `1.1.414`); ruff has no tag per ty release, so the ty tests come from its default branch. The commit of every source is
 written to `seeds/harvested/PROVENANCE.json`. Because upstream changes, a harvest made later gives a different corpus.
-Judge it with `TYPEDIFF_TOOL_MEM_MB=4096 scripts/kbloop_run.py OUT seeds/harvested --jobs 4 --progress OUT.log` (several thousand programs).
+Judge it with `TYPEDIFF_TOOL_MEM_MB=2048 scripts/kbloop_run.py OUT seeds/harvested --jobs 4 --progress OUT.log` (several thousand programs).
 `docs/kb-loop-split/` holds the fixed hold-out split used while the KB was tuned.
 
 ## 4. A generation round
@@ -150,7 +151,7 @@ with `python scripts/inbox_check.py runs/inbox`, then run the same command again
 **3. Judge, without an LLM.**
 
 ```bash
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
 python scripts/kbloop_stats.py runs/out
 typediff triage runs/out --top 20
 ```

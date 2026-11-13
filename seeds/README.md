@@ -12,7 +12,7 @@ Each program:
   headers) to give typediff a runtime oracle.
 
 ```bash
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 seeds seeds/   # judge all committed seeds (a few minutes)
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null typediff --python-version 3.13 seeds seeds/   # judge all committed seeds (a few minutes)
 typediff --llm ... --python-version 3.13 generate --from-seeds seeds/self_classmethods --n 5 --out-dir runs/gen
 python scripts/harvest_seeds.py                                         # + programs from upstream test suites (see below)
 ```
@@ -67,6 +67,6 @@ Try one source at a time, for example:
 
 ```bash
 python scripts/harvest_seeds.py --sources typeshed,pyright --out seeds/harvested/lib
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-pyright --no-reduce --out runs/typeshed seeds seeds/harvested/lib --iterations 60
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-pyright --no-reduce --out runs/typeshed seeds seeds/harvested/lib --iterations 60
 typediff triage runs/typeshed --top 15 --details
 ```

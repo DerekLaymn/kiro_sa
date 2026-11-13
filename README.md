@@ -91,7 +91,7 @@ program (a mypy crash reproducer) makes mypy use many GB. typediff kills such a 
 `reproduce.sh` sets the limit for you (Linux only).
 
 ```bash
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/    # a few minutes
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/    # a few minutes
 typediff triage typediff_out --top 15 --details                              # read the patterns
 ```
 
@@ -119,7 +119,7 @@ One generation round, then judge the new programs without an LLM:
 
 ```bash
 typediff --python-version 3.13 generate --from-seeds seeds/parents --n 2 --ops union_widen --out-dir runs/gen
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
 typediff triage runs/out --top 20
 ```
 

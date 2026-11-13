@@ -49,7 +49,7 @@ To generate with your own model: put a key in `.env` (see `.env.example`), then 
 ```bash
 TYPEDIFF_LLM=anthropic:<model> typediff --python-version 3.13 generate --from-seeds seeds/parents --n 2 \
     --ops union_widen --out-dir runs/gen
-TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
+TYPEDIFF_TOOL_MEM_MB=2048 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
 ```
 
 ## Replay the last round without an LLM

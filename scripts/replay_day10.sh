@@ -17,7 +17,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 PY="${PYTHON:-python3}"
 command -v "$PY" >/dev/null 2>&1 || PY=python
-export TYPEDIFF_TOOL_MEM_MB="${TYPEDIFF_TOOL_MEM_MB:-4096}"   # per mypy / ty process; 0 = unlimited (docs/reproducibility.md)
+export TYPEDIFF_TOOL_MEM_MB="${TYPEDIFF_TOOL_MEM_MB:-2048}"   # per mypy / ty process; 0 = unlimited (docs/reproducibility.md)
 JOBS="${JOBS:-4}"
 if [ "$JOBS" -gt 6 ]; then JOBS=6; fi
 WORK="${1:-runs/replay-day10}"
