@@ -57,8 +57,7 @@ it is not always stated to be a fix, and none of the PRs was written by the thre
 ### Contributors and accounts
 
 Authors of the project: Anay Gupta, Aarsh Verma, Ajay Meena. The issues were filed from three GitHub accounts:
-`DerekLaymn` (14 issues), `Choco-princess` (9) and `Pika-pikachu30` (1). This repository does not say which author
-uses which account.
+`DerekLaymn` (14 issues), `Choco-princess` (9) and `Pika-pikachu30` (1). 
 
 ## How it works
 
