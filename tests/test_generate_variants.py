@@ -32,7 +32,7 @@ def test_output_filenames_stable_across_runs(tmp_path):
     assert sorted(p.name for p in out.rglob("*.py")) == first
 
 
-# --- Day 5 1b: 'Variant k of N' line ---
+# --- Round 5 1b: 'Variant k of N' line ---
 def _prompts(tmp_path, n, ops=""):
     seeds = tmp_path / "seeds"
     seeds.mkdir(exist_ok=True)

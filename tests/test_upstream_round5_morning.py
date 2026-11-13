@@ -1,4 +1,4 @@
-"""Day 5 morning: upstream entries added or widened after reading the Day-5 reports (results/rounds/round-5-report.md).
+"""Round 5: upstream entries added or widened after reading the Round-5 reports (results/rounds/round-5-report.md).
 
 * TY-4148 / MYPY-22361  the issue program with a local: ``c = C(); c()``.
 * MYPY-21937-REVEAL     reveal_unpaired: mypy prints nothing in the final else of an ``is`` chain over a Flag.
@@ -42,7 +42,7 @@ LOCAL = 'class C:\n    __call__: "C"\n\n\ndef run() -> None:\n    c = C()\n    c
 
 
 def test_local_bound_to_instance_and_called_closes_both_crashes():
-    assert crash_id("ty", TY_SO, LOCAL) == "TY-4148"  # Day-5 seed 0bc328316b4c
+    assert crash_id("ty", TY_SO, LOCAL) == "TY-4148"  # Round-5 seed 0bc328316b4c
     assert crash_id("mypy", MYPY_SEGV, LOCAL) == "MYPY-22361"
 
 
@@ -128,7 +128,7 @@ SET_TY = [("invalid-argument-type", "Argument to function `use` is incorrect: Ex
 
 
 def test_mypy22339_covers_a_public_property_setter():
-    assert "UPSTREAM-MYPY-22339" in ids(SETTER, "use(hf)", K.ONLY_TY, ty=SET_TY)  # Day-5 seed a660052c7821
+    assert "UPSTREAM-MYPY-22339" in ids(SETTER, "use(hf)", K.ONLY_TY, ty=SET_TY)  # Round-5 seed a660052c7821
 
 
 def test_mypy22339_setter_controls_stay_live():

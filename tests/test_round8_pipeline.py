@@ -1,4 +1,4 @@
-"""Day 8 phase 1: KB matchers for known duplicates and display noise, and the runtime-evidence fixes.
+"""Round 8 phase 1: KB matchers for known duplicates and display noise, and the runtime-evidence fixes.
 
 KB (every positive has controls that must stay live):
 
@@ -70,7 +70,7 @@ def rev_ids(body: str, stmt="reveal_type(t.base)"):
 
 
 @pytest.mark.parametrize("body", [
-    "assert t.base == 4\nt.bumped = 3\nassert t.base == 7\nt.ro = 1",  # the Day-7 mutant
+    "assert t.base == 4\nt.bumped = 3\nassert t.base == 7\nt.ro = 1",  # the Round-7 mutant
     "if t.base != 4:\n    raise ValueError\nt.bumped = 3\nif t.base != 7:\n    raise ValueError\nt.ro = 1",
     "assert t.base == 4\nu = t\nu.bumped = 3\nlocal = t.base\nt.ro = 1",  # through an alias of the receiver
     "assert t.base == 4\ntry:\n    t.bumped = 3\n    assert t.base == 7\n    t.ro = 1\nexcept AttributeError:\n    pass",
@@ -94,7 +94,7 @@ def test_descriptor_store_controls_stay_live(name, body):
 
 
 def test_descriptor_store_also_closes_the_stale_reveal_row():
-    # c3r.py of Day 7: ty reveals Literal[4] for t.base after the descriptor store, as after a plain method call
+    # c3r.py of Round 7: ty reveals Literal[4] for t.base after the descriptor store, as after a plain method call
     assert rev_ids("assert t.base == 4\nt.bumped = 3\nreveal_type(t.base)") == {"UPSTREAM-TY-2792"}
     assert not rev_ids("assert t.base == 4\nt.quiet = 3\nreveal_type(t.base)")
     assert not rev_ids("assert t.base == 4\nt.other = 3\nreveal_type(t.base)")

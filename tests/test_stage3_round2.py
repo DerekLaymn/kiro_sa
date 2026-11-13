@@ -1,4 +1,4 @@
-"""Stage 3 round 2 (Day 2, results/rounds/round-2-report.md): review fixes for round 1.
+"""Stage 3 round 2 (Round 2, results/rounds/round-2-report.md): review fixes for round 1.
 
 * ASSERT-TYPE-LITERAL-RETENTION: no Literal[True]/Literal[False] (constant-fold hole) and pyright must be silent or agree.
 * ANNOTATION-ONLY-READ: recorded as a tracked mypy known limitation.
@@ -123,7 +123,7 @@ def _fold_pipeline():
 
 @needs_tools
 def test_constant_fold_program_is_closed_by_exactly_the_ty_2171_assert_entry():
-    # Day 7 policy: this program (ty#2171, open) is a known duplicate. It was "must stay live" until Day 6. Exactly one
+    # Round 7 policy: this program (ty#2171, open) is a known duplicate. It was "must stay live" until Round 6. Exactly one
     # entry closes it, and the literal-retention entry above must still NOT be the one (it excludes Literal[True/False]).
     rep = _fold_pipeline().run_source(FOLD_PROGRAM.read_text(), "fold-hole")
     assert rep.findings, "ty's Literal[False] vs CPython's True must still be seen by the pipeline"

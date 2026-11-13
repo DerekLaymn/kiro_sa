@@ -1,7 +1,7 @@
-"""Day 10 phase 5 (morning decisions): KB entry ``MYPY-8595-METACLASS-CALL`` (matcher ``m_metaclass_call_return``).
+"""Round 10 phase 5: KB entry ``MYPY-8595-METACLASS-CALL`` (matcher ``m_metaclass_call_return``).
 
 mypy ignores the return annotation of a metaclass ``__call__`` (python/mypy#8595, closed, "unlikely this will be ever
-supported"); ty, pyright and CPython use it. Seen on Day 9 (1 live finding) and Day 10 (4 live findings in 2 programs).
+supported"); ty, pyright and CPython use it. Seen on Round 9 (1 live finding) and Round 10 (4 live findings in 2 programs).
 Every positive has near-miss controls that must stay live."""
 from __future__ import annotations
 
@@ -211,7 +211,7 @@ def test_entry_is_a_non_runtime_overriding_auto_dismissal_without_selftest_examp
 
 
 # ------------------------------------------------------------------------------------------------ real tools
-# the shape of the two Day-10 programs (gen1_37b4e5f8 and the call_metaclass mutant): a reveal, an assert_type, a call
+# the shape of the two Round-10 programs (gen1_37b4e5f8 and the call_metaclass mutant): a reveal, an assert_type, a call
 # through type[Box] whose result is returned as Box
 REAL = '''\
 from typing import assert_type, reveal_type
@@ -256,7 +256,7 @@ def _pipeline():
 def test_real_tools_metaclass_call_findings_are_dismissed_by_the_entry():
     from typediff.models import Tier
 
-    rep = _pipeline().run_source(REAL, "day10-metaclass-call")
+    rep = _pipeline().run_source(REAL, "round10-metaclass-call")
     closed = [f for f in rep.findings if f.decided_by == f"kb:{EID}"]
     assert closed and all(f.tier == Tier.DISMISSED and f.dismissal.value == "KNOWN_LIMITATION" for f in closed)
     assert not [f for f in rep.findings if f.tier != Tier.DISMISSED], [(f.discrepancy_id, f.decided_by, f.tier) for f in rep.findings]
@@ -264,5 +264,5 @@ def test_real_tools_metaclass_call_findings_are_dismissed_by_the_entry():
 
 @needs_tools
 def test_real_tools_any_annotated_metaclass_call_is_not_closed_by_the_entry():
-    rep = _pipeline().run_source(REAL_ANY, "day10-metaclass-call-any")
+    rep = _pipeline().run_source(REAL_ANY, "round10-metaclass-call-any")
     assert not [f for f in rep.findings if f.decided_by == f"kb:{EID}"]

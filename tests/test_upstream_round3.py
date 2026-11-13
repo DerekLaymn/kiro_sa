@@ -1,4 +1,4 @@
-"""Day 3: team-filed upstream issues recorded in known_upstream.json (crash entries, discrepancy entries, priors).
+"""Round 3: team-filed upstream issues recorded in known_upstream.json (crash entries, discrepancy entries, priors).
 
 Reproducers are real programs under tests/data/upstream_round3 (copied from the crash25 repros, the xfer/var probes and
 the 2026-10-27 LLM run); each positive has controls that must stay live."""
@@ -88,7 +88,7 @@ def test_controls_never_match_even_with_a_matching_signature(name, tool, sig):
 
 
 def test_ty_overflow_on_A1_is_ty4148_and_mypy_crash_is_22361():
-    # Day 3 left the ty crash on A1 unfiled and live; Day 4 added TY-4148 (astral-sh/ty#4148, the same two-line program)
+    # Round 3 left the ty crash on A1 unfiled and live; Round 4 added TY-4148 (astral-sh/ty#4148, the same two-line program)
     assert crashes_as("ty", TY_SO, "A1") == "TY-4148"
     assert crashes_as("mypy", MYPY_SEGV, "A1") == "MYPY-22361"  # mypy's crash on the same program is #22361
 
@@ -148,7 +148,7 @@ def test_pipeline_dismisses_matching_crash_with_url_in_note():
 
 
 def test_pipeline_unmatched_crash_stays_confirmed():
-    # a ty stack overflow no entry covers (protocol flatten, not filed upstream as of Day 4)
+    # a ty stack overflow no entry covers (protocol flatten, not filed upstream as of Round 4)
     unfiled = (DATA.parent / "upstream_round4" / "ty4148_control_protocol_flatten_new_bug.py").read_text()
     rep = _judge(unfiled, Crash(Tool.TY, "signal", TY_SO, "", -6))
     f = rep.findings[0]
@@ -366,7 +366,7 @@ def test_prior_ty4656_unchanged_and_not_duplicated():
 # ------------------------------------------------------------------------------------------------ data integrity
 RAW = json.loads(PATH.read_text())
 ALLOWED_KINDS = {"only_mypy", "only_ty", "reveal_mismatch", "reveal_unpaired", "concern_mismatch", "crash",
-                 "only_pyright"}  # only_pyright: Day 8 (kb._upstream_entries matches pyright's diagnostics)
+                 "only_pyright"}  # only_pyright: Round 8 (kb._upstream_entries matches pyright's diagnostics)
 
 
 def test_ids_unique_and_urls_github():

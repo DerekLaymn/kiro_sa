@@ -1,4 +1,4 @@
-"""Day 5 1d: inbox accounting. Day 4 ended with 270 prompts and 271 answers for 246 programs: 246 first prompts + 24
+"""Round 5 1d: inbox accounting. Round 4 ended with 270 prompts and 271 answers for 246 programs: 246 first prompts + 24
 preflight-retry prompts = 270, and one answer written under a key with a character missing."""
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def test_clean_inbox(tmp_path):
 
 
 def test_mistyped_answer_key_is_an_orphan_and_its_prompt_stays_pending(tmp_path):
-    bad = "e6673866643ecc8"  # the Day-4 key: one '8' dropped
+    bad = "e6673866643ecc8"  # the Round-4 key: one '8' dropped
     s = _inbox(tmp_path, [K1, K2], [bad, K2])
     assert s["prompts"] == 2 and s["answers"] == 2 and s["answered"] == 1
     assert s["pending"] == [K1]
@@ -32,7 +32,7 @@ def test_mistyped_answer_key_is_an_orphan_and_its_prompt_stays_pending(tmp_path)
 
 
 def test_more_answers_than_prompts_is_visible(tmp_path):
-    # Day-4 shape: every prompt answered (the late right-key answer) and the stray wrong-key answer still lying around
+    # Round-4 shape: every prompt answered (the late right-key answer) and the stray wrong-key answer still lying around
     bad = "e6673866643ecc8"
     s = _inbox(tmp_path, [K1, K2, K3], [K1, K2, K3, bad])
     assert (s["prompts"], s["answers"]) == (3, 4)

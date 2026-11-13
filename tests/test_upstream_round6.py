@@ -1,8 +1,8 @@
-"""Day 6 morning: upstream entries added after reading the Day-6 reports (results/rounds/round-6-report.md).
+"""Round 6: upstream entries added after reading the Round-6 reports (results/rounds/round-6-report.md).
 
 * TY-4756  mypy reports a method without ``self``; ty is silent (open lint request). A dismissal (DUPLICATE).
-* TY-2171  ty folds comparisons of a tuple subclass that overrides a comparison dunder. A PRIOR STANCE (Day 6); since
-           Day 7 the narrow comparison-dunder shape is also closed by the dismissals TY-2171 / TY-2171-ASSERT
+* TY-2171  ty folds comparisons of a tuple subclass that overrides a comparison dunder. A PRIOR STANCE (Round 6); since
+           Round 7 the narrow comparison-dunder shape is also closed by the dismissals TY-2171 / TY-2171-ASSERT
            (tests/test_upstream_round7.py), the prior stance covers the rest (``__len__`` / ``__bool__``).
 
 Every positive has controls that must stay live."""
@@ -70,7 +70,7 @@ def test_tuple_subclass_override_has_prior_stance_and_the_comparison_shape_is_cl
     assert "TY-2171-PRIOR" in priors(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT)
     named = TUPLE.replace("class Restricted(tuple[Literal[1], Literal[2]]):", "class Restricted(NamedTuple):\n    a: int\n")
     assert "TY-2171-PRIOR" in priors(named, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY)
-    # Day 7 decision: the narrow comparison-dunder shape is ALSO closed by the dismissals TY-2171 / TY-2171-ASSERT
+    # Round 7 decision: the narrow comparison-dunder shape is ALSO closed by the dismissals TY-2171 / TY-2171-ASSERT
     # (tests/test_upstream_round7.py); the prior stance stays for the shapes those dismissals do not match
     assert [i for i in ids(TUPLE, "reveal_type(r)", K.REVEAL_MISMATCH, mypy=T_MYPY, ty=T_TY) if "2171" in i] == ["UPSTREAM-TY-2171"]
     assert [i for i in ids(TUPLE, "assert_type(r, bool)", K.ONLY_TY, ty=T_ASSERT) if "2171" in i] == ["UPSTREAM-TY-2171-ASSERT"]

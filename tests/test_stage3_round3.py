@@ -85,7 +85,7 @@ STALE_ALIAS_PROGRAM = ROOT / "calibration" / "known_duplicates" / "mypy_stale_al
 
 @needs_tools
 def test_stale_alias_program_is_closed_by_exactly_the_ty_2792_entry():
-    # Day 7 policy: this program (ty#2792, open) is a known duplicate. It was "must stay live" until Day 6. The
+    # Round 7 policy: this program (ty#2792, open) is a known duplicate. It was "must stay live" until Round 6. The
     # stale-alias guard of MYPY-13807-ALIASED-CONDITIONS still rejects it, so exactly UPSTREAM-TY-2792 closes it.
     rep = pipeline().run_source(STALE_ALIAS_PROGRAM.read_text(), "stale-alias")
     assert rep.findings
@@ -307,7 +307,7 @@ def test_opt_in_hint_never_closes_a_finding():
 
 
 def test_known_duplicate_programs_moved_out_of_must_stay_live():
-    # Day 7 decision: the two programs are known duplicates of open ty issues, closed by named entries (tests above and in
+    # Round 7 decision: the two programs are known duplicates of open ty issues, closed by named entries (tests above and in
     # test_stage3_round2.py). must_stay_live keeps its loader and classification (tests above) but holds no program now.
     assert must_stay_live(ROOT / "calibration" / "must_stay_live") == []
     names = {p.name for p in (ROOT / "calibration" / "known_duplicates").glob("*.py")}

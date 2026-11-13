@@ -1,4 +1,4 @@
-"""Day 5 step 1: pipeline fixes.
+"""Round 5 step 1: pipeline fixes.
 
 1a  a crash is auto-closed only by a known_upstream crash entry, and the closing reference is recorded (``closed_by``);
     a same-signature record in the dataset no longer closes a crash.
@@ -57,7 +57,7 @@ def test_c1_shapes_close_with_both_entries(name):
     assert closes("mypy", MYPY_SEGV, s) == "MYPY-22361"
 
 
-def test_mutual_pair_from_day4_data_now_matches():
+def test_mutual_pair_from_round4_data_now_matches():
     s = src("ty4148_mutual_pair", DATA4)
     assert closes("ty", TY_SO, s) == "TY-4148"
     assert closes("mypy", MYPY_SEGV, s) == "MYPY-22361"

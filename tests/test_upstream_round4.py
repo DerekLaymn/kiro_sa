@@ -1,9 +1,9 @@
-"""Day 4 morning: two entries added to known_upstream.json after the Day-3 verification (results/bugs.md).
+"""Round 4: two entries added to known_upstream.json after the Round-3 verification (results/bugs.md).
 
 * TY-4148 (crash)      astral-sh/ty#4148, ty stack overflow on ``__call__`` declared as an attribute of its own type.
 * TY-876-ARGTYPE       astral-sh/ty#876 Flag item, the mypy-only [arg-type] row.
 
-Reproducers live in tests/data/upstream_round4 (two Day-3 generated programs, the Day-3 Flag program, and two programs
+Reproducers live in tests/data/upstream_round4 (two Round-3 generated programs, the Round-3 Flag program, and two programs
 that must stay live); every positive has controls."""
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ def test_ty4148_exact_issue_program():
     assert crash_id("ty", TY_SO, 'class C:\n    __call__: "C"\n\n\ndef f(x: C) -> None:\n    x()\n') == "TY-4148"
 
 
-def test_ty4148_day3_programs():
+def test_ty4148_round3_programs():
     assert crash_id("ty", TY_SO, src("ty4148_call_self_round3")) == "TY-4148"
     assert crash_id("ty", TY_SO, src("ty4148_self_union_round3")) == "TY-4148"
 
@@ -72,7 +72,7 @@ def test_ty4148_needs_the_call_and_the_self_typed_attribute():
 def test_ty4148_does_not_swallow_other_stack_overflows():
     # a NEW ty bug (protocol flatten, d4v C2) with the same signature must stay live
     assert crash_id("ty", TY_SO, src("ty4148_control_protocol_flatten_new_bug")) is None
-    # (the mutually recursive pair is the same root cause and has matched TY-4148 since Day 5, see test_pipeline_round5.py)
+    # (the mutually recursive pair is the same root cause and has matched TY-4148 since Round 5, see test_pipeline_round5.py)
     # the older entries still win on their own programs
     assert crash_id("ty", TY_SO, src("ty_TB_protocol_stack_overflow", DATA3)) == "TY-4882"
     assert crash_id("ty", TY_SO, src("D7", DATA3)) == "TY-4900"
@@ -110,7 +110,7 @@ FLAG = ("import enum\nfrom typing import Literal\n\n\nclass F(enum.Flag):\n    R
         "def only_r(x: Literal[F.R]) -> int:\n    return 1\n\n\ncombined = F.R | F.W\nonly_r(combined)\n")
 
 
-def test_ty876_argtype_closes_the_day3_program():
+def test_ty876_argtype_closes_the_round3_program():
     s = src("ty876_argtype_round3")
     assert "UPSTREAM-TY-876-ARGTYPE" in ids(s, "assert only_r(combined) == 1")
 

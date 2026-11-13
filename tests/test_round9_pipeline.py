@@ -1,9 +1,9 @@
-"""Day 9 phase 1: pipeline changes (results/rounds/round-9-report.md).
+"""Round 9 phase 1: pipeline changes (results/rounds/round-9-report.md).
 
 * W1  a quoted ``'Self'`` annotation is read as ``Self`` (`selfparam.mentions_self`), so TY-SELF-UPPER-BOUND and its
-      spec-desugar probe cover ``def add(self, c: 'Self')`` (Day-8 weakness: 2 live findings of ``3a63c673``, a ty#4656
+      spec-desugar probe cover ``def add(self, c: 'Self')`` (Round-8 weakness: 2 live findings of ``3a63c673``, a ty#4656
       duplicate).
-* W2  TY-2792-READONLY also covers a statement in a function that is DEFINED after the stale-narrowing chain (Day-8
+* W2  TY-2792-READONLY also covers a statement in a function that is DEFINED after the stale-narrowing chain (Round-8
       weakness: D8-2, ``try_write(c)`` below module-level asserts around ``c.bump()``).
 * Operators with their own instruction (`typediff/operators.py`) and the two new feature areas.
 

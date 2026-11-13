@@ -1,7 +1,7 @@
-"""Day 10 phase 1: pipeline fix for the first weakness of results/rounds/round-9-report.md section 7.
+"""Round 10 phase 1: pipeline fix for the first weakness of results/rounds/round-9-report.md section 7.
 
 * W1  ty's ``warning[deprecated]`` on ``@contextmanager`` with ``-> Iterator[..]`` (and ``@asynccontextmanager`` with
-      ``-> AsyncIterator[..]``) was 25 of the 224 live Day-9 findings. The stub marks the Iterator overload deprecated; the
+      ``-> AsyncIterator[..]``) was 25 of the 224 live Round-9 findings. The stub marks the Iterator overload deprecated; the
       stubs of mypy 2.4.0 do not, so the difference is the typeshed snapshot. KB entry
       ``TY-CONTEXTMANAGER-ITERATOR-DEPRECATED`` (matcher ``m_contextmanager_iterator_deprecated``).
 
@@ -28,7 +28,7 @@ ACM_MSG = ("The overload of `asynccontextmanager` is deprecated: Annotating the 
 
 
 def hit(source: str, deco_line_text: str, msgs=(CM_MSG,), *, kind=K.ONLY_TY, line_offset=0, extra=(), code="deprecated") -> bool:
-    """Does the entry fire? ``deco_line_text`` is the decorator line ty reports on (as in the real Day-9 rows, where the
+    """Does the entry fire? ``deco_line_text`` is the decorator line ty reports on (as in the real Round-9 rows, where the
     discrepancy is anchored at the decorator and its statement is the ``def`` below it)."""
     ln = next(i for i, x in enumerate(source.splitlines(), 1) if deco_line_text in x) + line_offset
     ty = [Diagnostic(Tool.TY, ln, 2, Severity.WARNING, code, m) for m in msgs]
@@ -204,7 +204,7 @@ def _pipeline():
 def test_real_tools_iterator_overload_warning_is_dismissed(src):
     from typediff.models import Tier
 
-    rep = _pipeline().run_source(src, "day10-cm-iterator")
+    rep = _pipeline().run_source(src, "round10-cm-iterator")
     dep = [f for f in rep.findings if f.decided_by == f"kb:{EID}"]
     assert dep and all(f.tier == Tier.DISMISSED and f.dismissal.value == "CONFIG_ARTIFACT" for f in dep)
     assert not [f for f in rep.findings if f.tier != Tier.DISMISSED], [(f.decided_by, f.tier) for f in rep.findings]
@@ -212,5 +212,5 @@ def test_real_tools_iterator_overload_warning_is_dismissed(src):
 
 @needs_tools
 def test_real_tools_other_deprecated_diagnostic_is_not_closed_by_this_entry():
-    rep = _pipeline().run_source(REAL_OTHER, "day10-other-deprecated")
+    rep = _pipeline().run_source(REAL_OTHER, "round10-other-deprecated")
     assert not [f for f in rep.findings if f.decided_by == f"kb:{EID}"]

@@ -1,4 +1,4 @@
-"""Day 7: dismissals for the known-duplicate shapes that the must-stay-live policy kept open until Day 6.
+"""Round 7: dismissals for the known-duplicate shapes that the must-stay-live policy kept open until Round 6.
 
 * TY-2171, TY-2171-ASSERT   ty folds a comparison with an instance of a tuple / NamedTuple subclass that defines the
                             dunder the comparison calls (open ty#2171, design in the closed ty#2140).
@@ -153,7 +153,7 @@ def ro_ids(body: str, stmt="t.ro = 1", mypy=RO_MYPY, kind=K.ONLY_MYPY):
 
 
 @pytest.mark.parametrize("body", [
-    "assert t.ro == 4\nt.bump()\nassert t.ro == 5\nt.ro = 1",  # contradictory asserts (the Day-6 programs)
+    "assert t.ro == 4\nt.bump()\nassert t.ro == 5\nt.ro = 1",  # contradictory asserts (the Round-6 programs)
     "if t.n != 8:\n    raise ValueError\nt.bump()\nif t.n != 9:\n    raise ValueError\nt.ro = 1",
     "assert t.ro == 3\nt.bump()\nlocal = t.ro\nt.ro = 1",
     "assert t.ro == 3\nu = t\nu.bump()\nlocal = t.ro\nt.ro = 1",

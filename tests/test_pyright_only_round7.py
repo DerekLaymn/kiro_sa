@@ -1,4 +1,4 @@
-"""Day 7: `only_pyright` discrepancy kind (pyright errors that mypy and ty both miss, with CPython evidence).
+"""Round 7: `only_pyright` discrepancy kind (pyright errors that mypy and ty both miss, with CPython evidence).
 
 Opt-in (``PipelineConfig.pyright_only`` / ``--pyright-only``); with the switch off nothing changes."""
 
