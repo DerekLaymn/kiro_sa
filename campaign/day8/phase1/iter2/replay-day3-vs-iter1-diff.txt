@@ -1,4 +1,0 @@
-
-findings compared: 68; changed: 0
-new decided_by: {}
-old decided_by: {}

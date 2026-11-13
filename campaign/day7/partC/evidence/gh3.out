@@ -1,73 +1,0 @@
-######## pyright#9283
-RangeError: Maximum call stack size exceeded CLOSED 2024-10-30T01:14:54Z
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 4
-   retainTypeAlias 0
-Hello!  I am getting a `Maximum call stack size exceeded` when using rather a simple script with `xlsxwriter`.  Here is reproducible minimal example (`callstack-error.py`) ```python from xlsxwriter import Workbook  def foo(wb: Workbook) -> None:     wb = Workbook("temp.xlsx")     ws = wb.add_workshe
-######## pyright#9740
-Stack overflow found in Pylance telemetry CLOSED 2025-01-29T03:34:35Z
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 2
-   retainTypeAlias 0
-We're seeing this on about 50 machines:  RangeError: Maximum call stack size exceeded</br>at classType <a href='https://github.com/microsoft/pyrx/blob/8c54d5178ea663c140f861f7c2a4260ded56f2a7/packages/pyright/packages/pyright-internal/src/analyzer/typeUtils.ts#L1693'>pyright-internal/src/analyzer/ty
-######## pyright#6178
-Error telemetry: Max call stack size exceeded. CLOSED 2023-11-01T03:26:06Z
-   __get__ 0
-   descriptor 0
-   decorat 2
-   typeUtils 0
-   retainTypeAlias 0
-Seeing validateFunctionArgumentTypes in most traces. Couple of hundred machines a week. Don't have a repro. Seeing it on Pylance 2023.10.20.  ` RangeError: Maximum call stack size exceeded at evaluator /src/analyzer/constraintSolver.ts:77:4 at evaluatorInterface /src/analyzer/typeEvaluator.ts:2
-######## pyright#6783
-Stack overflow in `typeEvaluator` CLOSED 2023-12-20T08:21:04Z
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 50
-   retainTypeAlias 0
-We've got 12K+ hits of this on the latest stable Pylance (2023.12.1) and 250+ on latest prerelease (2023.12.100). The machine count isn't particularly high for what that's worth.   RangeError: Maximum call stack size exceeded</br>at classType <a href='https://github.com/microsoft/pyrx/blob/7d681c
-######## pyright#5139
-RangeError: Maximum call stack size exceeded when using exclude config CLOSED 2023-05-24T00:22:31Z
-   __get__ 0
-   descriptor 0
-   decorat 1
-   typeUtils 4
-   retainTypeAlias 0
-Moved from: https://github.com/microsoft/pyright/issues/5129#issuecomment-1553374832  ``` An internal error occurred while type checking file "/home/bellini/dev/strawberry-django-plus/.venv/lib/python3.11/site-packages/_pytest/main.py": Error: Debug Failure. False expression.     at a.lock (/hom
-######## pyright#4798
-Recursion error - RangeError: Maximum call stack size exceeded CLOSED 2023-03-22T04:56:39Z
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 16
-   retainTypeAlias 0
-Note: if you are reporting a wrong signature of a function or a class in the standard library, then the typeshed tracker is better suited for this report: https://github.com/python/typeshed/issues.  **Describe the bug** Pyright crashes when evaluated on the attached class.   <details>   <summ
-######## pyright#5090
-Stack overflow found in telemetry CLOSED 2023-05-10T23:01:07Z
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 2
-   retainTypeAlias 0
-No known repro. We've been seeing this one since 2023.3.20. A couple hundred hits per week.  RangeError: Maximum call stack size exceeded</br>    at push <a href='https://github.com/microsoft/pyrx/blob/32cae6caa5aa38774b909cfa4e26c89ccba940c4/packages/pyright/packages/pyright-internal/src/analyzer
-######## pyright#11961
-Crash (RangeError: Maximum call stack size exceeded) when a constructor method is annotated with its OPEN None
-   __get__ 0
-   descriptor 0
-   decorat 0
-   typeUtils 0
-   retainTypeAlias 0
-**Describe the bug**  Pyright's command-line tool exits with status 2 and prints `RangeError: Maximum call stack size exceeded` when a class declares `__new__` or `__init__` (or a metaclass `__call__`) with a type that refers back to the same class, and the class is then instantiated.  Expected beha
-######## ty :: except
-[]
-
-######## ty :: tuple unpacking
-[]
-
-######## ty :: partially
-[{"number":3009,"state":"closed","title":"stop treating `Unknown` as \"no mapping\" in `Specialization::combine`"}]
-

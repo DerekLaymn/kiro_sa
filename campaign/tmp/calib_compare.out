@@ -1,8 +1,0 @@
-8
-==> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/s3-r1-calib-before-0.txt <==
-neg-unreachable_reveal dismissed ['kb:MYPY-SKIPS-UNREACHABLE']
-exit=0
-
-==> /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/campaign/s3-r1-calib-after-0.txt <==
-neg-unreachable_reveal dismissed ['kb:MYPY-SKIPS-UNREACHABLE']
-exit=0

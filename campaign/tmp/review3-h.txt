@@ -1,9 +1,0 @@
-usage: kbloop_stats.py [-h] [--split SPLIT] [--json JSON] run
-
-positional arguments:
-  run
-
-options:
-  -h, --help     show this help message and exit
-  --split SPLIT
-  --json JSON

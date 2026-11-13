@@ -1,5 +1,0 @@
-issue|python/mypy|2113
-issue|astral-sh/ty|491
-issue|astral-sh/ty|4570
-issue|python/mypy|20386
-issue|astral-sh/ty|4054

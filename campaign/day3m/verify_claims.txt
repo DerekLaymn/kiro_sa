@@ -1,7 +1,0 @@
-live strong: 625 NameError/UnboundLocalError in strong evidence: 195 'not subscriptable': 18
-('seed-0a9ab22514ce', 'pyright__matchSequence2.py', 'ty', 'ty:timeout', ['ty:timeout'])
-('seed-23cf4835dc66', 'ty__narrow__type_guards__49.py', 'ty', 'ty:timeout', ['ty:timeout'])
-('seed-50a85e2bdd8d', 'ty__with__async__43.py', 'ty', 'ty:signal-SIGABRT:stack-overflow', ['ty:signal-SIGABRT:stack-overflow'])
-('seed-918936c5da72', 'ty__generics__pep695__aliases__17.py', 'mypy', 'mypy:signal-SIGSEGV', ['mypy:signal-SIGSEGV'])
-('seed-d75b50d44f0b', 'pyright__typeVarDefaultTypeAlias2.py', 'mypy', 'mypy:signal-SIGSEGV', ['mypy:signal-SIGSEGV'])
-('seed-dc88d8cc6015', 'ty__annotations__union__11.py', 'ty', 'ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/salsa-0.28.5/src/function/execute.rs:751:9', ['ty:panic@/root/.cargo/registry/src/index.crates.io-1949cf8c6'])

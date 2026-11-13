@@ -1,8 +1,0 @@
-before: 41 files in runs/hits, 19 in runs/hits-dropped
-retired d3p_generics_contravariant_recursive_base
-after: 40 files in runs/hits, 20 in runs/hits-dropped
-s3r1_ty_type_equality_narrowing_any.py                                 narrowing_user           preflight=["WARN: function 'unknown_equality' is never called - CPython ", "WARN: function 'any_equality' is never called - CPython cann", "WARN: function 'unknown_inequality' is never called - CPytho", "WARN: function 'any_inequality' is never called - CPython ca", "WARN: function 'known_arguments' is never called - CPython c", "WARN: function 'aliased_builtin' is never called - CPython c", "WARN: function 'shadowed_builtin' is never called - CPython ", "WARN: function 'dynamic_class' is never called - CPython can", "WARN: function 'reverse_equality' is never called - CPython ", "WARN: function 'custom_compared_metaclass' is never called -", "WARN: function 'custom_reference_metaclass' is never called "] runtime=ok
-40 files; 0 with problems
-
-near-duplicate pairs (difflib ratio >= 0.8):
-tracked files under runs: 8

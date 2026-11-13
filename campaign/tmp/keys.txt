@@ -1,4 +1,0 @@
-['case_id', 'source', 'target_python', 'tool_versions', 'flags', 'diagnostics', 'runtime', 'crashes', 'discrepancies', 'findings', 'validity', 'strategy', 'llm_calls', 'notes']
-{'case_id': ('str', 'seed-005385e1b2cb'), 'target_python': ('str', '3.13'), 'tool_versions': ('dict', ['mypy', 'ty', 'pyright', 'runtime']), 'flags': ('dict', ['mypy', 'ty', 'pyright']), 'diagnostics': ('dict', ['mypy', 'ty', 'pyright']), 'runtime': ('dict', ['status', 'exc_type', 'exc_message', 'exc_line', 'frames', 'executed_lines', 'probes', 'stdout', 'stderr', 'python_version']), 'crashes': ('list', 0), 'discrepancies': ('list', 0), 'findings': ('list', 0), 'validity': ('dict', ['valid', 'problems', 'runtime_usable']), 'strategy': ('NoneType', None), 'llm_calls': ('int', 0), 'notes': ('list', 4)}
-no discrepancies
-no findings

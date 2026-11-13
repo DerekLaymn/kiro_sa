@@ -1,6 +1,0 @@
-findings 8 programs 6
-4 ('tainted', 'reveal_mismatch', 'no-raise') ty__type_properties__constraints__19.py:L5 undef=['Any', 'RecursiveInvariant', 'Top']
-1 ('direct', 'only_mypy', 'no-raise') pyright__tupleComparisonResource_growing_alias_ge.py:L5 undef=['T']
-1 ('tainted', 'only_mypy', 'no-raise') ty__type_properties__constraints__19.py:L5 undef=['Any', 'RecursiveInvariant', 'Top']
-1 ('direct', 'only_ty', 'raised') mypy__check_inline_config__testInlineErrorCodesArentRuinedByOthersBaseCase.py:L4 undef=['a']
-1 ('direct', 'concern_mismatch', 'no-raise') mypy__check_python312__testPEP695UsingTypeVariableInOwnBoundOrConstraint.py:L4 undef=['S']

@@ -1,5 +1,0 @@
-replayed 250 reports into runs/day10/replay/day5
-MISMATCH seed-6c63c46a50cf [('reveal_mismatch', 'D1', 'review', None, 'gate')] [('crash', 'C1', 'confirmed', None, 'rule:crash:panic')]
-MISMATCH seed-0aa9c67819ca [] [('only_mypy', 'D1', 'dismissed', 'DUPLICATE', 'kb:UPSTREAM-TY-4884'), ('only_mypy', 'D2', 'dismissed', 'DUPLICATE', 'kb:UPSTREAM-TY-4884'), ('reveal_mismatch', 'D3', 'dismissed', 'DUPLICATE', 'kb:UPSTREAM-TY-4884-REVEAL')]
-verify-sample: 28/30 identical to a full re-run (mismatches: 2)
-replay rc=1

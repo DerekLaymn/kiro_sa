@@ -1,9 +1,0 @@
-Friday 06 November 2026 02:33:23 AM IST
-/tmp/d7pd/pyver.sh: line 4: /home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/.venv/bin/pip: No such file or directory
---- PyPI
-pyright 1.1.414
-ty 0.0.98
-mypy 2.4.1
---- npm
-npm pyright 1.1.414
-ls: cannot access '/home/derek/.cache/pyright-python': No such file or directory

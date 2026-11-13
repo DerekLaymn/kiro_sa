@@ -1,4 +1,0 @@
-calibration/negatives/reveal_error_recovery.py [('D1', 'review', 'gate'), ('D2', 'dismissed', 'kb:REVEAL-ERROR-RECOVERY')]
-calibration/must_stay_live/ty_constant_fold_tuple_subclass.py [('D1', 'review', 'gate')]
-calibration/negatives/assert_type_literal_retention.py [('D1', 'dismissed', 'kb:ASSERT-TYPE-LITERAL-RETENTION'), ('D2', 'dismissed', 'kb:ASSERT-TYPE-LITERAL-RETENTION')]
-calibration/negatives/mypy_aliased_condition.py [('D1', 'dismissed', 'kb:MYPY-13807-ALIASED-CONDITIONS'), ('D2', 'dismissed', 'kb:MYPY-13807-ALIASED-CONDITIONS')]

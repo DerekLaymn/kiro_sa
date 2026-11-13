@@ -1,8 +1,0 @@
-NEW PRECISION seed-151b5a8fefe8.json L 12 reveal_type(z2)  # N: Revealed type is "builtins.int | builtins.str | None" | mypy: ['int | str | None'] ty: ['(int & ~AlwaysFalsy) | None'] ty_more_precise
-NEW PRECISION seed-1d309c6a69ab.json L 9 reveal_type(f1(object))  # revealed: type | mypy: ['type[object]'] ty: ['type'] mypy_more_precise
-NEW PRECISION seed-1d309c6a69ab.json L 15 reveal_type(f2(object()))  # revealed: type | mypy: ['type[object]'] ty: ['type'] mypy_more_precise
-CASCADE LOST seed-9896a027e6e5.json L 102 review gate
-DISAPPEARED seed-b9597d9a478d.json L 6 review gate | mypy: ['int | Never'] ty: ['int']
-DISAPPEARED seed-b9597d9a478d.json L 7 review gate | mypy: ['int | Never | str'] ty: ['int | str']
-DISAPPEARED seed-b9597d9a478d.json L 10 review gate | mypy: ['int | Never'] ty: ['int']
-DISAPPEARED seed-b9597d9a478d.json L 11 review gate | mypy: ['int | Never | str'] ty: ['int | str']

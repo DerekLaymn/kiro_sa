@@ -1,4 +1,0 @@
-issue|python/mypy|22377
-issue|python/mypy|22316
-issue|python/mypy|8595
-issue|python/typing|2211

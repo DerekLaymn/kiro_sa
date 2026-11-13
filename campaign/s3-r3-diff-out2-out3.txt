@@ -1,4 +1,0 @@
-findings only in B: 0
-22 ('holdout', 'live->dismissed', 'gate', 'kb:REVEAL-ERROR-RECOVERY') programs= 12
-54 ('tuning', 'live->dismissed', 'gate', 'kb:REVEAL-ERROR-RECOVERY') programs= 30
-2 ('tuning', 'dismissed->live', 'kb:MYPY-13807-ALIASED-CONDITIONS', 'gate') programs= 2

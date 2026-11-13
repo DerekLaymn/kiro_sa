@@ -1,9 +1,0 @@
-{
-  "approved": true,
-  "issues": [
-    "NON-BLOCKING (confirmed): campaign/day3-upstream-entries.md is stale after iteration 2. The table row for PYRIGHT-11961 still lists the regex `pyright:internal(:RangeError)?` (committed value is `pyright:internal:RangeError`), the TY-3765 row still says 'statement with `& | ^`' (now an operator between operands with a dotted right operand), and the bullet 'stance: open on the crash entries (e.g. PYRIGHT-11960, TY-4883) ... left unchanged' is false now that `stance` was removed from those two entries. Update these three spots.",
-    "NON-BLOCKING (confirmed): an empty untracked file named `-l` (created 5 Nov 03:58) sits in the repo root and shows in `git status`. It looks like an accidental shell redirect or `wc -l` artefact. Delete it before the branch is merged or pushed so it is not committed by accident.",
-    "NON-BLOCKING (confirmed, carried over): MYPY-21937 `_flag_is_chain` does not check that the if/elif chain is exhaustive over the Flag members, so a ty-only finding in the final else of a partial chain could be dismissed as a ty-vs-mypy duplicate. The limit is now documented in the entry note, so it is accepted; revisit if a partial-chain false dismissal shows up in a later replay.",
-    "NON-BLOCKING (confirmed): the Day-2 replay was not re-run after iteration 2. The reviewer's own scan of runs/day2/out3 (5086 reports, 10 crashes) found the same 4 closures as the report (TY-4882 x1, TY-4883 x2, MYPY-22344 x1) and no ty:signal-SIGKILL or pyright crash that the iteration-2 regex changes could touch, so no action is needed beyond noting the replay date in the report."
-  ]
-}

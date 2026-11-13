@@ -1,6 +1,0 @@
-  no effortLevel in sess_10b72232-7cdf-49d1-b45a-18fa3bba91ec created 2026-11-06T14:23:47.624Z
-  no effortLevel in sess_968d74ee-cf27-4f4f-a7c2-cde9e2a900a1 created 2026-11-06T14:23:48.712Z
-worker sessions since /tmp/d10-mk-groups.txt: 50
-  modelId=claude-haiku-5.5 effortLevel=medium: 48
-  modelId=claude-haiku-5.5 effortLevel=None: 2
-sessions mentioning opus/gpt-*/sol-5.6: 0

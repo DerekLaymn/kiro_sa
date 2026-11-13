@@ -1,7 +1,0 @@
-[campaign/day2-p1 c1d243b] fix: close the constant-fold hole in assert_type retention, require pyright agreement, record annotation-only read as tracked mypy limitation
- 5 files changed, 219 insertions(+), 10 deletions(-)
- create mode 100644 calibration/must_stay_live/ty_constant_fold_tuple_subclass.py
- create mode 100644 tests/test_stage3_round2.py
-c1d243b fix: close the constant-fold hole in assert_type retention, require pyright agreement, record annotation-only read as tracked mypy limitation
-d479c03 docs: log stage 3 round 1 (triage, KB changes, replay, calibration)
-0cd8539 docs: cite the conformance suite's 'either is acceptable' note in ASSERT-TYPE-LITERAL-RETENTION

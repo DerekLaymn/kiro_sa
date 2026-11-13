@@ -1,7 +1,0 @@
-seed-600557f0a203 D3 reveal_mismatch L32 'reveal_type(hi.cb)'
-    review/None/gate -> dismissed/NOISE/kb:DISPLAY-EQUIVALENT
-    # origin: runs/hits/d3p_generics_callable_attr_contravariant.py
-
-findings compared: 215; changed: 1
-new decided_by: {'kb:DISPLAY-EQUIVALENT': 1}
-old decided_by: {'gate': 1}
