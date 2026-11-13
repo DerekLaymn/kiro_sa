@@ -2720,7 +2720,7 @@ ENTRIES.extend([
         "valid at runtime; the entry says nothing about any other `deprecated` diagnostic.",
         (K.ONLY_TY,), m_contextmanager_iterator_deprecated, auto=True, runtime_override=False,
     ),
-    KBEntry(  # Day-10 morning (phase 5). No `example` (kb-selftest stays at 20); tests/test_round10_morning.py runs the real tools
+    KBEntry(  # Round-10 phase 5. No `example` (kb-selftest stays at 20); tests/test_round10_entries.py runs the real tools
         "MYPY-8595-METACLASS-CALL",
         "mypy ignores the return annotation of a metaclass __call__; ty and pyright follow it",
         Dismissal.KNOWN_LIMITATION, "https://github.com/python/mypy/issues/8595",
