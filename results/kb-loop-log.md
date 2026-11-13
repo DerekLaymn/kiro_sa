@@ -1,7 +1,5 @@
 # KB-loop log
 
-> Paths written as `[campaign working file]`, `[run output]`, `[agent working file]` or `[temp file]` point to scratch files of the original campaign that are not part of this repository.
-
 Branch `kb-loop`, worktree `.worktrees/kb-loop`. Deterministic stage only (`TYPEDIFF_LLM=null`).
 
 ## Step 1: setup, integration, baseline
@@ -13,7 +11,7 @@ Branch `kb-loop`, worktree `.worktrees/kb-loop`. Deterministic stage only (`TYPE
 
 ### Environment
 
-- venv: [temp file], CPython 3.13.15 (uv), `pip install -e .`
+- venv: CPython 3.13.15 (uv), `pip install -e .`
 - Pinned tools: ty 0.0.84, mypy 2.4.0, pyright 1.1.414 (pip wrapper), pytest 9.2.0.
 
 ### Baseline (before integration, on local main)
@@ -80,16 +78,16 @@ Issues:
 
 ## Round 1 (full corpus, 2026-10-31)
 
-Commands (venv [temp file], CPython 3.13.15, `TYPEDIFF_LLM=null`, ty 0.0.84, mypy 2.4.0, pyright 1.1.414):
+Commands (venv with CPython 3.13.15, `TYPEDIFF_LLM=null`, ty 0.0.84, mypy 2.4.0, pyright 1.1.414):
 
 ```
 python scripts/kbloop_split.py seeds docs/kb-loop-split              # fixed-seed stratified 20% hold-out
-python scripts/kbloop_run.py [run output] seeds --jobs 14 ...     # whole corpus, resumable, 4010 s
-typediff triage [run output] --top 40 --details --exclude docs/kb-loop-split/holdout.txt
-python scripts/kbloop_patterns.py [run output]                    # volume-ranked pattern table (tuning set)
-python scripts/kbloop_replay.py [run output] [run output] --rerun-runtime --verify-sample 100
-python scripts/kbloop_replay.py [run output] [run output] --verify-sample 100   # after narrowing (see calibration)
-python scripts/kbloop_stats.py [run output]
+python scripts/kbloop_run.py <out-dir> seeds --jobs 14 ...     # whole corpus, resumable, 4010 s
+typediff triage <out-dir> --top 40 --details --exclude docs/kb-loop-split/holdout.txt
+python scripts/kbloop_patterns.py <out-dir>                    # volume-ranked pattern table (tuning set)
+python scripts/kbloop_replay.py <out-dir> <out-dir> --rerun-runtime --verify-sample 100
+python scripts/kbloop_replay.py <out-dir> <out-dir> --verify-sample 100   # after narrowing (see calibration)
+python scripts/kbloop_stats.py <out-dir>
 ```
 
 Corpus: all 6089 programs were run (29 hand + 6060 harvested; no sampling). 6044 ran, 45 rejected by preflight (non-stdlib import
@@ -182,15 +180,15 @@ CONFIG_ARTIFACT 58 (47), SPEC_AMBIGUITY 759, INVALID_TEST 245, KNOWN_LIMITATION 
   ty#4841 (ORIGIN-ORACLE-REVEAL) and mypy#7935 (UPSTREAM-MYPY-948). Both entries were narrowed to require the harvester's `# origin:` suite
   header. Re-run of 13 positives and all negatives with the final code (`scripts/kbloop_calib_subset.py`): ty#4841 kept, mypy#7935 kept, nothing else
   changed versus the first pass. The five other positives dismissed in the first pass but not in the 166-row baseline (ty#4872, #4835, #4817, #4786,
-  #4713) are also dismissed by the baseline code (commit 0f1d39b, checked with `PYTHONPATH=[temp file]`), so they are not caused by this round. ty#1172 and ty#1090
+  #4713) are also dismissed by the baseline code (commit 0f1d39b, checked with `PYTHONPATH=<file>`), so they are not caused by this round. ty#1172 and ty#1090
   are dismissed by their own pre-existing KB entries. Known-real bugs newly dismissed by this round: 0.
 
 ## Round 2 (crash detection + one more pattern batch)
 
-Scope given: (A) fix our own crash-detection defects from [agent working file] section 6, (B) classify the next
+Scope given: (A) fix our own crash-detection defects found in the previous round, (B) classify the next
 pattern blocks, (C) report numbers. Same safety rules as round 1. Round 2 re-adjudicated from the saved round-1 reports
-(`python scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 100`, result: 100/100 identical to a full checker
-re-run), then the 23 crash programs were re-run with the real checkers (`scripts/kbloop_run.py [run output] ...`, 242 s) and their reports
+(`python scripts/kbloop_replay.py <out-dir> <out-dir> --jobs 14 --verify-sample 100`, result: 100/100 identical to a full checker
+re-run), then the 23 crash programs were re-run with the real checkers (`scripts/kbloop_run.py <out-dir> ...`, 242 s) and their reports
 copied over.
 
 ### (A) Crash-detection defects (pipeline defects P1-P5, all fixed with regression tests in `tests/test_crash_detection.py`)
@@ -241,7 +239,7 @@ See the end of this file (pytest and kb-selftest results).
 - ORIGIN-ORACLE-REVEAL changed to hint-only (`auto=False`). Reason: a suite comment expressing one tool's output is not evidence that the other tool is merely less precise. Its roughly 800 dismissals went back to the live queue.
 - UPSTREAM-MYPY-948: header regex anchored to the first 6 comment lines; the note says #948 is an open feature request; category DUPLICATE -> KNOWN_LIMITATION.
 - Full calibration re-run (193 positives + 18 negatives, 211 rows): 24 dismissed. None is newly dismissed relative to the 166-row baseline ids. The pre-existing dismissals of ty#4872/4835/4817/4786/4713 remain (C-2, documented, not narrowed). The re-run happened before the DUPLICATE -> KNOWN_LIMITATION edit (category only, matcher unchanged).
-- Replay [run output] -> [run output]. The `--verify-sample 100` result line was not retained (log lived in /tmp); earlier replays were 100/100 identical.
+- Replay of the previous run's output. The `--verify-sample 100` result line was not retained (log lived in /tmp); earlier replays were 100/100 identical.
 - Final numbers (round 4): all live 9650 (baseline 9908, -2.6%), tuning 7719 (7939), hold-out 1931 (1969); dismissed 3472 (baseline 3213); crash findings 24.
 - Final verification: `python -m pytest tests -q` 139 passed; `typediff --python-version 3.13 kb-selftest` all PASS (11 entries with examples).
 

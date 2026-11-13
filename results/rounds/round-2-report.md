@@ -1,52 +1,14 @@
-# Day-2 P1 run report (typediff pipeline campaign)
+# Round 2 report: judge improvement on the harvested corpus
 
-> Paths written as `[campaign working file]`, `[run output]`, `[agent working file]` or `[temp file]` point to scratch files of the original campaign that are not part of this repository.
+Goal of the run: improve the deterministic judge, not hunt bugs. `TYPEDIFF_LLM=null` throughout: 0 model calls. The only GitHub access was read-only. Counts come from the stored per-program reports of the corpus runs, which can be regenerated.
 
-Goal of the run: improve the pipeline (the internal plan §3 P1), not hunt bugs. Branch [campaign working file], local only, nothing pushed. `TYPEDIFF_LLM=null` throughout: 0 LLM calls. All numbers below are copied from [run output] (git-ignored, regenerable) and from [campaign working file], which has the per-action detail and the evidence file for each claim.
-
-**Outcome in one paragraph.** The review queue shrank 7.19 % overall (7841 -> 7277), 7.54 % on the tuning set (6300 -> 5825) and 5.78 % on the hold-out set (1541 -> 1452). The plan's > 50 % target was **not met** on either set. The reviewer never approved (3 rounds, `approved=false` each time). The remaining queue is dominated by expectation-comment programs from the ty/mypy/pyright test suites that need a per-construct oracle, and by candidate false negatives. Plan §7 forbids inventing dismissals, so none were invented. The pipeline got safer as well as smaller: the review found and this run fixed five false-dismissal holes (section 5).
+**Outcome in one paragraph.** The review queue shrank 7.19 % overall (7841 -> 7277), 7.54 % on the tuning set (6300 -> 5825) and 5.78 % on the hold-out set (1541 -> 1452). The plan's > 50 % target was **not met** on either set. The reviewer never approved (3 rounds, `approved=false` each time). The remaining queue is dominated by expectation-comment programs from the ty/mypy/pyright test suites that need a per-construct oracle, and by candidate false negatives. No dismissals were invented. The pipeline got safer as well as smaller: the review found and this run fixed five false-dismissal holes (section 5).
 
 ---
 
-## 1. Plan step -> what was done
+## 1. Run setup
 
-Legend: **done** = followed the plan as written; **off-plan** = deviation, reason given; **skipped** = not done. All commands run from the repo root with venv binaries by absolute path (the fish shell rejected `source activate`). Abbreviations: `PY=.venv/bin/python`, `L=TYPEDIFF_LLM=null`.
-
-| Plan step | Status | Exact command / action |
-|---|---|---|
-| Branch setup | done | `git checkout -b [campaign working file] main` |
-| §4 Setup: venv, versions | done | `.venv/bin/python --version; .venv/bin/python -m pip list`. Found pyright 1.1.400 (not the pinned 1.1.414) |
-| §4 Setup: pin pyright | off-plan (plan says `pip install ... pyright` unpinned; docs/design.md/calibration pin 1.1.414) | `.venv/bin/python -m pip install pyright==1.1.414` ([campaign working file]) |
-| §4 Setup: `fetch-docs` | done | `typediff fetch-docs > [campaign working file]` (862 chunks) |
-| §4 Setup: `kb-selftest` | done | `typediff --python-version 3.13 kb-selftest > [campaign working file]`: 11 PASS, 0 other |
-| §4 Setup: pytest baseline | done (extra check, not in §4) | `.venv/bin/python -m pytest tests -q`: 144 passed |
-| §4 Setup: harvest | done (see Day 1 d) | |
-| §4 Setup: OpenRouter env vars | skipped | no LLM in this run (task constraint) |
-| §3 Day 1 (a) Setup (§4) | done | rows above |
-| §3 Day 1 (b) check `known_upstream.json` | done, read-only | read `typediff/data/known_upstream.json`; ids/URLs in [campaign working file]. 5 entries (TY-1090, TY-4212, TY-2255, MYPY-9658, MYPY-948), 4 prior_stances (TY-4656, TY-4152, TY-4673, TY-1172). Nothing added in Stage 1 |
-| §3 Day 1 (c) `typediff seeds seeds/` | done | `L typediff --python-version 3.13 seeds seeds/ > [campaign working file]`: 29 programs, 35 discrepancies, 25 live, 14 programs with live findings, 0 crashes (plan prose says 27 seeds / 16 with findings: stale) |
-| §3 Day 1 (d) harvest | done | `.venv/bin/python scripts/harvest_seeds.py > [campaign working file]`: 5129 files (plan prose says 4,849: stale; script now also harvests pyright and typeshed and filters ty mdtests by python version) |
-| §3 Day 1 (e) | not a plan step | the plan's Day 1 list has four bullets (setup, known_upstream, seeds, harvest). The kb-selftest and pytest runs are part of (a) |
-| §3 Days 2-3 corpus run | done, interrupted and resumed (off-plan, no pipeline change) | `env TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py [run output] seeds/harvested --jobs 14 --progress [run output] > [run output] 2>&1`. Died at 2850/5129 when the hosting tool call was cut off; the identical command was re-run (resumable): `total=5129 {'skip': 2876, 'ok': 2229, 'rejected': 24}`. `--jobs 14` kept although the later allowance was 20 (not restarted) |
-| §3 Days 2-3 stats | done | `kbloop_stats.py [run output] --split [run output] --json [run output] > [run output]` |
-| 80/20 tuning / hold-out split | done (plan §3 does not name this step; the KB-loop docs do) | `.venv/bin/python scripts/kbloop_split.py seeds/harvested [run output] > [run output]`. Written to [run output], not over the tracked `docs/kb-loop-split`, because that split belongs to the teammate's older 6089-program corpus (1003 of the 1025 new hold-out files are in the old hold-out, 22 are new) |
-| Triage (§3 `typediff triage`), each round | done | `typediff triage [run output]<N-1> --top 30 --details` ([campaign working file]<N>-triage-top30.txt) and `.venv/bin/python scripts/kbloop_patterns.py [run output]<N-1> --split [run output] --top 40 --md [campaign working file]<N>-patterns-tuning.md` (round 1); `--set tuning|holdout` in rounds 2-3. Samples: `scripts/kbloop_sample.py ... --split [run output]` (its default is the old split) |
-| Triage checklist (§6), each pattern | done, items (5) duplicates read-only, item (6) playground **UNVERIFIED-PLAYGROUND** for every pattern | reproduce on mypy, ty, pyright, CPython with [campaign working file]; spec grep; `gh api search/issues` and `gh search issues` (read-only); toggle experiments |
-| Decide (§3 four-way choice) | done | outcomes per pattern in section 4. `known_upstream.json`: **no entry added**, because no real upstream issue matched an auto-closable pattern and an entry without a real URL would be invented. KB entries used instead (repo precedent: MYPY-15182-NEW-RETURNS) [off-plan relative to decision (i)] |
-| Re-measure, round 1 | done | `PY scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 100`, then `kbloop_stats.py [run output] --split [run output] --json [run output]`. verify-sample 100/100 identical |
-| Re-measure, round 2 | done | same with `out1 -> out2`. Replay run twice; the first (`out2-pre-guard`) fed an audit that led to a guard, numbers below are from the final replay. verify-sample 100/100 |
-| Re-measure, round 3 | done | same with `out2 -> out3`. verify-sample 100/100 |
-| Reviewer loop | done, 3 rounds, never approved | verdicts: [campaign working file] (`day2-review-round.json` is a copy of the latest). Review docs: [campaign working file] |
-| Round 1 | done | patterns 1-8 triaged; typenorm bytes fix, 2 KB entries, ANNOTATION-ONLY-READ generalised |
-| Round 2 (reviewer's 7 issues) | done | constant-fold hole, pyright agreement, 3 new KB entries, normaliser refinements; deviation: must-stay-live programs go to a new `calibration/must_stay_live/` instead of `calibration/negatives/` (negatives are by definition programs that must be closed; mixing opposite semantics would corrupt that metric) |
-| Round 3 (reviewer's issues) | done, one user decision | stopped and asked before changing NameError behaviour (`send_message` warning); user chose option (a) plus the hint of (c), no dismissal |
-| Calibration regression (§8 'Calibration', re-run each round) | done, approximated | `scripts/kbloop_calib_subset.py` in 4 chunks with `--negatives`, same settings as `typediff --no-pyright calibrate`; positives = 194 open maintainer-labelled reports fetched read-only from GitHub REST without auth (the README baseline of ty 80 / mypy 76 was on an older issue set) |
-| Calibration `--no-pyright` caveat | off-plan | the full `typediff calibrate` with pyright was not run |
-| §3 P2-P6 (LLM mutation, generation, crash hunting, judging, filing, write-up) | skipped | outside P1 and forbidden by the no-LLM, no-GitHub-write constraint |
-| Filing issues / contacting maintainers | skipped | no GitHub write of any kind |
-| Push / PR | skipped | local branch only |
-
----
+The run used `TYPEDIFF_LLM=null` throughout (no model calls), the pinned tools of section 2, the 29 hand seeds and the 5129 harvested programs, and an 80/20 tuning / hold-out split of the harvested corpus. The corpus runner is resumable; the first corpus run was interrupted at 2850 of 5129 programs and finished by running the same command again (`total=5129`, 2876 skipped, 2229 run, 24 rejected). Each round of the judge-tuning loop was: triage the live queue, reproduce a pattern on mypy, ty, pyright and CPython, check the trackers read-only, decide (KB entry, rule, or leave live), replay the stored reports (`scripts/kbloop_replay.py --verify-sample 100`, 100 of 100 identical to a full re-run), and re-measure. A reviewer pass ran three times and never approved.
 
 ## 2. Tool versions
 
@@ -69,7 +31,7 @@ Verified with `.venv/bin/python -m pip list` after the pin:
 
 ## 3. Funnel numbers
 
-Corpus: 29 hand seeds (Stage 1, not in the split) and 5129 harvested programs. 5086 produced reports; 43 were rejected by preflight (non-stdlib import or non-determinism). 0 timeouts, 0 runner errors. Tuning = 4072 programs ran (4104 in the set), hold-out = 1014 ran (1025 in the set).
+Corpus: 29 hand seeds (not in the split) and 5129 harvested programs. 5086 produced reports; 43 were rejected by preflight (non-stdlib import or non-determinism). 0 timeouts, 0 runner errors. Tuning = 4072 programs ran (4104 in the set), hold-out = 1014 ran (1025 in the set).
 
 ### 3.1 Baseline (out0) vs after (out3)
 
@@ -100,7 +62,7 @@ Checks: 5825 + 1452 = 7277 and 6300 + 1541 = 7841. Findings = live + dismissed (
 
 DESIGN_DIVERGENCE fell overall (1667 -> 1619) although MYPY-FIRST-ASSIGNMENT-TYPE added 182, because ANNOTATION-ONLY-READ (334 findings at the end) was re-categorised from DESIGN_DIVERGENCE to KNOWN_LIMITATION in round 2. I did not break the 48-finding net drop down further.
 
-### 3.3 Per round (cumulative against the Stage-2 baseline 7841 / 6300 / 1541)
+### 3.3 Per round (cumulative against the baseline 7841 / 6300 / 1541)
 
 | State | Overall live | Tuning live | Hold-out live | Overall shrink | Tuning shrink | Hold-out shrink | Discrepancies (all) | Dismissed (all / tuning / hold-out) | Programs with live (all / tuning / hold-out) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -133,9 +95,9 @@ Tuning-vs-hold-out gap (percentage points): 3.4 after round 1, 2.4 after round 2
 
 ### 3.5 Candidates
 
-Candidates (plan decision (iv), Phase-2 parents) in the funnel: 2 programs copied to [run output] and 3 more recorded in the log only (section 6). Confirmed, filed, acknowledged: 0 / 0 / 0. The remaining queue holds 145 mypy false-negative rows for unbound names (section 5) that are candidates in principle but unverified.
+Candidates (parents for the next generation step) in the funnel: 2 programs copied to `seeds/parents/` and 3 more recorded in the log only (section 6). Confirmed, filed, acknowledged: 0 / 0 / 0. The remaining queue holds 145 mypy false-negative rows for unbound names (section 5) that are candidates in principle but unverified.
 
-### 3.6 Largest remaining tuning patterns (after round 3, from [campaign working file])
+### 3.6 Largest remaining tuning patterns (after round 3)
 
 reveal gradual 456, uncomparable 444, different 403, ty_more_precise 299, only_mypy [assignment] 197, only_mypy [assert-type] 197, only_ty [type-assertion-failure] 157, only_ty [unresolved-reference] 129, only_mypy [arg-type] 118, concern_mismatch [assignment] 114. In round 1 the starting order was gradual 623, different 552, uncomparable 476, only_mypy [assignment] 370, only_mypy [assert-type] 228.
 
@@ -143,7 +105,7 @@ reveal gradual 456, uncomparable 444, different 403, ty_more_precise 299, only_m
 
 | Round | pytest | kb-selftest | Calibration (30 s checker timeout, `--no-pyright`, positives 194) |
 |---|---|---|---|
-| Start | 144 passed | 11 PASS | Stage-2 code: positives kept 117 / invisible 61 / dismissed 11 / excluded 5; 24 dismissed of 212 rows (13 of 18 negatives closed) |
+| Start | 144 passed | 11 PASS | baseline code: positives kept 117 / invisible 61 / dismissed 11 / excluded 5; 24 dismissed of 212 rows (13 of 18 negatives closed) |
 | 1 | 157 passed | 13 PASS | positives identical; 28 of 216 (17 of 22 negatives closed) |
 | 2 | 176 passed | 15 PASS | positives identical; 30 of 220 (19 of 26 negatives closed) |
 | 3 | 201 passed | 15 PASS | positives identical; 32 of 220 (21 of 26 negatives closed); must-stay-live 2 live, 0 violated |
@@ -169,7 +131,6 @@ The same 11 positives are dismissed before and after (mypy-4554, 5289, 6079, 798
 | 9 | 10dd9b1 | typediff/kb.py, typediff/calibration.py, typediff/cli.py, scripts/kbloop_calib_subset.py, tests, calibration/must_stay_live/mypy_stale_alias.py, negatives | (a) Stale-alias guard `_target_changed_between` for MYPY-13807; (b) the REVEAL-ERROR-RECOVERY example and negative no longer need pyright (`def g(a: int, b: str): reveal_type(a + b)`); (c) `typediff calibrate --must-stay-live` loads `calibration/must_stay_live/` and reports violated programs | Reviewer round 2: alias computed before `a.clear()` was still dismissed; negatives stayed open under `--no-pyright`; calibrate could not see the fold hole | test_stage3_round3.py (11 stale-alias cases, calibration loader and summary tests) | Round 3: +2 re-opened (tuning); negatives closed 19 -> 21 of 26 |
 | 10 | a4147b3 | typediff/rules.py, typediff/kb.py, tests/test_evidence.py, test_stage3_round3.py | `attach_runtime_evidence`: a CPython NameError/UnboundLocalError on a name the reporting tool flags is STRONG evidence for the reporting tool, blame on the silent tool (was neutral/weak; `kb.runtime_contradiction` already said strong). New hint-only MYPY-UNBOUND-OPT-IN-CHECK (auto=False) shown only when the mypy opt-in toggle (`--enable-error-code possibly-undefined --enable-error-code used-before-def`) removes the discrepancy; `_verified_hints` in rules.py | Two code paths disagreed on NameError; user decision: option (a) + hint, no dismissal | 5 new tests, replaced the old "is_not_strong" test | **zero** (as predicted); with an LLM, strong evidence can now blame mypy for those rows |
 | 11 | d924841 | typediff/kb.py | REVEAL-ERROR-RECOVERY also covers a reveal through a name bound at a statement the same tool rejected (`_error_at_binding_of_reveal_arg`) | 57 tuning + 23 hold-out gradual rows had a flagged binding (unpacking, `type()` call, undefined base) | 4 tests (both tools, narrowness, CPython exception, real tools) | Round 3: -76 (54 tuning in 30 programs, 22 hold-out in 12 programs) |
-| 12 | docs commits (b4bf9e8, 7f2969d, d479c03, 13aae01, 528bd1a and the final commits of this stage) | [campaign directory] | logs, stats, audits, helper scripts, reviewer verdicts | | | none |
 
 kb-selftest ended at 15 PASS, 0 FAIL; pytest at 201 passed.
 
@@ -191,7 +152,7 @@ Verdict vocabulary: DESIGN_DIVERGENCE, KNOWN_LIMITATION, FALSE_NEGATIVE (the too
 | ty reveals through an alias of a condition (ty_more_precise) | correct, more precise (pyright agrees) | KNOWN_LIMITATION (python/mypy#13807) | **dismiss** the unchanged-alias form via MYPY-13807-ALIASED-CONDITIONS; stale or non-matching variants stay live |
 | only_mypy [arg-type] 118, concern_mismatch [assignment] 114, only_ty [invalid-assignment] 94, [invalid-argument-type] 86 | correct where pyright agrees | FALSE_NEGATIVE candidates where pyright agrees; not investigated (not bug hunting) | **live**, no rule: a rule would hide ty false negatives that pyright also reports |
 | runtime_miss `'NoneType' object is not callable` (19 rows, 8 with a stub-bodied callee) and `type 'X' is not subscriptable` (6 + 3) | not examined | not examined | **live**: closing them would dismiss rows that carry CPython crash evidence |
-| mypy class-base forward reference (`class C(B)` before `class B`) | correct (flags it, like pyright; CPython NameError) | FALSE_NEGATIVE candidate (mypy test-suite program may rely on this on purpose) | candidate kept live, copied to [run output] |
+| mypy class-base forward reference (`class C(B)` before `class B`) | correct (flags it, like pyright; CPython NameError) | FALSE_NEGATIVE candidate (mypy test-suite program may rely on this on purpose) | candidate kept live, copied to `seeds/parents/` |
 
 ---
 
@@ -212,7 +173,7 @@ Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismis
 6. **REVEAL-ERROR-RECOVERY binding clause has no causality check** (`_error_at_binding_of_reveal_arg` accepts any ERROR diagnostic on an earlier statement binding a name read in the reveal). No false dismissal found in the 76 new ones (30 audited). Recommended: a negative test where the earlier error is unrelated to the binding's type, or restrict to error codes that produce a recovery type.
 7. **Chained dismissals**: some of the 76 are closed because ty flagged a binding whose error is itself dismissed by ANNOTATION-ONLY-READ (e.g. testNarrowingFromObjectToOptional D2, testSelfTypeGenericClassNoClashInstanceMethod D3). Record the chain in the finding notes.
 8. **`attach_runtime_evidence` NameError branch** records strong bug evidence with `blame='unknown'` when both tools have diagnostics on the row. Add a test, or do not emit strong evidence without a blamed tool.
-9. **`kbloop_sample.py` cannot list dismissed findings** (it skips `tier == dismissed`), so every audit of a dismissal rule needed a custom script ([campaign working file], r2_audit.py, r3_audit.py). Add `--dismissed-by ENTRY`.
+9. **`kbloop_sample.py` cannot list dismissed findings** (it skips `tier == dismissed`), so every audit of a dismissal rule needed a custom script (r2_audit.py and r3_audit.py were one-off scripts). Add `--dismissed-by ENTRY`.
 
 ### 5.2 Invisible bugs (the ty-vs-mypy diff cannot see them)
 
@@ -230,7 +191,6 @@ Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismis
 - **The 50 % target looks unreachable with oracle-backed rules on this corpus.** Three rounds of supported rules removed 7.5 % of the tuning queue; each round removed less than the one before (4.73 %, 1.59 %, 1.01 % of the overall queue). The reviewer asked for a user decision: keep the target, restate it, or stop with documented pivot options. The log records no such decision.
 - **`calibrate --no-pyright`** cannot exercise entries that need pyright (ANNOTATION-ONLY-READ); five negatives stay "open" for that reason or older ones: kb-ANNOTATION-ONLY-READ, kb-JOIN-VS-UNION-CALLABLE, kb-MDTEST-TODO, kb-MYPY-15182-NEW-RETURNS, neg-generic_isinstance. The negatives metric also cannot hold programs that must stay live; `calibration/must_stay_live/` and the new `--must-stay-live` option fix that.
 - **Stale numbers in documentation**: the internal plan prose (4,849 programs, 27 seeds / 16 with findings, "pyright" unpinned) and the README calibration baseline (ty 0/80, mypy 4/76 on an older issue set; same code today gives ty 7/123, mypy 4/71) do not match the current corpus. `docs/kb-loop-split` is for the older 6089-program corpus.
-- **Shell tooling**: the permission layer rejected a bash-style `source` activation in fish, and command output arrived late or empty in several sessions. Every result was written to a file and read back.
 - **Process loss**: the first corpus run died at 2850/5129 when its host call ended. The runner is resumable and nothing was lost, but the run should be detached from the start.
 
 ### 5.4 Recommended next improvements, ranked
@@ -241,7 +201,7 @@ Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismis
 4. Reveal-level first-assignment entry (96 tuning reveal rows behind a dismissed first-assignment, 1-3 in hold-out; widens the tuning/hold-out gap; `--allow-redefinition` alone does not close them because `finally` blocks still differ).
 5. Fix the open reviewer items 6-9 above.
 6. Check the 145 true mypy unbound false negatives in the playground and decide whether to file after duplicate checks.
-7. Re-run `typediff calibrate` with pyright on the final versions (needed for §8 'Calibration').
+7. Re-run `typediff calibrate` with pyright on the final versions.
 
 ---
 
@@ -249,16 +209,13 @@ Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismis
 
 **No genuinely new, confirmed bug was found.** This was not a bug hunt. Everything below is INCIDENTAL, unverified in the playground, **not filed and not drafted**.
 
-### 6.1 Copied to [run output] (git-ignored, regenerable from seeds/harvested)
+### 6.1 Programs kept as parent candidates
 
-| File | Source | Observation | Confidence |
-|---|---|---|---|
-| [run output] | mypy-suite case testForwardBaseDeferAttr | `class C(B)` with `B` defined later: CPython NameError; ty and pyright flag it; mypy silent. Possible mypy FALSE_NEGATIVE. Duplicate check by body-text search found nothing. The mypy suite relies on forward bases deliberately, so it may be accepted behaviour | low |
-| [run output] | pyright sample typeIs11 line 20 | after `assert type(value) == type(sample)` with `value: Any`, ty's assert_type reports `Any` where pyright and mypy answer the sample's type. Possible ty INCORRECT_INFERENCE in a narrowing construct. Not investigated | low |
+Two programs were kept as candidates; neither is a verified bug.
 
 ### 6.2 Recorded in the log, kept as calibration data or notes
 
-**ty constant folding on a tuple subclass (INCIDENTAL, strongest of the set).** Reproducer: `calibration/known_duplicates/ty_constant_fold_tuple_subclass.py` (the same program was first run as [temp file]).
+**ty constant folding on a tuple subclass (INCIDENTAL, strongest of the set).** Reproducer: `calibration/known_duplicates/ty_constant_fold_tuple_subclass.py`.
 
 ```python
 class Restricted(tuple[Literal[1]]):
@@ -275,13 +232,13 @@ assert_type(r, bool)
 | pyright 1.1.414 | 0 errors |
 | CPython 3.13 | prints `True` |
 
-Duplicate check (read-only): `gh search issues` on astral-sh/ty for "tuple comparison" returned only ty#2140 (closed, `__eq__` narrowing); "constant folding" and "__lt__ tuple subclass" returned nothing; astral-sh/ruff "tuple comparison ty" nothing; python/mypy "assert_type tuple comparison" nothing; microsoft/pyright "tuple comparison" returned #7733, #3864, #7132, all closed and unrelated ([campaign working file]). Verdict: ty INCORRECT_INFERENCE candidate (unsound folding of a comparison, same stance as ty#2140 for `__eq__`); mypy and pyright behave correctly. Confidence: medium that this is a real ty issue (the runtime contradicts the inferred type); low that it is worth a maintainer's time (a deliberately constructed, artificial subclass). UNVERIFIED-PLAYGROUND.
+Duplicate check (read-only): `gh search issues` on astral-sh/ty for "tuple comparison" returned only ty#2140 (closed, `__eq__` narrowing); "constant folding" and "__lt__ tuple subclass" returned nothing; astral-sh/ruff "tuple comparison ty" nothing; python/mypy "assert_type tuple comparison" nothing; microsoft/pyright "tuple comparison" returned #7733, #3864, #7132, all closed and unrelated. Verdict: ty INCORRECT_INFERENCE candidate (unsound folding of a comparison, same stance as ty#2140 for `__eq__`); mypy and pyright behave correctly. Confidence: medium that this is a real ty issue (the runtime contradicts the inferred type); low that it is worth a maintainer's time (a deliberately constructed, artificial subclass). UNVERIFIED-PLAYGROUND.
 
 Other notes (not copied to hits):
-- ty `reveal_type(Later)` before `class Later` at module level reveals `Unknown` with no diagnostic; CPython raises NameError; mypy reveals the class ([campaign working file]). Possible ty FALSE_NEGATIVE (missing unresolved-reference). Not investigated. Low confidence.
+- ty `reveal_type(Later)` before `class Later` at module level reveals `Unknown` with no diagnostic; CPython raises NameError; mypy reveals the class. Possible ty FALSE_NEGATIVE (missing unresolved-reference). Not investigated. Low confidence.
 - 145 live mypy-silent only_ty [unresolved-reference] rows where even the opt-in checks do not make mypy report the name (annotation-only reads, forward references in class bases, bodies and decorators). Reproduced on a minimal program: `def f(): x: int; reveal_type(x)` gives ty `unresolved-reference`, pyright "x is unbound", mypy reveals `int`, CPython UnboundLocalError. Duplicates exist: python/mypy#15416, #17373, #4019 (all open) and #11342 (closed as a duplicate of #686). So this is a **known** mypy limitation, not new.
 
-Funnel for candidates: discrepancies 10597 -> review queue 7277 -> candidates 2 in [run output] + 1 log-only constant-fold + 1 log-only `reveal_type(Later)` -> confirmed 0 -> filed 0 -> acknowledged 0.
+Funnel for candidates: discrepancies 10597 -> review queue 7277 -> candidates 2 kept as parent candidates + 1 log-only constant-fold + 1 log-only `reveal_type(Later)` -> confirmed 0 -> filed 0 -> acknowledged 0.
 
 ---
 
@@ -289,7 +246,7 @@ Funnel for candidates: discrepancies 10597 -> review queue 7277 -> candidates 2 
 
 - **Every playground check** (triage checklist item 6): UNVERIFIED-PLAYGROUND for all patterns and all candidates. Reproduction was done only with the pinned local checkers and CPython 3.13, not with mypy-play, the ty playground or the pyright playground, so version- or option-specific behaviour on the latest releases is untested.
 - **discuss.python.org**: not searched at all. The spec questions (literal retention, redefinition, narrowing through aliases) were answered from the typing spec text in the cached docs corpus only (literal.rst, directives.rst, special-types.rst, concepts.rst, narrowing.rst) and from the mypy and ty documentation.
-- **Duplicate searches** used GitHub search over issue bodies for a handful of phrases per pattern ([campaign working file], [campaign working file]). They were read-only, with no write, and are not exhaustive. A negative result means "no hit for these queries", not "no duplicate".
+- **Duplicate searches** used GitHub search over issue bodies for a handful of phrases per pattern. They were read-only, with no write, and are not exhaustive. A negative result means "no hit for these queries", not "no duplicate".
 - **Calibration** was run in an approximated mode (`--no-pyright`-equivalent subset script, 4 chunks, positives fetched on the day). The full `typediff calibrate` with pyright and the `calibration/RESULTS.md` recall on 156 known bugs were not re-run. The pyright version printed nothing for `--version`; the pin is evidenced by pip metadata.
 - **All dismissals are audited only by sampling**: 18 random rows per round for the main rules, 30 of 76 for the binding clause, the full set only for the targeted properties (CPython exception on the statement: none; toggle passed: all 182 first-assignment dismissals).
 - **The reviewer never approved.** All three reviewer verdicts are `approved=false`; the loop ended at the 3-round limit. Reviewer items 6-9 of section 5.1 are open.
@@ -298,41 +255,3 @@ Funnel for candidates: discrepancies 10597 -> review queue 7277 -> candidates 2 
 - GitHub: only read-only API calls (search, issue fetch, REST list of issues for positives, no authentication in the calibration fetch). Nothing was pushed, filed, commented or modified.
 
 ---
-
-## Final summary
-
-Branch: [campaign working file] (local, not pushed).
-
-| Review queue | Baseline | Final | Shrink |
-|---|---|---|---|
-| Overall | 7841 | 7277 | 7.19 % |
-| Tuning | 6300 | 5825 | 7.54 % |
-| Hold-out | 1541 | 1452 | 5.78 % |
-
-Target (> 50 %): not met on either set.
-
-Commit list (`git log --oneline main..<day-2 branch>`, oldest at the bottom; the last commit adds this list to the report):
-
-```
-4055e85 docs: day-2 P1 final run report
-5c4a525 chore: add remaining [campaign working file] helper scripts and probe outputs
-1e860b7 docs: add reviewer verdicts and review docs for rounds 1-3, round-1 run markers
-528bd1a docs: log stage 3 round 3 ...
-d924841 feat: REVEAL-ERROR-RECOVERY also covers a gradual reveal through a name the same tool flagged at its binding
-a4147b3 fix: NameError on a flagged name is strong evidence in both code paths ...
-10dd9b1 fix: stale-alias guard for MYPY-13807, pyright-independent REVEAL-ERROR-RECOVERY negative, ...
-13aae01 docs: log stage 3 round 2 ...
-69f5ff6 fix: REVEAL-ERROR-RECOVERY never dismisses a statement CPython raised on (any exception type)
-ba8fbe0 feat: MYPY-13807-ALIASED-CONDITIONS KB entry
-1b708d4 fix: typenorm treats intersections, LiteralString, type[X] and Never as refinements
-9456642 feat: REVEAL-ERROR-RECOVERY KB entry
-c1d243b fix: close the constant-fold hole in assert_type retention, require pyright agreement, ...
-d479c03 docs: log stage 3 round 1 ...
-0cd8539 docs: cite the conformance suite's 'either is acceptable' note in ASSERT-TYPE-LITERAL-RETENTION
-fbf9b12 feat: KB entries for assert_type literal retention and mypy first-assignment typing; ...
-d171b92 fix: normalise bytes literal spelling and add literal-retention helper in typenorm
-b4bf9e8 docs: log stage 2 corpus run and split baselines
-7f2969d chore: stage 1 setup and day 1 run log
-```
-
-Report path: `results/rounds/round-2-report.md`

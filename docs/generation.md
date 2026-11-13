@@ -23,7 +23,7 @@ adds model output on top of the rules.
 | Model | `claude-haiku-5.5`, used as a stand-in generator |
 | Effort | `medium` |
 | Transport | File bridge: `typediff --llm file:<dir> generate ...` writes one `<key>.prompt.md` per request; a model session wrote `<key>.answer.json` (`{"source": ..., "hypothesis": ..., "features": [...]}`); the same command run again reads the answers |
-| Sessions | About 50 worker sessions per round, 5 prompts each, 4 at a time (the session runner is not part of this repository) |
+| Sessions | About 50 model sessions per round, 5 prompts each, 4 at a time. Any way of answering the prompt files works (see [llm-setup.md](llm-setup.md)) |
 | Target Python | 3.13 (`--python-version 3.13`) |
 | Programs per round | about 250 (exactly 250 in the last round) |
 
