@@ -3,14 +3,14 @@
 > Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
 
 Branch [campaign working file] (from [campaign working file]). Every number below is copied from a committed file or a command run by the step
-that wrote this report: [campaign working file], `day5-triage.txt`, `day5-run-log.md`, `day5-morning.md`, `day5/pipeline-review.md`,
+that wrote this report: [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file],
 `day5/judge.done`, `results/days/day4-report.md`, `inbox_check.py [run output]`, and the reports in [run output]. Rates are computed here
 from those counts. All candidates are UNVERIFIED unless stated; no Plan §6 checklist was run in Day 5. Issues filed: **0**. Nothing was pushed.
 
 Tool versions (unchanged): mypy 2.4.0, ty 0.0.84, pyright 1.1.414, CPython 3.13.16, target Python 3.13.
 
-Two sets of Day-5 numbers exist and both are shown. `day5-stats.txt` and `day5-triage.txt` come from the judge run ([run output], KB as of the
-end of step 1). After the morning decisions the same 250 reports were replayed under the final KB ([run output], figures from `day5-morning.md` §3).
+Two sets of Day-5 numbers exist and both are shown. [campaign working file] and [campaign working file] come from the judge run ([run output], KB as of the
+end of step 1). After the morning decisions the same 250 reports were replayed under the final KB ([run output], figures from [campaign working file] §3).
 
 ## 1. Funnel, Day 5 vs Day 4
 
@@ -27,7 +27,7 @@ end of step 1). After the morning decisions the same 250 reports were replayed u
 | triage patterns | 29 | 29 (for the 136 live findings) | not re-run |
 
 Check: Day 5, 154 + 42 = 196 findings = 136 live + 60 dismissed = 110 live + 86 dismissed. Day 4, 175 + 40 = 215 = 142 + 73.
-Dismissal categories (judge run, `day5-stats.txt`): DUPLICATE 44, DESIGN_DIVERGENCE 14, KNOWN_LIMITATION 2.
+Dismissal categories (judge run, [campaign working file]): DUPLICATE 44, DESIGN_DIVERGENCE 14, KNOWN_LIMITATION 2.
 Day-5 live by kind (judge run): reveal_mismatch 46, only_mypy 44, only_ty 22, crash 20, reveal_unpaired 4. After replay: 36, 34, 21, 18, 1.
 
 Per-program rates (computed here):
@@ -59,7 +59,7 @@ Parents: 51 files in [run output] at the end (`check_hits.py 0.80`: 0 with probl
 Run-log gen passes for Day 5: pending 250 -> 236 -> 216 -> 196 -> 180 (answers arriving), then 139 -> 0 with written 250. The file records the pass lines
 but not the grouping of the two answer batches, so I do not report more than that.
 
-## 3. Day-5 morning results (details: `day5-morning.md`)
+## 3. Day-5 morning results (details: [campaign working file])
 
 Entries added or widened (all with the issue body read via read-only `gh`): `MYPY-21937-REVEAL` (new), `TY-876` (also `~F.X`), `MYPY-22339` (also a public property setter),
 `MYPY-16830` and `MYPY-16830-REVEAL` (new, enum value aliases), `TY-4148` / `MYPY-22361` (local binding). Replay: `verify-sample: 30/30 identical`, 26 findings changed
@@ -70,7 +70,7 @@ Entries added or widened (all with the issue body read via read-only `gh`): `MYP
 | Candidate | Evidence | Status |
 |---|---|---|
 | pyright `RangeError: Maximum call stack size exceeded` (typeUtils.ts) on a descriptor with class-body decorators on `__get__`/`__set__` | 2 live findings in Day 5; smaller reproducer [run output] crashes pyright 1.1.414, re-run by hand (step 2/5); mypy and ty give ordinary arg-type errors; CPython runs. Promoted to [run output] (step-2 hit + this one) | UNVERIFIED, no Plan §6 checklist; duplicate search incomplete (PYRIGHT-11961 is a different trigger; old closed RangeError issue bodies not read). pyright on PyPI is still 1.1.414, so no newer release to retest |
-| ty protocol-flatten stack overflow (C2) | 9 findings in the `ty:signal-SIGABRT` pattern, 8 of them C2 per the morning grouping | Stage-A verified Day 4, draft exists (`day3-issue-drafts.md`), not filed |
+| ty protocol-flatten stack overflow (C2) | 9 findings in the `ty:signal-SIGABRT` pattern, 8 of them C2 per the morning grouping | Stage-A verified Day 4, draft exists ([campaign working file]), not filed |
 | mypy reflected operator on metaclasses (`A * B`, `A + B`, `A @ B`) | 8 live findings, runtime evidence strong | Stage-A draft, not filed |
 | ty alias narrowing across a loop back edge | part of the 22 stale-alias findings | Stage-A draft, not filed |
 | mypy silent on inconsistent generic bases (`type(...)`, `types.new_class`, and a plain `class` statement) | 4 live findings; mypy checks no inconsistent generic bases | UNVERIFIED, no mypy issue found by search, candidate for a later report |
@@ -88,7 +88,7 @@ Reclassified in Day 5 (not bugs, or not new):
 
 ## 5. Remaining pipeline weaknesses
 
-* `seeds --mutate K` has no variant line (`day5/pipeline-review.md`, issue 1). The Day-4 report was not amended, so its wrong numbers still read as true there (review issue 2); this report and the run log carry the corrections.
+* `seeds --mutate K` has no variant line ([campaign working file], issue 1). The Day-4 report was not amended, so its wrong numbers still read as true there (review issue 2); this report and the run log carry the corrections.
 * The widened C1 predicate is whole-program and name-based: a program with a C1-shaped class and a different stack-overflow trigger would still be closed as TY-4148 (tool + signature gate mitigates it).
 * New entry matchers are syntactic: `enum_value_alias` ignores `auto()` and custom `__new__`; `flag_is_chain` does not check that the chain covers every member.
 * The runtime-evidence rule reads `...` in recursive-alias reveals as a variadic tuple, giving false "strong" evidence (a normaliser change is still open).
@@ -106,7 +106,7 @@ Reclassified in Day 5 (not bugs, or not new):
 ## 7. Not verified
 
 - Every candidate in section 4 is unverified: no Plan §6 checklist, no reduction, no run on newer releases (pyright has none; ty/mypy not re-run in this step).
-- Family and parent grouping of the 110 live findings is by file name (`day5-morning.md` §3), not by reading each program.
+- Family and parent grouping of the 110 live findings is by file name ([campaign working file] §3), not by reading each program.
 - The triage patterns were not regenerated after the morning replay, so no post-replay pattern count exists.
 - Whether the Day-5 prompt distinctness (250 of 250) is caused by the 1b variant line: most Day-5 groups use `--n 1`, so a `--n 2` before/after comparison was not made.
 - Why 0 preflight rejections occurred in Day 5 against 24 in Day 4 was not investigated.

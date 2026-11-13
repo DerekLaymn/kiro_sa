@@ -13,14 +13,14 @@ Day 7 vs Day 8 is not like for like. The KB and the harness changed before the D
 | Phase | What | Result |
 |---|---|---|
 | 1 | Pipeline: ParamSpec `self_annotated_dunder_call` family triaged, 4 reductions e1 to e4; KB entries and matchers; harness records caught exceptions; display-noise canonicaliser; 82 new tests, then 24 more after review (iteration 2) | 604 passed, 20 PASS / 0 FAIL, `check_hits.py 0.80` 42 files / 0 problems |
-| 2 | Morning plan `day8-morning.md`, crash-parent probe, reserve of 26 programs, scripts [campaign working file], dry run | `pending=250 written=0` on the dry run; no generation |
-| 3 | `gen_pass.sh` 0 / 1 / 2, 51 headless worker sessions (`claude-haiku-5.5`, effort `medium`) | `pending=0 written=250`; `inbox_check.py` exit 0 (`prompts=251 (retry prompts=1) answers=251 answered=251 pending=0 orphan_answers=0 malformed_keys=0`) |
+| 2 | Morning plan [campaign working file], crash-parent probe, reserve of 26 programs, scripts [campaign working file], dry run | `pending=250 written=0` on the dry run; no generation |
+| 3 | [campaign working file] 0 / 1 / 2, 51 headless worker sessions (`claude-haiku-5.5`, effort `medium`) | `pending=0 written=250`; `inbox_check.py` exit 0 (`prompts=251 (retry prompts=1) answers=251 answered=251 pending=0 orphan_answers=0 malformed_keys=0`) |
 | 4 | Judge `kbloop_run.py ... --jobs 14 --pyright-only`, `TYPEDIFF_LLM=null` | `250/250 ok`, 72 s, exit 0 |
 | 5 | Morning decisions on parents and KB | 0 promoted, 2 retired, 0 KB entries, `check_hits.py 0.80` 40 files / 0 problems |
 | 6 | Verification of 9 candidates (13 strong findings in 11 programs, class F, one `only_pyright` row, ParamSpec reductions) | 3 STILL-BUG-NEW, 2 DUPLICATE, 3 NOT-A-BUG, 1 no new bug (inside it, e4 is a duplicate of ty#3666) |
 | 7 | This report | see section 9 |
 
-Generator model: all 51 worker sessions in `~/.kiro/sessions` have `"modelId": "claude-haiku-5.5"` and `"effortLevel": "medium"`; none mentions opus, gpt-* or sol-5.6 (run log item 31). Day 7 had 46 sessions.
+Generator model: all 51 worker sessions in the session logs have `"modelId": "claude-haiku-5.5"` and `"effortLevel": "medium"`; none mentions opus, gpt-* or sol-5.6 (run log item 31). Day 7 had 46 sessions.
 
 Memory: lowest `MemAvailable` during the judge run 9852200 kB (9.40 GiB), first sample 11131856 kB (Day 7: 10221 MB lowest); 0 lines matching `oom|out of memory|killed process` in the journal for the window (3505 lines), no `systemd-oomd` entries. `--jobs 14` was kept.
 
@@ -60,13 +60,13 @@ Auto-closed crashes: 15, by closing reference TY-4898 8, MYPY-22361 3, TY-4148 3
 
 Live by kind, Day 7 then Day 8: reveal_mismatch 43 / 67, only_mypy 23 / 48, only_pyright 19 / 20, only_ty 14 / 14, concern_mismatch 7 / 5, crash 1 / 1. The rise is in `reveal_mismatch` (+24) and `only_mypy` (+25).
 
-`only_pyright` runtime relations (`day8-only-pyright-relations.txt`, run log item 35): `runtime_contradicts` 20, `runtime_supports` 1. Day 7 had 0 of 19 before the Phase-1 harness change, and 1 of 19 after it (run log item 11). The one Day-8 row is `seed-8af1b011a91f` D1; it was read in Phase 6 and is NOT-A-BUG (D8-8).
+`only_pyright` runtime relations ([campaign working file], run log item 35): `runtime_contradicts` 20, `runtime_supports` 1. Day 7 had 0 of 19 before the Phase-1 harness change, and 1 of 19 after it (run log item 11). The one Day-8 row is `seed-8af1b011a91f` D1; it was read in Phase 6 and is NOT-A-BUG (D8-8).
 
 Strong runtime evidence on a live finding: 13 findings in 11 programs (Day 7: 5 findings).
 
 ## 3. Per group
 
-Day 8 groups are the subdirectories of [run output] that hold a mutant's parent (`phase4/group_yield.py`); they differ from the Day-7 groups, so there is no row-by-row comparison. Planned mix (run log item 29): 40 crash, 26 reserve, 18 pyright descriptors, 8 promoted parent, 120 fresh, 38 seed mutants. The discrepancy column is live + dismissed - crash events (derived here; the column sums to 208). "Live" and "strong" are findings, not programs. Per-group discrepancies were not captured by `group_yield.py`.
+Day 8 groups are the subdirectories of [run output] that hold a mutant's parent ([campaign working file]); they differ from the Day-7 groups, so there is no row-by-row comparison. Planned mix (run log item 29): 40 crash, 26 reserve, 18 pyright descriptors, 8 promoted parent, 120 fresh, 38 seed mutants. The discrepancy column is live + dismissed - crash events (derived here; the column sums to 208). "Live" and "strong" are findings, not programs. Per-group discrepancies were not captured by `group_yield.py`.
 
 | Group | Programs | Programs with a live finding | Discrepancies (derived) | Crash events | Live | Strong | Dismissed | Live per program |
 |---|---|---|---|---|---|---|---|---|
@@ -150,7 +150,7 @@ Promoted 0, retired 2, hits 42 to 40, `check_hits.py 0.80` 40 files / 0 problems
 
 ## 7. Weaknesses
 
-* Three KB entries queued in Phase 2 are still not implemented: `TY-NONFINAL-PATTERN` (11 live Day-7 rows), `ASSERT-NEVER-ALL-REJECT` (6), and a wider `JOIN-VS-UNION` (3). The Phase-2 plan expected about 20 to 25 more live findings from these classes (`day8-morning.md` section 10). They still match live rows in the Day-8 triage (`concern_mismatch assert_never` 4 rows, `only_mypy arg-type ... describe(v)`, `reveal_mismatch` `& ~Name`). That is part of the Day-8 live count of 155.
+* Three KB entries queued in Phase 2 are still not implemented: `TY-NONFINAL-PATTERN` (11 live Day-7 rows), `ASSERT-NEVER-ALL-REJECT` (6), and a wider `JOIN-VS-UNION` (3). The Phase-2 plan expected about 20 to 25 more live findings from these classes ([campaign working file] section 10). They still match live rows in the Day-8 triage (`concern_mismatch assert_never` 4 rows, `only_mypy arg-type ... describe(v)`, `reveal_mismatch` `& ~Name`). That is part of the Day-8 live count of 155.
 * Two matchers are too narrow for known duplicates (run log item 46): `mentions_self` does not read a quoted `'Self'` annotation (2 live `only_mypy` findings of `3a63c673`, a ty#4656 duplicate), and `TY-2792-READONLY` requires the assignment in the scope of the stale narrowing (2 programs, 3 strong findings, D8-2). They are code changes, not entries, and were not made.
 * The runtime-evidence rule gave 13 strong live findings, and none of them is a new bug of its own: 4 + 1 rediscoveries of unfiled drafts, 3 + 2 duplicates, 3 not-a-bug. Strong evidence from the runtime says the checker's type is wrong for the observed value, not that the checker is wrong by its own rules (D8-3, D8-4).
 * `runtime_supports` for `only_pyright` fired once in 20 (and the one row is NOT-A-BUG). The Phase-1 harness change moved it from 0 to 1 of 19 on Day 7 and 0 to 5 of 37 on Day 6; the 0.7 weighting is still untested on a true positive.

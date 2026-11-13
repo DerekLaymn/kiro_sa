@@ -22,7 +22,7 @@ Branch `kb-loop`, worktree `.worktrees/kb-loop`. Deterministic stage only (`TYPE
 - `typediff kb-selftest`: **8/8 PASS** (TY-REDECLARATION, TY-CALLABLE-DUNDER, TY-STRICT-EQUALITY, TY-SELF-UPPER-BOUND,
   ANNOTATION-ONLY-READ, MYPY-15182-NEW-RETURNS, JOIN-VS-UNION-CALLABLE, MDTEST-TODO).
 
-### Copied from Derek's work (by hand, selected pieces only)
+### Copied from a teammate's work (by hand, selected pieces only)
 
 From `origin/main`:
 
@@ -47,7 +47,7 @@ From `origin/feat/harvest-pyright-typeshed` (commit `c354744`), via `git apply -
 
 From `origin/progress/pipeline-fixes-day2`: nothing.
 
-Not copied: run artifacts, `.agents/`, generated `gen/` programs, finding reports, Derek's other kb.py/rules.py/discrepancy.py/typenorm.py changes.
+Not copied: run artifacts, `.agents/`, generated `gen/` programs, finding reports, the other kb.py/rules.py/discrepancy.py/typenorm.py changes.
 
 ### After integration
 
@@ -187,7 +187,7 @@ CONFIG_ARTIFACT 58 (47), SPEC_AMBIGUITY 759, INVALID_TEST 245, KNOWN_LIMITATION 
 
 ## Round 2 (crash detection + one more pattern batch)
 
-Scope given by the user: (A) fix our own crash-detection defects from [agent working file] section 6, (B) classify the next
+Scope given: (A) fix our own crash-detection defects from [agent working file] section 6, (B) classify the next
 pattern blocks, (C) report numbers. Same safety rules as round 1. Round 2 re-adjudicated from the saved round-1 reports
 (`python scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 100`, result: 100/100 identical to a full checker
 re-run), then the 23 crash programs were re-run with the real checkers (`scripts/kbloop_run.py [run output] ...`, 242 s) and their reports
@@ -216,7 +216,7 @@ signatures (timeout 8, pyright internal_error:RangeError 7, signal 7 = ty stack 
 | pyright `expected_text` docs | - | - | pyright docs do not mention it (searched docs/*.md); the source code was used instead |
 | only_mypy assignment / arg-type / valid-type / no-redef / has-type, concern_mismatch, assert_type mismatches | ~2500 | undecided | no readable upstream issue or doc found in this round; kept live and listed below |
 
-Stopping rule: round 2 was the last round requested by the user. Natural-stop note: the second batch (only_ty/only_mypy samples) produced no cleanly
+Stopping rule: round 2 was the last round requested by the authors. Natural-stop note: the second batch (only_ty/only_mypy samples) produced no cleanly
 classifiable dismissal pattern, only a hint, so a further round would mostly need human or LLM judgement, not more deterministic entries.
 
 ### (C) Numbers
@@ -231,7 +231,7 @@ Total since the start: all -10.5%, tuning -10.8%, hold-out -9.2%. Round-2 dismis
 (245 -> 309). Crash findings 25 -> 24, with 23 now confirmed instead of 10 (the other 15 were review items).
 Live by kind after round 2 (all): only_mypy 3116, only_ty 1982, reveal_mismatch 2727, concern_mismatch 903, runtime_miss 73, reveal_unpaired 44, crash 24.
 
-Pipeline defects found in round 2: P1-P5 (all fixed). Candidate bugs (live): see `docs/kb-loop-candidates.md`, section "Crashes".
+Pipeline defects found in round 2: P1-P5 (all fixed). Candidate bugs (live): see `results/kb-loop-candidates.md`, section "Crashes".
 
 ### Final verification
 See the end of this file (pytest and kb-selftest results).
@@ -249,5 +249,5 @@ See the end of this file (pytest and kb-selftest results).
 
 - `python -m pytest tests -q`: 137 passed, 0 failed.
 - `typediff --python-version 3.13 kb-selftest`: 12 PASS, 0 FAIL.
-- Calibration: positives fetched (211 cases). After the round-1 narrowing, ty#4841 and mypy#7935 are kept (re-run `scripts/kbloop_calib_subset.py`); no known-real bug is newly dismissed by this work. Round-2 changes (crash parsing, PYRIGHT-REVEAL-EXPECTED-KWARG, hint-only EXPECTED-ERROR-ORACLE) cannot dismiss a calibration positive: none of the 211 sources uses `expected_text`/`expected_type`. Five positives (ty#4872, #4835, #4817, #4786, #4713) are dismissed by pre-existing entries, also with the baseline code; listed as C-2 in `docs/kb-loop-candidates.md`.
+- Calibration: positives fetched (211 cases). After the round-1 narrowing, ty#4841 and mypy#7935 are kept (re-run `scripts/kbloop_calib_subset.py`); no known-real bug is newly dismissed by this work. Round-2 changes (crash parsing, PYRIGHT-REVEAL-EXPECTED-KWARG, hint-only EXPECTED-ERROR-ORACLE) cannot dismiss a calibration positive: none of the 211 sources uses `expected_text`/`expected_type`. Five positives (ty#4872, #4835, #4817, #4786, #4713) are dismissed by pre-existing entries, also with the baseline code; listed as C-2 in `results/kb-loop-candidates.md`.
 - Replay equals a full checker re-run on a random 100 programs in both passes (round1 -> round2: 100/100, round2b -> round3: 100/100).

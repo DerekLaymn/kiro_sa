@@ -4,7 +4,7 @@ How many programs each day produced, how many findings the deterministic judge a
 
 ## Live-rate trend per day
 
-Judge-run figures as recorded in each `dayN-stats.txt` (the KB at the time of the run; Days 3 to 5 with ty 0.0.84, Day 5 judged before its morning entries). "Findings" = discrepancies + tool crash events. Rates computed here. Days 1 and 2 are a different regime (a harvested corpus, no generation) and are not in the table: Day 1 ran 29 hand seeds (35 discrepancies, 25 live, 14 programs with live), Day 2 ran 5086 programs with 7277 live findings at the end.
+Judge-run figures as recorded in each day's stats file (a scratch file of the campaign; the KB at the time of the run; Days 3 to 5 with ty 0.0.84, Day 5 judged before its morning entries). "Findings" = discrepancies + tool crash events. Rates computed here. Days 1 and 2 are a different regime (a harvested corpus, no generation) and are not in the table: Day 1 ran 29 hand seeds (35 discrepancies, 25 live, 14 programs with live), Day 2 ran 5086 programs with 7277 live findings at the end.
 
 | Day | Programs | Discrepancies | Tool crash events | Findings | Auto-closed | Live | Live per program | Programs with live | Live w/o `only_pyright` per program | Drafts added |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -40,7 +40,7 @@ Reading the trend: the live rate per program did not fall steadily, because the 
 | 9 | `5a16806` | 39 | 12 | 7 | 47 |
 | 10 | `c6c5a9a` | 39 | 12 | 7 | 49 |
 
-Day 3 added 20 entries and 2 prior stances after the user's team-filed upstream crashes and discrepancy bugs were recorded. Day 10 added two matcher entries in `kb.py` only. The `known_upstream.json` entries are matched by message, source shape and (for crashes) signal; prior stances never dismiss.
+Day 3 added 20 entries and 2 prior stances after the authors' team-filed upstream crashes and discrepancy bugs were recorded. Day 10 added two matcher entries in `kb.py` only. The `known_upstream.json` entries are matched by message, source shape and (for crashes) signal; prior stances never dismiss.
 
 How much the KB changed live counts, measured by replaying old reports on a later KB (replay output, not a new judge run):
 

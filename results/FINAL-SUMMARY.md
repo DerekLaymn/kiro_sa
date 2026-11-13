@@ -10,7 +10,7 @@ Pins since Day 6 (Day 5 for ty): mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython
 
 Days 1 and 2 improved the deterministic judge on a harvested corpus (5129 programs) with no LLM and no bug hunting. From Day 3 on, each day mutated or freshly generated about 250 small Python programs with a model (a `claude-haiku-5.5` stand-in at effort `medium`, through a file bridge), ran mypy, ty and pyright plus CPython on each, let the knowledge base (KB) and rules close the discrepancies that are known duplicates, design differences or noise, and read the remaining ones by hand. A read candidate became a draft only after a reduction, a run on the pinned and the newest versions of each tool, a duplicate search on the trackers, and a verdict. Programs that showed a new pattern became parents for the next day's mutation (the 36 parents left after Day 10 are in [`seeds/parents/`](../seeds/parents/)); parents that only reproduced known findings were retired.
 
-Result: 12 drafts with verdict STILL-BUG-NEW (section 5). Drafts 1 to 9 are filed by the user's drafting account, draft 2 is already fixed upstream, drafts 10 to 12 are not filed. Confidence runs from 0.35 to 0.9; only draft 2 is at 0.9.
+Result: 12 drafts with verdict STILL-BUG-NEW (section 5). Drafts 1 to 9 are filed by the authors' drafting account, draft 2 is already fixed upstream, drafts 10 to 12 are not filed. Confidence runs from 0.35 to 0.9; only draft 2 is at 0.9.
 
 ## 2. Pipeline improvements, with commits
 
@@ -19,7 +19,7 @@ All commits are in the `git log` of this repository.
 | Day | Change | Commit |
 |---|---|---|
 | 1 to 2 | Parallel corpus runner and fixed-seed 20 % hold-out split | `74a782a` |
-| 1 to 2 | Friend work integrated (mypy#9658 matcher, public issues, pyright/typeshed harvest), kb-loop baseline | `0f1d39b` |
+| 1 to 2 | Teammate work integrated (mypy#9658 matcher, public issues, pyright/typeshed harvest), kb-loop baseline | `0f1d39b` |
 | 1 to 2 | Origin oracle, MYPY-948 and suite-empty-bodies entries, replay tooling (`--rerun-runtime`) | `0d517b7`, `c324ac6` |
 | 1 to 2 | Crash detection (signals, pyright internal errors, no double count, head+tail excerpts, finer signatures) | `178a862` |
 | 2 | `assert_type` literal retention and first-assignment entries; REVEAL-ERROR-RECOVERY; MYPY-13807-ALIASED-CONDITIONS; NameError policy (user decision); stale-alias guard | `fbf9b12`, `c1d243b`, `9456642`, `ba8fbe0`, `a4147b3`, `10dd9b1`, `d924841` |
@@ -41,7 +41,7 @@ All commits are in the `git log` of this repository.
 | 10 | `TY-CONTEXTMANAGER-ITERATOR-DEPRECATED` (closed 25 Day-9 rows and 12 Day-10 rows) | `63cd5b2` |
 | 10 | `MYPY-8595-METACLASS-CALL` (closed 4 Day-10 rows and 1 Day-9 row) | `334ff8c` |
 
-Tests and self-test: 144 passed at the start of Day 2 (`day2-run-report.md`), 360 on Day 3, 373 on Day 4, 422 on Day 5, 426 on Day 6, 498 on Day 7, 604 on Day 8, 655 on Day 9, **730 on Day 10**. `kb-selftest`: 11 PASS at the start of Day 2, 20 on Day 3, 21 on Days 4 and 5 (20 after the ty bump removed one firing entry), 20 on Days 6 to 10.
+Tests and self-test: 144 passed at the start of Day 2 ([campaign working file]), 360 on Day 3, 373 on Day 4, 422 on Day 5, 426 on Day 6, 498 on Day 7, 604 on Day 8, 655 on Day 9, **730 on Day 10**. `kb-selftest`: 11 PASS at the start of Day 2, 20 on Day 3, 21 on Days 4 and 5 (20 after the ty bump removed one firing entry), 20 on Days 6 to 10.
 
 ## 3. KB growth
 
@@ -60,7 +60,7 @@ Tests and self-test: 144 passed at the start of Day 2 (`day2-run-report.md`), 36
 | 9 | `5a16806` | 39 | 12 | 7 | 47 |
 | 10 | `c6c5a9a` | 39 | 12 | 7 | 49 |
 
-Day 3 added 20 entries and 2 prior stances after the user's team-filed upstream crashes and discrepancy bugs were recorded. Day 10 added two matcher entries in `kb.py` only. The `known_upstream.json` entries are matched by message, source shape and (for crashes) signal; prior stances never dismiss.
+Day 3 added 20 entries and 2 prior stances after the authors' team-filed upstream crashes and discrepancy bugs were recorded. Day 10 added two matcher entries in `kb.py` only. The `known_upstream.json` entries are matched by message, source shape and (for crashes) signal; prior stances never dismiss.
 
 How much the KB changed live counts, measured by replaying old reports on a later KB (replay output, not a new judge run):
 
@@ -75,7 +75,7 @@ How much the KB changed live counts, measured by replaying old reports on a late
 
 ## 4. Live-rate trend per day
 
-Judge-run figures as recorded in each `dayN-stats.txt` (the KB at the time of the run; Days 3 to 5 with ty 0.0.84, Day 5 judged before its morning entries). "Findings" = discrepancies + tool crash events. Rates computed here. Days 1 and 2 are a different regime (a harvested corpus, no generation) and are not in the table: Day 1 ran 29 hand seeds (35 discrepancies, 25 live, 14 programs with live), Day 2 ran 5086 programs with 7277 live findings at the end.
+Judge-run figures as recorded in each day's stats file (a scratch file of the campaign; the KB at the time of the run; Days 3 to 5 with ty 0.0.84, Day 5 judged before its morning entries). "Findings" = discrepancies + tool crash events. Rates computed here. Days 1 and 2 are a different regime (a harvested corpus, no generation) and are not in the table: Day 1 ran 29 hand seeds (35 discrepancies, 25 live, 14 programs with live), Day 2 ran 5086 programs with 7277 live findings at the end.
 
 | Day | Programs | Discrepancies | Tool crash events | Findings | Auto-closed | Live | Live per program | Programs with live | Live w/o `only_pyright` per program | Drafts added |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -96,7 +96,7 @@ Reading the trend: the live rate per program did not fall steadily, because the 
 
 ## 5. Verified bugs (drafts 1 to 12)
 
-"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `results/bugs.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the user on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the user's account; whether the user ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the author listing and `gh issue view` of 2026-11-06 (read-only).
+"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `results/bugs.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the authors on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the authors' account; whether the authors ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the author listing and `gh issue view` of 2026-11-06 (read-only).
 
 | # | Tool | One-line description | Verdict | Conf. | User playground | Filed / state |
 |---|---|---|---|---|---|---|
@@ -119,9 +119,9 @@ Notes on the table:
 * By tool: ty 4 (drafts 1, 2, 4, 6), mypy 6 (3, 5, 8, 9, 10, 11), pyright 2 (7, 12); 12 in total.
 * By class (the drafts' own labels, grouped here): 2 crashes (1, 7); 5 false negatives (2, 4, 10, 11, 12); 5 false positives or wrong inference (3, 5, 6, 8, 9).
 * Draft 2 is the highest-confidence draft (0.9, playground-verified). It was fixed upstream the day it was filed (ruff#30074 merged), which is the only confirmed maintainer outcome that is a fix. Of the open drafts, only ty#4933 (a maintainer reply about a fix PR with blockers) and mypy#22377 (a contributor offered a fix) have comments; ty#4941, mypy#22375, ty#4958, pyright#11984, mypy#22385 and mypy#22386 have none.
-* The Day-10 draft 11 text originally said "21 `only_ty` rows"; the saved reports give 10 in the three named mutants. Corrected in phase 7 (`day10-report.md` section 5).
+* The Day-10 draft 11 text originally said "21 `only_ty` rows"; the saved reports give 10 in the three named mutants. Corrected in phase 7 (`results/days/day10-report.md` section 5).
 
-## 6. Previously filed issues by the user's accounts (context only)
+## 6. Earlier reports by the authors (context only)
 
 States read with `gh issue view` on 2026-11-06. The listed authors are as GitHub shows them (`DerekLaymn` for the drafting account; `Choco-princess` and `Pika-pikachu30` for the others); these are context for the KB entries, not part of the 12 drafts.
 
@@ -178,7 +178,7 @@ Candidates that looked like bugs and were closed as duplicates, fixed, or design
 
 ## 10. Recommended filing order (unfiled drafts 10, 11, 12)
 
-The user pastes these; the agent never files. Drafts 1 to 9 are already filed (section 5) and need no action unless the user wants to add the draft-2 or draft-3 context to the existing issues.
+The authors paste these; the pipeline never files. Drafts 1 to 9 are already filed (section 5) and need no action unless the authors want to add the draft-2 or draft-3 context to the existing issues.
 
 Before each filing: (1) run the reduced program on the matching playground (`<PLAYGROUND LINK>` is still a placeholder; use the pin and the newest version, and note that the playground's tool version may differ from the pinned one, for example pyright 1.1.414); (2) run one last **exact-title search** on the target tracker (`gh search issues "<exact title>" --repo <repo>` and the same for PRs, plus the nearest-title variants), because the trackers receive new reports daily (the last search for these three was 2026-11-06 or earlier); (3) copy the body without the fence lines and set the title from the draft.
 
@@ -192,11 +192,11 @@ Order logic: evidence strength first (an inconsistency within one tool, then a g
 
 ## 11. What was NOT verified
 
-* Drafts 10, 11 and 12 on a playground; drafts 3 to 9 on a playground by the user (not recorded).
+* Drafts 10, 11 and 12 on a playground; drafts 3 to 9 on a playground by the authors (not recorded).
 * ty `main`, pyright `main`, mypy PR branches (for example PR #21942); none was built. A fix may already be on `main` for any open draft.
 * Causes in mypy (`check_op_reversible` for draft 9, `partially_defined.py` for draft 10, `infer_lambda_type_using_context` for draft 11) were read from master source, not shown by instrumentation; draft 3 is the only cause confirmed by instrumenting mypy master.
 * The reason ty#4934 was closed without a comment: the timeline shows ruff#30074 cross-referenced and merged the same day, so I read it as the fix; no maintainer text says so.
-* Whether the `gh` author names are all accounts of the user; the task lists them as such and I did not check.
+* Whether the `gh` author names are all accounts of the authors; the task lists them as such and I did not check.
 * How much of the changes in live rate comes from the KB versus the mix on Days 3 to 6 (no replay on the final KB), and for Days 7 to 10 beyond the KB rows shown in section 3.
 * Most live findings of every day (section 8), in particular the unreduced Day-10 clusters (28 `reveal_mismatch | uncomparable`, 12 `only_ty` dunder `invalid-argument-type`, 17 `only_pyright runtime_contradicts`).
 * Whether the eight least-used operators did what their names say.

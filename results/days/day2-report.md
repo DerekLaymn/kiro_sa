@@ -205,7 +205,7 @@ Found by the reviewer or by my own audits, all fixed in this run:
 2. **Entry text contradicting the matcher**: the assert-type docstring said the other tool is silent, but pyright was never consulted; 75 of 130 dismissals had a pyright diagnostic. Fixed (row 4).
 3. **Stale alias**: `is_none = a.x is None; a.clear(); if not is_none: reveal_type(a.x)` was dismissed. Fixed (row 9), 2 tuning findings re-opened.
 4. **Dismissal on a statement with a CPython exception**: `reveal_type(super())` (RuntimeError). Fixed (row 8).
-5. **ANNOTATION-ONLY-READ dismisses runtime-crash evidence**: `runtime_override=False` means 100 of its dismissals sit on programs where CPython raised a NameError / UnboundLocalError. Reviewed in round 2 and left in place as a tracked mypy limitation (python/mypy#15416 and others); policy for NameError evidence was decided by the user in round 3 (strong evidence, no dismissal change). It is still the single largest "blind" closing rule for runtime crashes.
+5. **ANNOTATION-ONLY-READ dismisses runtime-crash evidence**: `runtime_override=False` means 100 of its dismissals sit on programs where CPython raised a NameError / UnboundLocalError. Reviewed in round 2 and left in place as a tracked mypy limitation (python/mypy#15416 and others); policy for NameError evidence was decided by the authors in round 3 (strong evidence, no dismissal change). It is still the single largest "blind" closing rule for runtime crashes.
 
 Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismissal):
 
@@ -258,7 +258,7 @@ Not fixed (reviewer round 3, `approved=false`; none was a confirmed false dismis
 
 ### 6.2 Recorded in the log, kept as calibration data or notes
 
-**ty constant folding on a tuple subclass (INCIDENTAL, strongest of the set).** Reproducer: `calibration/must_stay_live/ty_constant_fold_tuple_subclass.py` (the same program was first run as [temp file]).
+**ty constant folding on a tuple subclass (INCIDENTAL, strongest of the set).** Reproducer: `calibration/known_duplicates/ty_constant_fold_tuple_subclass.py` (the same program was first run as [temp file]).
 
 ```python
 class Restricted(tuple[Literal[1]]):
@@ -311,7 +311,7 @@ Branch: [campaign working file] (local, not pushed).
 
 Target (> 50 %): not met on either set.
 
-Commit list (`git log --oneline main..campaign/day2-p1`, oldest at the bottom; the last commit adds this list to the report):
+Commit list (`git log --oneline main..<day-2 branch>`, oldest at the bottom; the last commit adds this list to the report):
 
 ```
 4055e85 docs: day-2 P1 final run report

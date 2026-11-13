@@ -3,7 +3,7 @@
 > Paths written as `[campaign working file]`, `[run output]`, `[agent working file]` or `[temp file]` point to scratch files of the original campaign that are not part of this repository.
 
 Branch [campaign working file]. Every number below is copied from a file or command output in the repo ([campaign working file],
-`day4-triage.txt`, `day4-run-log.md`, `day4/judge.done`, `day4/gen_pass.sh`, `day4/judge.sh`, `day3-verification.md`, `day4-morning.md`)
+[campaign working file], [campaign working file], `day4/judge.done`, [campaign working file], [campaign working file], [campaign working file], [campaign working file])
 or from a small script run over the 246 JSON reports in [run output] ([temp file], [temp file], not committed; the counts they
 produced are quoted). Rates are computed here from those counts. Nothing in sections 3 to 5 is a confirmed bug. Every candidate is
 UNVERIFIED and needs the Plan §6 checklist by a human. Issues filed: **0**. Nothing was pushed.
@@ -14,7 +14,7 @@ Latest releases used during verification: mypy 2.4.1, ty 0.0.97, mypy master 2.5
 ## Stage A summary (verification of the Day-3 candidates)
 
 Copied from [campaign working file] and compared row by row (14 rows). Full text and evidence: that file, [campaign working file]
-to `verify-v3.md` (reviewer approved: `verify-review.md`), drafts in `results/bugs.md`.
+to [campaign working file] (reviewer approved: [campaign working file]), drafts in `results/bugs.md`.
 
 | Candidate | Verdict | Duplicate / status | Draft |
 |---|---|---|---|
@@ -34,9 +34,9 @@ to `verify-v3.md` (reviewer approved: `verify-review.md`), drafts in `results/bu
 | 8b `Hashable` accepts class with `__eq__` and no `__hash__` | ty BUG (FALSE_NEGATIVE, 0.7) | NEW, none found | yes (ty) |
 
 Result: 4 new-bug drafts (C2, 1b, 6a, 8b), none filed. Day-3 "strong" evidence for IntEnum alias and recursive alias was an artefact
-(literal identity, recursive-alias printer), so neither is a bug. The table matches `day3-verification.md` (verified against the file).
+(literal identity, recursive-alias printer), so neither is a bug. The table matches [campaign working file] (verified against the file).
 
-**ty#4656** (Self parameter not enforced on inherited methods, reported by the user): closed "not planned" 2026-10-05; ty#4673 closed as
+**ty#4656** (Self parameter not enforced on inherited methods, reported by the authors): closed "not planned" 2026-10-05; ty#4673 closed as
 duplicate 2026-10-05; ty#4849 closed as duplicate 2026-10-28 (carljm: intentional). Outcome: design difference, not a bug. The pipeline
 already dismisses these as DESIGN_DIVERGENCE (`kb:TY-SELF-UPPER-BOUND`); only wording and data changed (`known_upstream.json`,
 `kb.py`, README, seeds/README, DESIGN §8, the internal plan §1). Commits 074ceb4, adead10; [campaign working file].
@@ -49,17 +49,17 @@ After the fix: 30/30 under 4 burners, 3/3 full suites at 360 passed. Commit 1c3c
 ## 1. Per-step table
 
 Commands are copied from [campaign working file], [campaign working file], [campaign working file] and [campaign working file].
-Unlike Day 3, the generate / file-bridge commands are saved (`gen_pass.sh`).
+Unlike Day 3, the generate / file-bridge commands are saved ([campaign working file]).
 
 | Plan label | What happened | Exact command (as recorded) | Result |
 |---|---|---|---|
 | setup | branch from [campaign working file] (7d4488d); dirs; latest tool installs; ty issue tracker snapshot | `mkdir [run output]`, [campaign working file]; latest tools in [temp file] (mypy 2.4.1, ty 0.0.97), mypy master in [temp file]; [temp file] refreshed | ty.json: 4060 issues (first `gh` attempt: network unreachable, retry ok) |
-| §6 verify ty#4656 | re-check the user's earliest bug | read-only `gh`; `TYPEDIFF_LLM=null` pipeline on `seeds/self_classmethods/*.py` and `examples/self_param_unsound.py` | design difference; wording-only change (see Stage A) |
+| §6 verify ty#4656 | re-check the authors' earliest bug | read-only `gh`; `TYPEDIFF_LLM=null` pipeline on `seeds/self_classmethods/*.py` and `examples/self_param_unsound.py` | design difference; wording-only change (see Stage A) |
 | flaky-test fix | `tests/test_runner_timeout_kills_group.py` | burner loops of 30 runs (see log) | 30/30, 3/3 full suites at 360 passed |
-| §6 verify C1..8b (3 verifier branches) | 14 candidate rows | per-file command templates in [campaign working file], `-v2.md`, `-v3.md` | 4 new-bug drafts |
-| §6 consolidate | rewrite `day3-verification.md`, create `day3-issue-drafts.md` | [temp file] (concatenates the three draft files, asserts 4 drafts) | done, committed 3383e2f. An earlier consolidate step died with a TLS error (section 7) |
+| §6 verify C1..8b (3 verifier branches) | 14 candidate rows | per-file command templates in [campaign working file], [campaign working file], [campaign working file] | 4 new-bug drafts |
+| §6 consolidate | rewrite [campaign working file], create [campaign working file] | [temp file] (concatenates the three draft files, asserts 4 drafts) | done, committed 3383e2f. An earlier consolidate step died with a TLS error (section 7) |
 | §3 morning: promote | 8 `day3-report` §5 programs into [run output] as `d4p_*.py` | [campaign working file]; `check_hits.py` (header, AREAS key, py_compile, preflight, CPython run, near-duplicates >= 0.80) | 51 files, 0 problems; 2 near-duplicates moved to [run output]; [run output] = 49 `.py` files |
-| §3 morning: retire | 2 new `known_upstream.json` entries | edit + `tests/test_upstream_day4.py` (13 new tests) | TY-4148 (crash), TY-876-ARGTYPE; others rejected (`day4-morning.md` §2); commit 78a6546 |
+| §3 morning: retire | 2 new `known_upstream.json` entries | edit + `tests/test_upstream_day4.py` (13 new tests) | TY-4148 (crash), TY-876-ARGTYPE; others rejected ([campaign working file] §2); commit 78a6546 |
 | §3 morning: replay | re-judge Day-3 `out` under the final KB | `.venv/bin/python scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 30` ([campaign working file]) | live 48 -> 43, dismissed 20 -> 25, verify-sample 30/30 identical |
 | §3 morning: checks | | pytest, kb-selftest | 373 passed; 21 PASS, 0 FAIL (at that point) |
 | §3 gen pass 0 (prompts, file bridge) | P2 mutation of [run output] + P3 fresh areas | `[campaign working file] 0`: three `$TD --llm file:$INBOX --python-version 3.13 generate` groups: `--from-seeds [run output] --n 1 --ops narrowing_construct_swap` and `--ops runtime_witness`; `--from-seeds [run output] --n 2 --ops feature_crossover`; `--area A --n 10` for A in overloads, protocols, dataclasses, typevartuple_unpack, enums_literals; all `--out-dir [run output]`, `PYTHONHASHSEED=0`, 3 retries each | pass 0: pending=246 written=0 |
@@ -74,7 +74,7 @@ Unlike Day 3, the generate / file-bridge commands are saved (`gen_pass.sh`).
 
 ## 2. Funnel, Day 3 vs Day 4
 
-Day-3 figures are from `results/days/day3-report.md` section 2. Day-4 figures are from [campaign working file], `day4-run-log.md` and the reports.
+Day-3 figures are from `results/days/day3-report.md` section 2. Day-4 figures are from [campaign working file], [campaign working file] and the reports.
 
 | Stage | Day 3 | Day 4 |
 |---|---|---|
@@ -181,7 +181,7 @@ None of these is a "CPython crash + silent checkers" case: CPython ran to succes
 |---|---|---|
 | pyright RangeError "Maximum call stack size exceeded" in `typeUtils.ts` (pyright 1.1.414) on a descriptor whose `__get__` and `__set__` are decorated with a plain function defined in the class body | crash signature `pyright:internal:RangeError`, `rule:crash:internal_error`, live; matches no entry, no Stage-A candidate | seed-947242212886; [run output]; [run output] |
 | mypy TypeVarTuple concatenation `join(a: tuple[*Ts], b: tuple[*Us]) -> tuple[*Ts, *Us]` with `return (*a, *b)` | mypy reveals `tuple[int, str]` for `join((1, "x"), (2.5,))`, runtime value `(1, 'x', 2.5)`; mypy also reports `[return-value] got tuple[object, ...], expected tuple[*Ts]`; ty reveals `tuple[object, ...]` | seed-7448e0c4c99f; [run output]; related: seed-8176b83d0a7d (`gen3_504999f8.py`, `tuple[*Left]`) |
-| ty salsa panic (`execute.rs:751:9`, same signature as C3) in two programs that are not C3 variants by parent | dismissed by `rule:crash:panic` only | seed-81b29558828f (`enums_literals/d4p_enums_intenum_true_alias_one__mut0_21c70781.py`); seed-32e61dbea91a (`paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_d0a5f4ba.py`). Whether they contain a `partial \| None` loop or are a different trigger is not checked |
+| ty salsa panic (`execute.rs:751:9`, same signature as C3) in two programs that are not C3 variants by parent | dismissed by `rule:crash:panic` only | seed-81b29558828f ([run output]); seed-32e61dbea91a ([run output]). Whether they contain a `partial \| None` loop or are a different trigger is not checked |
 | mypy missing a check that ty makes: `type("Mixed", (IntBase, StrBase), {})` with `Container[int]` and `Container[str]` bases | ty `invalid-generic-class`, mypy silent; CPython runs fine | seed-2d4bcd20aac0; `constructors_metaclasses/*type_call_generic_base__mut0_1ff6bc79.py`. Possibly a known mypy gap; no search made |
 | C1-family programs that stay live although `TY-4148` and `MYPY-22361` exist | `d4v_callables_mutual_call_attr` (seeds 6e1aafbae77b, bf0eb5293b88) and `d3p_self_classmethods_self_call_union__mut1_e3936d2f` (seed-13ae8bc04894) crash ty and mypy, but none of the three was closed by `kb:UPSTREAM-TY-4148` or `kb:UPSTREAM-MYPY-22361` (neither appears in `dismissed by entry`) | not a new bug; an entry gap: the entry conditions (e.g. TY-4148 `requires call_attr_own_type`) do not match these shapes. Why is not checked |
 
@@ -205,9 +205,9 @@ Not proposed: variants of C2, 1b, 6a, 8b (their `d4v_*` parents are already in [
 
 Worked:
 - Variants fix: `generate --n 2` gives distinct filenames and cache keys (fix `dc51a60`). For `feature_crossover` the prompt bodies are still identical (see Broke).
-- Saved script: [campaign working file] ran in about 1 s (earlier agent verified), idempotent, appends the pass line to `day4-run-log.md` and writes the gate file. Three passes took the inbox from pending=246 to 25 to 0.
+- Saved script: [campaign working file] ran in about 1 s (earlier agent verified), idempotent, appends the pass line to [campaign working file] and writes the gate file. Three passes took the inbox from pending=246 to 25 to 0.
 - Judge: 246 programs in 77 s with `--jobs 14`, `{'ok': 246}`, no runner errors. Day 3 needed 43 s for 160 programs (0.27 s vs 0.31 s per program).
-- Memory guard and process-group kill: `journalctl -u systemd-oomd --since -10h --no-pager | grep -c Marked` returned **0** (oomd kills in the last 10 h). No orphan `pyright` processes at report time (`ps aux | grep -c '[p]yright'` returned 0). The generation and judge phases ran without a recorded Kiro exit in the run log.
+- Memory guard and process-group kill: `journalctl -u systemd-oomd --since -10h --no-pager | grep -c Marked` returned **0** (oomd kills in the last 10 h). No orphan `pyright` processes at report time (`ps aux | grep -c '[p]yright'` returned 0). The generation and judge phases ran without a recorded session-runner exit in the run log.
 - Preflight lint at generation caught 25 of 246 answers before they were written (10.2 %), and all were replaced in one retry round.
 - Crash dedupe keeps the queue small: 24 of 40 crash findings (60 %) were closed by `rule:crash:signal` (22) or `rule:crash:panic` (2).
 

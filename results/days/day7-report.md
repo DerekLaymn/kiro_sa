@@ -13,8 +13,8 @@ Day 6 vs Day 7 is not like for like. The generation mix changed on purpose (fewe
 | Part | What | Result |
 |---|---|---|
 | A | KB: 4 narrow entries (`TY-2171`, `TY-2171-ASSERT`, `TY-2792`, `TY-2792-READONLY`), 2 calibration programs moved from `must_stay_live/` to `known_duplicates/` | 479 passed, 20 PASS / 0 FAIL |
-| B | opt-in `only_pyright` finding kind, 4 more parents retired, generation plan `day7-morning.md` | 498 passed after review fixes, 20 PASS / 0 FAIL, `check_hits.py 0.80` 45 files / 0 problems |
-| C | `gen_pass.sh` 0 / 1 / 2, 46 headless worker sessions (`claude-haiku-5.5`, effort `medium`), judge `kbloop_run.py ... --jobs 14 --pyright-only` | `224/224 ok`, 61 s; `inbox_check.py` exit 0 (`prompts=225 (retry prompts=1) ... orphan_answers=0 malformed_keys=0`) |
+| B | opt-in `only_pyright` finding kind, 4 more parents retired, generation plan [campaign working file] | 498 passed after review fixes, 20 PASS / 0 FAIL, `check_hits.py 0.80` 45 files / 0 problems |
+| C | [campaign working file] 0 / 1 / 2, 46 headless worker sessions (`claude-haiku-5.5`, effort `medium`), judge `kbloop_run.py ... --jobs 14 --pyright-only` | `224/224 ok`, 61 s; `inbox_check.py` exit 0 (`prompts=225 (retry prompts=1) ... orphan_answers=0 malformed_keys=0`) |
 | C | tests, KB self-test, hits check | 498 passed (71 s), 20 PASS / 0 FAIL, 42 files / 0 problems |
 | D | reduction, version matrix (ty 0.0.97 and 0.0.98, mypy 2.4.0 / 2.4.1 / master, pyright 1.1.414), duplicate searches | 6 candidates verified, 2 new drafts |
 
