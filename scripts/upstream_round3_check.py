@@ -1,4 +1,4 @@
-"""End-to-end check of the Day-3 upstream entries: every reproducer and every control from tests/data/upstream_round3 goes
+"""End-to-end check of the round-3 upstream entries: every reproducer and every control from tests/data/upstream_round3 goes
 through the real pipeline (``TYPEDIFF_LLM=null typediff --out <tmp> seeds <dir>``), one fresh output directory per file
 (so the dataset-level duplicate check cannot hide the result), and the decided_by / dismissal of each finding is printed.
 

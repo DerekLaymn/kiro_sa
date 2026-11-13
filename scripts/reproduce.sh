@@ -6,7 +6,7 @@
 #   scripts/reproduce.sh
 #
 # Steps: 1 install and tool versions, 2 test suite, 3 knowledge-base self-test, 4 deterministic judge on the seeds
-# (hand-written seeds + the 36 final parent programs, TYPEDIFF_LLM=null), 5 optional replay of the Day-10 round.
+# (hand-written seeds + the 36 final parent programs, TYPEDIFF_LLM=null), 5 optional replay of the final round.
 #
 # Environment variables:
 #   PYTHON=python3        interpreter (default: python3, else python)
@@ -74,7 +74,7 @@ print(f"programs={programs} discrepancies={discrepancies} findings by tier: " + 
 EOF
 
 if [ "${WITH_REPLAY:-0}" = 1 ]; then
-  echo "== replay of the Day-10 round (250 stored answers, no LLM)"
+  echo "== replay of the final round (250 stored answers, no LLM)"
   scripts/replay_final_round.sh "$WORK/replay-final-round"
 fi
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Replay the Day-10 round (250 generated programs) WITHOUT an LLM.
+# Replay the final generation round (250 generated programs) WITHOUT an LLM.
 #
 #   scripts/replay_final_round.sh [WORK_DIR]        default WORK_DIR: runs/replay-final-round (git-ignored)
 #   JOBS=4 PYTHON=python3 scripts/replay_final_round.sh
 #
 # 1. The 250 stored model answers (examples/replay/final-round/answers) are put into a file-bridge inbox.
-# 2. `typediff generate` is run with the same parents, operators and counts as on Day 10. It writes one prompt per request;
+# 2. `typediff generate` is run with the same parents, operators and counts as in the study. It writes one prompt per request;
 #    the prompt key is a hash of the prompt text, so every request finds its stored answer and the same programs come out.
 # 3. The deterministic judge (TYPEDIFF_LLM=null, mypy + ty + pyright + CPython, KB and rules) runs on the programs.
 #
