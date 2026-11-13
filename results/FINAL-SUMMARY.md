@@ -1,6 +1,6 @@
 # typediff fuzzing campaign, final summary (Rounds 1 to 10)
 
-The campaign did not file, comment on or open a PR for any issue by itself; the filing steps below were done by the authors. Every number comes from the per-round reports in [`rounds/`](rounds/), the issue drafts in [`bugs.md`](bugs.md), the git history of this repository, or read-only `gh` calls made on 2026-11-06 (issue states). Rates were computed while writing this file. Anything that could not be read is listed in section 11.
+The campaign did not file, comment on or open a PR for any issue by itself; the filing steps below were done by the authors. Every number comes from the per-round reports in [`rounds/`](rounds/), the issue drafts in [`bugs.md`](bugs.md), the git history of this repository, or read-only `gh` calls (issue states: 2026-11-13; the rest of the campaign: 2026-11-06). The states in the round reports and in sections 7 to 12 below were recorded at the time and may have changed. Rates were computed while writing this file. Anything that could not be read is listed in section 11.
 
 Pins since Round 6 (Round 5 for ty): mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Rounds 1 to 4 ran ty 0.0.84 (bumped in `ff8bd5e`).
 
@@ -8,7 +8,7 @@ Pins since Round 6 (Round 5 for ty): mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPy
 
 Rounds 1 and 2 improved the deterministic judge on a harvested corpus (5129 programs) with no LLM and no bug hunting. From Round 3 on, each round mutated or freshly generated about 250 small Python programs with a model (a `claude-haiku-5.5` stand-in at effort `medium`, through a file bridge), ran mypy, ty and pyright plus CPython on each, let the knowledge base (KB) and rules close the discrepancies that are known duplicates, design differences or noise, and read the remaining ones by hand. A read candidate became a draft only after a reduction, a run on the pinned and the newest versions of each tool, a duplicate search on the trackers, and a verdict. Programs that showed a new pattern became parents for the next round's mutation (the 36 parents left after Round 10 are in [`seeds/parents/`](../seeds/parents/)); parents that only reproduced known findings were retired.
 
-Result: 12 drafts with verdict STILL-BUG-NEW (section 5). Drafts 1 to 9 are filed by the authors' drafting account, draft 2 is already fixed upstream, drafts 10 to 12 are not filed. Confidence runs from 0.35 to 0.9; only draft 2 is at 0.9.
+Result: 12 drafts with verdict STILL-BUG-NEW (section 5). Drafts 1 to 9 are filed by the authors' drafting account (`DerekLaymn`); on 2026-11-13 drafts 2 and 6 are fixed upstream and 7 are open; drafts 10 to 12 are not filed. Confidence runs from 0.35 to 0.9; only draft 2 is at 0.9.
 
 ## 2. Pipeline improvements, with commits
 
@@ -94,19 +94,19 @@ Reading the trend: the live rate per program did not fall steadily, because the 
 
 ## 5. Verified bugs (drafts 1 to 12)
 
-"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `results/bugs.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the authors on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the authors' account; whether the authors ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the author listing and `gh issue view` of 2026-11-06 (read-only).
+"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `results/bugs.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the authors on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the authors' account; whether the authors ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the GitHub API of 2026-11-13 (read-only).
 
 | # | Tool | One-line description | Verdict | Conf. | User playground | Filed / state |
 |---|---|---|---|---|---|---|
-| 1 | ty | stack overflow when a class is checked against a protocol whose method annotates `self` as `Stream[Stream[T]]` | STILL-BUG-NEW (CRASH), none found | 0.80 | yes | ty#4933, open (labels `bug`, `fatal`; maintainer comment says a fix PR has blockers) |
-| 2 | ty | alias narrowing (`is_none = x is None`) survives a reassignment that reaches the use over a loop back edge | STILL-BUG-NEW, none found | 0.9 | yes | ty#4934, **closed completed** 2026-11-05; fixed by astral-sh/ruff#30074 "[ty] Invalidate aliased conditions across loop iterations" (merged 2026-11-05 22:09 UTC) |
-| 3 | mypy | reflected operator of a subclass metaclass ignored for class-object operands (`A * B`); cause confirmed by instrumenting mypy master | STILL-BUG-NEW | 0.7 | no | mypy#22377, open; a contributor offered to fix it (2026-11-06) |
-| 4 | ty | class with `__eq__` and no `__hash__` accepted as `Hashable` | STILL-BUG-NEW | 0.7 | no | ty#4941, open (labels `bug`, `runtime semantics`, `unsoundness`) |
-| 5 | mypy | `Foo[int, str]` on a class with a `TypeVarTuple` followed by a defaulted `ParamSpec` is rejected and inferred as `Any`; runtime half is python/typing#2211 | STILL-BUG-NEW (mypy only) | 0.7 | no | mypy#22375, open (`bug`) |
-| 6 | ty | `except` clause sees the old value after a nested unpacking target failed half-way through an assignment | STILL-BUG-NEW (ty 0.0.97 and 0.0.98) | 0.5 | no | ty#4958, open, no labels |
-| 7 | pyright | `RangeError: Maximum call stack size exceeded` when a descriptor `__get__` is decorated by a class-body function without `self` | STILL-BUG-NEW (CRASH, pyright 1.1.414 = latest) | 0.8 | no | pyright#11984, open (`bug`) |
-| 8 | mypy | overloaded `__post_init__` of a dataclass: every overload item is checked against the InitVar signature, so an item without the InitVar type gets `[override]` | STILL-BUG-NEW (2.4.0, 2.4.1, master) | 0.6 | no | mypy#22385, open (`bug`) |
-| 9 | mypy | `a < b` for two operands of the same type tries `b.__gt__` first when `__lt__` and `__gt__` come from different classes of the MRO; the inferred type is that of the wrong method | STILL-BUG-NEW | 0.6 | no | mypy#22386, open (`bug`) |
+| 1 | ty | stack overflow when a class is checked against a protocol whose method annotates `self` as `Stream[Stream[T]]` | STILL-BUG-NEW (CRASH), none found | 0.80 | yes | ty#4933, open (labels `bug`, `fatal`, `protocols`, `method-receiver`, `cycles`; 3 comments, two from maintainers; no PR linked in the timeline) |
+| 2 | ty | alias narrowing (`is_none = x is None`) survives a reassignment that reaches the use over a loop back edge | STILL-BUG-NEW, none found | 0.9 | yes | ty#4934, **closed completed** 2026-11-05; fixed by astral-sh/ruff#30074 "[ty] Invalidate aliased conditions across loop iterations" (merged) |
+| 3 | mypy | reflected operator of a subclass metaclass ignored for class-object operands (`A * B`); cause confirmed by instrumenting mypy master | STILL-BUG-NEW | 0.7 | no | mypy#22377, open; 1 comment from a non-maintainer; linked PR [#22388](https://github.com/python/mypy/pull/22388) closed unmerged, [#22444](https://github.com/python/mypy/pull/22444) open |
+| 4 | ty | class with `__eq__` and no `__hash__` accepted as `Hashable` | STILL-BUG-NEW | 0.7 | no | ty#4941, open (labels `bug`, `runtime semantics`, `unsoundness`; assigned; fix PR astral-sh/ruff#30145 open) |
+| 5 | mypy | `Foo[int, str]` on a class with a `TypeVarTuple` followed by a defaulted `ParamSpec` is rejected and inferred as `Any`; runtime half is python/typing#2211 | STILL-BUG-NEW (mypy only) | 0.7 | no | mypy#22375, open (`bug`); linked PR #22378 closed unmerged |
+| 6 | ty | `except` clause sees the old value after a nested unpacking target failed half-way through an assignment | STILL-BUG-NEW (ty 0.0.97 and 0.0.98) | 0.5 | no | ty#4958, **closed completed** 2026-11-10 (was open on 2026-11-06); fixed by astral-sh/ruff#30206 "[ty] Record exception checkpoints for nested unpacking targets" (merged) |
+| 7 | pyright | `RangeError: Maximum call stack size exceeded` when a descriptor `__get__` is decorated by a class-body function without `self` | STILL-BUG-NEW (CRASH, pyright 1.1.414 = latest) | 0.8 | no | pyright#11984, open (`bug`); linked PR #11987 open (by a third party) |
+| 8 | mypy | overloaded `__post_init__` of a dataclass: every overload item is checked against the InitVar signature, so an item without the InitVar type gets `[override]` | STILL-BUG-NEW (2.4.0, 2.4.1, master) | 0.6 | no | mypy#22385, open (`bug`); linked PR #22390 closed unmerged |
+| 9 | mypy | `a < b` for two operands of the same type tries `b.__gt__` first when `__lt__` and `__gt__` come from different classes of the MRO; the inferred type is that of the wrong method | STILL-BUG-NEW | 0.6 | no | mypy#22386, open (`bug`); 1 comment from a non-maintainer; linked PRs #22391 and #22402 closed unmerged |
 | 10 | mypy | `possibly-undefined` does not report a name assigned in a `with` block whose `__exit__` returns `bool`, although the name is unbound after a swallowed exception (pyright reports it; ty only with an off-by-default rule) | STILL-BUG-NEW (opt-in check, FALSE_NEGATIVE) | 0.4 | no | **not filed** |
 | 11 | mypy | a `lambda` with other parameter names (or positional-only parameters) is accepted for a callback protocol whose `__call__` names its parameter, while the equivalent `def` is rejected | STILL-BUG-NEW (2.4.0, 2.4.1, master; ty and pyright reject) | 0.5 | no | **not filed** |
 | 12 | pyright | `closed=True` and `extra_items=` on a `typing.TypedDict` class are accepted for `pythonVersion` below 3.15, where CPython raises `TypeError` | STILL-BUG-NEW (1.1.414 = latest); same report exists for mypy (#21747) and was fixed in ty (#4031) | 0.35 | no | **not filed** |
@@ -116,30 +116,32 @@ Notes on the table:
 * Rounds of origin: drafts 1 to 4 from Round 3 candidates (verified on Round 4, re-checked on Round 6), 5 from Round 6, 6 and 7 from Round 7, 8 from Round 8, 9 and 10 from Round 9, 11 and 12 from Round 10.
 * By tool: ty 4 (drafts 1, 2, 4, 6), mypy 6 (3, 5, 8, 9, 10, 11), pyright 2 (7, 12); 12 in total.
 * By class (the drafts' own labels, grouped here): 2 crashes (1, 7); 5 false negatives (2, 4, 10, 11, 12); 5 false positives or wrong inference (3, 5, 6, 8, 9).
-* Draft 2 is the highest-confidence draft (0.9, playground-verified). It was fixed upstream the day it was filed (ruff#30074 merged), which is the only confirmed maintainer outcome that is a fix. Of the open drafts, only ty#4933 (a maintainer reply about a fix PR with blockers) and mypy#22377 (a contributor offered a fix) have comments; ty#4941, mypy#22375, ty#4958, pyright#11984, mypy#22385 and mypy#22386 have none.
+* Draft 2 is the highest-confidence draft (0.9, playground-verified). It was fixed upstream the day it was filed (ruff#30074 merged). Draft 6 (ty#4958) was fixed on 2026-11-10 (ruff#30206 merged). So 2 of the 9 filed drafts are fixed upstream and 7 are open; drafts 10 to 12 are not filed (no matching issue by any of the three accounts on 2026-11-13).
+* Of the 7 open filed drafts, ty#4941 (ruff#30145), mypy#22377 (mypy#22444) and pyright#11984 (pyright#11987) have an open linked PR; ty#4933, mypy#22375, mypy#22385 and mypy#22386 do not (the mypy ones only have PRs that were closed unmerged).
+* All issues filed by the three accounts, including the 15 earlier reports, are in the first table of [bugs.md](bugs.md). Live counts (2026-11-13): 24 filed, 5 closed as fixed with a merged PR, 1 closed as intended, 7 open with an open linked PR, 11 open without one.
 * The Round-10 draft 11 text originally said "21 `only_ty` rows"; the saved reports give 10 in the three named mutants. Corrected afterwards (`results/rounds/round-10-report.md` section 5).
 
 ## 6. Earlier reports by the authors (context only)
 
-States read with `gh issue view` on 2026-11-06. The listed authors are as GitHub shows them (`DerekLaymn` for the drafting account; `Choco-princess` and `Pika-pikachu30` for the others); these are context for the KB entries, not part of the 12 drafts.
+States read from the GitHub API on 2026-11-13. The filing accounts are as GitHub shows them (`DerekLaymn`, `Choco-princess`, `Pika-pikachu30`); the table has a column for the account, and names are not mapped to accounts. These are context for the KB entries, not part of the 12 drafts. The complete list of the 24 issues filed by the three accounts, with labels and linked PRs, is in [bugs.md](bugs.md).
 
-| Issue | Title (shortened) | State |
-|---|---|---|
-| ty#4656 | False negative: Self parameter is not enforced on inherited methods | closed not planned 2026-10-05: intended behaviour per carljm (`Self` is a typevar bound to the defining class); recorded as a design difference, KB `TY-SELF-UPPER-BOUND` |
-| ty#4882 | Stack overflow on two generic protocols with a self-referential method | open |
-| ty#4883 | Exponential time comparing deeply nested tuple types | closed completed 2026-11-03 (KB marks it fixed in ty 0.0.97) |
-| ty#4884 | TypeVar solver fails to infer type argument from generic TypedDict | closed completed 2026-11-02 (fixed in ty 0.0.97) |
-| ty#4898 | Stack overflow when passing a ParamSpec identity function to itself | open |
-| ty#4899 | Abort (memory blowup) or panic with a `Callable[P, T]`-annotated self in `__init__` and a ParamSpec `__call__` | open (maintainer reproduced the plain-method panic) |
-| ty#4900 | Stack overflow on generic base class that expands its own type argument | open |
-| mypy#22339 | PEP 695 variance inference treats a writable `Callable[[T], None]` attribute as contravariant | open (a contributor posted a cause in `infer_variance()`) |
-| mypy#22343 | Segfault on type alias that refers to itself through another generic alias | open (cause posted by a contributor) |
-| mypy#22344 | Segfault on class parameterised by a TypeVar whose default is itself | open (cause posted by a contributor) |
-| mypy#22360 | contravariant generic with a self-referential base | open |
-| mypy#22361 | Segfault / RecursionError when calling an instance whose class declares `__call__` as an attribute | open |
-| pyright#11851 | TypedDict subtyping: ReadOnly required incorrectly accepts NotRequired source key | open |
-| pyright#11960 | Pyright hangs when specializing a self-recursive PEP 695 type alias | closed completed 2026-11-03 (a contributor points to #11968 as covering it) |
-| pyright#11961 | Crash (`RangeError`) when a constructor method is annotated ... | open |
+| Issue | Filed by (GitHub account) | Title (shortened) | State |
+|---|---|---|---|
+| ty#4656 | `DerekLaymn` | False negative: Self parameter is not enforced on inherited methods | closed not planned 2026-10-05: intended behaviour per carljm (`Self` is a typevar bound to the defining class); recorded as a design difference, KB `TY-SELF-UPPER-BOUND` |
+| ty#4882 | `Choco-princess` | Stack overflow on two generic protocols with a self-referential method | open; astral-sh/ruff#29919 (open) linked |
+| ty#4883 | `Choco-princess` | Exponential time comparing deeply nested tuple types | closed completed 2026-11-03 (fix: ruff#29933 merged; KB marks it fixed in ty 0.0.97) |
+| ty#4884 | `DerekLaymn` | TypeVar solver fails to infer type argument from generic TypedDict | closed completed 2026-11-02 (fix: ruff#29903 merged; fixed in ty 0.0.97) |
+| ty#4898 | `Choco-princess` | Stack overflow when passing a ParamSpec identity function to itself | open; astral-sh/ruff#29971 (open) linked, assigned |
+| ty#4899 | `DerekLaymn` | Abort (memory blowup) or panic with a `Callable[P, T]`-annotated self in `__init__` and a ParamSpec `__call__` | open (maintainer reproduced the plain-method panic; assigned; no PR) |
+| ty#4900 | `Choco-princess` | Stack overflow on generic base class that expands its own type argument | open, no PR |
+| mypy#22339 | `DerekLaymn` | PEP 695 variance inference treats a writable `Callable[[T], None]` attribute as contravariant | open (a commenter posted a cause in `infer_variance()`; linked PR #22438 closed unmerged) |
+| mypy#22343 | `Choco-princess` | Segfault on type alias that refers to itself through another generic alias | open (cause posted by a commenter; no PR) |
+| mypy#22344 | `Choco-princess` | Segfault on class parameterised by a TypeVar whose default is itself | open (cause posted by a commenter; no PR) |
+| mypy#22360 | `DerekLaymn` | contravariant generic with a self-referential base | open; 2 linked PRs closed unmerged |
+| mypy#22361 | `Choco-princess` | Segfault / RecursionError when calling an instance whose class declares `__call__` as an attribute | open; linked PR #22362 closed unmerged |
+| pyright#11851 | `Pika-pikachu30` | TypedDict subtyping: ReadOnly required incorrectly accepts NotRequired source key | open; linked PR pyright#11852 open (by a third party) |
+| pyright#11960 | `Choco-princess` | Pyright hangs when specializing a self-recursive PEP 695 type alias | closed completed 2026-11-03; fixed by pyright#11968 (merged) |
+| pyright#11961 | `Choco-princess` | Crash (`RangeError`) when a constructor method is annotated with its own class and the class is instantiated | open; linked PR pyright#11965 open |
 
 The crash entries TY-4882, TY-4898, TY-4899, TY-4900, MYPY-22343, MYPY-22344, MYPY-22360, MYPY-22361 and PYRIGHT-11961 correspond to issues in this list (TY-4148 is ty#4148, not in the list), and the KB's `UPSTREAM-*` discrepancy entries record the others. Crash events that match an entry are auto-closed with the closing reference; that is why Rounds 7 to 10 show few live crash findings. The campaign never re-filed any of them.
 
@@ -152,7 +154,7 @@ Candidates that looked like bugs and were closed as duplicates, fixed, or design
 * **mypy:** IntEnum alias: mypy#16830, #21117 (and pyright#11100). Recursive alias reveal: mypy#2008. `__hash__` None reveal: mypy#20230. `__eq__` without `__hash__` accepted as `Hashable`: mypy#2455 and #18622, fix pending in open PR #19168. Metaclass `__call__` return type ignored: mypy#8595 (closed, "unlikely this will be ever supported"), request #14122. Flag narrowing by `==` / `is` / `match`: mypy#21937 (open, fix PR #21942). Forward references without quotes (`NameError` not reported): mypy#948 (open), #17610, #9932. Constrained TypeVar `Need type annotation`: mypy#19618. Annotation-only dunders: mypy#2113 (open since 2016). `closed=True` before 3.15: mypy#21747 (open). Reflected operator message text: mypy#22316 / PR #22380 (different from draft 9).
 * **pyright:** `Gauge.level` is `Clamped | int` for a data descriptor assigned in `__init__`: pyright#11382.
 * **python/typing:** `class Callback[*Ts, **P = [bool]]` raises `TypeError` in CPython: python/typing#2211 (open; a runtime bug, the checkers follow the spec).
-* **Fixed after our report:** ty#4934 (draft 2, ruff#30074). Fixed before the pin moved: ty#4883, ty#4884 (ty 0.0.97).
+* **Fixed after our report:** ty#4934 (draft 2, ruff#30074) and ty#4958 (draft 6, ruff#30206, 2026-11-10), states of 2026-11-13. Fixed before the pin moved: ty#4883, ty#4884 (ty 0.0.97).
 
 ## 8. Known limitations
 

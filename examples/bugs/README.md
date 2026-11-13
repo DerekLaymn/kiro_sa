@@ -12,7 +12,7 @@ python examples/bugs/04_ty_eq_without_hash_is_hashable.py        # the runtime (
 ```
 
 "Verified" means reduced, reproduced on the pinned and the newest tool version, and searched on the trackers without a
-duplicate. It does not mean that a maintainer confirmed the bug. Issue states are from 2026-11-06 and may have changed.
+duplicate. It does not mean that a maintainer confirmed the bug. Issue states are from 2026-11-13 and may have changed. The actual output column is for the pinned versions, also for the issues that were fixed later.
 
 | # | Tool | File | Issue | Expected | Actual (pinned version) |
 |---|---|---|---|---|---|
@@ -21,7 +21,7 @@ duplicate. It does not mean that a maintainer confirmed the bug. Issue states ar
 | 3 | mypy | [03](03_mypy_metaclass_reflected_operator.py) | [mypy#22377](https://github.com/python/mypy/issues/22377), open | `A * B` is `str` (right metaclass `__rmul__` runs first) | two errors: `A * B` inferred as `int`; CPython prints `str` |
 | 4 | ty | [04](04_ty_eq_without_hash_is_hashable.py) | [ty#4941](https://github.com/astral-sh/ty/issues/4941), open | `invalid-argument-type` for `need(Plain())` and `need(Sub())` | `All checks passed!`; CPython raises `TypeError: unhashable type` |
 | 5 | mypy | [05](05_mypy_typevartuple_then_paramspec_default.py) | [mypy#22375](https://github.com/python/mypy/issues/22375), open | `Foo[int, str]` is accepted (PEP 696) | `Can only replace ParamSpec ...` and the type becomes `Any` (6 errors) |
-| 6 | ty | [06](06_ty_nested_unpack_except_binding.py) | [ty#4958](https://github.com/astral-sh/ty/issues/4958), open | `value` in the `except` clause is `int \| str` | reveals `Literal[1]`; CPython has `'bad'` |
+| 6 | ty | [06](06_ty_nested_unpack_except_binding.py) | [ty#4958](https://github.com/astral-sh/ty/issues/4958), closed, fixed by astral-sh/ruff#30206 | `value` in the `except` clause is `int \| str` | reveals `Literal[1]`; CPython has `'bad'` |
 | 7 | pyright | [07](07_pyright_descriptor_get_decorator_rangeerror.py) | [pyright#11984](https://github.com/microsoft/pyright/issues/11984), open | no crash | `RangeError: Maximum call stack size exceeded` |
 | 8 | mypy | [08](08_mypy_overloaded_post_init_override.py) | [mypy#22385](https://github.com/python/mypy/issues/22385), open | no error | `Argument 2 of "__post_init__" is incompatible with supertype "dataclass"  [override]` |
 | 9 | mypy | [09](09_mypy_reflected_comparison_priority.py) | [mypy#22386](https://github.com/python/mypy/issues/22386), open | `a < b` is `str`, `a > b` is `int` | `a < b` inferred as `int` and `a > b` as `str` (3 errors); CPython prints `'lt' 7` |

@@ -22,8 +22,8 @@ The study ran the pipeline against **mypy 2.4.0, ty 0.0.97 and pyright 1.1.414**
 |---|---|
 | Programs checked | about 7,000: 29 hand-written seeds, 5,086 harvested from upstream test suites, and 1,880 mutants written by a model over eight rounds |
 | New bugs found and verified | **12**: 4 in ty, 6 in mypy, 2 in pyright (2 crashes, 5 false negatives, 5 false positives or wrong inferences) |
-| Reported upstream | **9** of the 12 (ty 4, mypy 4, pyright 1); the other 3 are written up and unfiled |
-| Fixed upstream | 1 so far: [ty#4934](https://github.com/astral-sh/ty/issues/4934), fixed by ruff#30074 on the day it was filed |
+| Reported upstream | **9** of the 12 verified bugs (ty 4, mypy 4, pyright 1); the other 3 are written up and unfiled. Together with 15 earlier reports the team filed **24 issues** (ty 11, mypy 9, pyright 4), see below |
+| Fixed upstream | Of the 12 verified bugs, 2: [ty#4934](https://github.com/astral-sh/ty/issues/4934) (ruff#30074) and [ty#4958](https://github.com/astral-sh/ty/issues/4958) (ruff#30206). Of all 24 issues, 5 are closed with a merged fix PR |
 | Earlier reports that seeded the KB | 15 crash and discrepancy reports on ty, mypy and pyright, listed in [results/FINAL-SUMMARY.md](results/FINAL-SUMMARY.md#6-earlier-reports-by-the-authors-context-only) |
 | Knowledge base | 48 code entries, 27 upstream discrepancy entries, 12 crash entries, 7 prior stances |
 | Calibration | First run (ty 0.0.84): 156 open bug reports, **0 of 80 ty reports** and 4 of 76 mypy reports dismissed (3 no longer reproduce, 1 is a deliberate policy). A re-run on the final KB is a different experiment: see [calibration/README.md](calibration/README.md) |
@@ -32,6 +32,29 @@ The study ran the pipeline against **mypy 2.4.0, ty 0.0.97 and pyright 1.1.414**
 "Verified" means reduced, reproduced on the pinned and the newest tool versions, and searched on the trackers. It does
 not mean a maintainer confirmed it. Per-bug status, links and reproducers: [results/bugs.md](results/bugs.md),
 [results/verified-bugs.md](results/verified-bugs.md) and [examples/bugs/](examples/bugs/).
+
+### Issues filed
+
+All 24 issues authored by the three GitHub accounts, read from the GitHub API on 2026-11-13 (full list with labels and
+linked PRs: [results/bugs.md](results/bugs.md)). Counts: Fixed (merged) = closed as completed with a merged linked PR.
+Fix PR open = open issue with an open linked PR. Open = open issue with no open linked PR (some have only PRs that
+were closed unmerged). Closed as intended = closed as not planned. None was closed as a duplicate.
+
+| Tool | Filed | Fixed (merged) | Fix PR open | Open | Closed as intended |
+|---|---|---|---|---|---|
+| ty | 11 | 4 | 3 | 3 | 1 |
+| mypy | 9 | 0 | 1 | 8 | 0 |
+| pyright | 4 | 1 | 3 | 0 | 0 |
+| Total | 24 | 5 | 7 | 11 | 1 |
+
+Arithmetic: 11 + 9 + 4 = 24 and 5 + 7 + 11 + 1 = 24. "Linked PR" is a pull request that cross-references the issue;
+it is not always stated to be a fix, and none of the PRs was written by the three accounts.
+
+### Contributors and accounts
+
+Authors of the project: Anay Gupta, Aarsh Verma, Ajay Meena. The issues were filed from three GitHub accounts:
+`DerekLaymn` (14 issues), `Choco-princess` (9) and `Pika-pikachu30` (1). This repository does not say which author
+uses which account.
 
 ## How it works
 
@@ -150,7 +173,7 @@ examples/
   ajay_examples/     40 programs probing ty's type system
 calibration/         negatives, known duplicates, positives manifest, results of the calibration run
 results/             final summary, per-bug reports, funnel tables, per-round reports
-docs/                architecture, usage, reproducibility, LLM setup, KB guide, design, slides
+docs/                architecture, usage, reproducibility, LLM setup, KB guide, design
 scripts/             reproduce.sh, replay, seed harvesting, parallel runner, statistics
 tests/               762 tests and the reproducers they use
 constraints.txt      exact versions of the checkers and test dependencies
@@ -169,7 +192,6 @@ constraints.txt      exact versions of the checkers and test dependencies
 | [docs/design.md](docs/design.md) | Design rationale: cost model, taxonomy, KB entries, calibration, worked example |
 | [docs/generation.md](docs/generation.md) | Generation settings and replay of the last round |
 | [results/README.md](results/README.md) | Index of the results |
-| [docs/presentation/](docs/presentation/) | Slides of the project presentation |
 
 ## Safety
 

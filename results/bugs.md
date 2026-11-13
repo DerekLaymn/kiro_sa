@@ -1,4 +1,59 @@
-# Issue drafts, Round 3 candidates (Round 4 consolidate, Round 6 re-verification)
+# Reported issues and issue drafts
+
+## All reported issues
+
+Read live from the GitHub API on 2026-11-13 (read-only: `gh api search/issues`, the issue, its comments and its timeline). Every issue authored by the three accounts `DerekLaymn`, `Choco-princess` and `Pika-pikachu30` in any repository was collected; all 24 are in astral-sh/ty, python/mypy and microsoft/pyright. The three accounts have no pull request in any upstream tracker (their only PRs are in their own or course repositories). The team (Anay Gupta, Aarsh Verma, Ajay Meena) is not mapped to accounts here. Raw JSON is not kept in the repository.
+
+Counts (24 = 14 + 9 + 1 by account = 11 + 9 + 4 by tool):
+
+| Account | Filed | ty | mypy | pyright |
+|---|---|---|---|---|
+| `DerekLaymn` | 14 | 7 | 6 | 1 |
+| `Choco-princess` | 9 | 4 | 3 | 2 |
+| `Pika-pikachu30` | 1 | 0 | 0 | 1 |
+| Total | 24 | 11 | 9 | 4 |
+
+Outcomes (24 = 5 + 1 + 7 + 11):
+
+| Outcome | Count | Issues |
+|---|---|---|
+| Closed as completed with a merged fix PR | 5 | ty#4883, ty#4884, ty#4934, ty#4958, pyright#11960 |
+| Closed as not planned (intended behaviour) | 1 | ty#4656 |
+| Open, with an open linked PR | 7 | ty#4882, ty#4898, ty#4941, mypy#22377, pyright#11851, pyright#11961, pyright#11984 |
+| Open, no open PR | 11 | ty#4899, ty#4900, ty#4933 (no linked PR); mypy#22343, mypy#22344 (no linked PR); mypy#22339, #22360, #22361, #22375, #22385, #22386 (every linked PR was closed unmerged) |
+
+No issue was closed as a duplicate. "Linked PR" means a pull request that cross-references the issue in its timeline; it is not always stated to fix it, and a PR by a maintainer or a third party is not by the reporting accounts. Drafts 1 to 9 are the nine issues marked in the Draft column; drafts 10, 11 and 12 had no matching issue by any of the three accounts on 2026-11-13, so they are still unfiled.
+
+| Tool | Issue | Title (shortened) | Filed by (GitHub account) | Filed | State | Labels | Linked PRs (state) | Draft | Notes |
+|---|---|---|---|---|---|---|---|---|---|
+| ty | [ty#4656](https://github.com/astral-sh/ty/issues/4656) | False negative: Self parameter is not enforced on inherited methods | DerekLaymn | 2026-10-03 | closed (not planned) 2026-10-05 | none | none | earlier report | closed as intended (`Self` is a typevar bound to the defining class, per a maintainer); KB `TY-SELF-UPPER-BOUND` |
+| ty | [ty#4882](https://github.com/astral-sh/ty/issues/4882) | Stack overflow on two generic protocols with a self-referential met... | Choco-princess | 2026-11-01 | open | `bug`, `fatal`, `protocols` | [ruff#29919](https://github.com/astral-sh/ruff/pull/29919) (open) | earlier report | the linked open PR is by a maintainer; no comments on the issue |
+| ty | [ty#4883](https://github.com/astral-sh/ty/issues/4883) | Exponential time comparing values of the same deeply nested tuple t... | Choco-princess | 2026-11-01 | closed (completed) 2026-11-03 | `performance` | [ruff#29933](https://github.com/astral-sh/ruff/pull/29933) (merged) | earlier report | performance; assigned to a maintainer; fixed in ty 0.0.97 per the KB |
+| ty | [ty#4884](https://github.com/astral-sh/ty/issues/4884) | TypeVar solver fails to infer type argument from generic TypedDict | DerekLaymn | 2026-11-02 | closed (completed) 2026-11-02 | `generics`, `typeddict` | [ruff#29903](https://github.com/astral-sh/ruff/pull/29903) (merged) | earlier report | assigned to a maintainer; fixed in ty 0.0.97 per the KB |
+| ty | [ty#4898](https://github.com/astral-sh/ty/issues/4898) | Stack overflow when passing a ParamSpec identity function to itself | Choco-princess | 2026-11-03 | open | `bug`, `fatal`, `paramspec` | [ruff#29971](https://github.com/astral-sh/ruff/pull/29971) (open) | earlier report | assigned to a maintainer who has an open PR |
+| ty | [ty#4899](https://github.com/astral-sh/ty/issues/4899) | Abort (memory blowup) or panic with a Callable[P, T]-annotated self... | DerekLaymn | 2026-11-03 | open | `bug`, `fatal`, `cycles`, `paramspec` | none | earlier report | maintainer reproduced the plain-method panic; assigned |
+| ty | [ty#4900](https://github.com/astral-sh/ty/issues/4900) | Stack overflow on generic base class that expands its own type argu... | Choco-princess | 2026-11-03 | open | `bug`, `fatal`, `generics`, `cycles` | none | earlier report | no comments, no PR |
+| ty | [ty#4933](https://github.com/astral-sh/ty/issues/4933) | Stack overflow when a class is assigned to a protocol whose method... | DerekLaymn | 2026-11-05 | open | `bug`, `fatal`, `protocols`, `method-receiver`, `cycles` | none | 1 | draft 1; 3 comments, two from maintainers; no PR linked in the timeline |
+| ty | [ty#4934](https://github.com/astral-sh/ty/issues/4934) | aliased conditional narrowing is not invalidated when the target is... | DerekLaymn | 2026-11-05 | closed (completed) 2026-11-05 | `bug`, `narrowing`, `control flow`, `unsoundness` | [ruff#30074](https://github.com/astral-sh/ruff/pull/30074) (merged) | 2 | draft 2; closed the day it was filed; 1 heart reaction |
+| ty | [ty#4941](https://github.com/astral-sh/ty/issues/4941) | class that defines __eq__ without __hash__ is accepted where Hashab... | DerekLaymn | 2026-11-05 | open | `bug`, `runtime semantics`, `unsoundness` | [ruff#30145](https://github.com/astral-sh/ruff/pull/30145) (open) | 4 | draft 4; assigned to a maintainer who has an open PR |
+| ty | [ty#4958](https://github.com/astral-sh/ty/issues/4958) | except clause does not see the earlier targets of a tuple assignmen... | DerekLaymn | 2026-11-06 | closed (completed) 2026-11-10 | `control flow` | [ruff#30206](https://github.com/astral-sh/ruff/pull/30206) (merged) | 6 | draft 6; was open on 2026-11-06, closed 2026-11-10 |
+| mypy | [mypy#22339](https://github.com/python/mypy/issues/22339) | PEP 695 variance inference treats a writable Callable[[T], None] at... | DerekLaymn | 2026-10-31 | open | `bug`, `topic-type-variables`, `topic-pep-695` | [mypy#22438](https://github.com/python/mypy/pull/22438) (closed) | earlier report | 1 comment from a non-maintainer; the one linked PR was closed unmerged |
+| mypy | [mypy#22343](https://github.com/python/mypy/issues/22343) | Segfault on type alias that refers to itself through another generi... | Choco-princess | 2026-11-01 | open | `crash` | none | earlier report | 1 comment from a non-maintainer; no PR (a cross-referenced item is an issue) |
+| mypy | [mypy#22344](https://github.com/python/mypy/issues/22344) | Segfault on class parameterised by a TypeVar whose default is itsel... | Choco-princess | 2026-11-01 | open | `crash`, `topic-recursive-types` | none | earlier report | 1 comment from a non-maintainer; no PR |
+| mypy | [mypy#22360](https://github.com/python/mypy/issues/22360) | contravariant generic with a self-referential base | DerekLaymn | 2026-11-03 | open | `crash`, `topic-recursive-types` | [mypy#22365](https://github.com/python/mypy/pull/22365) (closed), [mypy#22389](https://github.com/python/mypy/pull/22389) (closed) | earlier report | 2 linked PRs closed unmerged |
+| mypy | [mypy#22361](https://github.com/python/mypy/issues/22361) | Segfault / RecursionError when calling an instance whose class decl... | Choco-princess | 2026-11-03 | open | `crash`, `topic-recursive-types` | [mypy#22362](https://github.com/python/mypy/pull/22362) (closed) | earlier report | 1 linked PR closed unmerged |
+| mypy | [mypy#22375](https://github.com/python/mypy/issues/22375) | subscripting a class with a TypeVarTuple followed by a defaulted Pa... | DerekLaymn | 2026-11-05 | open | `bug` | [mypy#22378](https://github.com/python/mypy/pull/22378) (closed) | 5 | draft 5; the one linked PR was closed unmerged |
+| mypy | [mypy#22377](https://github.com/python/mypy/issues/22377) | binary operator on class objects ignores the right operand's reflec... | DerekLaymn | 2026-11-05 | open | `bug` | [mypy#22388](https://github.com/python/mypy/pull/22388) (closed), [mypy#22444](https://github.com/python/mypy/pull/22444) (open) | 3 | draft 3; 1 comment from a non-maintainer; one linked PR closed unmerged, a second is open |
+| mypy | [mypy#22385](https://github.com/python/mypy/issues/22385) | overloaded __post_init__ in a dataclass: [override] error for an ov... | DerekLaymn | 2026-11-06 | open | `bug` | [mypy#22390](https://github.com/python/mypy/pull/22390) (closed) | 8 | draft 8; the one linked PR was closed unmerged |
+| mypy | [mypy#22386](https://github.com/python/mypy/issues/22386) | comparison of two operands of the same type calls the reflected met... | DerekLaymn | 2026-11-06 | open | `bug` | [mypy#22391](https://github.com/python/mypy/pull/22391) (closed), [mypy#22402](https://github.com/python/mypy/pull/22402) (closed) | 9 | draft 9; 1 comment from a non-maintainer; 2 linked PRs closed unmerged |
+| pyright | [pyright#11851](https://github.com/microsoft/pyright/issues/11851) | TypedDict subtyping : ReadOnly required incorrectly accepts NotRequ... | Pika-pikachu30 | 2026-10-09 | open | `bug` | [pyright#11852](https://github.com/microsoft/pyright/pull/11852) (open) | earlier report | 1 comment; the open PR is by a third party, not by one of the three accounts |
+| pyright | [pyright#11960](https://github.com/microsoft/pyright/issues/11960) | Pyright hangs indefinitely when specializing a self-recursive PEP 6... | Choco-princess | 2026-11-02 | closed (completed) 2026-11-03 | `bug` | [pyright#11968](https://github.com/microsoft/pyright/pull/11968) (merged) | earlier report | closed by commit 3758169; fixed by #11968 (a third party PR) |
+| pyright | [pyright#11961](https://github.com/microsoft/pyright/issues/11961) | Crash (RangeError: Maximum call stack size exceeded) when a constru... | Choco-princess | 2026-11-02 | open | `bug` | [pyright#11965](https://github.com/microsoft/pyright/pull/11965) (open) | earlier report | open linked PR by a third party |
+| pyright | [pyright#11984](https://github.com/microsoft/pyright/issues/11984) | maximum call stack size exceeded when accessing a descriptor whose... | DerekLaymn | 2026-11-06 | open | `bug` | [pyright#11987](https://github.com/microsoft/pyright/pull/11987) (open) | 7 | draft 7; open linked PR by a third party |
+
+## Issue drafts (12)
+
+The states in the drafts below and in the status paragraphs are as of the date each paragraph names; the table above is the current state. Draft-to-issue mapping: 1 ty#4933, 2 ty#4934, 3 mypy#22377, 4 ty#4941, 5 mypy#22375, 6 ty#4958, 7 pyright#11984, 8 mypy#22385, 9 mypy#22386; 10, 11 and 12 are not filed.
 
 Date: 2026-11-05. Tools: ty 0.0.84 and 0.0.97 (pinned since Round 5, also the latest release), mypy 2.4.0 / 2.4.1 / master 2.5.0+dev.879da562, pyright 1.1.414, CPython 3.13.16, Linux.
 

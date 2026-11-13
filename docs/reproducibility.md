@@ -214,7 +214,7 @@ KB entry.) Changing `typediff/prompts.py` or a parent file changes the keys, so 
 | Program generation | **No** | A different model, or the same model another day, writes different programs. Temperature is 0.8. |
 | LLM adjudication, skeptic, advocate, strategist, reporter | **No** | Optional; not used for any published number. |
 | Seed harvest | No | Upstream repositories change; `PROVENANCE.json` records the commits. |
-| Issue states in `results/` | No | They were read on 2026-11-06 and may have changed. |
+| Issue states in `results/` | No | They were read on 2026-11-13 (the round reports on the dates of the rounds) and may have changed. |
 | Calibration | Deterministic for a fixed manifest, but not the published numbers | The committed summary is from the first run (ty 0.0.84, 156 reports). `positives.json` was refreshed later, so a re-run on the final KB scores 189 reports and dismisses 14 (10 ty, 4 mypy); see [calibration/README.md](../calibration/README.md). |
 
 ## 8. Running with no LLM and no key
