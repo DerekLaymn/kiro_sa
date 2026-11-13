@@ -1,12 +1,36 @@
+# Python
 __pycache__/
+*.py[cod]
 *.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Caches
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.cache/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Run outputs and logs
+runs/
 typediff_out/
 llm_inbox/
-.venv/
-calibration/positives.json
 seeds/harvested/
-runs/
+*.log
+*.out
+*.done
+*.start
+
+# Local tooling and scratch
+.kiro/
+.agents/
 .worktrees/
-.mypy_cache
-.pytest_cache
-typediff.egg-info
+/-l
+/campaign/

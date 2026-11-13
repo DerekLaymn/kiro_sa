@@ -1,0 +1,2658 @@
+[
+ {
+  "id": "ty-4882",
+  "url": "https://github.com/astral-sh/ty/issues/4882",
+  "title": "Stack overflow on two generic protocols with a self-referential method (no call or assignment needed)",
+  "labels": [
+   "bug",
+   "fatal",
+   "protocols"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Protocol, TypeVar\n\nT1 = TypeVar(\"T1\", covariant=True)\nT2 = TypeVar(\"T2\")\n\nclass P1(Protocol[T1]):\n    def b(self) -> int: ...\n    def a(self, other: \"P1[T2]\") -> T1: ...\n\nclass P2(Protocol[T1]):\n    def a(self, other: \"P1[T2] | P2[T2]\") -> T1: ...\n"
+ },
+ {
+  "id": "ty-4878",
+  "url": "https://github.com/astral-sh/ty/issues/4878",
+  "title": "Report unresolved names in class-body deletions",
+  "labels": [
+   "bug",
+   "runtime semantics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "value = 1\n\nclass C:\n    del value  # No diagnostic\n"
+ },
+ {
+  "id": "ty-4877",
+  "url": "https://github.com/astral-sh/ty/issues/4877",
+  "title": "Support hover and navigation for quoted types in function decorators",
+  "labels": [
+   "bug",
+   "navigation",
+   "hover"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def register(item_type):\n    return lambda function: function\n\nregister(list[\"Item\"])\n\n@register(list[\"Item\"])\ndef handle():\n    pass\n\nclass Item:\n    \"\"\"An item to register.\"\"\"\n    pass\n"
+ },
+ {
+  "id": "ty-4876",
+  "url": "https://github.com/astral-sh/ty/issues/4876",
+  "title": "Generator expressions retain narrowing across later rebinding",
+  "labels": [
+   "bug",
+   "narrowing"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\ndef example():\n    value: str | None = \"hello\"\n    items = (value for _ in [0])\n    value = None\n\n    reveal_type(value)        # Revealed type: None\n    reveal_type(next(items))  # Revealed type: Literal[\"hello\"]\n"
+ },
+ {
+  "id": "ty-4875",
+  "url": "https://github.com/astral-sh/ty/issues/4875",
+  "title": "Include the outer value after a conditional `nonlocal` assignment",
+  "labels": [
+   "bug",
+   "control flow",
+   "unsoundness"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\ndef outer(flag: bool):\n    value = \"outer\"\n\n    def inner():\n        nonlocal value\n        if flag:\n            value = 1\n\n        class C:\n            reveal_type(value)  # Revealed type: Literal[1]\n\n    inner()\n\nouter(False)\n"
+ },
+ {
+  "id": "ty-4872",
+  "url": "https://github.com/astral-sh/ty/issues/4872",
+  "title": "Daily ty fuzz failed",
+  "labels": [
+   "bug",
+   "fatal",
+   "fuzzer",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "type name_2 = (0 for name_3[0] in name_3)\n*name_3, = name_3[0] = [{name_2 for unique_name_0 in unique_name_1} for unique_name_2 in unique_name_3]\n"
+ },
+ {
+  "id": "ty-4869",
+  "url": "https://github.com/astral-sh/ty/issues/4869",
+  "title": "A callback narrowed from Any can be called directly, but the same call through a ParamSpec reports call-top-callable",
+  "labels": [
+   "bug",
+   "paramspec"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\n\n\ndef visit[**P](vole: Callable[P, object], /, *args: P.args, **kwargs: P.kwargs) -> None:\n    vole(*args, **kwargs)\n\n\ndef burrow() -> None:\n    squeak = getattr(\"capybara\", \"upper\")\n    if callable(squeak):\n        squeak()\n        visit(squeak)\n"
+ },
+ {
+  "id": "ty-4864",
+  "url": "https://github.com/astral-sh/ty/issues/4864",
+  "title": "Incompatible overloaded callback accepted when its expected signature contains a TypeVarTuple",
+  "labels": [
+   "bug",
+   "calls",
+   "variadic-generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\nfrom typing import overload\n\n@overload\ndef text_only(value: str) -> None: ...\n@overload\ndef text_only(value: bytes) -> None: ...\ndef text_only(value: str | bytes) -> None: ...\n\ndef register[*Ts](callback: Callable[[int, *Ts], None]) -> None: ...\n\nregister(text_only)  # Should report invalid-argument-type\n"
+ },
+ {
+  "id": "ty-4851",
+  "url": "https://github.com/astral-sh/ty/issues/4851",
+  "title": "Regression in 0.0.93: dict.fromkeys ignores the return type context when the value type is a union with a bounded TypeVar",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Hashable, Mapping\n\n\nclass Failure:\n    pass\n\n\ndef f[K: Hashable, T: int](items: Mapping[K, str]) -> dict[K, T | Failure]:\n    return dict.fromkeys(items, Failure())\n "
+ },
+ {
+  "id": "ty-4850",
+  "url": "https://github.com/astral-sh/ty/issues/4850",
+  "title": "Descriptor `__get__` on instances of explicit `Any` subclasses resolves to the `instance: None` overload",
+  "labels": [
+   "bug",
+   "overloads",
+   "descriptors",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Generic, TypeVar, overload, reveal_type\n\nT = TypeVar(\"T\")\n\n\nclass Field(Generic[T]):\n    @overload\n    def __get__(self, instance: None, owner: type) -> \"Field[T]\": ...\n    @overload\n    def __get__(self, instance: object, owner: type) -> T: ...\n    def __get__(self, instance: object | None, owner: type) -> \"Field[T] | T\":\n        raise NotImplementedError\n\n\nclass Model(Any):\n    name: Field[str] = Field()\n\n\nreveal_type(Model.name)  # Field[str]\nreveal_type(Model().name)  # expected `str`\n"
+ },
+ {
+  "id": "ty-4841",
+  "url": "https://github.com/astral-sh/ty/issues/4841",
+  "title": "Generic call narrowing is overly aggressive in the presence of gradual types",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, assert_type, Iterator\n\ndef first_or_none[T](items: list[T]) -> T | None:\n    raise NotImplementedError\n\ndef _(value: Any):\n    x: int | None = reveal_type(first_or_none([value]))  # revealed: None\n"
+ },
+ {
+  "id": "ty-4836",
+  "url": "https://github.com/astral-sh/ty/issues/4836",
+  "title": "Conditional of list literals passed to `list[T]` is rejected when a sibling argument also binds `T`, depending on branch order",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class A: ...\nclass B(A): ...\n\n\ndef f[T](items: list[T], item: T) -> None: ...\ndef g[T](items: set[T], item: T) -> None: ...\n\n\ndef check(flag: bool) -> None:\n    f([A()] if flag else [B()], B())   # error\n    f([B()] if flag else [A()], B())   # ok: branches swapped\n    f([A(), B()], B())                 # ok: one list literal\n    g({A()} if flag else {B()}, B())   # error: sets too\n\n\ncheck(True)\n"
+ },
+ {
+  "id": "ty-4835",
+  "url": "https://github.com/astral-sh/ty/issues/4835",
+  "title": "Lambda gets no type context when the expected type is a union of two or more `Callable`s",
+  "labels": [
+   "bug",
+   "bidirectional inference",
+   "callables"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\n\n\nx: Callable[[str], list[float]] | Callable[[str], bool] = lambda s: [1]   # error\ny: Callable[[str], list[float]] = lambda s: [1]                           # ok\n\n\ndef f(p: Callable[[str], list[float]] | Callable[[str], bool]) -> None: ...\nf(lambda s: [1])                                                          # error\n\nz: Callable[[int], int] | Callable[[str], bool] = lambda a: reveal_type(a)\n"
+ },
+ {
+  "id": "ty-4832",
+  "url": "https://github.com/astral-sh/ty/issues/4832",
+  "title": "Recursive type alias statement crashes where legacy doesn't",
+  "labels": [
+   "bug",
+   "fatal",
+   "type aliases",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import TypeAlias\n\n# Correctly raises cyclic-type-alias-definition without crashing\nA: TypeAlias = \"list[A | ~A] | list[A] & A\"\n\n# Crashes\ntype B = list[B | ~B] | list[B] & B\n"
+ },
+ {
+  "id": "ty-4830",
+  "url": "https://github.com/astral-sh/ty/issues/4830",
+  "title": "Generic alias parameter `A[T]` (`type A[T] = list[T]`) gets no context from sibling arguments in a generic call",
+  "labels": [
+   "bug",
+   "bidirectional inference",
+   "type aliases"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class C: ...\n\n\ntype A[T] = list[T]\n\n\ndef f[T](x: A[T], y: T) -> T: return y\ndef g[T](x: list[T], y: T) -> T: return y\n\n\nf([C() for s in [\"a\"] if s == \"b\"], C())  # error\ng([C() for s in [\"a\"] if s == \"b\"], C())  # ok\n"
+ },
+ {
+  "id": "ty-4829",
+  "url": "https://github.com/astral-sh/ty/issues/4829",
+  "title": "Dict literal is rejected for a `TypedDict | dict[str, list[float]]` parameter: inner list inferred without context",
+  "labels": [
+   "bug",
+   "bidirectional inference",
+   "typeddict"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import TypedDict\n\n\nclass TD(TypedDict):\n    a: int\n\n\nclass TD2(TypedDict):\n    b: str\n\n\ndef f(p: TD | dict[str, list[float]]) -> None: ...\ndef g(p: dict[str, list[float]]) -> None: ...\n\n\nf({\"x\": [1]})                                   # error\ng({\"x\": [1]})                                   # ok: no TypedDict in the union\nx: TD | dict[str, list[float]] = {\"x\": [1]}     # no error\ny: TD | TD2 | dict[str, list[float]] = {\"x\": [1]}   # error\n"
+ },
+ {
+  "id": "ty-4828",
+  "url": "https://github.com/astral-sh/ty/issues/4828",
+  "title": "False positive when a generic call over `list[T]` is passed to a bounded TypeVar parameter",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Sequence\n\n\ndef first[T](x: list[T]) -> T:\n    return x[0]\n\n\ndef first_seq[T](x: Sequence[T]) -> T:\n    return x[0]\n\n\ndef ident[S: object](a: S) -> S:\n    return a\n\n\ndef ident_int[S: int](a: S) -> S:\n    return a\n\n\na: int = max(first([1]), 2)        # error\nb: int = ident(first([1]))         # error\nc: int = ident(first_seq([1]))     # ok: Sequence[T] instead of list[T]\nd: int = ident_int(first([1]))     # ok: bound int\ne = ident(first([1]))              # no error, but:\nreveal_type(e)\n"
+ },
+ {
+  "id": "ty-4825",
+  "url": "https://github.com/astral-sh/ty/issues/4825",
+  "title": "Narrowing lost in a comprehension inside a nested function",
+  "labels": [
+   "bug",
+   "narrowing",
+   "control flow"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def f(p: int | None) -> None:\n    if p is not None:\n        xs = [p < 1 for _ in range(2)]        # ok: comprehension directly in f\n        def inner() -> list[bool]:\n            ok = p < 1                         # ok: directly in inner\n            return [p < 1 for _ in range(2)]   # error\n\n\ndef outer() -> None:\n    x = None\n    x = 1\n    def g() -> list[int]:\n        return [x + 1 for _ in range(2)]\n"
+ },
+ {
+  "id": "ty-4817",
+  "url": "https://github.com/astral-sh/ty/issues/4817",
+  "title": "`deprecated` not reported when attribute access resolves to a deprecated `__get__` overload",
+  "labels": [
+   "bug",
+   "calls",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, overload\n\nfrom typing_extensions import Self, deprecated\n\n\nclass Descriptor:\n    @overload\n    def __get__(self, instance: None, owner: type[Any]) -> Self: ...\n    @overload\n    @deprecated(\"instance access is deprecated\")\n    def __get__(self, instance: object, owner: type[Any]) -> int: ...\n    def __get__(self, instance: object, owner: type[Any]) -> Self | int:\n        return self if instance is None else 0\n\n\nclass C:\n    attr = Descriptor()\n\n\nDescriptor().__get__(C(), C)  # warning[deprecated]\nC().attr  # no diagnostic\n"
+ },
+ {
+  "id": "ty-4814",
+  "url": "https://github.com/astral-sh/ty/issues/4814",
+  "title": "Per-key dictionary narrowing is not retained when assigning a subscript expression to a variable",
+  "labels": [
+   "bug",
+   "narrowing"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "x = {\n    \"a\": {\n        \"number\": 3,\n        \"c\": {}\n    }\n}\n\nreveal_type(x[\"a\"][\"c\"])  # revealed: dict[Unknown, Unknown]\nx[\"d\"] = {\n    4: {**x[\"a\"][\"c\"]},  # no diagnostic\n}\n\na =  x[\"a\"]\nreveal_type(a)  # revealed: dict[str, int | dict[Unknown, Unknown]]\nx[\"d\"] = {\n    4: {**a[\"c\"]},  # false-positive error\n}\n"
+ },
+ {
+  "id": "ty-4813",
+  "url": "https://github.com/astral-sh/ty/issues/4813",
+  "title": "Subscripting a dictionary explicitly annotated as `dict[str, Any]` can evaluate to a non-`Any` type",
+  "labels": [
+   "bug",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any\n\n\npayload: dict[str, Any] = {\n    \"current\": {\n        \"number\": 3,\n        \"base\": {}\n    }\n}\n\nreveal_type(payload)  # dict[str, Any]\nreveal_type(payload[\"current\"])  # dict[str, int | dict[Unknown, Unknown]]\n"
+ },
+ {
+  "id": "ty-4808",
+  "url": "https://github.com/astral-sh/ty/issues/4808",
+  "title": "Generic constructor inference discards earlier union-expanded argument cases",
+  "labels": [
+   "bug",
+   "generics",
+   "overloads",
+   "unsoundness",
+   "constructor-call",
+   "non-determinism"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Generic, TypeVar, overload, reveal_type\n\nT = TypeVar(\"T\", int, str)\n\nclass Box(Generic[T]):\n    @overload\n    def __init__(self, value: T) -> None: ...\n    @overload\n    def __init__(self, value: None) -> None: ...\n    def __init__(self, value): pass\n\ndef check(value: int | str):\n    reveal_type(Box(value))  # Box[str]\n\ndef reverse(value: str | int):\n    reveal_type(Box(value))  # Box[int]\n"
+ },
+ {
+  "id": "ty-4802",
+  "url": "https://github.com/astral-sh/ty/issues/4802",
+  "title": "Regression in 0.0.90 for a nested variadic callback",
+  "labels": [
+   "bug",
+   "calls",
+   "variadic-generics",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\n\n\ndef burrow[*Ts](callback: Callable[[*Ts], object], *args: *Ts) -> None:\n    pass\n\n\ndef marmot() -> None:\n    burrow(burrow, lambda: None)\n"
+ },
+ {
+  "id": "ty-4798",
+  "url": "https://github.com/astral-sh/ty/issues/4798",
+  "title": "Hang inferring recursive loop values through a union of generic containers",
+  "labels": [
+   "bug",
+   "generics",
+   "hang",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def consume[T](values: tuple[T, ...] | list[T]) -> list[T]:\n    raise NotImplementedError\n\ndef wrap(paths: list[int], start: int):\n    values = (start,)\n    for _ in paths:\n        values = (consume(values),)\n"
+ },
+ {
+  "id": "ty-4788",
+  "url": "https://github.com/astral-sh/ty/issues/4788",
+  "title": "Record nonlocal declarations for eager nested-scope snapshots",
+  "labels": [
+   "bug",
+   "internal"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def outer():\n    x = 1\n\n    def inner():\n        nonlocal x\n        x = 2\n\n        class C:\n            value = x\n"
+ },
+ {
+  "id": "ty-4787",
+  "url": "https://github.com/astral-sh/ty/issues/4787",
+  "title": "Report deferred reads of deleted enclosing names",
+  "labels": [
+   "bug",
+   "runtime semantics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "value = 1\ndel value\n\ndef read() -> int:\n    return value\n\nread()\n"
+ },
+ {
+  "id": "ty-4786",
+  "url": "https://github.com/astral-sh/ty/issues/4786",
+  "title": "Include builtin fallbacks when a global is conditionally defined",
+  "labels": [
+   "bug",
+   "runtime semantics",
+   "type-inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\ndef flag() -> bool:\n    return input() == \"yes\"\n\nif flag():\n    abs = 1\n\nclass C:\n    reveal_type(abs)  # revealed: Literal[1]\n    abs = 2\n\ndef read():\n    reveal_type(abs)  # revealed: Literal[1]\n"
+ },
+ {
+  "id": "ty-4775",
+  "url": "https://github.com/astral-sh/ty/issues/4775",
+  "title": "Synthesized `__replace__` makes an `InitVar` without a default optional, but the runtime requires it",
+  "labels": [
+   "bug",
+   "dataclasses",
+   "calls"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "import copy\nfrom dataclasses import InitVar, dataclass, replace\n\n\n@dataclass(frozen=True)\nclass Seeded:\n    a: int\n    seed: InitVar[int]\n\n    def __post_init__(self, seed: int) -> None:\n        pass\n\n\nreplace(Seeded(1, 2), a=3)\ncopy.replace(Seeded(1, 2), a=3)\nSeeded(1, 2).__replace__(a=3)\n"
+ },
+ {
+  "id": "ty-4772",
+  "url": "https://github.com/astral-sh/ty/issues/4772",
+  "title": "Fixing one `@override` error on a property triggers another",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "overrides"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Never, override\n\nclass A:\n    a: int\n\nclass C(A):\n    @property\n    def a(self) -> Never:\n        raise Exception(\"fooled you\")\n    \n    @a.setter\n    def a(self, x: object) -> None:\n        pass\n"
+ },
+ {
+  "id": "ty-4766",
+  "url": "https://github.com/astral-sh/ty/issues/4766",
+  "title": "Bare Final in dataclasses is mishandled",
+  "labels": [
+   "bug",
+   "dataclasses"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from dataclasses import dataclass\nfrom typing import Final\n\n@dataclass\nclass BareFinal:\n    a: Final  # ty: no error (mypy/pyright/pyrefly also buggy)\n\n@dataclass\nclass DefaultedBareFinal:\n    a: Final = 3\n\ndef capybara(a: int) -> None:\n    obj = DefaultedBareFinal(a)  # ty, mypy, pycroscope: ok; pyrefly, pyright: error\n    reveal_type(obj.a)  # ty: Literal[3]\n"
+ },
+ {
+  "id": "ty-4762",
+  "url": "https://github.com/astral-sh/ty/issues/4762",
+  "title": "Declared `ClassVar` type from a base class is replaced by the type assigned to `cls.<attr>` in a subclass's `__init_subclass__`",
+  "labels": [
+   "bug",
+   "attributes"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "\"\"\"ty replaces an inherited ClassVar declaration with the type assigned to `cls.<attr>` in __init_subclass__.\"\"\"\n\nfrom typing import ClassVar, reveal_type\n\n\nclass X: ...\n\n\nclass Base:\n    attr: ClassVar[type[X]]\n\n\nclass Sub(Base):\n    def __init_subclass__(cls) -> None:\n        dynamic: type = type(\"Dynamic\", (X,), {})\n        cls.attr = dynamic\n\n\nclass Leaf(Sub): ...\n\n\nreveal_type(Base.attr)  # expected: type[X]\nreveal_type(Sub.attr)  # expected: type[X]\nreveal_type(Leaf.attr)  # expected: type[X]\n"
+ },
+ {
+  "id": "ty-4759",
+  "url": "https://github.com/astral-sh/ty/issues/4759",
+  "title": "(from torch) Invalid override of attribute `forward`: Override does not accept writes of type `(...) -> Any",
+  "labels": [
+   "bug",
+   "attributes",
+   "overrides"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def _forward_unimplemented(self, *input: Any) -> None:\n    r\"\"\"Define the computation performed at every call.\n\n    Should be overridden by all subclasses.\n\n    .. note::\n        Although the recipe for forward pass needs to be defined within\n        this function, one should call the :class:`Module` instance afterwards\n        instead of this since the former takes care of running the\n        registered hooks while the latter silently ignores them.\n    \"\"\"\n    raise NotImplementedError(\n        f'Module [{type(self).__name__}] is missing the required \"forward\" function'\n    )\n\nfrom typing import Callable\n\nclass Base:\n    def __init__(self):\n        pass\n\n    forward: Callable[..., Any] = _forward_unimplemented\n\nclass Inherit(Base):\n    def __init__(self):\n        super().__init__()\n    def forward(self, tensor: int) -> int:\n        return 10\n"
+ },
+ {
+  "id": "ty-4755",
+  "url": "https://github.com/astral-sh/ty/issues/4755",
+  "title": "no error when `@classmethod` has no `cls` parameter",
+  "labels": [
+   "bug",
+   "method-receiver",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Foo:\n    @classmethod\n    def fn() -> None: ... # no error\n"
+ },
+ {
+  "id": "ty-4754",
+  "url": "https://github.com/astral-sh/ty/issues/4754",
+  "title": "false positive: tuples of Hashable-bounded type variables rejected as Hashable",
+  "labels": [
+   "bug",
+   "generics",
+   "constraint-solver",
+   "method-receiver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Hashable\n\nclass Box[T: Hashable]:\n    def __init__(self, value: T) -> None:\n        self.value = value\n\ndef inferred[S: Hashable, A: Hashable](s: S, a: A) -> Box[tuple[S, A]]:\n    return Box((s, a))  # invalid-argument-type\n\ndef explicit[S: Hashable, A: Hashable](s: S, a: A) -> Box[tuple[S, A]]:\n    # accepted, the explicit constructor specialization seems to be a workaround for the first error\n    return Box[tuple[S, A]]((s, a))  \n\ndef generic[T: Hashable](value: tuple[T, T]) -> Hashable:\n    return value  # invalid-return-type\n\ndef concrete(value: tuple[Hashable, Hashable]) -> Hashable:\n    return value  # accepted\n"
+ },
+ {
+  "id": "ty-4746",
+  "url": "https://github.com/astral-sh/ty/issues/4746",
+  "title": "Protocol methods with `self` annotated as the protocol reject valid implementations (regression in 0.0.65)",
+  "labels": [
+   "bug",
+   "protocols",
+   "method-receiver",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Protocol\n\n\nclass HasMeth(Protocol):\n    def meth(self: \"HasMeth\", value: int, /) -> Any: ...\n\n\nclass Impl:\n    def meth(self, value: int) -> None: ...\n\n\nx: HasMeth = Impl()  # error[invalid-assignment]\n"
+ },
+ {
+  "id": "ty-4737",
+  "url": "https://github.com/astral-sh/ty/issues/4737",
+  "title": "PEP 661 sentinel annotated `Final` is rejected as a type",
+  "labels": [
+   "bug",
+   "typing semantics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Final, reveal_type\n\nPLAIN = sentinel(\"PLAIN\")\nBARE_FINAL: Final = sentinel(\"BARE_FINAL\")\nTYPED_FINAL: Final[sentinel] = sentinel(\"TYPED_FINAL\")\n\n\ndef plain(d: dict[str, int]) -> int | PLAIN:\n    return d.get(\"a\", PLAIN)\n\n\ndef bare_final(d: dict[str, int]) -> int | BARE_FINAL:\n    return d.get(\"a\", BARE_FINAL)\n\n\ndef typed_final(d: dict[str, int]) -> int | TYPED_FINAL:\n    return d.get(\"a\", TYPED_FINAL)\n\n\ndef narrow(d: dict[str, int]) -> None:\n    if (value := d.get(\"a\", BARE_FINAL)) is not BARE_FINAL:\n        reveal_type(value)\n"
+ },
+ {
+  "id": "ty-4736",
+  "url": "https://github.com/astral-sh/ty/issues/4736",
+  "title": "[0.0.88 regression] False positive with complicated generics and self types",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Nest[RodentT]:\n    pass\n\ndef share_burrow[RodentT](hutia: Nest[RodentT], capybara: Nest[RodentT]):\n    ...\n\ndef forage[HutiaT](hutia: Nest[Nest[HutiaT]]):\n    share_burrow(hutia, Capybara().hide())\n\nclass Capybara:\n\n    def hide[CapybaraT: Capybara](self: CapybaraT) -> Nest[Nest[CapybaraT]]:\n        raise NotImplementedError\n"
+ },
+ {
+  "id": "ty-4735",
+  "url": "https://github.com/astral-sh/ty/issues/4735",
+  "title": "Default argument checked as a type expression when the value type is a `TypeForm`",
+  "labels": [
+   "bug",
+   "calls",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing_extensions import TypeForm\n\nMISSING = object()\n\n\ndef lookup(hints: dict[str, TypeForm[object]]) -> object:\n    return hints.get(\"return\", MISSING)\n"
+ },
+ {
+  "id": "ty-4715",
+  "url": "https://github.com/astral-sh/ty/issues/4715",
+  "title": "Class-level alias of a self-type-overloaded method resolves to the wrong overload",
+  "labels": [
+   "bug",
+   "overloads",
+   "unsoundness",
+   "method-receiver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Awaitable\nfrom typing import Any, Literal, Protocol, overload, reveal_type\n\n\nclass AsyncClient(Protocol):\n    _is_async_client: Literal[True]\n\n\nclass SyncClient(Protocol):\n    _is_async_client: Literal[False]\n\n\nclass Commands:\n    @overload\n    def incrby(self: SyncClient, name: str) -> int: ...\n    @overload\n    def incrby(self: AsyncClient, name: str) -> Awaitable[int]: ...\n    def incrby(self: Any, name: str) -> int | Awaitable[int]:\n        raise NotImplementedError\n\n    incr = incrby\n\n\nclass Redis(Commands):\n    _is_async_client: Literal[True] = True\n\n\ndef f(r: Redis) -> None:\n    reveal_type(r.incrby(\"k\"))  # Awaitable[int]\n    reveal_type(r.incr(\"k\"))  # expected Awaitable[int]\n"
+ },
+ {
+  "id": "ty-4713",
+  "url": "https://github.com/astral-sh/ty/issues/4713",
+  "title": "@deprecated is not propagated through decorators that return a callable instance",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "callables"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\nfrom warnings import deprecated\n\n\nclass Wrapper[**P, R]:\n    def __init__(self, func: Callable[P, R]) -> None:\n        self._func = func\n\n    def __call__(self, *args: P.args, **kwargs: P.kwargs) -> R:\n        return self._func(*args, **kwargs)\n\n\ndef passthrough[**P, R](func: Callable[P, R]) -> Callable[P, R]:\n    return func\n\n\n@deprecated(\"plain\")\ndef plain() -> int:\n    return 1\n\n\n@deprecated(\"outside a Callable decorator\")\n@passthrough\ndef outside_callable() -> int:\n    return 1\n\n\n@deprecated(\"outside a class decorator\")\n@Wrapper\ndef outside_class() -> int:\n    return 1\n\n\n@Wrapper\n@deprecated(\"inside a class decorator\")\ndef inside_class() -> int:\n    return 1\n\n\ndef use() -> None:\n    plain()              # ty reports\n    outside_callable()   # ty reports\n    outside_class()      # ty silent; pyright reports\n    inside_class()       # ty silent; pyright reports\n"
+ },
+ {
+  "id": "ty-4711",
+  "url": "https://github.com/astral-sh/ty/issues/4711",
+  "title": "Nested class override rejected even when it subclasses the inherited class",
+  "labels": [
+   "bug",
+   "attributes",
+   "overrides"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Base:\n    class Meta:\n        x = 1\n\n\nclass Child(Base):\n    class Meta(Base.Meta):\n        x = 2\n"
+ },
+ {
+  "id": "ty-4696",
+  "url": "https://github.com/astral-sh/ty/issues/4696",
+  "title": "Preserve caller-fixed variable obligations during generic inference",
+  "labels": [
+   "bug",
+   "needs-design",
+   "generics",
+   "unsoundness",
+   "constraint-solver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Protocol\n\nclass Source[T](Protocol):\n    value: T\n\ndef consume[S: str](source: Source[S]): ...\n\ndef wrapper[T: Source[object]](source: T):\n    consume(source)  # Should report an invalid argument.\n"
+ },
+ {
+  "id": "ty-4695",
+  "url": "https://github.com/astral-sh/ty/issues/4695",
+  "title": "Regression in 0.0.85: bounded TypeVar rejects a valid non-generic union alternative",
+  "labels": [
+   "bug",
+   "generics",
+   "constraint-solver",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Hashable, Iterable\nfrom typing import TypeVar, assert_type\n\nH = TypeVar(\"H\", bound=Hashable)\nSliceTuple = tuple[str | int | slice, ...]\n\n\ndef select(key: tuple[slice, Iterable[H] | SliceTuple]) -> int:\n    return 0\n\n\nassert_type(select((slice(None), (\"a\", slice(None)))), int)\nassert_type(select((slice(None), (slice(None), 1))), int)\n"
+ },
+ {
+  "id": "ty-4684",
+  "url": "https://github.com/astral-sh/ty/issues/4684",
+  "title": "`unsound-assignment` rejects a generic method implementing a concrete protocol",
+  "labels": [
+   "bug",
+   "generics",
+   "protocols",
+   "callables"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Protocol, TypeVar\n\nT = TypeVar(\"T\")\n\n\nclass IntIdentity(Protocol):\n    def identity(self, value: int) -> int: ...\n\n\nclass Identity:\n    def identity(self, value: T) -> T:\n        return value\n\n\nidentity: IntIdentity = Identity()\n"
+ },
+ {
+  "id": "ty-4683",
+  "url": "https://github.com/astral-sh/ty/issues/4683",
+  "title": "Class `|` expressions ignore custom metaclass `__or__`",
+  "labels": [
+   "bug",
+   "type-inference",
+   "metaprogramming"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import assert_type\n\n\nclass Combined:\n    pass\n\n\nclass Meta(type):\n    def __or__(cls, other: type) -> Combined:\n        return Combined()\n\n\nclass A(metaclass=Meta):\n    pass\n\n\nclass B(metaclass=Meta):\n    pass\n\n\nassert_type(A.__or__(B), Combined)  # passes\nassert_type(A | B, Combined)       # type-assertion-failure\n\n\nclass Base:\n    combination: Combined\n\n\nclass Child(Base):\n    combination = A | B           # invalid-assignment in 0.0.85\n"
+ },
+ {
+  "id": "ty-4661",
+  "url": "https://github.com/astral-sh/ty/issues/4661",
+  "title": "Dict literal keyed by a `TypeVar` is not assignable to `Mapping[TypeVar, ...]`",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "generics",
+   "type-inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Mapping\nfrom typing import Any, TypeVar\n\nT = TypeVar(\"T\", bound=int)\n\n\ndef takes(m: Mapping[TypeVar, Any]) -> None: ...\n\n\ndef inferred(model: type[T]) -> None:\n    d = {T: model}\n    takes(d)  # error\n\n\ndef with_context(model: type[T]) -> None:\n    takes({T: model})  # fine\n\n\ndef annotated(model: type[T]) -> None:\n    d: dict[TypeVar, Any] = {T: model}\n    takes(d)  # fine\n\n\ndef int_keys(model: type[T]) -> None:\n    def takes_int(m: Mapping[int, Any]) -> None: ...\n\n    d = {1: model}\n    takes_int(d)  # fine: the literal key is widened to `int`\n"
+ },
+ {
+  "id": "ty-4657",
+  "url": "https://github.com/astral-sh/ty/issues/4657",
+  "title": "Methods with a `TypeVarTuple`-prefixed `self` annotation are not bound to the receiver",
+  "labels": [
+   "bug",
+   "generics",
+   "constraint-solver",
+   "method-receiver",
+   "variadic-generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Callable, Generic, TypeVar, TypeVarTuple, Unpack, reveal_type\n\nP = TypeVarTuple(\"P\")\nQ = TypeVarTuple(\"Q\")\nT = TypeVar(\"T\")\nV = TypeVar(\"V\")\n\n\nclass Prefixed(Generic[Unpack[P]]):\n    def __call__(self: \"Prefixed[V, Unpack[Q]]\", value: V) -> \"Prefixed[Unpack[Q]]\": ...\n\n\nclass Single(Generic[T]):\n    def __call__(self: \"Single[V]\", value: V) -> V: ...\n\n\nclass Var(Generic[T]): ...\n\n\nclass Handler(Generic[Unpack[P]]):\n    def __call__(self: \"Handler[V, Unpack[Q]]\", value: V | Var[V]) -> \"Handler[Unpack[Q]]\": ...\n\n\ndef f(p: Prefixed[int, str], s: Single[int], h: Handler[int], v: Var[int]) -> None:\n    reveal_type(p.__call__)\n    reveal_type(s.__call__)\n    p(\"x\")\n    h(v)\n    c: Callable[[int], Any] = p\n"
+ },
+ {
+  "id": "ty-4648",
+  "url": "https://github.com/astral-sh/ty/issues/4648",
+  "title": "Class patterns with captured attributes don't narrow superclass subjects in subsequent cases",
+  "labels": [
+   "bug",
+   "narrowing"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Super: ...\n\nclass Sub(Super):\n    __match_args__ = (\"what\",)\n    what = 0\n\ndef process_launch(result: Super):\n    match result:\n        case Sub(what):\n            pass\n        case _:\n            reveal_type(result)  # revealed: Super; expected: Super & ~Sub\n"
+ },
+ {
+  "id": "ty-4646",
+  "url": "https://github.com/astral-sh/ty/issues/4646",
+  "title": "Conflicting invariant bounds can lead to suppressed diagnostics",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def f[T: (int, str), U](\n    x: T, y: T, a: list[U], b: list[U]\n) -> T:\n    return x\n\ndef _(x: int, y: str, a: list[int], b: list[str]):\n    # error[invalid-argument-type]: Argument to function `f` is incorrect: Expected `list[int | str]`, found `list[int]`\n    # error[invalid-argument-type]: Argument to function `f` is incorrect: Expected `list[int | str]`, found `list[int]`\n    f(x, y, a, b)\n"
+ },
+ {
+  "id": "ty-4645",
+  "url": "https://github.com/astral-sh/ty/issues/4645",
+  "title": "Unsatisfiable bounds can lead to suppressed diagnostics",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable\n\ndef f[T](callback: Callable[[T], T]) -> list[T]:\n    raise NotImplementedError\n\ndef incompatible(value: int) -> str:\n    return str(value)\n\nf(incompatible)  # ok\n"
+ },
+ {
+  "id": "ty-4628",
+  "url": "https://github.com/astral-sh/ty/issues/4628",
+  "title": "Bounded callable return accepts an unconstrained type variable alongside a recursive alias",
+  "labels": [
+   "bug",
+   "generics",
+   "unsoundness"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable\n\ntype Recursive = int | list[Recursive]\n\n\ndef forward[R: tuple[str, object]](factory: Callable[[], R]) -> R:\n    result = factory()\n    result[0].upper()\n    return result\n\n\ndef outer[S](value: S) -> None:\n    def factory() -> tuple[S, Recursive]:\n        return value, [1]\n\n    forward(factory)\n\n\nouter(1)\n"
+ },
+ {
+  "id": "ty-4627",
+  "url": "https://github.com/astral-sh/ty/issues/4627",
+  "title": "Bounded callable return accepts a caller-fixed type variable alongside an inferred variable",
+  "labels": [
+   "bug",
+   "generics",
+   "unsoundness"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable\n\n\ndef forward[U, R: tuple[str, object]](factory: Callable[[U], R], arg: U) -> R:\n    result = factory(arg)\n    result[0].upper()\n    return result\n\n\ndef outer[S](value: S) -> None:\n    def factory[U](arg: U) -> tuple[S, U]:\n        return value, arg\n\n    forward(factory, 1)\n\n\nouter(1)\n"
+ },
+ {
+  "id": "ty-4621",
+  "url": "https://github.com/astral-sh/ty/issues/4621",
+  "title": "False negative `unresolved-attribute` on a narrowed TypeVar with a union upper bound",
+  "labels": [
+   "bug",
+   "narrowing",
+   "generics",
+   "set-theoretic types",
+   "attributes"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\n\nclass A:\n    y: int\n\n\nclass B: ...\n\n\ndef with_union(v: A | B) -> int:\n    if isinstance(v, A):\n        return 0\n    return v.y  # error: Object of type `B & ~A` has no attribute `y`  \u2705\n\n\ndef with_typevar[T: A | B](v: T) -> int:\n    if isinstance(v, A):\n        return 0\n    reveal_type(v)  # T@with_typevar & ~A\n    return v.y  # no error \u274c\n\n\ndef positive_narrowing[T: A | B](v: T) -> int:\n    if isinstance(v, B):\n        reveal_type(v)  # T@positive_narrowing & B\n        return v.y  # no error \u274c\n    return 0\n"
+ },
+ {
+  "id": "ty-4619",
+  "url": "https://github.com/astral-sh/ty/issues/4619",
+  "title": "Explicit gradual receiver annotation (`self: Any`) leads to error",
+  "labels": [
+   "bug",
+   "generics",
+   "callables",
+   "method-receiver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Callable\n\nclass C:\n    def method(self: Any) -> None:\n        pass\n\n    def test(self) -> None:\n        # Object of type `bound method Self@test.method() -> None` is not assignable to `() -> None`\n        callback: Callable[[], None] = self.method\n        callback()\n"
+ },
+ {
+  "id": "ty-4618",
+  "url": "https://github.com/astral-sh/ty/issues/4618",
+  "title": "Cycle-iteration panic involving a recursive type alias and a short-circuit assignment",
+  "labels": [
+   "bug",
+   "fatal",
+   "control flow",
+   "hang",
+   "type-inference",
+   "fuzzer",
+   "type aliases",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "type Alias = value\nsource = Alias\nvalue = lambda: source\ndecorator = source\n\n@decorator[0]\ndef Alias():\n    pass\nAlias and ((source := value) or (lambda: source)) and 0\nvalue = 0\n"
+ },
+ {
+  "id": "ty-4617",
+  "url": "https://github.com/astral-sh/ty/issues/4617",
+  "title": "Checking a recursive binding with a match and loop does not finish",
+  "labels": [
+   "bug",
+   "control flow",
+   "hang",
+   "type-inference",
+   "fuzzer",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "[0 for _ in 0 if (captured,)]\n\ntry:\n    def source():\n        pass\n    source = other = lambda: result\nexcept* 0:\n    pass\nfinally:\n    match subject:\n        case Unknown.attribute as captured:\n            from . import result\n    while [0 for _ in source]:\n        pass\n\n(subject := 0 .attribute)\n(result := other)\n"
+ },
+ {
+  "id": "ty-4615",
+  "url": "https://github.com/astral-sh/ty/issues/4615",
+  "title": "Cycle-iteration panic when specializing a decorated generic class in a loop",
+  "labels": [
+   "bug",
+   "fatal",
+   "generics",
+   "control flow",
+   "hang",
+   "fuzzer",
+   "cycles",
+   "paramspec",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "@0\nclass C[**P]:\n    pass\n\nwhile -():\n    (P := C[P])\n"
+ },
+ {
+  "id": "ty-4614",
+  "url": "https://github.com/astral-sh/ty/issues/4614",
+  "title": "Cycle-iteration panic involving a context manager and a match capture",
+  "labels": [
+   "bug",
+   "fatal",
+   "control flow",
+   "hang",
+   "fuzzer",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "match lambda: value:\n    case value:\n        pass\n\nwith lambda: value:\n    match missing:\n        case []:\n            del value\n        case 0:\n            for _ in 0:\n                pass\n\nasync def value():\n    pass\n"
+ },
+ {
+  "id": "ty-4613",
+  "url": "https://github.com/astral-sh/ty/issues/4613",
+  "title": "ty hangs on a decorated class defined in a while loop",
+  "labels": [
+   "bug",
+   "fatal",
+   "generics",
+   "control flow",
+   "hang",
+   "type-inference",
+   "fuzzer",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "while (name_4 := name_1):\n    @lambda name_3=unique_name_0, /: name_3\n    @lambda: {name_3: 0 for unique_name_1 in unique_name_2}\n    class name_1:\n        pass\n\n(name_3 := name_4)\n"
+ },
+ {
+  "id": "ty-4612",
+  "url": "https://github.com/astral-sh/ty/issues/4612",
+  "title": "Cycle-iteration panics involving cyclic lambda inference",
+  "labels": [
+   "bug",
+   "fatal",
+   "generics",
+   "hang",
+   "type-inference",
+   "callables",
+   "fuzzer",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class C[T](object, x=lambda: value):\n    pass\n\nvalue = lambda: value\nfor value in C:\n    pass\n"
+ },
+ {
+  "id": "ty-4611",
+  "url": "https://github.com/astral-sh/ty/issues/4611",
+  "title": "Cycle-iteration panic when a recursive lambda refers to a `for` target",
+  "labels": [
+   "bug",
+   "fatal",
+   "control flow",
+   "hang",
+   "type-inference",
+   "callables",
+   "fuzzer",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "value = lambda: value\nfor value in lambda: value:\n    pass\n"
+ },
+ {
+  "id": "ty-4607",
+  "url": "https://github.com/astral-sh/ty/issues/4607",
+  "title": "Cycle-iteration panic for a recursive type alias used in a decorator",
+  "labels": [
+   "bug",
+   "fatal",
+   "hang",
+   "fuzzer",
+   "type aliases",
+   "cycles",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "value = lambda: value\ntry:\n    type Alias = value\nfinally:\n    @[Alias]\n    class Example:\n        pass\n    value = Example\n"
+ },
+ {
+  "id": "ty-4600",
+  "url": "https://github.com/astral-sh/ty/issues/4600",
+  "title": "Divergent type when an unannotated container references its items",
+  "labels": [
+   "bug",
+   "type-inference",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "d = [\"this\"]\nd[0] = d[0]\n"
+ },
+ {
+  "id": "ty-4599",
+  "url": "https://github.com/astral-sh/ty/issues/4599",
+  "title": "getattr_static identity guard incorrectly reported as always true",
+  "labels": [
+   "bug",
+   "runtime semantics",
+   "attributes",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "import inspect\n\ndef hutia(capybara: object):\n    if inspect.getattr_static(capybara, \"__new__\") is not object.__new__:\n        raise TypeError\n"
+ },
+ {
+  "id": "ty-4594",
+  "url": "https://github.com/astral-sh/ty/issues/4594",
+  "title": "Inferring a constrained type variable from gradual evidence",
+  "labels": [
+   "bug",
+   "generics",
+   "constrained-typevars"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def double[T: (int, str, bytes)](value: T) -> T:\n    return value + value\n\ndef _[U: bool](value: U) -> U:\n    reveal_type(double(value))  # revealed: int\n    return double(value)  # error: [invalid-return-type]\n"
+ },
+ {
+  "id": "ty-4593",
+  "url": "https://github.com/astral-sh/ty/issues/4593",
+  "title": "\"invalid-assignment\" with `operator.mul` but not multiplication operator",
+  "labels": [
+   "bug",
+   "generics",
+   "set-theoretic types",
+   "constraint-solver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from operator import mul\nfrom math import comb\nfrom fractions import Fraction\n\ndef C(n: int) -> Fraction:\n    return Fraction(comb(2 * n, n) / (n + 1))\n\ndef \u5de5antiCatalan(sub_antiCatalan: int, \u6b21antiCatalan: int) -> int:\n\tmatch \u6b21antiCatalan:\n\t\tcase 3:\n\t\t\treturnMe: Fraction = C(sub_antiCatalan) * 2\n\t\tcase 2:\n\t\t\treturnMe: Fraction = 2 * C(sub_antiCatalan)\n\t\tcase 1:\n\t\t\treturnMe: Fraction = mul(C(sub_antiCatalan), 2)\n\t\tcase _:\n\t\t\treturnMe: Fraction = mul(2, C(sub_antiCatalan))\n\treturn int(returnMe)\n\n"
+ },
+ {
+  "id": "ty-4590",
+  "url": "https://github.com/astral-sh/ty/issues/4590",
+  "title": "`Container[Flag] | Flag` does not accept Flag",
+  "labels": [
+   "bug",
+   "generics",
+   "protocols",
+   "enums",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Container\nfrom enum import Flag, auto\n\n\nclass MyFlag(Flag):\n    a = auto()\n\ndef f(x: MyFlag | Container[MyFlag]) -> bool:\n    return MyFlag.a in x\n\nf(MyFlag.a)\n"
+ },
+ {
+  "id": "ty-4588",
+  "url": "https://github.com/astral-sh/ty/issues/4588",
+  "title": "Incorrect \"Code is unreachable\" with Unknown type in an itertools.chain",
+  "labels": [
+   "bug",
+   "generics",
+   "set-theoretic types",
+   "constraint-solver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "import itertools\n\nit = foo()\n\nfor x in itertools.chain(it, (None,)):\n    if x is not None:\n        print(x)\n"
+ },
+ {
+  "id": "ty-4582",
+  "url": "https://github.com/astral-sh/ty/issues/4582",
+  "title": "Nested invariant materializations do not respect outer type variable bounds",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any\nfrom ty_extensions import Top\n\nclass BoundedBox[T: int]:\n    value: T\n\ndef _(box: Top[BoundedBox[Any]]):\n    reveal_type(box.value)  # revealed: int\n"
+ },
+ {
+  "id": "ty-4573",
+  "url": "https://github.com/astral-sh/ty/issues/4573",
+  "title": "`enum.member` loses callable value signature inside `Enum`",
+  "labels": [
+   "bug",
+   "enums",
+   "callables",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "import enum\nfrom collections.abc import Callable\n\n\ndef format_bytes(value: bytes, /) -> str:\n    return value.hex()\n\n\nclass BytesFormats(enum.Enum):\n    _value_: Callable[[bytes], str]\n\n    HEX = enum.member(value=format_bytes)\n\n    def __call__(self, data: bytes, /) -> str:\n        return self._value_(data)\n"
+ },
+ {
+  "id": "ty-4551",
+  "url": "https://github.com/astral-sh/ty/issues/4551",
+  "title": "Enum class rejected by a generic union",
+  "labels": [
+   "bug",
+   "generics",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Iterable\nfrom enum import Enum\n\nclass Choice(Enum):\n    A = \"a\"\n\ndef accepts_choices[T](choices: Iterable[tuple[T, str]] | type[Enum]) -> None:\n    pass\n\naccepts_choices(Choice)\n"
+ },
+ {
+  "id": "ty-4548",
+  "url": "https://github.com/astral-sh/ty/issues/4548",
+  "title": "Inconsistent handling of unannotated lambda expressions",
+  "labels": [
+   "bug",
+   "generics",
+   "callables",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\n\ndef consume[T](value: T, callback: Callable[[T], object]) -> None:\n    callback(value)\n\ndef f1(x) -> int:\n    return 0\n\nf2 = lambda x: 0\n\nconsume(f1, lambda f: f())     # error: [missing-argument]\nconsume(f2, lambda f: f())     # ok\n"
+ },
+ {
+  "id": "ty-4546",
+  "url": "https://github.com/astral-sh/ty/issues/4546",
+  "title": "Calling a `dataclass_transform` function with a `type[...]` argument returns an internal placeholder type, not the declared return type",
+  "labels": [
+   "bug",
+   "dataclasses"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from dataclasses import dataclass\nfrom typing import dataclass_transform, reveal_type\n\n\n@dataclass_transform(frozen_default=True)\ndef record[T](cls: type[T]) -> type[T]:\n    return dataclass(frozen=True, slots=True)(cls)\n\n\n@record\nclass Decorated:  # Baseline: decorator syntax works\n    x: int\n\n\nreveal_type(Decorated)     # <class 'Decorated'>: correct\nreveal_type(Decorated(1))  # Decorated: correct\n\n\nclass Point:\n    x: int\n\n\ndef literal() -> None:\n    reveal_type(record(Point))  # <class 'Point'>: correct\n\n\ndef annotated(cls: type[Point]) -> None:\n    reveal_type(record(cls))  # placeholder; expected type[Point]\n\n\ndef generic[E](cls: type[E]) -> type[E]:\n    built = record(cls)\n    reveal_type(built)  # placeholder; expected type[E]\n    return built  # error[invalid-return-type]\n\n\ndef undecorated[T](cls: type[T]) -> type[T]:\n    return cls\n\n\ndef control[E](cls: type[E]) -> type[E]:\n    built = undecorated(cls)\n    reveal_type(built)  # type[E@control]: correct\n    return built\n"
+ },
+ {
+  "id": "ty-4542",
+  "url": "https://github.com/astral-sh/ty/issues/4542",
+  "title": "Collection literal inference can narrow to an element that produces diagnostics",
+  "labels": [
+   "bug",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable\n\ndef f[T](x: T) -> list[T]:\n    return [x]\n\nf: list[Callable[[int], int]] | list[Callable[[str], str]] = f(lambda x: x.upper())\n"
+ },
+ {
+  "id": "ty-4536",
+  "url": "https://github.com/astral-sh/ty/issues/4536",
+  "title": "Gradual constraints are not propagated to nested type variables",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any\n\ndef f[T](x: tuple[T]) -> T:\n    return x[0]\n\ndef _(x: Any):\n    reveal_type(f(x))  # revealed: Unknown\n"
+ },
+ {
+  "id": "ty-4523",
+  "url": "https://github.com/astral-sh/ty/issues/4523",
+  "title": "`is`-narrowing against a generic class object pins the class's typevars for the rest of the scope",
+  "labels": [
+   "bug",
+   "narrowing",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class C[T]:\n    def __init__(self, x: T) -> None:\n        ...\n\n\ndef test_type() -> None:\n    assert type(C(0)) is C\n    assert type(C(None)) is C  # invalid-argument-type\n"
+ },
+ {
+  "id": "ty-4518",
+  "url": "https://github.com/astral-sh/ty/issues/4518",
+  "title": "Callable intersection aliases do not contribute constraints to generic call inference",
+  "labels": [
+   "bug",
+   "generics",
+   "callables",
+   "type aliases"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable, reveal_type\n\ntype Both = \"Callable[[int], int] & Callable[[str], str]\"\n\ndef call[T](f: Callable[[T], T], x: T) -> T:\n    return f(x)\n\ndef example(\n    named: Both,\n    inline: \"Callable[[int], int] & Callable[[str], str]\",\n    x: bool,\n):\n    reveal_type(call(named, x))   # bool; invalid-argument-type\n    reveal_type(call(inline, x))  # int; accepted\n"
+ },
+ {
+  "id": "ty-4508",
+  "url": "https://github.com/astral-sh/ty/issues/4508",
+  "title": "Regression in 0.0.80: return type lost when passing one generic forwarding function to another",
+  "labels": [
+   "bug",
+   "paramspec",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\n\ndef capybara[**P, T](fn: Callable[P, T], /, *args: P.args, **kwargs: P.kwargs) -> T:\n    return fn(*args, **kwargs)\n\ndef agouti[**P, T](callable: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T:\n    return callable(*args, **kwargs)\n\ndef hutia(fn: Callable[[], str]) -> str:\n    return capybara(agouti, fn)\n"
+ },
+ {
+  "id": "ty-4432",
+  "url": "https://github.com/astral-sh/ty/issues/4432",
+  "title": "0.0.76 regression: filtered list comprehension incorrectly inferred as list[Never]",
+  "labels": [
+   "bug",
+   "generics",
+   "constraint-solver",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any\n\nclass A: ...\n\ndef f0(v0: Any) -> list[A]:\n    v1 = [A() for _, v2 in enumerate(getattr(v0, 'r8', ())) if 'q9' in v2.a0 and v2.a1]\n    v1.append(A())\n    return v1\n"
+ },
+ {
+  "id": "ty-4401",
+  "url": "https://github.com/astral-sh/ty/issues/4401",
+  "title": "Nested reverse-operation protocol overload incorrectly infers `Unknown` for concrete generic arguments",
+  "labels": [
+   "bug",
+   "generics",
+   "constraint-solver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from __future__ import annotations\n\nfrom typing import Protocol, TypeVar, assert_type, overload\n\nT = TypeVar(\"T\", covariant=True)\nS = TypeVar(\"S\", bound=int)\nT_contra = TypeVar(\"T_contra\", contravariant=True)\nT_co = TypeVar(\"T_co\", covariant=True)\n\n\nclass SupportsAdd(Protocol[T_contra, T_co]):\n    def __add__(self, other: T_contra, /) -> T_co: ...\n\n\nclass SupportsRAdd(Protocol[T_contra, T_co]):\n    def __radd__(self, other: T_contra, /) -> T_co: ...\n\n\nclass Box(Protocol[T]):\n    @overload\n    def __radd__(self: Box[int], other: int, /) -> Box[int]: ...\n\n    @overload\n    def __radd__(  # type: ignore[misc]\n        self: Box[T], other: SupportsAdd[T, S], /\n    ) -> Box[S]: ...\n\n    @overload\n    def add(self: Box[T], other: SupportsRAdd[T, S]) -> Box[S]: ...\n\n    @overload\n    def add(self: Box[int], other: Box[int]) -> Box[int]: ...\n\n\ndef get_box() -> Box[int]:\n    raise NotImplementedError\n\n\nbox = get_box()\nassert_type(box.add(box), Box[int])\n"
+ },
+ {
+  "id": "ty-4329",
+  "url": "https://github.com/astral-sh/ty/issues/4329",
+  "title": "Preserve unpacked variadic structure in inferred callable signatures",
+  "labels": [
+   "bug",
+   "calls",
+   "variadic-generics",
+   "paramspec"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable, Concatenate, reveal_type\n\ndef preserve[**P](callback: Callable[P, None]) -> Callable[P, None]:\n    return callback\n\ndef remove_first[**P](\n    callback: Callable[Concatenate[int, P], None],\n) -> Callable[P, None]:\n    raise NotImplementedError\n\ndef source(\n    name: int,\n    *args: *tuple[*tuple[int, ...], int],\n) -> None: ...\n\npreserved = preserve(source)\nremaining = remove_first(source)\n\nreveal_type(preserved)\n# Actual: (name: int, *args: int, int, /) -> None\n\nreveal_type(remaining)\n# Actual: (*args: int, int, /) -> None\n\nsource(0, 1)     # Accepted\npreserved(0, 1)  # Incorrect missing-argument error\nremaining(1)    # Incorrect missing-argument error\n"
+ },
+ {
+  "id": "ty-4311",
+  "url": "https://github.com/astral-sh/ty/issues/4311",
+  "title": "`unsound-return-statement` false positive on `join(sorted(..., key=lambda))`",
+  "labels": [
+   "bug",
+   "generics",
+   "overloads"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "items: list[str] = [\"b\", \"a\"]\n\n# bug: nested lambda key -> revealed as Unknown\njoined = \",\".join(sorted(items, key=lambda i: i))\nreveal_type(joined)  # Unknown, expected str\n\n# counterexample: key=len -> revealed as str\njoined = \",\".join(sorted(items, key=len))\nreveal_type(joined)  # str\n\n# counterexample: no key -> revealed as str\njoined = \",\".join(sorted(items))\nreveal_type(joined)  # str\n\n# counterexample: split across separate statements -> revealed as str\ns = sorted(items, key=lambda i: i)\njoined = \",\".join(s)\nreveal_type(joined)  # str\n"
+ },
+ {
+  "id": "ty-4301",
+  "url": "https://github.com/astral-sh/ty/issues/4301",
+  "title": "Declared type preference can suppress invalid specialization diagnostics",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Callable\n\ndef f[T](\n    value: T,\n    first: Callable[[T], None],\n    second: Callable[[T], None],\n) -> list[T]:\n    return [value]\n\ndef _(value: Any, ints: Callable[[int], None], strings: Callable[[str], None]):\n    # error: [invalid-argument-type]\n    # error: [invalid-argument-type]\n    f(value, ints, strings)\n\n    # ok\n    x: list[Any] = f(value, ints, strings)\n"
+ },
+ {
+  "id": "ty-4300",
+  "url": "https://github.com/astral-sh/ty/issues/4300",
+  "title": "Literal promotion can lead to unsatisfiable solutions",
+  "labels": [
+   "bug",
+   "generics",
+   "literal-types"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable, Literal\n\ndef make_list[T](value: T, accept: Callable[[T], None]) -> list[T]:\n    return [value]\n\ndef accepts_one(value: Literal[1]) -> None:\n    pass\n\nreveal_type(make_list(1, accepts_one))\n"
+ },
+ {
+  "id": "ty-4299",
+  "url": "https://github.com/astral-sh/ty/issues/4299",
+  "title": "Diagnostic recovery can suppress invalid specialization diagnostics",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Callable\n\ndef infer[T: int](value: T, upper: Callable[[T], None]) -> T:\n    return value\n\ndef example(value: Any, upper: Callable[[bytes], None]):\n    reveal_type(infer(value, upper))  # revealed: Any\n"
+ },
+ {
+  "id": "ty-4296",
+  "url": "https://github.com/astral-sh/ty/issues/4296",
+  "title": "Type context is not carried through generic call with empty list",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference",
+   "constraint-solver"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\nfrom collections.abc import Sequence\n\nclass A[T]:\n    def get(self) -> T:\n        raise NotImplementedError\n\ndef make_A[T](x: Sequence[T]) -> A[T]:\n    raise NotImplementedError\n\ndef foo[T]() -> A[T]:\n    # Unsound return statement: `A[T@bar | Unknown]` is not a subtype of `A[T@bar]` (unsound-return-statement) \n    return make_A([])\n\ndef bar[T]():\n    # Expected type: `A[T@Bar]`\n    # Revealed type: `A[T@bar | Unknown]` \n    x: A[T] = reveal_type(make_A([]))\n"
+ },
+ {
+  "id": "ty-4295",
+  "url": "https://github.com/astral-sh/ty/issues/4295",
+  "title": "Splatting a tuple with an unpacked variadic prefix unions the appended element type into every parameter slot",
+  "labels": [
+   "bug",
+   "calls"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any\n\n\nclass Toolset: ...\n\n\nclass Agent: ...\n\n\ndef temporalize(toolset: Toolset, prefix: str, agent: Agent | None = None) -> None: ...\n\n\ndef build(pass_agent: bool, toolset: Toolset, agent: Agent) -> None:\n    args: tuple[Any, ...] = (toolset, 'prefix')\n    if pass_agent:\n        args = (*args, agent)\n    temporalize(*args)\n"
+ },
+ {
+  "id": "ty-4294",
+  "url": "https://github.com/astral-sh/ty/issues/4294",
+  "title": "Empty `frozenset()` fails `unsound-return-statement`",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference",
+   "constructor-call"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from types import CodeType\n\ndef example() -> frozenset[CodeType]:\n    return frozenset()\n"
+ },
+ {
+  "id": "ty-4292",
+  "url": "https://github.com/astral-sh/ty/issues/4292",
+  "title": "Regression: generic inference fails for coroutine list passed as `list[Awaitable[T]]`",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference",
+   "constraint-solver",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Awaitable\nfrom typing import TypeVar\n\nT = TypeVar(\"T\")\n\nasync def gather(values: list[Awaitable[T]]) -> list[T]:\n    return [await value for value in values]\n\nasync def produce() -> int:\n    return 1\n\nasync def main() -> None:\n    result = await gather([produce()])\n    reveal_type(result)\n"
+ },
+ {
+  "id": "ty-4272",
+  "url": "https://github.com/astral-sh/ty/issues/4272",
+  "title": "Ambiguous overloaded constructors incorrectly specialize to the first matching overload",
+  "labels": [
+   "bug",
+   "generics",
+   "overloads",
+   "type-inference",
+   "unsoundness",
+   "constructor-call"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Any, Generic, TypeVar, overload, reveal_type\n\nT = TypeVar(\"T\")\n\n\nclass Process(Generic[T]):\n    @overload\n    def __init__(self: \"Process[str]\", value: str) -> None: ...\n\n    @overload\n    def __init__(self: \"Process[bytes]\", value: bytes) -> None: ...\n\n    def __init__(self, value: str | bytes) -> None: ...\n\n\ndef example(value: Any) -> None:\n    reveal_type(Process(value))\n"
+ },
+ {
+  "id": "ty-4262",
+  "url": "https://github.com/astral-sh/ty/issues/4262",
+  "title": "`TypeVarTuple` inference loses its fixed length in nested callable parameters",
+  "labels": [
+   "bug",
+   "calls",
+   "variadic-generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Callable\n\ndef nested[*Ts](callback: Callable[[Callable[[*Ts], None]], None], *args: *Ts) -> tuple[*Ts]:\n    return args\n\ndef accepts_int_callback(callback: Callable[[int], None]) -> None: ...\n\ndef check(value: int, other: str) -> None:\n    # Expected: tuple[int]\n    # Actual: tuple[int, ...]\n    reveal_type(nested(accepts_int_callback, value))\n\n    # Expected: tuple[int | str]\n    # Actual: tuple[int, ...]\n    reveal_type(nested(accepts_int_callback, other))\n"
+ },
+ {
+  "id": "ty-4054",
+  "url": "https://github.com/astral-sh/ty/issues/4054",
+  "title": "Missing diagnostic for unpacking multiple TypeVarTuples in non-`tuple` generics",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "generics",
+   "typing semantics",
+   "variadic-generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\n# Error: Multiple unpacked variadic tuples are not allowed in a `tuple` specialization \ndef works_as_expected[*TS1, *TS2](x: tuple[*TS1, *TS2]):\n    reveal_type(x)  # Revealed type: `tuple[object, ...]` \n\nclass A[*TS]: ...\ntype B[*TS] = tuple[*TS]\n\n# No error on `a` or `b`\ndef doesnt_work[*TS1, *TS2](a: A[*TS1, *TS2], b: B[*TS1, *TS2]):\n    reveal_type(a)  # Revealed type: `A[*tuple[object, ...]]` \n    reveal_type(b)  # Revealed type: `tuple[object, ...]` \n"
+ },
+ {
+  "id": "ty-4051",
+  "url": "https://github.com/astral-sh/ty/issues/4051",
+  "title": "Equality narrowing for strings/ints/bytes is inconsistent with reachability analysis",
+  "labels": [
+   "bug",
+   "narrowing",
+   "control flow",
+   "unreachable-code"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def f(x: str) -> int:  # error: [invalid-return-type]\n    if x == 'foo':\n        return 42\n    elif x != 'foo':\n        return 42\n\n\ndef g(x: str) -> int:  # no error\n    if x == 'foo':\n        return 42\n    elif x != 'foo':\n        return 42\n\n    reveal_type(x)  # revealed: Never\n"
+ },
+ {
+  "id": "ty-4047",
+  "url": "https://github.com/astral-sh/ty/issues/4047",
+  "title": "TypeVarTuple defaults referencing other TypeVars do not work correctly",
+  "labels": [
+   "bug",
+   "generics",
+   "typing semantics",
+   "variadic-generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\nclass A[T, *TS=*tuple[T]]:\n    def foo(self) -> tuple[*TS]:\n        raise NotImplementedError\n\n# Expected type: `tuple[int]`\n# Revealed type: `tuple[()]` \nreveal_type(A[int]().foo())\n"
+ },
+ {
+  "id": "ty-4032",
+  "url": "https://github.com/astral-sh/ty/issues/4032",
+  "title": "Own-line `ty:ignore` and unknown rule, fix never converges",
+  "labels": [
+   "bug",
+   "suppression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "seen = True\n# ty: ignore[not-a-rule]\nvalue = 1\n"
+ },
+ {
+  "id": "ty-3993",
+  "url": "https://github.com/astral-sh/ty/issues/3993",
+  "title": "false errors when using expected type and/or default type",
+  "labels": [
+   "bug",
+   "generics",
+   "bidirectional inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Never\n\nclass A[T]:\n    t: T\n\n    def __add__[O, E=Never](self, other: A[O]) -> A[T | O | E]:\n        return A()\n\n\na: A[int] = A()\nb: A[int | None]\nb = a + a  # Object of type `A[int]` is not assignable to `A[int | None]`\nb = a.__add__(a)  # Argument to bound method `A.__add__` is incorrect: Expected `A[None | int]`, found `A[int]`\n"
+ },
+ {
+  "id": "ty-3837",
+  "url": "https://github.com/astral-sh/ty/issues/3837",
+  "title": "[panic] Recursive TypeOf across multiple union arms exhausts cycle iterations",
+  "labels": [
+   "bug",
+   "fatal",
+   "set-theoretic types",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from ty_extensions import TypeOf\n\nclass Container[T]: ...\n\nx: list[TypeOf[x]] | Container[TypeOf[x]] | None\nx = [1]\nreveal_type(x)\n"
+ },
+ {
+  "id": "ty-3827",
+  "url": "https://github.com/astral-sh/ty/issues/3827",
+  "title": "hang on nested iterable types",
+  "labels": [
+   "bug",
+   "performance",
+   "hang"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "while 1:\n    x = iter([[None] + [x]])\n"
+ },
+ {
+  "id": "ty-3826",
+  "url": "https://github.com/astral-sh/ty/issues/3826",
+  "title": "Hang on recursive intersection growth during cycle recovery",
+  "labels": [
+   "bug",
+   "performance",
+   "set-theoretic types",
+   "hang",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from ty_extensions import TypeOf, Intersection\n\nclass Container[T]: ...\n\nx: Intersection[list[TypeOf[x]], Container[TypeOf[x]]]\nx = [1]\n"
+ },
+ {
+  "id": "ty-3802",
+  "url": "https://github.com/astral-sh/ty/issues/3802",
+  "title": "Hang on variable declaration TypeOf itself then assignment",
+  "labels": [
+   "bug",
+   "performance",
+   "hang"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from ty_extensions import TypeOf\nx: list[TypeOf[x]]\nx = [1]\n"
+ },
+ {
+  "id": "ty-3265",
+  "url": "https://github.com/astral-sh/ty/issues/3265",
+  "title": "False positive invalid-return-type with explicitly subscripted generic constructor",
+  "labels": [
+   "bug",
+   "generics",
+   "constructor-call",
+   "regression"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from __future__ import annotations\n\nfrom typing import Any, Callable, Generic, TypeVar\n\nInputType = TypeVar(\"InputType\")\nIntermediateType = TypeVar(\"IntermediateType\")\nOutputType = TypeVar(\"OutputType\")\n\n\nclass Pipeline(Generic[InputType, IntermediateType]):\n    def __init__(\n        self,\n        handler: Callable[[InputType], IntermediateType],\n        parent: Pipeline[Any, Any] | None = None,\n    ) -> None:\n        self.child: Pipeline[Any, Any] | None = None\n        self.parent = parent\n\n    def then(self, handler: Callable[[IntermediateType], OutputType]) -> Pipeline[IntermediateType, OutputType]:\n        self.child = Pipeline[IntermediateType, OutputType](handler, parent=self)\n        return self.child  # false positive error here\n"
+ },
+ {
+  "id": "ty-3224",
+  "url": "https://github.com/astral-sh/ty/issues/3224",
+  "title": "TypedDict constructor validation doesn't run for unions",
+  "labels": [
+   "bug",
+   "set-theoretic types",
+   "typeddict",
+   "constructor-call"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import TypedDict\n\nclass Foo(TypedDict):\n    a: int\n\nclass Bar(TypedDict):\n    a: int\n\ndef f(T: type[Foo | Bar]):\n    T(a=\"baz\")\n"
+ },
+ {
+  "id": "ty-3162",
+  "url": "https://github.com/astral-sh/ty/issues/3162",
+  "title": "Unreachable names leak into lazy scopes as `Never`",
+  "labels": [
+   "bug",
+   "control flow",
+   "unreachable-code"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import TypeAlias\n\nif False:\n    ShouldBeUndefined = 1\n\nreveal_type(ShouldBeUndefined)  # Name `ShouldBeUndefined` used when not defined (unresolved-reference)  # Revealed type: `Unknown` (revealed-type)\n\ntype A = ShouldBeUndefined  # Variable of type `Never` is not allowed in a type expression (invalid-type-form)\ndef foo(x: ShouldBeUndefined): ...  # Variable of type `Never` is not allowed in a type expression (invalid-type-form)\nx: ShouldBeUndefined  # Variable of type `Never` is not allowed in a type expression (invalid-type-form)\n"
+ },
+ {
+  "id": "ty-3081",
+  "url": "https://github.com/astral-sh/ty/issues/3081",
+  "title": "`__dict__` typed as `object`, not `dict[str, Any]`, after `hasattr` test",
+  "labels": [
+   "bug",
+   "question",
+   "narrowing",
+   "protocols"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def f(obj: object, /) -> None:\n    if hasattr(obj, '__dict__'):\n        del obj.__dict__['f']  # Cannot delete subscript on object of type `object` with no `__delitem__` method (not-subscriptable)\n    else:\n        pass  # branch for slotted objects etc\n"
+ },
+ {
+  "id": "ty-2926",
+  "url": "https://github.com/astral-sh/ty/issues/2926",
+  "title": "*args and **kwargs required for ParamSpec not accepting them",
+  "labels": [
+   "bug",
+   "generics",
+   "calls",
+   "typing semantics",
+   "constructor-call",
+   "paramspec"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import Callable\nfrom typing import Generic, ParamSpec, Protocol\n\nP = ParamSpec('P')\n\n\ndef constructor(type_: 'type[HasConstructor[P]]') -> Callable[P, object]:\n    return type_\n\n\nclass HasConstructor(Generic[P], Protocol):\n    def __init__(self, *args: P.args, **kwargs: P.kwargs): ... \n\n\nconstructor(object)()\n"
+ },
+ {
+  "id": "ty-2871",
+  "url": "https://github.com/astral-sh/ty/issues/2871",
+  "title": "loop headers + overloads create cycles that resolve to `Unknown`",
+  "labels": [
+   "bug",
+   "overloads",
+   "control flow",
+   "cycles"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "import asyncio\nfrom typing_extensions import reveal_type\n\nasync def task() -> tuple[int, str]: raise NotImplementedError\n\nasync def test():\n    futures: set[asyncio.Task[tuple[int, str]]] = {\n        asyncio.create_task(task()) for _ in range(3)\n    }\n    while True:\n        wait = asyncio.wait(futures, return_when=asyncio.FIRST_COMPLETED)\n        try:\n            done, futures = await asyncio.wait_for(wait, 3)\n        except Exception:\n            return\n        reveal_type(wait)  # Unknown\n        reveal_type(done)  # Unknown\n        reveal_type(futures)  # Unknown\n"
+ },
+ {
+  "id": "ty-2859",
+  "url": "https://github.com/astral-sh/ty/issues/2859",
+  "title": "Generic functions cannot be passed into themselves",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def noop[T](x: T) -> T:\n    return x\n\nnoop(noop)  # Argument to function `noop` is incorrect: Expected `def noop(x: Never) -> Never`, found `def noop(x: def noop(x: Never) -> Never) -> def noop(x: Never) -> Never`\n"
+ },
+ {
+  "id": "ty-2255",
+  "url": "https://github.com/astral-sh/ty/issues/2255",
+  "title": "override of method that takes `Self` as non-receiver should be a Liskov violation",
+  "labels": [
+   "bug",
+   "generics",
+   "type properties",
+   "method-receiver",
+   "overrides"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Monoid(ABC):\n    @abstractmethod\n    def op(self, other: Self) -> Self:\n        raise NotImplementedError()\n\n\nclass IntAdditionMonoid(Monoid):\n    def __init__(self, value: int):\n        self.value = value\n\n    def op(self, other: IntAdditionMonoid) -> Self:\n        return IntAdditionMonoid(\n            self.value + other.value,\n        )\n"
+ },
+ {
+  "id": "ty-2070",
+  "url": "https://github.com/astral-sh/ty/issues/2070",
+  "title": "can\u2019t create a type variable with a default on Python < 3.13 (false positive for invalid-legacy-type-variable)",
+  "labels": [
+   "bug"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "if TYPE_CHECKING or sys.version_info > (3, 13):\n    T = TypeVar(\"T\", default=int)\nelse:  # runtime on Python < 3.13\n    T = TypeVar(\"T\")\n"
+ },
+ {
+  "id": "ty-2057",
+  "url": "https://github.com/astral-sh/ty/issues/2057",
+  "title": "How to correctly type async context managers with overloads",
+  "labels": [
+   "bug",
+   "calls",
+   "overloads",
+   "async"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from collections.abc import AsyncIterator\nfrom contextlib import asynccontextmanager\nfrom typing import AsyncContextManager, overload, reveal_type\n\n# Not using overloads - works as expected\n\n@asynccontextmanager\nasync def test_contextmanager_plain(val: str | int) -> AsyncIterator[str]:\n    yield \"hello world\"\n\nreveal_type(test_contextmanager_plain)\n\nasync def call_asynccontextmanager_plain():\n    async with test_contextmanager_plain(123) as x:\n        reveal_type(x)\n\n# Using async context manager types\n\n@overload\ndef test_contextmanager_using_types(val: str) -> AsyncContextManager[str]: ...\n@overload\ndef test_contextmanager_using_types(val: int) -> AsyncContextManager[str]: ...\n@asynccontextmanager\nasync def test_contextmanager_using_types(val: str | int) -> AsyncIterator[str]:\n    yield \"hello world\"\n\nreveal_type(test_contextmanager_using_types)\n\nasync def call_asynccontextmanager_using_types():\n    async with test_contextmanager_using_types(123) as x:\n        reveal_type(x)\n\n# Using async iterator types (although this sounds wrong)\n\n@overload\ndef test_contextmanager_using_wrong_types(val: str) -> AsyncIterator[str]: ...\n@overload\ndef test_contextmanager_using_wrong_types(val: int) -> AsyncIterator[str]: ...\n@asynccontextmanager\nasync def test_contextmanager_using_wrong_types(val: str | int) -> AsyncIterator[str]:\n    yield \"hello world\"\n\nreveal_type(test_contextmanager_using_wrong_types)\n\nasync def call_asynccontextmanager_using_wrong_types():\n    async with test_contextmanager_using_wrong_types(123) as x:\n        reveal_type(x)\n\n# # Using the decorator in overloads\n\n@overload\n@asynccontextmanager\nasync def test_contextmanager_with_decorator(val: str) -> AsyncIterator[str]: ...\n@overload\n@asynccontextmanager\nasync def test_contextmanager_with_decorator(val: int) -> AsyncIterator[str]: ...\n@asynccontextmanager\nasync def test_contextmanager_with_decorator(val: str | int) -> AsyncIterator[str]:\n    yield \"hello world\"\n\nreveal_type(test_contextmanager_with_decorator)\n\nasync def call_asynccontextmanager_with_decorator():\n    async with test_contextmanager_with_decorator(123) as x:\n        reveal_type(x)\n"
+ },
+ {
+  "id": "ty-1872",
+  "url": "https://github.com/astral-sh/ty/issues/1872",
+  "title": "Equivalence of generic callables",
+  "labels": [
+   "bug",
+   "generics",
+   "type properties",
+   "callables"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from ty_extensions import CallableTypeOf, static_assert, is_subtype_of, is_assignable_to, is_equivalent_to\nfrom typing import TypeVar\n\ndef f[T](x: T) -> T:\n    return x\n\ndef g[T](x: T) -> T:\n    return x\n\n_: CallableTypeOf[g] = f\n_: CallableTypeOf[f] = g\n\n\nstatic_assert(is_equivalent_to(CallableTypeOf[g], CallableTypeOf[f]))\nstatic_assert(is_subtype_of(CallableTypeOf[g], CallableTypeOf[f]))\nstatic_assert(is_subtype_of(CallableTypeOf[f], CallableTypeOf[g]))\nstatic_assert(is_assignable_to(CallableTypeOf[g], CallableTypeOf[f]))\nstatic_assert(is_assignable_to(CallableTypeOf[f], CallableTypeOf[g]))\n\nT = TypeVar(\"T\")\nU = TypeVar(\"U\")\n\ndef h(x: T) -> T:\n    return x\n\ndef i(x: U) -> U:\n    return x\n\n_: CallableTypeOf[h] = i\n_: CallableTypeOf[i] = h\n\nstatic_assert(is_equivalent_to(CallableTypeOf[h], CallableTypeOf[i]))\nstatic_assert(is_subtype_of(CallableTypeOf[h], CallableTypeOf[i]))\nstatic_assert(is_subtype_of(CallableTypeOf[i], CallableTypeOf[h]))\nstatic_assert(is_assignable_to(CallableTypeOf[h], CallableTypeOf[i]))\nstatic_assert(is_assignable_to(CallableTypeOf[i], CallableTypeOf[i]))\n"
+ },
+ {
+  "id": "ty-1475",
+  "url": "https://github.com/astral-sh/ty/issues/1475",
+  "title": "Narrowing of constrained typevar discards constraint static type generic information",
+  "labels": [
+   "bug",
+   "narrowing",
+   "generics",
+   "constrained-typevars"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\n\ndef foo[T: (list[int], None)](x: T) -> T:\n    match x:\n        case list():\n            reveal_type(x)  # Revealed type: `Top[list[Unknown]]`\n    if isinstance(x, list):\n        reveal_type(x)  # Revealed type: `Top[list[Unknown]]`\n    return x\n"
+ },
+ {
+  "id": "ty-1461",
+  "url": "https://github.com/astral-sh/ty/issues/1461",
+  "title": "Signatures of methods in generic classes should not use `Unknown` specialization",
+  "labels": [
+   "bug",
+   "generics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import reveal_type\n\nclass C[T]:\n    def f(self, x: T) -> None:\n        pass\n\nreveal_type(C.f)  # ty: def f(self, x: Unknown) -> None\n\nC.f(C[int](), \"foo\")  # this should be an error\n"
+ },
+ {
+  "id": "ty-1306",
+  "url": "https://github.com/astral-sh/ty/issues/1306",
+  "title": "A nominal type from a stub file should be treated as equivalent to a nominal type from a `.py` file with the same module name",
+  "labels": [
+   "bug",
+   "type properties",
+   "typing semantics",
+   "stubs"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from .foo import MyClass\n\ndef make_MyClass() -> MyClass:\n    return MyClass()\n"
+ },
+ {
+  "id": "ty-1193",
+  "url": "https://github.com/astral-sh/ty/issues/1193",
+  "title": "Duplicate diagnostic when there are multiple functions with same signatures",
+  "labels": [
+   "bug",
+   "diagnostics"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def f(x: int) -> None: ...\n\ndef _(x: str):\n    f(x)\n\ndef f(x: int) -> None: ...\n\ndef f(x: int) -> None: ...\n"
+ },
+ {
+  "id": "ty-1172",
+  "url": "https://github.com/astral-sh/ty/issues/1172",
+  "title": "Eagerly turning a bound method into a callable leads to wrong signature",
+  "labels": [
+   "bug",
+   "calls",
+   "attributes",
+   "callables",
+   "method-receiver",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Self, Callable\n\nclass Base:\n    def method(self, other: Self) -> bool:\n        return True\n\nclass Derived(Base):\n    pass\n\n# This call succeeds, as it should (with a method-scoped `Self` typevar)\nDerived().method(Base())\n\n# However, this reveals `Derived.method(other: Derived) -> bool`,\n# which seems to contradict the successful call right above\nreveal_type(Derived().method)\n\n# Similarly, this assignment should not lead to an error, but currently does:\ncallable: Callable[[Base], bool] = Derived().method\n"
+ },
+ {
+  "id": "ty-1163",
+  "url": "https://github.com/astral-sh/ty/issues/1163",
+  "title": "Validation of attribute assignments does not handle unions/intersections correctly",
+  "labels": [
+   "bug",
+   "set-theoretic types",
+   "attributes",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import Literal, Any\n\nclass DataDescriptor:\n    def __get__(self: \"DataDescriptor\", instance: object, owner: type | None = None) -> Literal[\"data\"]:\n        return \"data\"\n\n    def __set__(self: \"DataDescriptor\", instance: object, value: int) -> None:\n        pass\n\ndef _(flag: bool):\n    class Meta7(type):\n        if flag:\n            attr: DataDescriptor = DataDescriptor()\n        else:\n            attr: Literal[2] = 2\n\n    class C7(metaclass=Meta7):\n        pass\n\n    # Invalid assignment to data descriptor attribute `attr` on type `<class 'C7'>` with custom `__set__` method (invalid-assignment)\n    C7.attr = 2 if flag else 100\n"
+ },
+ {
+  "id": "ty-1090",
+  "url": "https://github.com/astral-sh/ty/issues/1090",
+  "title": "ty allows passing different types for constrained TypeVar arguments",
+  "labels": [
+   "bug",
+   "generics",
+   "constrained-typevars"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from typing import TypeVar\n\nT = TypeVar(\"T\", int, str) \ndef q(s: T, s1: T): # s and s1 must have the same type\n    pass\nq(1, \"str\") # not OK\n"
+ },
+ {
+  "id": "ty-727",
+  "url": "https://github.com/astral-sh/ty/issues/727",
+  "title": "`invalid-type-form` emitted for unusual index operations in non-type-expression contexts",
+  "labels": [
+   "bug",
+   "type-inference"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "tuple[1]\n"
+ },
+ {
+  "id": "ty-523",
+  "url": "https://github.com/astral-sh/ty/issues/523",
+  "title": "Panic if `--typeshed` is set to a subdirectory of (or the same path as) a first-party or extra search path",
+  "labels": [
+   "bug",
+   "configuration",
+   "fatal",
+   "imports",
+   "stubs"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "def add(a: int, b: int) -> int:\n    return a + b\n\nadd(1, \"2\")\n"
+ },
+ {
+  "id": "ty-350",
+  "url": "https://github.com/astral-sh/ty/issues/350",
+  "title": "\"Missing self argument\" error after dynamically replacing method",
+  "labels": [
+   "bug",
+   "calls",
+   "attributes",
+   "metaprogramming",
+   "callables",
+   "method-receiver",
+   "descriptors"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "\nclass A:\n    def f1(self):\n        print(\"f1\")\n\n    def f1_replace(self):\n        print(\"replace\")\n\n    def f2(self):\n        self.f1 = self.f1_replace\n\n\na = A() \na.f1()  # No argument provided for required parameter `self` of function `f1`\na.f2()\na.f1()  # No argument provided for required parameter `self` of function `f1`\n\n"
+ },
+ {
+  "id": "ty-116",
+  "url": "https://github.com/astral-sh/ty/issues/116",
+  "title": "Subscripted generic classes should not be considered instances of `type`",
+  "labels": [
+   "bug",
+   "generics",
+   "type properties"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "class Foo[T]: ...\n\ndef requires_type(x: type): ...\n\nrequires_type(Foo[int])\n"
+ },
+ {
+  "id": "ty-204",
+  "url": "https://github.com/astral-sh/ty/issues/204",
+  "title": "consider fixing spans related to relative imports",
+  "labels": [
+   "bug",
+   "diagnostics",
+   "imports"
+  ],
+  "faulty_tool": "ty",
+  "kind": "positive",
+  "source": "from ...zqzqzqzq import hi\n"
+ },
+ {
+  "id": "mypy-19576",
+  "url": "https://github.com/python/mypy/issues/19576",
+  "title": "`comparison-overlap` triggers for string enum members when the member name isn't the same as the comparison value",
+  "labels": [
+   "bug",
+   "false-positive",
+   "topic-literal-types",
+   "topic-enum",
+   "topic-overlap"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from enum import Enum\n\nclass A(str, Enum):  # Same behaviour if `class A(enum.StrEnum)`\n    a = \"b\"\n\nA.a == \"a\"  # OK\nA.a == \"b\"  # E: Non-overlapping equality check (left operand type: \"Literal[A.a]\", right operand type: \"Literal['b']\")  [comparison-overlap]\n"
+ },
+ {
+  "id": "mypy-18922",
+  "url": "https://github.com/python/mypy/issues/18922",
+  "title": "Type checking fails to distribute across Tuple types",
+  "labels": [
+   "bug",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Union, Tuple, Optional\n\ndef id(x: Tuple[float, Optional[float]]) -> Union[Tuple[float, float], Tuple[float, None]]:\n    return x\n"
+ },
+ {
+  "id": "mypy-18596",
+  "url": "https://github.com/python/mypy/issues/18596",
+  "title": "erroneous complaint that overloaded function implementation does not accept all possible arguments of signature",
+  "labels": [
+   "bug",
+   "false-positive",
+   "topic-overloads"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from datetime import datetime\nfrom typing import overload\n\nclass Sample:\n\n    @overload\n    @classmethod\n    def set(cls, year: int) -> None:\n        ...\n\n    @overload\n    @classmethod\n    def set(cls, instance: datetime, / ) -> None:\n        ...\n\n    @classmethod\n    def set(cls, *args: datetime | int, **kw: int) -> None:\n        pass\n"
+ },
+ {
+  "id": "mypy-17134",
+  "url": "https://github.com/python/mypy/issues/17134",
+  "title": "False positive with sequence subclass in match-case statement",
+  "labels": [
+   "bug",
+   "false-positive",
+   "topic-match-statement"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Self, Protocol, overload\nfrom collections.abc import Sequence\n\nclass Encoder(Protocol):\n    def __call__(self, u, /): ...\n    \n    def simplify(self) -> \"Encoder\":\n        return self\n\nclass Chain(Encoder, Sequence[Encoder]):\n    \n    encoders: list[Encoder]\n    \n    def __init__(self, *encoders: Encoder):\n        self.encoders = list(encoders)\n    \n    def __len__(self) -> int:\n        return len(self.encoders)\n\n    @overload\n    def __getitem__(self, index: int) -> Encoder: ...\n    @overload\n    def __getitem__(self, index: slice) -> Self: ...\n    def __getitem__(self, index,  /):\n        return self.encoders[index]\n    \n    def __call__(self, x):\n        for encoder in self.encoders:\n            x = encoder(x)\n        return x\n    \n    def simplify(self) -> Encoder | Self:\n        match self:\n            case [encoder]:\n                return encoder.simplify()\n            case _:\n                cls = type(self)\n                return cls(*(e.simplify() for e in self.encoders))\n\n        # The equivalent code below works...\n        # if len(self)==1:\n        #     return self.encoders[0].simplify()\n        # cls = type(self)\n        # return cls(*(e.simplify() for e in self.encoders))\n"
+ },
+ {
+  "id": "mypy-10806",
+  "url": "https://github.com/python/mypy/issues/10806",
+  "title": "False positive: unreachable",
+  "labels": [
+   "bug",
+   "false-positive",
+   "topic-reachability"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "a: object = None\n\ndef foo() -> None:\n    global a\n    a = None\n    bar()\n    if a:\n        print(\"hi\")\n\ndef bar() -> None:\n    global a\n    a = 1\n"
+ },
+ {
+  "id": "mypy-10163",
+  "url": "https://github.com/python/mypy/issues/10163",
+  "title": "False positive with variable key in Mapping with Optional value",
+  "labels": [
+   "bug",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Mapping, Optional\n\nFOO: str = \"foo\"\n\ndef func(text: str) -> None:\n    _ = text\n\ndata: Mapping[str, Optional[str]] = {FOO: \"bar\"}\n\nif data[FOO] is not None:\n    func(data[FOO])  # Line 11\n\nif data[\"foo\"] is not None:\n    func(data[\"foo\"])\n"
+ },
+ {
+  "id": "mypy-10146",
+  "url": "https://github.com/python/mypy/issues/10146",
+  "title": "nested isinstances lose type information",
+  "labels": [
+   "bug",
+   "topic-union-types",
+   "false-positive",
+   "topic-type-narrowing",
+   "topic-join-v-union"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "x = object()\nif isinstance(x, (int, str)):\n    reveal_type(x)      # Union[int, str]\n    if isinstance(x, int):\n        pass\n    reveal_type(x)      # object\n"
+ },
+ {
+  "id": "mypy-9279",
+  "url": "https://github.com/python/mypy/issues/9279",
+  "title": "__add__ and __iadd__ are incompatible for list",
+  "labels": [
+   "bug",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class list:\n    def __add__(self, x: List[_T]) -> List[_T]: ...\n    def __iadd__(self: _S, x: Iterable[_T]) -> _S: ...\n"
+ },
+ {
+  "id": "mypy-9256",
+  "url": "https://github.com/python/mypy/issues/9256",
+  "title": "Definition Order Matters For `types.coroutine` Decorator",
+  "labels": [
+   "bug",
+   "false-positive",
+   "topic-async"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from types import coroutine\nfrom typing import Any, Iterator\n\nasync def my_async_func() -> None:\n    await my_coro_func()\n\n@coroutine\ndef my_coro_func() -> Iterator[None]:\n    yield None\n"
+ },
+ {
+  "id": "mypy-9185",
+  "url": "https://github.com/python/mypy/issues/9185",
+  "title": "mypy Type error for a class with an imported metaclass",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-metaclasses"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "@enum.unique\nclass MyEnumClass(Enum, metaclass=MyEnumMetaClass):\n    OUT_OF_STOCK = \"Out of Stock\"\n    LOW_STOCK = \"Low Stock\"\n    IN_STOCK = \"In Stock\"\n    EXCESS = \"Excess\"\n"
+ },
+ {
+  "id": "mypy-8921",
+  "url": "https://github.com/python/mypy/issues/8921",
+  "title": "Error with Sequence/Iterable/Collection with tuple of typed dict",
+  "labels": [
+   "bug",
+   "topic-typed-dict",
+   "priority-1-normal",
+   "false-positive",
+   "good-second-issue",
+   "topic-type-context"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Sequence, Union, Tuple, List, Iterable, Collection, Optional, TypeVar, TypedDict\n\n\nclass _FieldOpts(TypedDict, total=True):\n    fields: Sequence[Union[str, Sequence[str]]]\n\n\na: Sequence[Union[str, Sequence[str]]] = (\"name\",)\nb: Tuple[Optional[str], _FieldOpts] = (None, {\"fields\": (\"name\",)})\nc: Sequence[Tuple[Optional[str], _FieldOpts]] = [(None, {\"fields\": (\"name\",)})]\n# E: Incompatible types in assignment (expression has type \"Tuple[Tuple[None, Dict[str, Tuple[str]]]]\", variable has type \"Sequence[Tuple[Optional[str], _FieldOpts]]\")\nd: Sequence[Tuple[Optional[str], _FieldOpts]] = ((None, {\"fields\": (\"name\",)}),)\n# E: Incompatible types in assignment (expression has type \"Tuple[Tuple[Dict[str, Tuple[str]]]]\", variable has type \"Sequence[Tuple[_FieldOpts]]\")\ne: Sequence[Tuple[_FieldOpts]] = (({\"fields\": (\"name\",)},),)\nf: Tuple[_FieldOpts] = ({\"fields\": (\"name\",)},)\ng: List[Tuple[_FieldOpts]] = [({\"fields\": (\"name\",)},)]\nh: Tuple[Tuple[_FieldOpts], ...] = (({\"fields\": (\"name\",)},),)\n# E: Incompatible types in assignment (expression has type \"Tuple[Tuple[Dict[str, Tuple[str]]]]\", variable has type \"Collection[Tuple[_FieldOpts]]\")\ni: Collection[Tuple[_FieldOpts]] = (({\"fields\": (\"name\",)},),)\n# E: Incompatible types in assignment (expression has type \"Tuple[Tuple[Dict[str, Tuple[str]]]]\", variable has type \"Iterable[Tuple[_FieldOpts]]\")\nj: Iterable[Tuple[_FieldOpts]] = (({\"fields\": (\"name\",)},),)\nk: Iterable[Tuple[_FieldOpts]] = [({\"fields\": (\"name\",)},)]\n# E: Incompatible types in assignment (expression has type \"Tuple[Tuple[Dict[str, Tuple[str]]], Tuple[Dict[str, Tuple[str]]]]\", variable has type \"Iterable[Tuple[_FieldOpts]]\")\nm: Iterable[Tuple[_FieldOpts]] = (({\"fields\": (\"name\",)},), ({\"fields\": (\"name\",)},))\n\nT = TypeVar(\"T\")\nListOrTuple = Union[Tuple[T, ...], List[T]]\nn: ListOrTuple[Tuple[_FieldOpts]] = (({\"fields\": (\"name\",)},),)\n"
+ },
+ {
+  "id": "mypy-8478",
+  "url": "https://github.com/python/mypy/issues/8478",
+  "title": "Collapsed Optionals in TypeVar cause weird error messages",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import (\n    TypeVar,\n    List,\n    Callable,\n    Optional,\n)\n\nTask = TypeVar(\"Task\")\nResult = TypeVar(\"Result\")\n\n\ndef run_tasks(\n    tasks: List[Task], worker_fun: Callable[[Task], Result]\n) -> List[Optional[Result]]:\n    results: List[Optional[Result]] = []\n\n    toggle: bool = True\n    todo: Task\n    for todo in tasks:\n        toggle = not toggle\n\n        if toggle:\n            work_result: Result\n            work_result = worker_fun(todo)\n            results.append(work_result)\n        else:\n            results.append(None)\n\n    return results\n\n\ndef test() -> None:\n    def worker(d: int) -> Optional[int]:\n        if d % 2 == 0:\n            return None\n        else:\n            return d + 1\n\n    output: List[Optional[Optional[int]]] = run_tasks(\n        [1, 2, 2, 1], worker,\n    )\n    from pprint import pprint\n\n    pprint(output)\n    assert output == [None, None, None, 2]\n\n\ntest()\n"
+ },
+ {
+  "id": "mypy-8376",
+  "url": "https://github.com/python/mypy/issues/8376",
+  "title": "Dict comprehensions fail in NamedTuple",
+  "labels": [
+   "bug",
+   "topic-named-tuple",
+   "priority-1-normal",
+   "false-positive",
+   "semantic-analyzer"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Dict, Any, NamedTuple\n\ndef out() -> str:\n    return \"out\"\n\nd = {\"x\": 0, \"y\": 1}\n\nclass Test(NamedTuple):\n    qwer: Dict[str, Any] = {k: v for k, v in d}\n"
+ },
+ {
+  "id": "mypy-8342",
+  "url": "https://github.com/python/mypy/issues/8342",
+  "title": "Specifying the return type of `__abs__` to be a `TypeVar` causes `expected \"SupportsAbs[<nothing>]` error",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import TypeVar\n\n\nT = TypeVar(\"T\", bound=\"Number\")\n\n\nclass Number:\n    def __abs__(self: T):\n        return self\n\n    def square(self: T) -> T:\n        return self\n\n\ndef myabs(x: T) -> T:\n    return abs(x)\n\n\nx = myabs(Number())\nx.square()\n"
+ },
+ {
+  "id": "mypy-8275",
+  "url": "https://github.com/python/mypy/issues/8275",
+  "title": "Type variables in Callables don't unify",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Callable, TypeVar, Generic\n\ndef foo() -> int:\n    return 1\n\nT = TypeVar('T')\nbar: Callable[[], T] = foo\n"
+ },
+ {
+  "id": "mypy-8191",
+  "url": "https://github.com/python/mypy/issues/8191",
+  "title": "Covariant type variable error in nested function",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import *\n\nT_co = TypeVar('T_co', covariant=True)\n\nclass Col(Generic[T_co]):\n  def __init__(self, items: Iterable[T_co]) -> None:\n    self.items = items\n\n  def any(self, pred: Callable[[T_co], bool]) -> bool:\n    return any(map(pred, self.items))\n\n  def any_zero(self, fn: Callable[[T_co], int]) -> bool:\n    def pred(x: T_co) -> bool: # error: Cannot use type variable as a parameter\n      return fn(x) == 0\n    return self.any(pred)\n"
+ },
+ {
+  "id": "mypy-8117",
+  "url": "https://github.com/python/mypy/issues/8117",
+  "title": "Type inference in high level function",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Generic, Iterable, Iterator, Sequence, TypeVar\n_T = TypeVar('_T')\n\nclass Windowed(Generic[_T]):\n    def __init__(self, it: Iterable[_T], size: int) -> None:\n        self.it = it\n        self.size = size\n\n    def __iter__(self) -> Iterator[Sequence[_T]]:\n        iters = tee(self.it, self.size)\n        slices = map(islice, iters, count(0), repeat(None))\n        return zip(*slices)\n"
+ },
+ {
+  "id": "mypy-7984",
+  "url": "https://github.com/python/mypy/issues/7984",
+  "title": "Invalid type for redefined variable inside nested function",
+  "labels": [
+   "bug",
+   "priority-0-high",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "# mypy: allow-redefinition\n\ndef f() -> None:\n    x = 0\n    print(x)\n    x = 'x'\n\n    def g() -> None:\n        reveal_type(x)  # int, but should be str\n"
+ },
+ {
+  "id": "mypy-7935",
+  "url": "https://github.com/python/mypy/issues/7935",
+  "title": "Overloaded generic constructors can cause spurious errors in class methods",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive",
+   "topic-overloads"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import TypeVar, Generic, overload\n\nT = TypeVar('T')\n\nclass C(Generic[T]):\n    @overload\n    def __new__(cls) -> C[None]: ...\n    @overload\n    def __new__(cls, item: T) -> C[T]: ...\n    def __new__(cls, item=None):\n        ...\n    @classmethod\n    def f(cls, x: T) -> T:\n        return x\n\nC.f(42)  # Argument 1 to \"f\" of \"C\" has incompatible type \"int\"; expected \"None\"\n"
+ },
+ {
+  "id": "mypy-7913",
+  "url": "https://github.com/python/mypy/issues/7913",
+  "title": "Incorrect type inference when using generics of \"union\" TypeVars",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import MutableSet, Sequence, TypeVar\n\nT = TypeVar('T', str, Sequence[str])\n\nclass CustomSet(MutableSet[T]):\n    def add(self, value: T) -> None:\n        pass\n\nfoo = CustomSet()\nfoo.add(('a', 'b'))\n"
+ },
+ {
+  "id": "mypy-7814",
+  "url": "https://github.com/python/mypy/issues/7814",
+  "title": "Dict comprehension from Iterable of Literal",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-literal-types"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Dict\nfrom typing_extensions import Literal\n\nT = Literal[1, 2, 3]\nd: Dict[T, None]\n\nd = {x: None for x in [1, 2, 3]}\n# error: Key expression in dictionary comprehension has incompatible type \"int\"; expected type \"Union[Literal[1], Literal[2], Literal[3]]\"\n\nd = dict(zip([1, 2, 3], [None, None, None]))  # no error\nd = dict.fromkeys([1, 2, 3])  # no error\n"
+ },
+ {
+  "id": "mypy-7568",
+  "url": "https://github.com/python/mypy/issues/7568",
+  "title": "Indexing a Type Alias of an Enum yields false error",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive",
+   "topic-enum",
+   "topic-metaclasses"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from enum import Enum\nclass EnumClass(Enum):\n    one = 1\n\nEnumAlias = EnumClass\nEnumAlias['one']\n"
+ },
+ {
+  "id": "mypy-7479",
+  "url": "https://github.com/python/mypy/issues/7479",
+  "title": "Use empty outer context when checking str.format() calls",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "'{:.3f}'.format(sum(list_of_floats))\n"
+ },
+ {
+  "id": "mypy-7394",
+  "url": "https://github.com/python/mypy/issues/7394",
+  "title": "Inherited, overridden attribute type reverted to the top parent class type",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-inheritance"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class A:\n    attr = None\n\n\nclass B(A):\n    attr: str  # type: ignore\n\n\nclass C1(B):\n    attr = \"test\"\n\n\nclass C2(B):\n    pass\n\n\nclass D(C2):\n    attr = \"test\"\n"
+ },
+ {
+  "id": "mypy-7203",
+  "url": "https://github.com/python/mypy/issues/7203",
+  "title": "Semantic analyzer confuses a function with a module",
+  "labels": [
+   "bug",
+   "priority-0-high",
+   "false-positive",
+   "semantic-analyzer"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from os import makedirs\n\nmakedirs('src/core')\nmakedirs('src/stuff')\n\nopen('src/__init__.py', 'w').write(\"\"\"\n# nothing here\n\"\"\")\n\nopen('src/core/__init__.py', 'w').write(\"\"\"\nfrom .run import config\n\"\"\")\n\nopen('src/core/run.py', 'w').write(\"\"\"\nfrom ..stuff import somefunction\n\nconfig = None\n\nsomefunction()\n\"\"\")\n\nopen('src/stuff/__init__.py', 'w').write(\"\"\"\nfrom .somemore import more\nfrom .somefunction import somefunction\n\"\"\")\n\nopen('src/stuff/somefunction.py', 'w').write(\"\"\"\ndef somefunction():\n    print(\"Hello, World!\")\n\"\"\")\n\nopen('src/stuff/somemore.py', 'w').write(\"\"\"\ndef more():\n    from ..core import config\n\"\"\")\n"
+ },
+ {
+  "id": "mypy-7187",
+  "url": "https://github.com/python/mypy/issues/7187",
+  "title": "Union subtyping doesn't work with covariant type constructors Tuple and Callable",
+  "labels": [
+   "bug",
+   "priority-0-high",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Callable, Union, Tuple\n\ndef f(x: Union[Callable[..., int], Callable[..., str]]) -> None: ...\nx: Callable[..., Union[int, str]]\nf(x)\n\ndef g(y: Union[Tuple[int], Tuple[str]]) -> None: ...\ny: Tuple[Union[int, str]]\ng(y)\n"
+ },
+ {
+  "id": "mypy-6799",
+  "url": "https://github.com/python/mypy/issues/6799",
+  "title": "\"multiple values for keyword argument\" with star expansion",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Union, Tuple\n\n\ndef get_tuple() -> Union[Tuple[int, int], Tuple[None, None]]:\n    return (1, 2)\n\n\ndef process_tuple(one, two, flag=False):\n    print(one, two, flag)\n\n\nprocess_tuple(*get_tuple(), flag=True)\n"
+ },
+ {
+  "id": "mypy-6751",
+  "url": "https://github.com/python/mypy/issues/6751",
+  "title": "Can't infer T where Optional[T] is Optional[MyUnion]",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Optional, Union, TypeVar\n\nMyUnion = Union[int, str]\nT = TypeVar(\"T\")\n\n\ndef not_none(x: Optional[T]) -> T:\n    assert x is not None\n    return x\n\n\n# Works\ndef f(i: Optional[int]) -> int:\n    return not_none(i)\n\n\n# Doesn't work\ndef g(u: Optional[MyUnion]) -> MyUnion:\n    return not_none(u)\n"
+ },
+ {
+  "id": "mypy-6680",
+  "url": "https://github.com/python/mypy/issues/6680",
+  "title": "isinstance(x, Tuple) fails when equivalent expressions don't",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive",
+   "topic-runtime-semantics"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Any, Dict, Tuple\n\nx = (1,2)\nisinstance(x, tuple)\nisinstance(x, Tuple[Any, ...])\nisinstance(x, Tuple)\n"
+ },
+ {
+  "id": "mypy-6482",
+  "url": "https://github.com/python/mypy/issues/6482",
+  "title": "Invalid infer generic type for contravariant TypeVar inside function call",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Generic, TypeVar\n\n\nT_contra = TypeVar('T_contra', contravariant=True)\n\n\nclass Animal:\n    pass\n\n\nclass Cat(Animal):\n    pass\n\n\nclass AnimalBox(Generic[T_contra]):\n    def __init__(self, animal: T_contra):\n        pass\n\n\ndef print_box(a: AnimalBox[Cat]):\n    pass\n\n\nanimal = Animal()\n\nprint_box(AnimalBox(animal))  # error: Argument 1 to \"AnimalBox\" has incompatible type \"Animal\"; expected \"Cat\"\n\nbox = AnimalBox(animal)\nprint_box(box)  # OK\n"
+ },
+ {
+  "id": "mypy-6387",
+  "url": "https://github.com/python/mypy/issues/6387",
+  "title": "Type Variable Specialized by Generic",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "Types = Union[int, str]\nT = TypeVar('T', bound=Types)\n\nclass A:\n    x: Types\n    y: Type[Types]\n\nclass B(A, Generic[T]):\n    x: T        # ok\n    y: Type[T]  # error: Incompatible types in assignment\n"
+ },
+ {
+  "id": "mypy-6224",
+  "url": "https://github.com/python/mypy/issues/6224",
+  "title": "generic super false-posistive error on argument type",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive",
+   "topic-inheritance"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "NT = TypeVar('NT', int, float)\nNTU = Union['KspVar[NT]', 'AstBase[NT]', 'ProcessNum[NT]', NT]\n\n\nclass AstOperatorUnary(AstBase[NT], ProcessNum[NT]):\n    arg1: NTU[NT]\n    string: ClassVar[str]\n    priority: ClassVar[int]\n\n    def __init__(self, arg1: NTU[NT]) -> None:\n        self.arg1: NTU[NT] = arg1\n        self.arg1_pure: NT = get_value(arg1)\n        self.arg1_str: str = get_compiled(arg1)\n\n\nclass AstOperatorDouble(AstOperatorUnary[NT]):\n    arg2: NTU[NT]\n\n    def __init__(self, arg1: NTU[NT], arg2: NTU[NT]) -> None:\n        super().__init__(arg1)\n        self.arg2 = arg2\n        self.arg2_pure: NT = get_value(arg2)\n        self.arg2_str: str = get_compiled(arg2)\n"
+ },
+ {
+  "id": "mypy-6185",
+  "url": "https://github.com/python/mypy/issues/6185",
+  "title": "property fail on fget, fset",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-runtime-semantics",
+   "topic-descriptors"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "\nclass A():\n    @property\n    def a(self) -> float:\n        return 0.5\n\nclass B():\n    @property\n    def a(self) -> float:\n        return 1.5\n\nclass C(A, B):\n    is_a:bool = True\n    @property\n    def a(self) -> float:\n        if self.is_a:\n            return A.a.fget(self)\n        else:\n            return B.a.fget(self)\n\n\nif __name__ == '__main__':\n    c = C()\n    assert c.a ==0.5\n    c.is_a = False\n    assert c.a == 1.5\n"
+ },
+ {
+  "id": "mypy-6158",
+  "url": "https://github.com/python/mypy/issues/6158",
+  "title": "Class inheriting from property doesn't typecheck properly when used as a decorator",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-descriptors"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class CustomProperty(property):\n    def __init__(self, fget=None, fset=None, fdel=None, doc=None):\n        super().__init__(fget, fset, fdel, doc)\n\nclass A:\n    def __init__(self) -> None:\n        self._val = 1\n\n    @CustomProperty\n    def val(self) -> int:\n        return self._val\n\n    @val.setter\n    def val(self, v: int) -> None:\n        self._val = v\n\n\ndef test_a() -> None:\n    print(A.val)\n"
+ },
+ {
+  "id": "mypy-6140",
+  "url": "https://github.com/python/mypy/issues/6140",
+  "title": "Callable[..., T] causes false positive in overload checks",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-overloads"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "@overload\ndef deco(f: Callable[[], int]) -> Callable[[], str]: ...\n@overload\ndef deco(f: Callable[..., int]) -> Callable[..., str]: ...\ndef deco(f):\n    pass\n"
+ },
+ {
+  "id": "mypy-6079",
+  "url": "https://github.com/python/mypy/issues/6079",
+  "title": "Union types for dict keys are not inferred in union context",
+  "labels": [
+   "bug",
+   "needs discussion",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive",
+   "topic-join-v-union"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "d = {\"1\": 2, 3: 4}\nreveal_type(d)  # builtins.dict[builtins.object*, builtins.int*]\n"
+ },
+ {
+  "id": "mypy-5971",
+  "url": "https://github.com/python/mypy/issues/5971",
+  "title": "Covariant generic type context results in confusing message with __add__",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import TypeVar, Generic, Union, Any\n\nT = TypeVar('T')\nTcov = TypeVar('Tcov', covariant=True)\nS = TypeVar('S')\n\nclass A(Generic[Tcov]): pass\n\nclass B(A[T]):\n    def __add__(self, x: B[S]) -> B[Union[T, S]]: ...\n\na: A[object]\nb1: B[Any]\nb2: B[int]\n\na = b1 + b2  # Unsupported operand types for + (\"B[Any]\" and \"B[int]\")\n"
+ },
+ {
+  "id": "mypy-5879",
+  "url": "https://github.com/python/mypy/issues/5879",
+  "title": "Error for lambda containing Any even when type can be inferred",
+  "labels": [
+   "bug",
+   "priority-0-high",
+   "topic-usability",
+   "false-positive",
+   "topic-disallow-any"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Callable, Tuple, TypeVar, overload\n\nT = TypeVar('T')\nA0 = TypeVar('A0')\nA1 = TypeVar('A1')\n\n\n@overload\ndef foo(\n    vars: Tuple[A0],\n    op: Callable[[A0], T]\n) -> T: ...\n\n\n@overload\ndef foo(\n    vars: Tuple[A0, A1],\n    op: Callable[[A0, A1], T]\n) -> T: ...\n\n\ndef foo(vars, op):\n    pass\n\n\ndef foo_not_overloaded(\n    vars: Tuple[A0, A1],\n    op: Callable[[A0, A1], T]\n) -> T:\n    pass\n\n\na = 5\nb = 3\n\nfoo((a, b), lambda a, b: a - b)\n"
+ },
+ {
+  "id": "mypy-5874",
+  "url": "https://github.com/python/mypy/issues/5874",
+  "title": "Mypy is still too eager about outer context",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "T = TypeVar('T')\nS = TypeVar('S')\n\ndef add(x: List[T], y: List[S]) -> List[Union[T, S]]: ...\n\na: List[int]\nb: List[str]\n\ne: List[Union[int, str]] = add(a, b)\n"
+ },
+ {
+  "id": "mypy-5795",
+  "url": "https://github.com/python/mypy/issues/5795",
+  "title": "Redundant cast warning in nested function in a narrowed block",
+  "labels": [
+   "bug",
+   "priority-0-high",
+   "false-positive",
+   "topic-casts"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Optional, List, cast\n\nthings: Optional[List[int]] = None\nothers: List[int] = []\n\nif things is not None:\n    filtered = filter(lambda x: x in cast(List[int], things), others)\n"
+ },
+ {
+  "id": "mypy-5732",
+  "url": "https://github.com/python/mypy/issues/5732",
+  "title": "mypy gives 'not defined' error for use after global declaration",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-runtime-semantics",
+   "topic-variable-scope"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "def foo() -> None:\n    global myglobal\n    myglobal = 2  # error: Name 'myglobal' is not defined\n"
+ },
+ {
+  "id": "mypy-5519",
+  "url": "https://github.com/python/mypy/issues/5519",
+  "title": "Cannot call dict.get with a falsy second argument and an 'or' expression.",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "def foo(a: str):\n    pass\n\n\nd = {'key': 'a'}\nfoo(d.get('key', None) or '26')\n"
+ },
+ {
+  "id": "mypy-5416",
+  "url": "https://github.com/python/mypy/issues/5416",
+  "title": "Generic class with constrained type vars",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import TypeVar, Generic\nT = TypeVar('T', int, str)\nclass K(Generic[T]):\n\t@classmethod\n\tdef m(cls) -> T:\n\t\traise NotImplementedError\n"
+ },
+ {
+  "id": "mypy-5362",
+  "url": "https://github.com/python/mypy/issues/5362",
+  "title": "Mypy rejects valid nested class inside of a NamedTuple class definition",
+  "labels": [
+   "bug",
+   "topic-named-tuple",
+   "priority-2-low",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from enum import Enum\nfrom typing import NamedTuple\n\nclass T(NamedTuple):\n  class State(Enum):\n    A =1\n  state:State\n\nprint(T.State.A)\nprint(T(state=T.State.A))\n"
+ },
+ {
+  "id": "mypy-5311",
+  "url": "https://github.com/python/mypy/issues/5311",
+  "title": "error in argument when using chained function-call",
+  "labels": [
+   "bug",
+   "topic-type-variables",
+   "priority-1-normal",
+   "false-positive",
+   "topic-overloads"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "dct = {\"\": \"\"}\n\n# ok\ntrans = str.maketrans(dct)\n\"\".translate(trans)\n\n# err\n\"\".translate(str.maketrans(dct))\n"
+ },
+ {
+  "id": "mypy-5289",
+  "url": "https://github.com/python/mypy/issues/5289",
+  "title": "Incompatible types in assignment for `dict[key] = tmp = value` and nested structures",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "#!/usr/bin/python2.7\nfrom typing import Dict, Set  # noqa\nx = {}  # type: Dict[str, Set[str]]\nz = x[''] = set()  # okay\nx[''] = y = set()  # fail: Incompatible types in assignment (expression has type \"Set[<nothing>]\", target has type \"Set[str]\")\n"
+ },
+ {
+  "id": "mypy-5080",
+  "url": "https://github.com/python/mypy/issues/5080",
+  "title": "Don't warn about exception aliases on Python 3",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "try:\n    raise Exception()\nexcept Exception as e:\n    pass\ne = 4  # error: Assignment to variable 'e' outside except: block\n"
+ },
+ {
+  "id": "mypy-4654",
+  "url": "https://github.com/python/mypy/issues/4654",
+  "title": "Enum field 'name' conflics with instance attribute 'name'",
+  "labels": [
+   "bug",
+   "needs discussion",
+   "priority-1-normal",
+   "false-positive",
+   "topic-enum"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class Type(enum.Enum):\n    EMPTY = 0\n    name = 1\n    datasetConfig = 2\n"
+ },
+ {
+  "id": "mypy-4554",
+  "url": "https://github.com/python/mypy/issues/4554",
+  "title": "Adding variable annotation causes incompatible type when Optional and TypeVars are used",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "# Run with --strict-optional\nfrom typing import TypeVar, Callable, Optional, List\n_T = TypeVar('_T')\ndef make(typ: Callable[[], _T]) -> _T:\n    ...\ndef accept(arg: Optional[_T]) -> _T:\n    ...\naccept(make(list))\naccept(None)\nfoo = accept(make(list))                   # This works\nbar: List[str] = accept(make(list))    # Argument 1 to \"accept\" has incompatible type \"List[_T]\"; expected \"Optional[List[str]]\"\n"
+ },
+ {
+  "id": "mypy-4150",
+  "url": "https://github.com/python/mypy/issues/4150",
+  "title": "Apparent false positive when using reduce with dictionaries",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "#!/usr/bin/env python3\n# -*- coding: utf-8 -*-\n\nfrom functools import reduce\n\nfrom typing import Iterable\n\ndef update(ccc: dict, meta: dict) -> dict:\n    foo = dict(ccc)\n    foo.update(meta)\n    return foo\n\ndef reduce_func(configs: Iterable[dict]) -> dict:\n    output = dict(reduce(update, configs, {})) # type: dict\n    return output\n\nprint(reduce_func([{\"a\": 1}, {\"b\": 2}]))\n\n"
+ },
+ {
+  "id": "mypy-3283",
+  "url": "https://github.com/python/mypy/issues/3283",
+  "title": "List[<nothing>] error",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "topic-usability",
+   "false-positive",
+   "topic-type-context"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from datetime import datetime, timedelta\n\ndata_dic = {idx: []\n            for idx in range(len(lcl.msgs['DATA_COL_NAMES']) - 1)}  # type: Dict[int, List[Union[datetime, float]]]\n\n"
+ },
+ {
+  "id": "mypy-3115",
+  "url": "https://github.com/python/mypy/issues/3115",
+  "title": "Join of two type concrete type objects may be considered abstract",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-join-v-union"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from abc import abstractmethod\n\nclass Base:\n    @abstractmethod\n    def f(self) -> None: pass\nclass A(Base):\n    def f(self) -> None: pass\nclass B(Base):\n    def f(self) -> None: pass\n\nt = [A, B]\n\nt[0]()  # Cannot instantiate abstract class 'Base' with abstract attribute 'f'\n"
+ },
+ {
+  "id": "mypy-3060",
+  "url": "https://github.com/python/mypy/issues/3060",
+  "title": "isinstance(x, Type) not accepted",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "topic-usability",
+   "false-positive",
+   "topic-type-narrowing",
+   "topic-runtime-semantics"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Type\n\ndef f(x: Type[int]) -> None:\n    if isinstance(x, Type):  # Argument 2 to \"isinstance\" has incompatible type \"object\"; \n                             # expected \"Union[type, Tuple[Union[type, Tuple[Any, ...]], ...]]\"\n        pass\n"
+ },
+ {
+  "id": "mypy-2800",
+  "url": "https://github.com/python/mypy/issues/2800",
+  "title": "Confusing error when assigning to method defined in base class",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class C:\n    def f(self, x: int) -> None: pass\nclass D(C):\n    def g(self, y: object) -> None: pass\n    f = g  # Incompatible types in assignment (expression has type Callable[[object], None], \n           # base class \"C\" defined the type as Callable[[int], None])\n"
+ },
+ {
+  "id": "mypy-2563",
+  "url": "https://github.com/python/mypy/issues/2563",
+  "title": "Make classproperty descriptor work",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-descriptors"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "# See http://stackoverflow.com/questions/3203286/how-to-create-a-read-only-class-property-in-python\n\nfrom typing import *\n\nT = TypeVar('T')\nV = TypeVar('V')\n\nclass classproperty(Generic[T, V]):\n\n    def __init__(self, getter: Callable[[Type[T]], V]) -> None:\n        self.getter = getter\n\n    def __get__(self, instance: Any, owner: Type[T]) -> V:\n        # instance is really None, but we don't care\n        return self.getter(owner)\n\nclass C:\n    @classproperty    # <-- error here\n    def foo(cls) -> int:\n        return 42\n\nreveal_type(C.foo)\n"
+ },
+ {
+  "id": "mypy-1533",
+  "url": "https://github.com/python/mypy/issues/1533",
+  "title": "Can't pass a value of type Union[str, bytes] to a generic function typed with AnyStr",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "topic-union-types",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import AnyStr, Union\ndef g(a: AnyStr) -> AnyStr:\n    pass\ndef f(a: Union[str, bytes]):\n    g(a)\n"
+ },
+ {
+  "id": "mypy-1465",
+  "url": "https://github.com/python/mypy/issues/1465",
+  "title": "Property setter not accepted if not next to getter",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive",
+   "topic-descriptors"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class Config(object):\n\n    @property\n    def my_proprty(self):\n        return None\n\n    def _other(self):\n        pass\n\n    @my_proprty.setter\n    def my_proprty(self, val):\n        pass\n"
+ },
+ {
+  "id": "mypy-857",
+  "url": "https://github.com/python/mypy/issues/857",
+  "title": "Doesn't recognize all uses of super",
+  "labels": [
+   "bug",
+   "priority-1-normal",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class A:\n    def __init__(self, a): pass\nclass B(A):\n    def __init__(self, a):\n        super(B, self).__init__(a)\n        self._inner = super(B, self)\n"
+ },
+ {
+  "id": "mypy-327",
+  "url": "https://github.com/python/mypy/issues/327",
+  "title": "Allow type aliases be used as variables",
+  "labels": [
+   "bug",
+   "priority-2-low",
+   "false-positive"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "import typing\ntry:\n    x = WindowsError\nexcept NameError:\n    x = None\n"
+ },
+ {
+  "id": "mypy-21845",
+  "url": "https://github.com/python/mypy/issues/21845",
+  "title": "metaclass and new style generics do not work.",
+  "labels": [
+   "crash"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class AbstractModelMeta(ABCMeta, type(models.Model)):\n    \"\"\"\n    A Django model and Python abstract class\n    https://gist.github.com/gavinwahl/7778717\n    \"\"\"\n\n    pass\n\nclass SomeClass[TAttachment: Something](models.Model, metaclass=AbstractModelMeta):\n    @abstractmethod\n    def send_something(self) -> None:\n        \"\"\"\n        Send a notification to the original sender of a classification record that their classification record\n        has or has not been processed in AP Automation\n        \"\"\"\n        pass\n"
+ },
+ {
+  "id": "mypy-18992",
+  "url": "https://github.com/python/mypy/issues/18992",
+  "title": "Mypyc produces module that crashes (segmentation fault) when executed",
+  "labels": [
+   "crash",
+   "topic-mypyc"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Generic, TypeVar\n\n_T = TypeVar(\"_T\")\n\nclass Bar(Generic[_T]):\n    def __init__(self) -> None:\n        self.value: str = 'start'\n    def __get__(self, instance: _T, owner: type[_T] | None = None) -> str:\n        return self.value\n    def __set__(self, instance: _T, value: str) -> None:\n        self.value = value\n\nclass Foo(object):\n    bar: Bar = Bar()\n"
+ },
+ {
+  "id": "mypy-17534",
+  "url": "https://github.com/python/mypy/issues/17534",
+  "title": "Mypy crashes when using `reveal_type` on large literal int",
+  "labels": [
+   "crash"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Final\n\nMY_CONST: Final = 2**100000\nreveal_type(MY_CONST)\n"
+ },
+ {
+  "id": "mypy-17220",
+  "url": "https://github.com/python/mypy/issues/17220",
+  "title": "Use of `Annotated[T, ...]` in a recursive type results in a hang or crash",
+  "labels": [
+   "crash",
+   "topic-recursive-types"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from typing import Annotated, TypeVar\n\n\nT = TypeVar(\"T\")\n\nR = Annotated[T, ...]\n\nA = R[\"A\"]\n"
+ },
+ {
+  "id": "mypy-16940",
+  "url": "https://github.com/python/mypy/issues/16940",
+  "title": "Segmentation fault for TypeVar(\"T\", bound=Callable[..., \"T\"])",
+  "labels": [
+   "crash",
+   "topic-type-variables"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "T = TypeVar(\"T\", bound=Callable[..., \"T\"])\n"
+ },
+ {
+  "id": "mypy-16062",
+  "url": "https://github.com/python/mypy/issues/16062",
+  "title": "AssertionError: trying to find dataclass transform spec ",
+  "labels": [
+   "crash",
+   "topic-dataclasses"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from dataclasses import dataclass\n\n\n@dataclass(frozen=True)(kw_only=True)\nclass Foo:\n    bar: str\n"
+ },
+ {
+  "id": "mypy-15716",
+  "url": "https://github.com/python/mypy/issues/15716",
+  "title": "Mypyc crashes on conditionally-defined class",
+  "labels": [
+   "crash",
+   "topic-mypyc"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "if True:\n    class A:\n        pass\n"
+ },
+ {
+  "id": "mypy-14521",
+  "url": "https://github.com/python/mypy/issues/14521",
+  "title": "AssertionError: Internal error: method must be called on parsed file only",
+  "labels": [
+   "topic-incremental",
+   "crash"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "[tool.mypy]\nignore_missing_imports = true\n[[tool.mypy.overrides]]\nmodule = \"third_party.*\"\nignore_errors = true\n[[tool.mypy.overrides]]\nmodule = \"requests.*\"\nignore_missing_imports = true\n"
+ },
+ {
+  "id": "mypy-13613",
+  "url": "https://github.com/python/mypy/issues/13613",
+  "title": "[mypyc] singledispatch made outside the main namespace",
+  "labels": [
+   "crash",
+   "topic-mypyc"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "from __future__ import annotations\nfrom functools import singledispatch, _SingleDispatchCallable\nfrom typing import Any\n\n\ndef outer() -> _SingleDispatchCallable:\n\n    @singledispatch\n    def inner(obj: object) -> Any:\n        return 2\n\n    return inner\n"
+ },
+ {
+  "id": "mypy-12867",
+  "url": "https://github.com/python/mypy/issues/12867",
+  "title": "Segmentation fault when native coroutine compiled with mypyc is cancelled due to timeout",
+  "labels": [
+   "crash",
+   "topic-mypyc",
+   "topic-async"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "import asyncio\n\nasync def crash()->None:\n    await asyncio.sleep(1)\n"
+ },
+ {
+  "id": "mypy-12120",
+  "url": "https://github.com/python/mypy/issues/12120",
+  "title": "[mypyc] Assertion on untyped property",
+  "labels": [
+   "crash",
+   "topic-descriptors",
+   "topic-mypyc"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "class Math:\n    @property\n    def learn(self):\n        return \"\"\n"
+ },
+ {
+  "id": "mypy-11902",
+  "url": "https://github.com/python/mypy/issues/11902",
+  "title": "crash with sqlalchemy2 stubs",
+  "labels": [
+   "crash",
+   "topic-daemon"
+  ],
+  "faulty_tool": "mypy",
+  "kind": "positive",
+  "source": "[mypy]\nplugins = sqlalchemy.ext.mypy.plugin, pydantic.mypy\nignore_missing_imports = True\ndisallow_untyped_defs = True\n"
+ }
+]

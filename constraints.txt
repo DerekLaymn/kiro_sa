@@ -1,0 +1,25 @@
+# Exact versions used to produce the results in results/ and the 730-test baseline.
+# Python: CPython 3.13 (3.13.16). Target Python version of every run: 3.13.
+#
+# Use:   pip install -e ".[tools,test]" -c constraints.txt
+#
+# The three type checkers are pinned because their output changes between releases
+# (for example, the ty bump 0.0.84 -> 0.0.97 changed which discrepancies exist). Other versions
+# still run, but counts, knowledge-base matches and some tests can differ; see docs/reproducibility.md.
+mypy==2.4.0
+ty==0.0.97
+pyright==1.1.414
+
+# Transitive dependencies of the pins above, as resolved in the reference environment.
+ast_serialize==0.12.1
+librt==0.16.0
+mypy_extensions==1.1.0
+nodeenv==1.11.0
+pathspec==1.1.1
+typing_extensions==4.16.0
+
+# Test runner
+pytest==8.3.5
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0

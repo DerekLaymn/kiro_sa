@@ -1,12 +1,17 @@
 [project]
 name = "typediff"
 version = "0.1.0"
-description = "Differential-testing adjudicator for mypy vs ty: separates real type-checker bugs from design divergences"
+description = "Differential testing of Python type checkers (mypy, ty, pyright): separates real type-checker bugs from design divergences"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Anay Gupta" }, { name = "Aarsh Verma" }, { name = "Ajay Meena" }]
 requires-python = ">=3.10"
 dependencies = []  # stdlib only; the checkers are invoked as subprocesses
 
 [project.optional-dependencies]
-tools = ["mypy", "ty", "pyright", "typing_extensions"]
+# Versions used for all results in results/. See constraints.txt and docs/reproducibility.md.
+tools = ["mypy==2.4.0", "ty==0.0.97", "pyright==1.1.414", "typing_extensions"]
+test = ["pytest==8.3.5"]
 
 [project.scripts]
 typediff = "typediff.cli:main"
@@ -20,3 +25,6 @@ include = ["typediff*"]
 
 [tool.setuptools.package-data]
 typediff = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
