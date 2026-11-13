@@ -7,6 +7,9 @@ Configure with ``TYPEDIFF_LLM``:
     file:<dir>                              (manual: prompts written to <dir>, answers read back)
     null                                    (default: no LLM -> undecided cases go to the human queue)
 
+A missing ANTHROPIC_API_KEY (or OPENAI_API_KEY for api.openai.com) raises ``LLMConfigError`` naming the variable.
+``typediff`` also reads a ``.env`` file from the current directory (typediff/envfile.py); real environment variables win.
+
 Responses are cached on disk keyed by a hash of (model, system, user, temperature, seed) so re-running a
 campaign never pays twice for the same question.
 """
@@ -24,6 +27,20 @@ from pathlib import Path
 from typing import Any, Callable, Protocol
 
 CACHE_DIR = Path(os.environ.get("TYPEDIFF_CACHE", Path.home() / ".cache" / "typediff" / "llm"))
+
+
+class LLMConfigError(RuntimeError):
+    """The LLM provider is misconfigured (missing API key, unknown provider). The message says how to fix it."""
+
+
+def _require_key(var: str, provider: str) -> str:
+    key = os.environ.get(var, "").strip()
+    if not key:
+        raise LLMConfigError(
+            f"{var} is not set, but TYPEDIFF_LLM selects the {provider} provider. Export it "
+            f"(export {var}=...) or put {var}=... in a .env file in the directory you run typediff from "
+            "(see .env.example). Use TYPEDIFF_LLM=null to run without an LLM.")
+    return key
 
 
 class LLM(Protocol):
@@ -125,7 +142,7 @@ class AnthropicLLM(_HTTP):
     def __init__(self, model: str):
         self.model = model
         self.name = f"anthropic:{model}"
-        self.key = os.environ["ANTHROPIC_API_KEY"]
+        self.key = _require_key("ANTHROPIC_API_KEY", "anthropic")
 
     def complete(self, system: str, user: str, *, temperature: float = 0.0, max_tokens: int = 4096, seed: int = 0) -> str:
         out = self._post(
@@ -140,8 +157,10 @@ class AnthropicLLM(_HTTP):
 class OpenAICompatLLM(_HTTP):
     def __init__(self, model: str, base_url: str | None = None):
         self.model = model
-        self.base = (base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com/v1").rstrip("/")
-        self.key = os.environ.get("OPENAI_API_KEY", "none")
+        custom = base_url or os.environ.get("OPENAI_BASE_URL")
+        self.base = (custom or "https://api.openai.com/v1").rstrip("/")
+        # a self-hosted OpenAI-compatible server usually needs no key; api.openai.com always does
+        self.key = os.environ.get("OPENAI_API_KEY", "").strip() or ("none" if custom else _require_key("OPENAI_API_KEY", "openai"))
         self.name = f"openai:{model}@{self.base}"
 
     def complete(self, system: str, user: str, *, temperature: float = 0.0, max_tokens: int = 4096, seed: int = 0) -> str:
@@ -184,8 +203,11 @@ def from_env(spec: str | None = None) -> CachedLLM:
         inner = OpenAICompatLLM(model, base or None)
     elif kind == "file":
         inner = FileLLM(rest or "llm_inbox")
-    else:
+    elif kind in ("null", ""):
         inner = NullLLM()
+    else:
+        raise LLMConfigError(f"unknown TYPEDIFF_LLM provider {kind!r} in {spec!r}; use null, anthropic:<model>, "
+                             "openai:<model>[@<base-url>] or file:<dir>")
     return CachedLLM(inner)
 
 

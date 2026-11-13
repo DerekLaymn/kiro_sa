@@ -5,6 +5,7 @@
   typediff loop   --iterations N [--seeds DIR]        generate -> run -> judge -> dataset -> strategy
   typediff fetch-docs [--refresh-rule-map]            build the local spec/doc corpus used for citations
   typediff kb-selftest                                re-validate every KB entry against the installed tools
+  typediff doctor [--strict]                          compare installed mypy/ty/pyright/Python with the pinned versions
   typediff report OUT_DIR/CASE.json --finding D1      draft an upstream issue for a finding
 """
 
@@ -19,11 +20,13 @@ from pathlib import Path
 
 from .corpus import DEFAULT_DIR, Corpus, fetch_docs
 from .dataset import Dataset
+from .envfile import load_dotenv
 from .generator import blocking, generate, preflight
 from .kb import ENTRIES
-from .llm import NullLLM, CachedLLM, from_env
+from .llm import LLMConfigError, NullLLM, CachedLLM, from_env
 from .models import Tier, to_jsonable
 from .operators import mutation_spec
+from .pins import PINNED_PYTHON, PINNED_TOOLS, check_pins, warnings as pin_warnings
 from .pipeline import Pipeline, PipelineConfig
 from .report import draft_issue, render_summary
 from .runners import Runners, ToolConfig
@@ -306,10 +309,33 @@ def cmd_fetch(args) -> int:
     return 0
 
 
+def _pin_rows(runners: Runners):
+    return check_pins({**{t: runners.version(t) for t in PINNED_TOOLS}, "python": runners.version("runtime")})
+
+
+def cmd_doctor(args) -> int:
+    """Compare the installed tools with the versions the results were produced with (typediff/pins.py)."""
+    runners = Runners(ToolConfig(python_version=args.python_version))
+    rows = _pin_rows(runners)
+    print(f"{'tool':<8} {'pinned':<8} {'installed':<10} status")
+    for r in rows:
+        print(f"{r.name:<8} {r.pinned:<8} {r.installed or '-':<10} {'ok' if r.ok else 'MISSING' if r.installed is None else 'DIFFERENT'}")
+    if args.python_version.split(".")[:2] != PINNED_PYTHON.split("."):
+        print(f"--python-version {args.python_version} differs from the pinned target {PINNED_PYTHON}")
+    for w in pin_warnings(rows):
+        print(f"WARNING: {w}. Install the pins with: pip install -e \".[tools,test]\" -c constraints.txt")
+    if not all(r.ok for r in rows):
+        print("Other versions run, but KB matches, counts and some tests can differ (docs/reproducibility.md).")
+    return 0 if (all(r.ok for r in rows) or not args.strict) else 1
+
+
 def cmd_kb_selftest(args) -> int:
     p = _pipeline(args, CachedLLM(NullLLM()))
     p.cfg.reduce = False
     p.cfg.audit_rate = 0.0
+    p.runners = p.runners or Runners(p.cfg.tools)
+    for w in pin_warnings(_pin_rows(p.runners)):
+        print(f"WARNING: {w}; PASS/FAIL below may differ from the reference run (run `typediff doctor`)", file=sys.stderr)
     failures = 0
     for e in ENTRIES:
         if not e.example:
@@ -448,6 +474,10 @@ def main(argv: list[str] | None = None) -> int:
     ks = sub.add_parser("kb-selftest", help="check KB entries still fire on the installed tool versions")
     ks.set_defaults(fn=cmd_kb_selftest)
 
+    dr = sub.add_parser("doctor", help="check that the installed mypy/ty/pyright/Python match the pinned versions")
+    dr.add_argument("--strict", action="store_true", help="exit 1 when any version differs or is missing")
+    dr.set_defaults(fn=cmd_doctor)
+
     cb = sub.add_parser("calibrate", help="measure false dismissals on real bug reports + documented divergences")
     cb.add_argument("--manifest", default="calibration/positives.json")
     cb.add_argument("--negatives", default="calibration/negatives")
@@ -465,8 +495,13 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("--finding", required=True)
     rp.set_defaults(fn=cmd_report)
 
+    load_dotenv()  # ./.env; variables that are already set in the environment win
     args = ap.parse_args(argv)
-    return args.fn(args)
+    try:
+        return args.fn(args)
+    except LLMConfigError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":
