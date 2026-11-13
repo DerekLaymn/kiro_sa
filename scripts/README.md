@@ -18,7 +18,7 @@ Details: [docs/reproducibility.md](../docs/reproducibility.md).
 | Script | What it does |
 |---|---|
 | `harvest_seeds.py` | Collects seed programs from the test suites of python/typing (conformance), ruff (ty mdtests), mypy, pyright and typeshed into `seeds/harvested/` (git-ignored). Needs network access and `git` 2.25 or newer; records the commit of every source in `PROVENANCE.json`. `--sources` and `--out` select what to harvest. |
-| `kbloop_run.py OUT SEED_DIR... --progress FILE` | Parallel, resumable judge run over seed directories, deterministic stage only (target Python 3.13). One report per program in `OUT`, no shared dataset (so no order-dependent duplicates). `--jobs`, `--timeout`, `--sample N`, `--pyright-only` are the main options. |
+| `kbloop_run.py OUT SEED_DIR... --progress FILE` | Parallel, resumable judge run over seed directories, deterministic stage only (target Python 3.13). One report per program in `OUT`, no shared dataset (so no order-dependent duplicates). `--jobs`, `--timeout`, `--sample N`, `--pyright-only` are the main options. Set `TYPEDIFF_TOOL_MEM_MB=4096` to cap the memory of each mypy and ty process. |
 | `kbloop_replay.py OLD_OUT NEW_OUT` | Re-judges the saved reports of a finished run with the current KB and rules, without re-running the checkers. `--verify-sample K` re-runs `K` programs fully and asserts that the replay gives identical results. |
 | `kbloop_stats.py RUN_DIR` | Counts for a run: programs, discrepancies, auto-closed, live, with the tuning and hold-out split. |
 | `kbloop_patterns.py RUN_DIR` | Volume-ranked table of the live patterns, with cheap discriminators. |

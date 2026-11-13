@@ -27,7 +27,7 @@ The study ran the pipeline against **mypy 2.4.0, ty 0.0.97 and pyright 1.1.414**
 | Earlier reports that seeded the KB | 15 crash and discrepancy reports on ty, mypy and pyright, listed in [results/FINAL-SUMMARY.md](results/FINAL-SUMMARY.md#6-earlier-reports-by-the-authors-context-only) |
 | Knowledge base | 48 code entries, 27 upstream discrepancy entries, 12 crash entries, 7 prior stances |
 | Calibration | First run (ty 0.0.84): 156 open bug reports, **0 of 80 ty reports** and 4 of 76 mypy reports dismissed (3 no longer reproduce, 1 is a deliberate policy). A re-run on the final KB is a different experiment: see [calibration/README.md](calibration/README.md) |
-| Tests | 751 passed; `typediff kb-selftest` 20 PASS, 0 FAIL |
+| Tests | 760 passed; `typediff kb-selftest` 20 PASS, 0 FAIL |
 
 "Verified" means reduced, reproduced on the pinned and the newest tool versions, and searched on the trackers. It does
 not mean a maintainer confirmed it. Per-bug status, links and reproducers: [results/bugs.md](results/bugs.md),
@@ -74,7 +74,7 @@ python3.13 -m venv .venv && . .venv/bin/activate
 pip install -e ".[tools,test]" -c constraints.txt     # typediff + mypy 2.4.0, ty 0.0.97, pyright 1.1.414, pytest
 typediff --python-version 3.13 doctor                 # versions match the pins?
 typediff fetch-docs                                   # optional: only needed to verify LLM citations
-pytest -q                                             # 751 passed in about 2 minutes
+pytest -q                                             # 760 passed in about 2 minutes
 typediff --python-version 3.13 kb-selftest            # 20 PASS, 0 FAIL
 ```
 
@@ -86,10 +86,11 @@ Or run all of it, including the judge on the seeds, with one command (no API key
 scripts/reproduce.sh                  # WITH_REPLAY=1 also replays the last generation round
 ```
 
-Judge the seed programs yourself:
+Judge the seed programs yourself. `TYPEDIFF_TOOL_MEM_MB` caps the memory of each mypy and ty process, because one seed
+program (a mypy crash reproducer) makes mypy use many GB before it dies with SIGSEGV. `reproduce.sh` sets it for you.
 
 ```bash
-TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/    # a few minutes
+TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/    # a few minutes
 typediff triage typediff_out --top 15 --details                              # read the patterns
 ```
 
@@ -117,7 +118,7 @@ One generation round, then judge the new programs without an LLM:
 
 ```bash
 typediff --python-version 3.13 generate --from-seeds seeds/parents --n 2 --ops union_widen --out-dir runs/gen
-TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
+TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null python scripts/kbloop_run.py runs/out runs/gen --jobs 4 --progress runs/progress.log
 typediff triage runs/out --top 20
 ```
 
@@ -150,7 +151,7 @@ calibration/         negatives, known duplicates, positives manifest, results of
 results/             final summary, per-bug reports, funnel tables, per-day reports
 docs/                architecture, usage, reproducibility, LLM setup, KB guide, design, slides
 scripts/             reproduce.sh, replay, seed harvesting, parallel runner, statistics
-tests/               751 tests and the reproducers they use
+tests/               760 tests and the reproducers they use
 findings/            two small programs used by a test
 constraints.txt      exact versions of the checkers and test dependencies
 .env.example         template for the LLM settings

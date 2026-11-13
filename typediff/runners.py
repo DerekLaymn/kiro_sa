@@ -36,6 +36,31 @@ def _default_cmd(env_var: str, exe: str) -> list[str]:
     return [found] if found else [exe]
 
 
+MEM_ENV = "TYPEDIFF_TOOL_MEM_MB"
+# Runs `cmd` with an address-space limit; a missing binary still reports "NOT INSTALLED" and exit code 127.
+_LIMIT_LAUNCHER = (
+    "import os, resource, sys\n"
+    "limit = int(sys.argv[1]) << 20\n"
+    "try:\n"
+    "    resource.setrlimit(resource.RLIMIT_AS, (limit, limit))\n"
+    "except (ValueError, OSError):\n"
+    "    pass\n"
+    "try:\n"
+    "    os.execvp(sys.argv[2], sys.argv[2:])\n"
+    "except OSError as exc:\n"
+    "    sys.stderr.write(f'NOT INSTALLED: {exc}')\n"
+    "    sys.exit(127)\n"
+)
+
+
+def _memory_limit_mb() -> int:
+    """Per-process memory limit for mypy and ty from TYPEDIFF_TOOL_MEM_MB (0 = unlimited, the default)."""
+    try:
+        return max(0, int(os.environ.get(MEM_ENV, "0")))
+    except ValueError:
+        return 0
+
+
 @dataclass
 class ToolConfig:
     python_version: str = "3.12"
@@ -141,7 +166,11 @@ class Runners:
             Path(wd, FILENAME).write_text(source, encoding="utf-8")
             if tool == Tool.MYPY:
                 flags = [*flags, "--cache-dir", os.path.join(wd, ".mypy_cache")]
-            out, err, code, dur = self._exec([*base, *flags, FILENAME], wd, self.cfg.timeout_s)
+            cmd = [*base, *flags, FILENAME]
+            limit = _memory_limit_mb()
+            if limit and tool in (Tool.MYPY, Tool.TY):  # pyright's Node.js reserves a large address space; not limited
+                cmd = [sys.executable, "-c", _LIMIT_LAUNCHER, str(limit), *cmd]
+            out, err, code, dur = self._exec(cmd, wd, self.cfg.timeout_s)
         run = ToolRun(tool, out, err, code, self.version(tool), flags, dur)
         parser = {Tool.MYPY: parse_mypy, Tool.TY: parse_ty, Tool.PYRIGHT: parse_pyright}[tool]
         diags, crashes = parser(out, err, code, FILENAME)

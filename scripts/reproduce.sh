@@ -15,6 +15,9 @@
 #   JOBS=4                parallel jobs of the replay
 #   STRICT_PINS=1         stop if an installed tool differs from the pinned version (default: warn and go on)
 #   WORK=runs/reproduce   output directory (git-ignored)
+#   TYPEDIFF_TOOL_MEM_MB=4096   memory limit per mypy / ty process (default here: 4096; 0 = unlimited). One seed program
+#                         makes mypy use many GB before it crashes with SIGSEGV; the limit turns that into the same crash
+#                         finding without exhausting the machine.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -24,6 +27,7 @@ command -v "$PY" >/dev/null 2>&1 || PY=python
 WORK="${WORK:-runs/reproduce}"
 TD=("$PY" -m typediff.cli)
 export TYPEDIFF_LLM=null   # the judge never needs an LLM; this also ignores a TYPEDIFF_LLM in .env
+export TYPEDIFF_TOOL_MEM_MB="${TYPEDIFF_TOOL_MEM_MB:-4096}"
 
 echo "== 1/4 install and tool versions"
 "$PY" -c "import typediff" 2>/dev/null || { echo "typediff is not installed: run  pip install -e \".[tools,test]\" -c constraints.txt"; exit 1; }
@@ -77,7 +81,7 @@ fi
 cat <<EOF
 
 == expected on the pinned versions (mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13)
-   tests:        751 passed, no failures (a count above 751 means tests were added since)
+   tests:        760 passed, no failures (a count above 760 means tests were added since)
    kb-selftest:  PASS=20 FAIL=0              (this run: PASS=$kb_pass FAIL=$kb_fail)
    seeds:        programs=65 discrepancies=88 findings by tier: confirmed=8, dismissed=30, review=60
    replay:       programs=250 discrepancies=247 live=168 dismissed=79 (only with WITH_REPLAY=1; docs/generation.md)

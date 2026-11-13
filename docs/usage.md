@@ -74,8 +74,11 @@ Runs a seed corpus: every `*.py` file under `SEEDS`, recursively. A sub-folder n
 | `--max-llm-calls N` | `0` (no limit) | Stop after `N` uncached LLM calls. |
 
 ```bash
-TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/
+TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-reduce seeds seeds/
 ```
+
+`TYPEDIFF_TOOL_MEM_MB` limits the memory of each mypy and ty process (default: unlimited). The seeds contain a mypy crash
+reproducer that otherwise uses more than 8 GB; see [reproducibility.md](reproducibility.md#3-judge-the-seeds-no-llm-no-api-key).
 
 Programs that fail the preflight lint (syntax error for the target version, non-stdlib import, randomness or I/O) are
 reported as rejected and skipped. All programs in one run share `dataset.jsonl`, so a later program whose signature
