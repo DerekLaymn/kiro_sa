@@ -1,6 +1,6 @@
 # First run of ajay_examples (ty 0.0.84, mypy 2.4.0, pyright 1.1.414, CPython 3.13)
 
-I triaged this run with `typediff triage --details` and checked each item by hand against all three checkers
+This run was triaged with `typediff triage --details` and each item was checked by hand against all three checkers
 and CPython.
 
 ## Worth reporting (after a duplicate check)

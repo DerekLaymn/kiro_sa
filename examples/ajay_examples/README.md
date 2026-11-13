@@ -1,6 +1,6 @@
 # ajay_examples
 
-These are 40 standalone programs, each probing a different part of ty's type system. Every file runs cleanly on **CPython 3.13**. Lines a spec-conformant checker should reject are marked `# expect-error`, and the ones that would crash are wrapped in `try/except`. Comments next to `reveal_type` give the expected type. These programs have not been run through ty or mypy yet.
+These are 40 standalone programs, each probing a different part of ty's type system. Every file runs cleanly on **CPython 3.13**. Lines a spec-conformant checker should reject are marked `# expect-error`, and the ones that would crash are wrapped in `try/except`. Comments next to `reveal_type` give the expected type. A first run through ty, mypy and pyright is summarised in [FINDINGS.md](FINDINGS.md).
 
 ```bash
 typediff --python-version 3.13 --no-pyright --no-reduce seeds examples/ajay_examples
