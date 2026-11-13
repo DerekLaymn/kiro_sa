@@ -1,4 +1,4 @@
-"""Validate every file in runs/hits: 3-line header, AREAS key, py_compile, typediff.generator.preflight (no ERROR),
+"""Validate every file in seeds/parents (the parent programs): 3-line header, AREAS key, py_compile, typediff.generator.preflight (no ERROR),
 CPython run, and near-duplicate detection (difflib ratio of the bodies without the header comments)."""
 import difflib
 import re
@@ -10,9 +10,8 @@ from typediff.generator import blocking, preflight
 from typediff.strategy import AREAS
 
 ROOT = Path(__file__).resolve().parent.parent
-# Usage: python scripts/check_hits.py [THRESHOLD] [HITS_DIR]; the default directory is runs/hits (the local parent pool) if it
-# exists, else the curated examples/hits.
-HITS = Path(sys.argv[2]) if len(sys.argv) > 2 else (ROOT / "runs" / "hits" if (ROOT / "runs" / "hits").is_dir() else ROOT / "examples" / "hits")
+# Usage: python scripts/check_hits.py [THRESHOLD] [HITS_DIR]; the default directory is the committed seeds/parents.
+HITS = Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / "seeds" / "parents"
 THRESH = float(sys.argv[1]) if len(sys.argv) > 1 else 0.80
 
 

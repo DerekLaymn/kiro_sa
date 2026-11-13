@@ -16,6 +16,13 @@ Sources (shallow, sparse git clones into ~/.cache/typediff/upstream):
 Each output file gets a `# area:` header guessed from its name, so `typediff seeds` can bucket results.
 Programs that cannot work standalone are skipped: multi-file tests, ty_extensions, non-stdlib imports,
 mypy plugins/flags, syntax errors. Output is NOT committed (see .gitignore); re-run to refresh.
+
+Works from a clean clone with `pip install -e .` and `git` (>= 2.25, for sparse checkout) on PATH. It needs network
+access to github.com the first time (about 100 MB of shallow, sparse clones into ~/.cache/typediff/upstream) and can be
+run from any directory: the default output is <repo>/seeds/harvested. mypy and pyright are checked out at the tag of
+the installed (else pinned) version when that tag exists; ruff has no tag per ty release, so ty's mdtests come from the
+default branch. Every repo's commit is recorded in <out>/PROVENANCE.json. The harvested set therefore changes over
+time; runs without it (`seeds/` hand-written seeds, `seeds/parents/`) do not depend on it.
 """
 
 from __future__ import annotations
@@ -28,6 +35,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
 CACHE = Path.home() / ".cache" / "typediff" / "upstream"
 STD = set(sys.stdlib_module_names) | {"typing_extensions", "__future__"}
 REPOS = {
@@ -63,14 +71,19 @@ def guess_area(name: str) -> str:
 
 
 def tool_versions() -> dict[str, str | None]:
+    """Installed version of each tool, else the pinned one (typediff/pins.py), else None."""
     from importlib import metadata
 
+    try:
+        from typediff.pins import PINNED_TOOLS
+    except ImportError:  # typediff not installed: harvest still works from the installed tools only
+        PINNED_TOOLS = {}
     out: dict[str, str | None] = {}
-    for pkg in ("mypy", "ty"):
+    for pkg in ("mypy", "ty", "pyright"):
         try:
             out[pkg] = metadata.version(pkg)
         except metadata.PackageNotFoundError:
-            out[pkg] = None
+            out[pkg] = PINNED_TOOLS.get(pkg)
     return out
 
 
@@ -228,7 +241,7 @@ def harvest_mypy(root: Path):
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--out", default="seeds/harvested")
+    ap.add_argument("--out", default=str(REPO_ROOT / "seeds" / "harvested"), help="default: <repo>/seeds/harvested")
     ap.add_argument("--sources", default="conformance,ty,mypy,pyright,typeshed")
     ap.add_argument("--python-version", default="3.13")
     ap.add_argument("--limit", type=int, default=0, help="max programs per source (0 = all)")
@@ -239,7 +252,8 @@ def main() -> None:
              "pyright": harvest_pyright, "typeshed": harvest_typeshed}
     vers = tool_versions()
     prov: dict = {"tool_versions": vers, "repos": {}}
-    tag_for = {"mypy": (f"v{vers['mypy']}",) if vers["mypy"] else (), "ty": (vers["ty"],) if vers["ty"] else ()}
+    tag_for = {"mypy": (f"v{vers['mypy']}",) if vers["mypy"] else (), "ty": (vers["ty"],) if vers["ty"] else (),
+               "pyright": (vers["pyright"],) if vers["pyright"] else ()}
     for src in args.sources.split(","):
         root = clone(src, tag_for.get(src, ()))
         repo = CACHE / src
