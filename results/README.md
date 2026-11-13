@@ -15,7 +15,7 @@ reduced programs, [`../examples/bugs/`](../examples/bugs/README.md).
 | Verified new bugs | 12: ty 4, mypy 6, pyright 2 |
 | Drafts filed upstream | 9 of the 12 (ty 4, mypy 4, pyright 1); 3 not filed |
 | Drafts fixed upstream | 2 ([ty#4934](https://github.com/astral-sh/ty/issues/4934), [ty#4958](https://github.com/astral-sh/ty/issues/4958)) |
-| All issues filed by the three accounts | 24 (ty 11, mypy 9, pyright 4): 5 closed as fixed with a merged PR, 1 closed as intended, 7 open with an open linked PR, 11 open without one (24 = 5 + 1 + 7 + 11) |
+| All issues filed by the three accounts, all found with the pipeline (9 are the filed drafts, 15 come from earlier runs) | 24 (ty 11, mypy 9, pyright 4): 5 closed as fixed with a merged PR, 1 closed as intended, 7 open with an open linked PR, 11 open without one (24 = 5 + 1 + 7 + 11) |
 | Tests / KB self-test at the end | 762 passed (730 when the last report was written; later work added reproducibility and memory-limit tests) / 20 PASS |
 
 Issue states were read live from GitHub on 2026-11-13 and may have changed. The three GitHub accounts that filed the issues are `DerekLaymn`, `Choco-princess` and `Pika-pikachu30`. The per-round reports in `rounds/` reflect the states at the time they were written.
@@ -26,7 +26,7 @@ Issue states were read live from GitHub on 2026-11-13 and may have changed. The 
 |---|---|
 | [FINAL-SUMMARY.md](FINAL-SUMMARY.md) | Campaign summary: pipeline changes, KB growth, live-rate trend, verified bugs, duplicates, limitations, what was not verified |
 | [verified-bugs.md](verified-bugs.md) | Table of the 12 verified bugs with tool, description, confidence and filing state |
-| [bugs.md](bugs.md) | Table of all 24 reported issues with current state and fix PRs, then the 12 issue drafts: reduced program, versions, expected and actual behaviour, duplicate search |
+| [bugs.md](bugs.md) | Table of all 24 reported issues (all found with the pipeline) with current state, fix PRs and the round of origin, then the 12 issue drafts: reduced program, versions, expected and actual behaviour, duplicate search |
 | [funnel.md](funnel.md) | Per-round funnel: programs, discrepancies, auto-closed, live; KB growth; effect of KB changes on old reports |
 | [rounds/](rounds/) | The report of each round |
 | [kb-loop-log.md](kb-loop-log.md), [kb-loop-candidates.md](kb-loop-candidates.md) | Log of the knowledge-base improvement rounds on the harvested corpus, and the ranked candidate list |
