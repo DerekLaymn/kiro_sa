@@ -1,11 +1,11 @@
-"""Display-only differences between the spellings of one revealed type (Day 8).
+"""Display-only differences between the spellings of one revealed type (Round 8).
 
 ``typenorm`` reports anything it cannot parse as UNCOMPARABLE, which is the right default for callables, TypedDicts and
 ParamSpecs. This module is the narrow counterpart used by the KB entry ``DISPLAY-EQUIVALENT``: it rewrites the three
 printer conventions that are known to differ for the SAME type and compares the results as strings. Nothing here
 parses types; if the rewritten texts differ, the pair is not display noise.
 
-Conventions handled (each seen in the Day-6/Day-7 reports):
+Conventions handled (each seen in the Round-6/Round-7 reports):
 
 * ParamSpec / TypeVar scope tags: ty and pyright print ``P@__init__.args`` and ``T@f``, mypy prints ``P.args`` / ``T``.
 * Callables: mypy ``def (float)`` (no ``-> None``), ``def (a: int, b: int =)`` (default value hidden),

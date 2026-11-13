@@ -102,7 +102,7 @@ def negatives(neg_dir: Path) -> list[dict]:
 
 def must_stay_live(live_dir: Path) -> list[dict]:
     """Programs with a known real discrepancy that NO dismissal may touch (``calibration/must_stay_live/*.py``; empty
-    since Day 7: the tracked-upstream programs moved to ``calibration/known_duplicates/``, see its README)."""
+    since Round 7: the tracked-upstream programs moved to ``calibration/known_duplicates/``, see its README)."""
     return [{"id": f"live-{p.stem}", "kind": "must_stay_live", "source": p.read_text(), "title": p.stem,
              "faulty_tool": "none", "labels": [], "url": str(p)}
             for p in (sorted(live_dir.glob("*.py")) if live_dir.exists() else [])]

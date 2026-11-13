@@ -59,7 +59,7 @@ _EXPECT_ERROR_MARK = re.compile(r"#\s*expect-error\b")
 
 
 def _consequence_of_expected_error(amap: AnchorMap, runtime: RuntimeResult, all_diags: list[Diagnostic]) -> bool:
-    """Day 8: True if the uncaught exception is the runtime consequence of a line the program itself marks ``# expect-error``.
+    """Round 8: True if the uncaught exception is the runtime consequence of a line the program itself marks ``# expect-error``.
     Generated programs mark the line a checker must reject (``use(hf)  # expect-error``) and let the failure show up later
     (``hf.fire(1.5)  # runtime: AttributeError``): the exception comes from a frame (a lambda, a stored callback) that no
     checker flags, so the ``runtime_miss`` anchors on the wrong frame. It is suppressed when some line marked
@@ -125,7 +125,7 @@ def pyright_runtime_relation(amap: AnchorMap, runtime: RuntimeResult, anchor: in
 
 
 def handled_type_exception(runtime: RuntimeResult, lo: int, hi: int) -> bool:
-    """Day 8: a type-related exception (``classify_exception`` == strong) was raised in a frame of the program on a line of
+    """Round 8: a type-related exception (``classify_exception`` == strong) was raised in a frame of the program on a line of
     the statement ``lo..hi`` and the program handled it. Generated programs wrap their ``# expect-error`` line in
     ``try/except TypeError``, so the uncaught-exception fields (``exc_*``, ``frames``) never show it; the harness records
     every exception that passes through a frame of the program (``RuntimeResult.raised``)."""

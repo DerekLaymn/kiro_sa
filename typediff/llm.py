@@ -85,7 +85,7 @@ def _one_edit_apart(a: str, b: str) -> bool:
 
 def inbox_status(directory: str | Path) -> dict[str, Any]:
     """Account for a ``file:<dir>`` bridge directory. FileLLM reads only ``<16-hex key>.answer.json``; an answer whose key
-    was mistyped is silently ignored and its prompt stays pending (Day 4: ``e6673866643ecc8`` instead of
+    was mistyped is silently ignored and its prompt stays pending (Round 4: ``e6673866643ecc8`` instead of
     ``e66738668643ecc8`` left 271 answers for 270 prompts).
 
     ``orphan_answers`` maps each answer without a prompt to the prompt keys one edit away (the likely intended keys,

@@ -5,7 +5,7 @@ reads the name and guesses. They stay bare, so every prompt that used them is un
 prompt keys with it). Operators added here are described to the generator: ``mutation_spec`` returns
 ``{"operator": name, "instruction": text}`` for them and ``{"operator": name}`` for everything else.
 
-Day 9 adds two operators for runtime-refutable shapes:
+Round 9 adds two operators for runtime-refutable shapes:
 
 * ``dunder_instance_shadow``  a special method that exists only on the instance or only as an annotation. CPython looks
                               special methods up on the type, so the use raises TypeError whatever the checker says.
@@ -39,6 +39,6 @@ OPERATORS: dict[str, str] = {
 
 
 def mutation_spec(op: str) -> dict[str, str]:
-    """The mutation dict for ``--ops``: bare for the original operators, with an instruction for the Day-9 ones."""
+    """The mutation dict for ``--ops``: bare for the original operators, with an instruction for the Round-9 ones."""
     op = op.strip()
     return {"operator": op, "instruction": OPERATORS[op]} if op in OPERATORS else {"operator": op}

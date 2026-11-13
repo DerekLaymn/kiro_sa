@@ -280,7 +280,7 @@ def attach_runtime_evidence(state: CaseState, d: Discrepancy) -> None:
                         "runtime probe values not used", citation=f"line {d.anchor}", verified=True, strength="weak"))
                 continue
             if "..." in (lst[0].revealed_type or "") and recursive_aliases(state.amap.tree):
-                # Day 8: mypy prints `...` for the recursive occurrence inside a recursive alias (`tuple[str, ...]` for
+                # Round 8: mypy prints `...` for the recursive occurrence inside a recursive alias (`tuple[str, ...]` for
                 # `tuple[str, Left]`); read as a variadic tuple it made a correct runtime value look outside mypy's type
                 d.evidence.append(Evidence(
                     EvidenceType.RUNTIME, "neutral",

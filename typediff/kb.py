@@ -1214,7 +1214,7 @@ def _flag_is_chain(s, d) -> bool:
 
 def _flag_member_op(s, d) -> bool:
     """astral-sh/ty#876 (checklist item: enum expansion must not be performed for enum.Flag): the statement uses
-    a bitwise combination of two members of a Flag / IntFlag subclass, or the inversion ``~F.X`` of one member (Day-4 verification,
+    a bitwise combination of two members of a Flag / IntFlag subclass, or the inversion ``~F.X`` of one member (Round-4 verification,
     results/rounds/round-4-report.md: ty reveals ``~F.R`` as ``Literal[F.R]``, runtime ``F.W``), directly or through a
     variable assigned from one."""
     tree = s.amap.tree
@@ -1561,7 +1561,7 @@ def _stale_attr_context(s, d, root: str, attr: str | None, mutating_any: bool):
     calls = [n.lineno for n in nodes
              if isinstance(n, ast.Call) and _attr_of(n.func, roots) and n.func.attr in methods
              and (mutating_any or attr in methods[n.func.attr]) and n.lineno < d.anchor]
-    # Day 8: a store into a data-descriptor attribute (``root.slot = v``) runs ``__set__``, which assigns attributes of
+    # Round 8: a store into a data-descriptor attribute (``root.slot = v``) runs ``__set__``, which assigns attributes of
     # the owner: the same stale-narrowing cause as a call to a mutating method
     stores = _descriptor_store_mutations(tree)
     calls += [n.lineno for n in nodes
@@ -1601,7 +1601,7 @@ def _readonly_prop_after_stale_narrowing(s, d) -> bool:
     unreachable for ty. Needs: a statement that assigns a read-only ``@property`` of the program through a name, a
     narrowing of some ``obj.p``, then such a call, then a read of ``obj.p``, all before the statement, with no store into
     ``obj.p`` and no rebinding of ``obj`` in between. Assigning a property that has a setter, no method call in between
-    and a call placed before the narrowing do not match. Day 9: the chain may also stand in an enclosing scope before the
+    and a call placed before the narrowing do not match. Round 9: the chain may also stand in an enclosing scope before the
     ``def`` of the function that holds the statement (``_stale_chain_before`` with the line above the ``def``)."""
     tree = s.amap.tree
     node = _stmt_node(s, d)
@@ -1612,7 +1612,7 @@ def _readonly_prop_after_stale_narrowing(s, d) -> bool:
         return False
     if _stale_chain_before(s, d, t.value.id):
         return True
-    # Day 9: the statement sits in a function that is DEFINED after the chain (``def try_write(c): c.readonly = 0`` below
+    # Round 9: the statement sits in a function that is DEFINED after the chain (``def try_write(c): c.readonly = 0`` below
     # module-level asserts around ``c.bump()``). ty treats the code after the contradiction as unreachable, a ``def``
     # included, so the chain only has to precede the ``def``; its receiver need not be the name the function uses.
     # Walks outwards, one enclosing function at a time, up to the module.
@@ -1793,7 +1793,7 @@ def _callable_receiver_methods(tree: ast.AST) -> dict[str, list[ast.FunctionDef 
 
 
 def _callable_self_attr_store(s, d) -> bool:
-    """Design difference (Day 8, results/rounds/round-8-pipeline.md section 1): the statement stores an attribute on the first
+    """Design difference (Round 8, results/rounds/round-8-pipeline.md section 1): the statement stores an attribute on the first
     parameter of a method whose first parameter is annotated ``Callable[..]`` (``def __init__(self: Callable[P, T], ..):
     self.args = args``). ty (``unresolved-attribute`` on the callable type) and pyright (``reportFunctionMemberAccess``,
     ``Cannot assign to attribute .. for class "FunctionType"``) check the store against the DECLARED receiver type, a
@@ -1823,7 +1823,7 @@ def _callable_self_attr_store(s, d) -> bool:
 
 
 def _callable_self_receiver(s, d) -> bool:
-    """Spec ambiguity (Day 8): the statement is, or uses, a program class with a method whose ``self`` / ``cls`` is
+    """Spec ambiguity (Round 8): the statement is, or uses, a program class with a method whose ``self`` / ``cls`` is
     annotated ``Callable[..]`` (``__init__(self: Callable[P, T], *args: P.args, **kwargs: P.kwargs)``, a classmethod
     ``__call__(cls: Callable[P, T], ..)``). mypy and pyright reject the declaration itself (the annotation of ``self`` must
     be a supertype of the class; tracked for ty in ty#3666) or cannot bind the receiver, and each checker solves the
@@ -1941,7 +1941,7 @@ def _upstream_entries() -> list[KBEntry]:
             if e["kind"] == "only_ty" and e.get("silent_tool") == "ty":
                 diags = d.pyright  # pyright-only concern that ty (and mypy) miss
             if e["kind"] == "only_pyright":
-                diags = [x for x in d.pyright if x.is_problem]  # Day 8: the reporting tool of an only_pyright finding
+                diags = [x for x in d.pyright if x.is_problem]  # Round 8: the reporting tool of an only_pyright finding
             hit = [x for x in diags if (not e.get("codes") or (x.code or "") in e["codes"])
                    and re.search(e.get("message", ""), x.message)]
             if not hit:
@@ -2494,7 +2494,7 @@ ENTRIES.extend([
     ),
 ])
 ENTRIES.extend([
-    KBEntry(  # first of the Day-8 block: a pure spelling difference wins over the broader receiver entry below
+    KBEntry(  # first of the Round-8 block: a pure spelling difference wins over the broader receiver entry below
         "DISPLAY-EQUIVALENT", "the reveals are the same type in different printer conventions (callable, ParamSpec scope, TypedDict)",
         Dismissal.NOISE, "https://typing.python.org/en/latest/spec/callables.html",
         "mypy prints a callable as `def (float)` (no `-> None`, default values hidden, `*P.args, **P.kwargs` for `**P`), ty as "
@@ -2515,7 +2515,7 @@ ENTRIES.extend([
         "`unresolved-attribute` on the callable type and pyright `reportFunctionMemberAccess` (`Cannot assign to attribute "
         "\"args\" for class \"FunctionType\"`): both check the store against the declared receiver type, which is a function "
         "type. mypy defines the attribute from the store and reports nothing (verified on mypy 2.4.0, ty 0.0.97, pyright "
-        "1.1.414, Day-8 experiments e1/e2: also for a class that really has a `__call__`). This divergence is experiment-based: "
+        "1.1.414, Round-8 experiments e1/e2: also for a class that really has a `__call__`). This divergence is experiment-based: "
         "searches of the ty and mypy trackers found no issue about the store itself (the related open ty#3666 is about "
         "validating the declaration of `self`, not about this). The declaration is itself invalid "
         "for mypy (`The erased type of self .. is not a supertype of its class`) and pyright when the class is not callable, "
@@ -2526,13 +2526,13 @@ ENTRIES.extend([
     KBEntry(
         "CALLABLE-SELF-RECEIVER", "a class whose self/cls is annotated Callable[..] has no reference answer at its call sites",
         Dismissal.SPEC_AMBIGUITY, "https://github.com/astral-sh/ty/issues/3666",
-        "The Day-6/Day-7 ParamSpec family `d3p_paramspec_self_annotated_dunder_call` (neighbourhood of the crash ty#4899): a "
+        "The Round-6/Round-7 ParamSpec family `d3p_paramspec_self_annotated_dunder_call` (neighbourhood of the crash ty#4899): a "
         "method's `self` / `cls` is annotated `Callable[P, T]` or `Callable[Concatenate[int, P], T]`. The annotation of `self` "
         "must be a supertype of the class; mypy and pyright reject the declaration for a class that is not callable as "
         "annotated, and ty does not validate it (open ty#3666). Each checker then binds the receiver to something else: "
         "ty solves `cls: Callable[P, T]` against the class's constructor signature, so the ParamSpec of `__init__` shows up "
         "in `User.__call__(1)` as `Expected P@__init__.args`; pyright reports `Expected 0 positional arguments` or `Arguments "
-        "for ParamSpec \"P@__call__\" are missing`; mypy does not bind it and accepts. Day-8 experiments e3 (classmethod "
+        "for ParamSpec \"P@__call__\" are missing`; mypy does not bind it and accepts. Round-8 experiments e3 (classmethod "
         "alone: ty and pyright agree, mypy silent) and e1/e4. Whichever checker is silent or loud at a call site, the program "
         "is not well-formed enough to judge, so these are not reported. Fires for the `def` line of such a method, a "
         "statement inside it, a statement naming the class (or a parameter / variable declared with it) and a variable "
@@ -2557,7 +2557,7 @@ def _plain_name(node: ast.AST) -> str | None:
 
 
 def m_contextmanager_iterator_deprecated(s, d):
-    """Day 10: ty's warning[deprecated] for the Iterator overload of ``contextmanager`` / ``asynccontextmanager``.
+    """Round 10: ty's warning[deprecated] for the Iterator overload of ``contextmanager`` / ``asynccontextmanager``.
 
     ALL required: every ty diagnostic of the discrepancy is that one warning, with exactly the stub's wording; the statement
     is a ``def`` whose decorator list holds the decorator the message names, on the line ty reported; and the return
@@ -2582,7 +2582,7 @@ def m_contextmanager_iterator_deprecated(s, d):
 
 
 def _metaclass_call_returns(tree: ast.AST) -> dict[str, str]:
-    """Day 10 (python/mypy#8595): program class -> the unparsed return annotation of the ``__call__`` of its metaclass
+    """Round 10 (python/mypy#8595): program class -> the unparsed return annotation of the ``__call__`` of its metaclass
     (``metaclass=M`` on the class or on a program base), for classes where that annotation says the call does NOT return an
     instance of the class. Not covered: no annotation, ``Any``, ``Self``, a TypeVar (also a PEP 695 parameter of the method),
     and any annotation that names the class or one of its program bases; a metaclass that only inherits ``__call__``."""
@@ -2704,7 +2704,7 @@ def m_metaclass_call_return(s, d):
 
 
 ENTRIES.extend([
-    KBEntry(  # Day-10 block. No `example`: kb-selftest stays at the 20 Day-9 entries; tests/test_round10_pipeline.py runs the real tools
+    KBEntry(  # Round-10 block. No `example`: kb-selftest stays at the 20 Round-9 entries; tests/test_round10_pipeline.py runs the real tools
         "TY-CONTEXTMANAGER-ITERATOR-DEPRECATED",
         "ty reports the typeshed deprecation of the Iterator overload of @contextmanager; mypy 2.4.0's typeshed predates it",
         Dismissal.CONFIG_ARTIFACT, "https://github.com/microsoft/pyright/issues/11402",
@@ -2712,7 +2712,7 @@ ENTRIES.extend([
         "`contextlib.contextmanager` (and the `AsyncIterator` overload of `asynccontextmanager`) as `@deprecated` and ask for "
         "`-> Generator[Foo]`; ty shows that as a warning-level `deprecated` diagnostic (not a type error). The `contextmanager` "
         "signature in the stubs mypy 2.4.0 ships has no such marker, and mypy reports nothing even with `--enable-error-code "
-        "deprecated` (Day-9 experiment E1), and pyright printed nothing for these programs; the same stub wording is the "
+        "deprecated` (Round-9 experiment E1), and pyright printed nothing for these programs; the same stub wording is the "
         "subject of pyright#11402 and ruff's UP052. So the difference is the vendored typeshed snapshot, not a checker bug. "
         "Fires only when the statement is a "
         "`def` decorated with the decorator the message names on the reported line, with an `Iterator[..]` (or `AsyncIterator[..]`) "
