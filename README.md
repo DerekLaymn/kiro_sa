@@ -132,7 +132,7 @@ person or a coding agent can write. Details, variables, cost notes and settings 
 The generated programs depend on a model and cannot be regenerated exactly. The judge can be reproduced exactly:
 
 - `scripts/reproduce.sh` runs the tests, the KB self-test and the judge on the seeds.
-- `scripts/replay_day10.sh` replays the last round of 250 generated programs from the 250 stored model answers,
+- `scripts/replay_final_round.sh` replays the last round of 250 generated programs from the 250 stored model answers,
   without an LLM, and gives the published numbers (247 discrepancies, 168 live) on the pinned versions.
 
 Step by step: [docs/reproducibility.md](docs/reproducibility.md).
@@ -149,11 +149,10 @@ examples/
   known_divergences.py, needs_experiments.py, self_param_unsound.py   walkthrough programs
   ajay_examples/     40 programs probing ty's type system
 calibration/         negatives, known duplicates, positives manifest, results of the calibration run
-results/             final summary, per-bug reports, funnel tables, per-day reports
+results/             final summary, per-bug reports, funnel tables, per-round reports
 docs/                architecture, usage, reproducibility, LLM setup, KB guide, design, slides
 scripts/             reproduce.sh, replay, seed harvesting, parallel runner, statistics
 tests/               762 tests and the reproducers they use
-findings/            two small programs used by a test
 constraints.txt      exact versions of the checkers and test dependencies
 .env.example         template for the LLM settings
 ```

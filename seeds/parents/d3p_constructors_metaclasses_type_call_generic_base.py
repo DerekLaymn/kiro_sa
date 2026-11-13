@@ -1,6 +1,6 @@
 # area: constructors_metaclasses
 # hypothesis: type(name, (Container[int],), {}) fails at runtime (MRO entry resolution needs types.new_class) while ty reveals the class precisely and mypy reveals Any. Vary: types.new_class instead of type(), a non-generic alias base, two conflicting specialisations.
-# origin: runs/day2/out3 seed-badf7d3532a5 (ruff mdtest call/type.md block 28; runtime_miss + only_ty)
+# origin: harvested program seed-badf7d3532a5 (ruff mdtest call/type.md block 28; runtime_miss + only_ty)
 from typing import Generic, TypeVar
 
 T = TypeVar("T")

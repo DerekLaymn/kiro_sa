@@ -155,8 +155,8 @@ It never dismisses. When a would-be `confirmed` or `candidate` finding matches, 
    - **near-miss controls**: the same shape without the trigger, a different dunder, a different code, a rebound variable.
      Each must stay live. The controls are what prevent the entry from swallowing a real bug;
    - the other answers: the same program with a different message from the same tool must stay live.
-   `tests/test_upstream_day7.py` is a good model. It builds discrepancies by hand with the `ids(...)` helper of
-   `tests/test_upstream_day6.py` and asserts which entry ids fire.
+   `tests/test_upstream_round7.py` is a good model. It builds discrepancies by hand with the `ids(...)` helper of
+   `tests/test_upstream_round6.py` and asserts which entry ids fire.
 6. **Add a calibration program** when the shape is a real discrepancy that should stay closed:
    `calibration/known_duplicates/<name>.py`, with an assertion that exactly one named entry closes it. Programs that no
    dismissal may touch go in `calibration/must_stay_live/` (it is empty at the final commit by decision; see its README).
@@ -176,7 +176,7 @@ It never dismisses. When a would-be `confirmed` or `candidate` finding matches, 
 | `calibration/positives.json` | 156 open bug reports; none of the ty reports may be dismissed. |
 | `tests/test_upstream_*.py`, `tests/test_stage3_*.py`, `tests/test_kb*.py` | Positives and near-miss controls for upstream and code entries. |
 | `tests/test_audit_fixes.py`, `tests/test_kbloop_*.py` | Regressions for false dismissals found earlier. |
-| `tests/data/upstream_day*/` | Real reproducers and controls used by the upstream tests. |
+| `tests/data/upstream_round*/` | Real reproducers and controls used by the upstream tests. |
 
 See [calibration/README.md](../calibration/README.md) and [tests/README.md](../tests/README.md).
 

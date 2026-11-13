@@ -2,7 +2,7 @@
 
 > Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
 
-The campaign did not file, comment on or open a PR for any issue by itself; the filing steps below were done by the authors. Every number comes from the per-day reports in [`days/`](days/), the issue drafts in [`bugs.md`](bugs.md), the git history of this repository, or read-only `gh` calls made on 2026-11-06 (issue states). Rates were computed while writing this file. Anything that could not be read is listed in section 11.
+The campaign did not file, comment on or open a PR for any issue by itself; the filing steps below were done by the authors. Every number comes from the per-day reports in [`rounds/`](rounds/), the issue drafts in [`bugs.md`](bugs.md), the git history of this repository, or read-only `gh` calls made on 2026-11-06 (issue states). Rates were computed while writing this file. Anything that could not be read is listed in section 11.
 
 Pins since Day 6 (Day 5 for ty): mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Days 1 to 4 ran ty 0.0.84 (bumped in `ff8bd5e`).
 
@@ -119,7 +119,7 @@ Notes on the table:
 * By tool: ty 4 (drafts 1, 2, 4, 6), mypy 6 (3, 5, 8, 9, 10, 11), pyright 2 (7, 12); 12 in total.
 * By class (the drafts' own labels, grouped here): 2 crashes (1, 7); 5 false negatives (2, 4, 10, 11, 12); 5 false positives or wrong inference (3, 5, 6, 8, 9).
 * Draft 2 is the highest-confidence draft (0.9, playground-verified). It was fixed upstream the day it was filed (ruff#30074 merged), which is the only confirmed maintainer outcome that is a fix. Of the open drafts, only ty#4933 (a maintainer reply about a fix PR with blockers) and mypy#22377 (a contributor offered a fix) have comments; ty#4941, mypy#22375, ty#4958, pyright#11984, mypy#22385 and mypy#22386 have none.
-* The Day-10 draft 11 text originally said "21 `only_ty` rows"; the saved reports give 10 in the three named mutants. Corrected in phase 7 (`results/days/day10-report.md` section 5).
+* The Day-10 draft 11 text originally said "21 `only_ty` rows"; the saved reports give 10 in the three named mutants. Corrected in phase 7 (`results/rounds/round-10-report.md` section 5).
 
 ## 6. Earlier reports by the authors (context only)
 
@@ -209,4 +209,4 @@ Order logic: evidence strength first (an inconsistency within one tool, then a g
 * `.venv/bin/typediff --python-version 3.13 kb-selftest`: 20 PASS, 0 FAIL.
 * `python scripts/check_hits.py 0.80`: 36 files, 0 with problems.
 * Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16.
-* Report files: `results/days/day10-report.md` (Day 10 vs Day 9) and this file.
+* Report files: `results/rounds/round-10-report.md` (Day 10 vs Day 9) and this file.

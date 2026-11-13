@@ -124,7 +124,7 @@ care which. The campaign's generation used an agent for step 2.
 | Target Python | 3.13 |
 | Programs per round | about 250 (250 in the last round) |
 
-The 250 answers of the last round are stored in `examples/replay/day10/answers/`, so that round can be replayed
+The 250 answers of the last round are stored in `examples/replay/final-round/answers/`, so that round can be replayed
 without a model. See [reproducibility.md](reproducibility.md#5-replay-the-last-round-without-an-llm) and
 [generation.md](generation.md).
 

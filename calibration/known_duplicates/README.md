@@ -9,4 +9,4 @@ Real discrepancies that an open upstream issue already tracks. Each program must
 | `mypy_stale_alias.py` | `UPSTREAM-TY-2792` | astral-sh/ty#2792 (open) |
 
 The assertions are in `tests/test_stage3_round2.py` and `tests/test_stage3_round3.py`. Near-miss controls (the same
-shape without the trigger) must stay live; they live next to the assertions and in `tests/test_upstream_day7.py`.
+shape without the trigger) must stay live; they live next to the assertions and in `tests/test_upstream_round7.py`.

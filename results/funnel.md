@@ -1,6 +1,6 @@
 # Per-day funnel
 
-How many programs each day produced, how many findings the deterministic judge and the knowledge base closed, and how many stayed live for reading. Copied from sections 3 and 4 of [FINAL-SUMMARY.md](FINAL-SUMMARY.md); the per-day reports are in [days/](days/).
+How many programs each day produced, how many findings the deterministic judge and the knowledge base closed, and how many stayed live for reading. Copied from sections 3 and 4 of [FINAL-SUMMARY.md](FINAL-SUMMARY.md); the per-day reports are in [rounds/](rounds/).
 
 ## Live-rate trend per day
 

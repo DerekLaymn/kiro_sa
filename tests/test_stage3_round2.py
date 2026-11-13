@@ -1,4 +1,4 @@
-"""Stage 3 round 2 (Day 2, results/days/day2-report.md): review fixes for round 1.
+"""Stage 3 round 2 (Day 2, results/rounds/round-2-report.md): review fixes for round 1.
 
 * ASSERT-TYPE-LITERAL-RETENTION: no Literal[True]/Literal[False] (constant-fold hole) and pyright must be silent or agree.
 * ANNOTATION-ONLY-READ: recorded as a tracked mypy known limitation.

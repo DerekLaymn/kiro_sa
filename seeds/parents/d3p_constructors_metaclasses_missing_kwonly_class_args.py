@@ -1,6 +1,6 @@
 # area: constructors_metaclasses
 # hypothesis: A metaclass __new__ with required keyword-only parameters: a class statement that omits them raises TypeError at runtime; only pyright reports the missing arguments (mypy and ty are silent). Vary: **kwargs, a default value, __init_subclass__ instead of a metaclass, a wrong keyword type.
-# origin: runs/day2/out3 seed-1cadfac7cbe5 (pyright tests/samples/metaclass9.py; runtime_miss, trimmed to the construct)
+# origin: harvested program seed-1cadfac7cbe5 (pyright tests/samples/metaclass9.py; runtime_miss, trimmed to the construct)
 from typing import Any
 
 

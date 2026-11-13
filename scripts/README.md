@@ -9,7 +9,7 @@ variables first (`set -a; . ./.env; set +a`) if you need an API key.
 | Script | What it does |
 |---|---|
 | `reproduce.sh` | One-command check of a fresh checkout: tool versions (`doctor`), the test suite, `kb-selftest`, and the deterministic judge on the seeds. No API key. `SKIP_TESTS=1`, `WITH_REPLAY=1`, `JOBS`, `STRICT_PINS=1`, `WORK` and `PYTHON` change its behaviour; the header of the script lists them and the expected numbers. |
-| `replay_day10.sh [WORK_DIR]` | Replays the last generation round (250 programs) from the 250 stored model answers in `examples/replay/day10/`, then judges the programs with no LLM. Default output: `runs/replay-day10/`. |
+| `replay_final_round.sh [WORK_DIR]` | Replays the last generation round (250 programs) from the 250 stored model answers in `examples/replay/final-round/`, then judges the programs with no LLM. Default output: `runs/replay-final-round/`. |
 
 Details: [docs/reproducibility.md](../docs/reproducibility.md).
 
@@ -32,5 +32,5 @@ Details: [docs/reproducibility.md](../docs/reproducibility.md).
 |---|---|
 | `inbox_check.py DIR` | Accounts for a file-bridge directory: prompts, answers, pending prompts, answers without a prompt. Exit 1 on an orphan or malformed key. |
 | `check_hits.py [THRESHOLD] [DIR]` | Validates the parent programs (default `seeds/parents/`): header, area key, compiles, passes the preflight lint, runs under CPython, no near-duplicates above the threshold (default 0.80). |
-| `upstream_day3_check.py` | Sends every reproducer and control of `tests/data/upstream_day3/` through the real pipeline and prints which KB entry closed each one. Uses `.venv/bin/typediff`. |
+| `upstream_round3_check.py` | Sends every reproducer and control of `tests/data/upstream_round3/` through the real pipeline and prints which KB entry closed each one. Uses `.venv/bin/typediff`. |
 | `public_issues.py` | Downloads public GitHub issues of a repository without an API key and searches them offline (`download`, `search`). Needs network access. |

@@ -1,6 +1,6 @@
 # area: callables
 # hypothesis: functools.partial(f, 1, 2, 3) binds more positional arguments than f accepts; CPython raises when the partial is called, mypy is silent and ty flags only the partial() line. Vary: keyword arguments, a method, a Protocol-typed callable, a ParamSpec decorator that returns partial.
-# origin: runs/day2/out3 seed-67774769f97e (ruff mdtest call/functools_partial.md block 23; runtime_miss, mypy silent)
+# origin: harvested program seed-67774769f97e (ruff mdtest call/functools_partial.md block 23; runtime_miss, mypy silent)
 from functools import partial
 
 def f(a: int, b: int) -> int:

@@ -27,23 +27,23 @@ Issue states were read on 2026-11-06 and may have changed.
 | [verified-bugs.md](verified-bugs.md) | Table of the 12 verified bugs with tool, description, confidence and filing state |
 | [bugs.md](bugs.md) | The 12 issue drafts: reduced program, versions, expected and actual behaviour, duplicate search |
 | [funnel.md](funnel.md) | Per-day funnel: programs, discrepancies, auto-closed, live; KB growth; effect of KB changes on old reports |
-| [days/](days/) | The report of each day |
+| [rounds/](rounds/) | The report of each day |
 | [kb-loop-log.md](kb-loop-log.md), [kb-loop-candidates.md](kb-loop-candidates.md) | Log of the knowledge-base improvement rounds on the harvested corpus, and the ranked candidate list |
 | [../calibration/RESULTS.md](../calibration/RESULTS.md) | Calibration of the judge on known true bugs (positives) and known non-bugs (negatives) |
 
-## Per-day reports (`days/`)
+## Per-day reports (`rounds/`)
 
 | File | Day | Content |
 |---|---|---|
-| [day2-report.md](days/day2-report.md) | 2 | Review queue on the harvested corpus, reviewer loop, NameError policy |
-| [day3-report.md](days/day3-report.md) | 3 | First generated round (160 programs), upstream entries |
-| [day4-report.md](days/day4-report.md) | 4 | Verification of Day-3 candidates, ty#4656 recorded as design |
-| [day5-report.md](days/day5-report.md) | 5 | Crash closing by reference, ty bump to 0.0.97 |
-| [day6-report.md](days/day6-report.md) | 6 | Generator settings, draft 5, TY-4756 entry and TY-2171 prior stance |
-| [day7-report.md](days/day7-report.md) | 7 | Narrow entries for ty#2171 and ty#2792, `only_pyright` kind, drafts 6 and 7 |
-| [day8-pipeline.md](days/day8-pipeline.md), [day8-report.md](days/day8-report.md) | 8 | Pipeline changes (ParamSpec family, display noise), draft 8 |
-| [day9-report.md](days/day9-report.md) | 9 | New operators and areas, drafts 9 and 10 |
-| [day10-report.md](days/day10-report.md) | 10 | Last round (250 programs), drafts 11 and 12, final comparison with Day 9 |
+| [round-2-report.md](rounds/round-2-report.md) | 2 | Review queue on the harvested corpus, reviewer loop, NameError policy |
+| [round-3-report.md](rounds/round-3-report.md) | 3 | First generated round (160 programs), upstream entries |
+| [round-4-report.md](rounds/round-4-report.md) | 4 | Verification of Day-3 candidates, ty#4656 recorded as design |
+| [round-5-report.md](rounds/round-5-report.md) | 5 | Crash closing by reference, ty bump to 0.0.97 |
+| [round-6-report.md](rounds/round-6-report.md) | 6 | Generator settings, draft 5, TY-4756 entry and TY-2171 prior stance |
+| [round-7-report.md](rounds/round-7-report.md) | 7 | Narrow entries for ty#2171 and ty#2792, `only_pyright` kind, drafts 6 and 7 |
+| [round-8-pipeline.md](rounds/round-8-pipeline.md), [round-8-report.md](rounds/round-8-report.md) | 8 | Pipeline changes (ParamSpec family, display noise), draft 8 |
+| [round-9-report.md](rounds/round-9-report.md) | 9 | New operators and areas, drafts 9 and 10 |
+| [round-10-report.md](rounds/round-10-report.md) | 10 | Last round (250 programs), drafts 11 and 12, final comparison with Day 9 |
 
 ## How to read these files
 

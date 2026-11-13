@@ -11,7 +11,7 @@
 # Environment variables:
 #   PYTHON=python3        interpreter (default: python3, else python)
 #   SKIP_TESTS=1          skip step 2 (the suite takes about 2-3 minutes)
-#   WITH_REPLAY=1         also run scripts/replay_day10.sh (about 3 minutes, JOBS parallel jobs, at most 6)
+#   WITH_REPLAY=1         also run scripts/replay_final_round.sh (about 3 minutes, JOBS parallel jobs, at most 6)
 #   JOBS=4                parallel jobs of the replay
 #   STRICT_PINS=1         stop if an installed tool differs from the pinned version (default: warn and go on)
 #   WORK=runs/reproduce   output directory (git-ignored)
@@ -75,7 +75,7 @@ EOF
 
 if [ "${WITH_REPLAY:-0}" = 1 ]; then
   echo "== replay of the Day-10 round (250 stored answers, no LLM)"
-  scripts/replay_day10.sh "$WORK/replay-day10"
+  scripts/replay_final_round.sh "$WORK/replay-final-round"
 fi
 
 cat <<EOF

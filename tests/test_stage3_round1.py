@@ -1,4 +1,4 @@
-"""Stage 3 round 1 (Day 2, results/days/day2-report.md): bytes-literal normalisation, ASSERT-TYPE-LITERAL-RETENTION,
+"""Stage 3 round 1 (Day 2, results/rounds/round-2-report.md): bytes-literal normalisation, ASSERT-TYPE-LITERAL-RETENTION,
 MYPY-FIRST-ASSIGNMENT-TYPE and the multi-name ANNOTATION-ONLY-READ."""
 
 from __future__ import annotations

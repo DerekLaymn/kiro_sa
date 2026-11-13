@@ -1,6 +1,6 @@
 # area: inheritance_mro
 # hypothesis: With @functools.total_ordering, __lt__ is inherited from Base and __gt__ is defined locally; mypy reveals the opposite literal for `c1 < c2` and `c1 > c2` than ty and pyright, and Any for the synthesized methods. Vary: define __le__ locally, swap which base supplies the ordering method, return bool instead of Literal.
-# origin: runs/day2/out3 seed-bcd8afd96f79 (ruff mdtest decorators/total_ordering.md block 8; reveal mismatch, mypy contradicts runtime)
+# origin: harvested program seed-bcd8afd96f79 (ruff mdtest decorators/total_ordering.md block 8; reveal mismatch, mypy contradicts runtime)
 from functools import total_ordering
 from typing import Literal, reveal_type
 

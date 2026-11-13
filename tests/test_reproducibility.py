@@ -202,13 +202,13 @@ def test_bug_reproducers_cover_all_twelve_drafts():
         assert f.name in readme
 
 
-def test_day10_replay_data_is_complete():
-    base = ROOT / "examples" / "replay" / "day10"
+def test_round10_replay_data_is_complete():
+    base = ROOT / "examples" / "replay" / "final-round"
     answers = list((base / "answers").glob("*.answer.json"))
     assert len(answers) == 250 and all(re.fullmatch(r"[0-9a-f]{16}", a.name.split(".")[0]) for a in answers)
     assert len(list((base / "parents").rglob("*.py"))) == 45
     assert sum(f.stat().st_size for f in base.rglob("*") if f.is_file()) < 5_000_000
-    script = (ROOT / "scripts" / "replay_day10.sh").read_text()
+    script = (ROOT / "scripts" / "replay_final_round.sh").read_text()
     assert "set -euo pipefail" in script and "/home/" not in script
 
 

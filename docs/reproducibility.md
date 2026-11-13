@@ -70,7 +70,7 @@ mypy grows past 8 GB on it (until the 120 s checker timeout or the SIGSEGV), whi
 `TYPEDIFF_TOOL_MEM_MB` makes typediff watch the resident memory of each mypy and ty process (Linux only, read from
 `/proc`; pyright is not watched) and SIGKILL it above the limit. That is recorded as a `mypy:signal-SIGKILL` crash finding,
 which the reference numbers contain for this program. The default is unlimited;
-`reproduce.sh` and `replay_day10.sh` use 2048 unless you set the variable. The other seed programs stay below
+`reproduce.sh` and `replay_final_round.sh` use 2048 unless you set the variable. The other seed programs stay below
 250 MB per checker process, and the replay gives its reference numbers at 2048. For your own corpora raise the value if a legitimate program needs more, and keep `--jobs` at 6
 or fewer: the limit is per process, not for the whole run.
 
@@ -171,8 +171,8 @@ The 250 model answers of the last round of the study are stored in the repositor
 regenerated and judged without any model:
 
 ```bash
-scripts/replay_day10.sh                # about 3 minutes with 4 jobs; output in runs/replay-day10/
-JOBS=6 scripts/replay_day10.sh my-output-dir
+scripts/replay_final_round.sh                # about 3 minutes with 4 jobs; output in runs/replay-final-round/
+JOBS=6 scripts/replay_final_round.sh my-output-dir
 ```
 
 The script copies the answers to a file-bridge inbox, runs `typediff generate` with the parents, operators and counts of
@@ -199,7 +199,7 @@ KB entry.) Changing `typediff/prompts.py` or a parent file changes the keys, so 
 | KB self-test | `typediff --python-version 3.13 kb-selftest` | 20 `PASS`, 0 `FAIL` |
 | Parent programs | `python scripts/check_hits.py 0.80` | 36 files, 0 with problems |
 | Judge on seeds | `scripts/reproduce.sh`, step 4 | programs=65, discrepancies=88, confirmed=8, dismissed=30, review=60 |
-| Replay of the last round | `scripts/replay_day10.sh` | 250 programs, 247 discrepancies, 168 live, 79 dismissed |
+| Replay of the last round | `scripts/replay_final_round.sh` | 250 programs, 247 discrepancies, 168 live, 79 dismissed |
 | Bug reproducers | [examples/bugs/README.md](../examples/bugs/README.md) | each file shows the listed actual behaviour on the named tool |
 
 ## 7. Deterministic and model-dependent parts
@@ -238,8 +238,8 @@ If a provider is selected and its key is missing, typediff names the variable:
 | `seeds/<area>/` | 29 hand-written seed programs. |
 | `seeds/parents/` | The 36 parent programs left after the last round (programs that showed a new pattern, minus the retired ones). |
 | `examples/bugs/` | One reproducer for each of the 12 verified bugs. |
-| `examples/replay/day10/answers/` | The stored model answers of the last round (250). |
-| `examples/replay/day10/parents/` | The 45 parent programs those answers were written for. |
+| `examples/replay/final-round/answers/` | The stored model answers of the last round (250). |
+| `examples/replay/final-round/parents/` | The 45 parent programs those answers were written for. |
 | `typediff/data/known_upstream.json` | Upstream entries, crash entries and prior stances. |
 | `calibration/` | Negatives, known duplicates, the frozen positives manifest and the published results. |
 | `results/` | The campaign's reports, funnel tables and bug drafts. |

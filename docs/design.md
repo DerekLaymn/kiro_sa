@@ -233,7 +233,7 @@ closed like an `only_mypy` / `only_ty` one; `MYPY-2455` / `TY-4941` (a class wit
 Display-only differences between the three printers (callables, ParamSpec scope tags and arguments, TypedDict structure)
 are closed by the code-level entry `DISPLAY-EQUIVALENT` (`typediff/display.py` rewrites those conventions, then compares the
 strings); `CALLABLE-SELF-ATTR-STORE` / `CALLABLE-SELF-RECEIVER` cover the ParamSpec `self: Callable[P, T]` family
-(results/days/day8-pipeline.md section 1).
+(results/rounds/round-8-pipeline.md section 1).
 
 **Caught exceptions.** `runtime_harness.py` also records every exception that passes through a frame of the program,
 caught or not (`RuntimeResult.raised`). `pyright_runtime_relation` counts a type-related exception raised at the flagged
@@ -247,7 +247,7 @@ finding as DUPLICATE. A crash is dismissed only when the crashing tool equals th
 fully matches the entry's regex, and the entry's mandatory `requires` function accepts the parsed program. The
 `requires` shape is what separates different bugs that share a signature (ty reports `ty:signal-SIGABRT:stack-overflow`
 for ty#4882, #4898, #4900 and for an unfiled self-call case). Crash entries build no KB entry and have no
-kb-selftest example; tests/test_upstream_day3.py covers them with real reproducers and controls.
+kb-selftest example; tests/test_upstream_round3.py covers them with real reproducers and controls.
 
 **Runtime evidence and reduction.** When a CPython exception is attached as evidence, the note lists
 the constructs in the raising statement's dependency set that could be responsible (`causes.py`). The

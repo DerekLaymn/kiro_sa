@@ -1,6 +1,6 @@
 # KNOWN DUPLICATE of astral-sh/ty#2792 (open, attribute narrowing kept after a method call). Closed by exactly
-# UPSTREAM-TY-2792. Until Day 6 this file was a "must stay live" program (it still guards MYPY-13807-ALIASED-CONDITIONS,
-# which must NOT explain this reveal: the entry's stale-alias guard rejects it).
+# UPSTREAM-TY-2792. The program also guards MYPY-13807-ALIASED-CONDITIONS, which must NOT explain this reveal: the
+# entry's stale-alias guard rejects it.
 class A:
     x: int | None
 

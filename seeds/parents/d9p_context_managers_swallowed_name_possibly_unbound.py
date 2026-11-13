@@ -1,6 +1,6 @@
 # area: context_managers
 # hypothesis: A with block whose __exit__ returns bool may swallow an exception raised inside the block, so a name bound after the raising statement is unbound after the block (CPython raises UnboundLocalError); pyright reports the use, ty only under an off-by-default rule, mypy not even with possibly-undefined. Vary: the __exit__ annotation (None, Literal[True], Literal[False]), contextlib.suppress, ExitStack, async with, try/finally, del of the name.
-# origin: runs/day9/gen/context_managers/gen0_b82d2e9e.py (Day-9 fresh program, draft 10: mypy does not report a possibly-undefined name after a swallowing with block)
+# origin: generated program context_managers/gen0_b82d2e9e (not kept), draft 10 in results/bugs.md: mypy does not report a possibly-undefined name after a swallowing with block
 from contextlib import ExitStack, suppress
 from typing import reveal_type
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Account for a file-bridge inbox: prompts, answers, pending prompts, answers that match no prompt.
 
-    python scripts/inbox_check.py runs/day5/inbox
+    python scripts/inbox_check.py runs/inbox
 
 Exit 1 if an answer matches no prompt or a key is not 16 hex characters (the bridge silently ignores those).
 """
