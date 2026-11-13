@@ -2,7 +2,7 @@
 
 Differential-testing adjudicator for **mypy vs ty** (with pyright as an optional, weak tie-breaker).
 It separates real type-checker bugs from documented design differences, classifies them, keeps an
-auditable trail, minimises repros, and advises what to generate next. See [DESIGN.md](DESIGN.md)
+auditable trail, minimises repros, and advises what to generate next. See [docs/design.md](docs/design.md)
 for the taxonomy, algorithm, oracles and prompts.
 
 - Standard library only. The checkers run as subprocesses.
@@ -49,7 +49,7 @@ typediff judge case.py --mypy-out mypy.out --mypy-err mypy.err \
 typediff run examples/*.py --keep-names        # results in typediff_out/<case>.{json,md} + dataset.jsonl
 ```
 
-**3. Fuzz.** See [FUZZING_PLAN.md](FUZZING_PLAN.md) for the 15-day plan. The building blocks are:
+**3. Fuzz.** The building blocks are:
 
 ```bash
 typediff --python-version 3.13 seeds seeds/                     # judge a seed corpus (recursive; folder = area)

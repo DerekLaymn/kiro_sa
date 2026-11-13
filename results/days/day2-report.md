@@ -16,7 +16,7 @@ Legend: **done** = followed the plan as written; **off-plan** = deviation, reaso
 |---|---|---|
 | Branch setup | done | `git checkout -b [campaign working file] main` |
 | §4 Setup: venv, versions | done | `.venv/bin/python --version; .venv/bin/python -m pip list`. Found pyright 1.1.400 (not the pinned 1.1.414) |
-| §4 Setup: pin pyright | off-plan (plan says `pip install ... pyright` unpinned; DESIGN.md/calibration pin 1.1.414) | `.venv/bin/python -m pip install pyright==1.1.414` ([campaign working file]) |
+| §4 Setup: pin pyright | off-plan (plan says `pip install ... pyright` unpinned; docs/design.md/calibration pin 1.1.414) | `.venv/bin/python -m pip install pyright==1.1.414` ([campaign working file]) |
 | §4 Setup: `fetch-docs` | done | `typediff fetch-docs > [campaign working file]` (862 chunks) |
 | §4 Setup: `kb-selftest` | done | `typediff --python-version 3.13 kb-selftest > [campaign working file]`: 11 PASS, 0 other |
 | §4 Setup: pytest baseline | done (extra check, not in §4) | `.venv/bin/python -m pytest tests -q`: 144 passed |

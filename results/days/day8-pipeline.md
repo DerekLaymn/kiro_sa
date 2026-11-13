@@ -55,7 +55,7 @@ No finding of the family is a new bug, so no draft was written. The one open que
 
 ty#4941 ("class that defines `__eq__` without `__hash__` is accepted where `Hashable` is required") was filed by us on 2026-11-05 (draft 4). So the `only_pyright` Hashable finding is a duplicate on both sides: mypy half python/mypy#2455 (open since 2016; #18622 open; PR #19168 open), ty half ty#4941. Both entries share one matcher and both appear in `kb_hits`.
 
-Single-tool findings: before Day 8 an `only_mypy` or `only_ty` finding could be closed by `known_upstream.json` entries, an `only_pyright` finding could not (the entry matcher read mypy and ty diagnostics, and no entry listed the kind). Now an entry with `"kind": "only_pyright"` is matched against pyright's diagnostics; `DESIGN.md` and the `_doc` field describe it. The two `silent_tool` conventions are unchanged.
+Single-tool findings: before Day 8 an `only_mypy` or `only_ty` finding could be closed by `known_upstream.json` entries, an `only_pyright` finding could not (the entry matcher read mypy and ty diagnostics, and no entry listed the kind). Now an entry with `"kind": "only_pyright"` is matched against pyright's diagnostics; `docs/design.md` and the `_doc` field describe it. The two `silent_tool` conventions are unchanged.
 
 Controls (all in `tests/test_day8_pipeline.py`, each must stay live): a descriptor whose `__set__` assigns nothing on the owner, a non-descriptor store, a non-data descriptor, a store before the narrowing, no read after the store, receiver rebound, store on another object, a direct store that resets the narrowing; Hashable: own `__hash__`, `__hash__` assigned in the body, external base, a union with a hashable member, a type that is no program class, another parameter type, another pyright rule, another kind, a dataclass; descriptor: never assigned on the instance, non-data descriptor, instance access, message without a union or without the descriptor class, other rule, other kind.
 
@@ -85,7 +85,7 @@ Day-7 no-hit-area items that are NOT display noise and stay live: recursive-alia
 
 ## 5. Files
 
-`typediff/display.py` (new); `typediff/kb.py` (descriptor stores in `_stale_attr_context`; matchers `eq_without_hash_argument`, `descriptor_set_on_instance`; entries `DISPLAY-EQUIVALENT`, `CALLABLE-SELF-ATTR-STORE`, `CALLABLE-SELF-RECEIVER`; `only_pyright` in the upstream-entry matcher); `typediff/data/known_upstream.json` (`MYPY-2455`, `TY-4941`, `PYRIGHT-11382`, `TY-3666`, note on `TY-2792-READONLY`); `typediff/{runtime_harness,models,parsers,replay,discrepancy,rules}.py`; `tests/test_day8_pipeline.py` (new), `tests/test_upstream_day3.py` (allowed kinds); `DESIGN.md`.
+`typediff/display.py` (new); `typediff/kb.py` (descriptor stores in `_stale_attr_context`; matchers `eq_without_hash_argument`, `descriptor_set_on_instance`; entries `DISPLAY-EQUIVALENT`, `CALLABLE-SELF-ATTR-STORE`, `CALLABLE-SELF-RECEIVER`; `only_pyright` in the upstream-entry matcher); `typediff/data/known_upstream.json` (`MYPY-2455`, `TY-4941`, `PYRIGHT-11382`, `TY-3666`, note on `TY-2792-READONLY`); `typediff/{runtime_harness,models,parsers,replay,discrepancy,rules}.py`; `tests/test_day8_pipeline.py` (new), `tests/test_upstream_day3.py` (allowed kinds); `docs/design.md`.
 
 ## 6. Not verified, open points
 

@@ -2,7 +2,7 @@
 
 > Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
 
-Nothing here is a verified tool bug. Evidence rule (DESIGN.md section 1): a runtime crash, a verbatim spec quote, or call-versus-call
+Nothing here is a verified tool bug. Evidence rule (docs/design.md section 1): a runtime crash, a verbatim spec quote, or call-versus-call
 self-contradiction; never a printed revealed signature alone.
 
 ## Candidate bugs kept live (not dismissed)
