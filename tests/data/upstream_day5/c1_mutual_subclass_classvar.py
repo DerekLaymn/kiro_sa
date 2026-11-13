@@ -1,6 +1,6 @@
 # area: callables
 # hypothesis: Two classes whose __call__ attributes are annotated with each other form a call cycle; the runtime call raises TypeError because the attributes hold no callable value.
-# origin: runs/hits/d4v_callables_mutual_call_attr.py
+# origin: generated program of the campaign (not kept)
 # area: callables
 # hypothesis: Two classes whose __call__ attributes are annotated with each other form a call cycle; the runtime call raises TypeError because the attributes hold no callable value.
 from typing import ClassVar

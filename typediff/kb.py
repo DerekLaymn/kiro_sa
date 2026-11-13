@@ -1214,8 +1214,8 @@ def _flag_is_chain(s, d) -> bool:
 
 def _flag_member_op(s, d) -> bool:
     """astral-sh/ty#876 (checklist item: enum expansion must not be performed for enum.Flag): the statement uses
-    a bitwise combination of two members of a Flag / IntFlag subclass, or the inversion ``~F.X`` of one member (campaign/
-    day4/verify-v2.md section 4.4: ty reveals ``~F.R`` as ``Literal[F.R]``, runtime ``F.W``), directly or through a
+    a bitwise combination of two members of a Flag / IntFlag subclass, or the inversion ``~F.X`` of one member (Day-4 verification,
+    results/days/day4-report.md: ty reveals ``~F.R`` as ``Literal[F.R]``, runtime ``F.W``), directly or through a
     variable assigned from one."""
     tree = s.amap.tree
     if tree is None:
@@ -1793,7 +1793,7 @@ def _callable_receiver_methods(tree: ast.AST) -> dict[str, list[ast.FunctionDef 
 
 
 def _callable_self_attr_store(s, d) -> bool:
-    """Design difference (Day 8, campaign/day8-pipeline.md section 1): the statement stores an attribute on the first
+    """Design difference (Day 8, results/days/day8-pipeline.md section 1): the statement stores an attribute on the first
     parameter of a method whose first parameter is annotated ``Callable[..]`` (``def __init__(self: Callable[P, T], ..):
     self.args = args``). ty (``unresolved-attribute`` on the callable type) and pyright (``reportFunctionMemberAccess``,
     ``Cannot assign to attribute .. for class "FunctionType"``) check the store against the DECLARED receiver type, a
@@ -2509,7 +2509,7 @@ ENTRIES.extend([
     ),
     KBEntry(
         "CALLABLE-SELF-ATTR-STORE", "ty and pyright check `self.x = ..` against a Callable-annotated `self`; mypy defines the attribute",
-        Dismissal.DESIGN_DIVERGENCE, "experiment, no upstream issue: campaign/day8-pipeline.md section 1 (e1, e2)",
+        Dismissal.DESIGN_DIVERGENCE, "experiment, no upstream issue: results/days/day8-pipeline.md section 1 (e1, e2)",
         "A method whose `self` is annotated `Callable[..]` (the ParamSpec family `def __init__(self: Callable[P, T], *args: "
         "P.args, **kwargs: P.kwargs): self.args = args`) stores an attribute on that parameter. ty reports "
         "`unresolved-attribute` on the callable type and pyright `reportFunctionMemberAccess` (`Cannot assign to attribute "

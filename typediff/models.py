@@ -1,6 +1,6 @@
 """Core data model shared by every pipeline stage.
 
-Taxonomy (see DESIGN.md §2 for the argument behind it):
+Taxonomy (see docs/design.md §2 for the argument behind it):
 
 * ``Symptom``      - WHAT is wrong (only meaningful for verdict BUG)
 * ``EvidenceType`` - HOW we know (drives confidence / gating)

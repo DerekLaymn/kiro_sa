@@ -90,7 +90,7 @@ evidence plus "pyright sides with X".
  S3 discrepancy extraction  ONLY_MYPY | ONLY_TY | CONCERN_MISMATCH | SEVERITY_ONLY |
                             REVEAL_MISMATCH | REVEAL_UNPAIRED | RUNTIME_MISS |
                             ONLY_PYRIGHT (opt-in, `--pyright-only`: pyright error, mypy and ty silent,
-                            CPython ran the statement; see campaign/day7-morning.md §5)
+                            CPython ran the statement)
  S4 deterministic stage (no LLM)
     • runtime evidence: exception-on-stack, value-inhabits-type, coverage
     • auto operand reveal-probes   • call/assignability self-consistency oracle
@@ -218,7 +218,7 @@ verified experiment, does not count.
 duplicate-of, plus url). A near-match by signature OR by feature tags caps the finding at REVIEW and
 the draft starts with the stance, the url and a "check the body text on the tracker" warning. It only
 ever lowers a tier and has no network access. Searching the tracker and discuss.python.org stays a
-manual step (FUZZING_PLAN.md §6): title searches miss duplicates whose example sits in the body.
+manual step: title searches miss duplicates whose example sits in the body.
 
 **Single-tool entries (Day 8).** An entry of `known_upstream.json` with `"kind": "only_pyright"` is matched against
 pyright's diagnostics (`codes` and `message`), so a known duplicate that only pyright reports (mypy and ty silent) can be
@@ -227,7 +227,7 @@ closed like an `only_mypy` / `only_ty` one; `MYPY-2455` / `TY-4941` (a class wit
 Display-only differences between the three printers (callables, ParamSpec scope tags and arguments, TypedDict structure)
 are closed by the code-level entry `DISPLAY-EQUIVALENT` (`typediff/display.py` rewrites those conventions, then compares the
 strings); `CALLABLE-SELF-ATTR-STORE` / `CALLABLE-SELF-RECEIVER` cover the ParamSpec `self: Callable[P, T]` family
-(campaign/day8-pipeline.md section 1).
+(results/days/day8-pipeline.md section 1).
 
 **Caught exceptions (Day 8).** `runtime_harness.py` also records every exception that passes through a frame of the program,
 caught or not (`RuntimeResult.raised`). `pyright_runtime_relation` counts a type-related exception raised at the flagged

@@ -1,6 +1,6 @@
 # area: protocols
 # hypothesis: Assigning a plain class to a Stream[Stream[T]] self-annotated protocol should type-check, while ty overflows its stack; the runtime isinstance check returns True.
-# origin: runs/hits/d4v_protocols_expanding_self_receiver.py
+# origin: generated program of the campaign (not kept)
 # hypothesis: a plain class assigned to a protocol whose method annotates self as Stream[Stream[T]] overflows ty's stack; CPython runs the runtime-checkable isinstance check normally.
 from typing import Protocol, runtime_checkable
 

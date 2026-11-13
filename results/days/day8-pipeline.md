@@ -1,8 +1,10 @@
 # Day 8, phase 1: pipeline improvements
 
-Branch `campaign/day8-p2` (from `campaign/day7-p2`), local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh search issues`, `gh issue view`, `gh pr view`, `gh release list`). Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16. ty 0.0.98 is the newest release (2026-11-05); it was not used in this phase because no new draft was verified.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
 
-Every number below was read from a file in `campaign/day8/phase1/` (`pytest.out`, `kb-selftest.out`, `check_hits.out`, `replay-*.out`, `replay-*-diff.txt`, `stats-*.txt`, `only_pyright_relations.txt`, `results/`). Scripts and raw tool output are in the same directory (`scripts/`, `results/`, `repro/`, `search/`).
+Branch [campaign working file] (from [campaign working file]), local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh search issues`, `gh issue view`, `gh pr view`, `gh release list`). Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16. ty 0.0.98 is the newest release (2026-11-05); it was not used in this phase because no new draft was verified.
+
+Every number below was read from a file in [campaign working file] (`pytest.out`, `kb-selftest.out`, `check_hits.out`, `replay-*.out`, `replay-*-diff.txt`, `stats-*.txt`, `only_pyright_relations.txt`, `results/`). Scripts and raw tool output are in the same directory (`scripts/`, `results/`, `repro/`, `search/`).
 
 ## 0. Result in numbers
 
@@ -21,7 +23,7 @@ Replay method: `kbloop_replay.py` over the saved reports, `--verify-sample 30` r
 
 ## 1. (a) The ParamSpec `self_annotated_dunder_call` family
 
-Parent: `runs/hits/d3p_paramspec_self_annotated_dunder_call.py`, the team-filed repro of ty#4899 (`__init__(self: Callable[P, T], *args: P.args, **kwargs: P.kwargs)` plus a `__call__` that also takes `Callable[P, T]` and an extra `x: int`; ty aborts or panics). The Day-7 mutants dropped `x: int`, which the issue says avoids the crash ("Without the extra `x: int` parameter ... ty finishes normally"), so they produce ordinary diagnostics instead. Day 7: 7 mutants, 5 with live findings (16 findings), the other 2 drifted into unrelated decorator programs. Day 6 (replay with `--pyright-only`): 21 live findings.
+Parent: [run output], the team-filed repro of ty#4899 (`__init__(self: Callable[P, T], *args: P.args, **kwargs: P.kwargs)` plus a `__call__` that also takes `Callable[P, T]` and an extra `x: int`; ty aborts or panics). The Day-7 mutants dropped `x: int`, which the issue says avoids the crash ("Without the extra `x: int` parameter ... ty finishes normally"), so they produce ordinary diagnostics instead. Day 7: 7 mutants, 5 with live findings (16 findings), the other 2 drifted into unrelated decorator programs. Day 6 (replay with `--pyright-only`): 21 live findings.
 
 Experiments on the pinned tools (`repro/e1..e4.py`, output `results/experiments-e1-e4.txt`):
 
@@ -69,7 +71,7 @@ Result (`only_pyright_relations.txt`): Day 7 19 contradicts -> 18 contradicts + 
 
 ### 3.2 `...` read as a variadic tuple
 
-mypy prints `...` for the recursive occurrence inside a recursive alias (`tuple[str, ...]` for `tuple[str, Left]`). `rules.attach_runtime_evidence` compared the runtime value with that text and gave strong evidence against mypy. Now, when the program defines a recursive alias (`recursive_aliases`: PEP 695 `type`, `TypeAlias`, direct or through other aliases, names in string forward references count) and mypy's reveal contains `...`, the evidence is neutral with a note. Baseline code on `runs/hits/d4v_recursive_alias_dots.py`: `RUNTIME/strong/bug` on D1; after: weak/neutral on all three rows (`results/baseline-day7-code-run.txt`, `results/fresh-judge-run.txt`). Limit: a real `tuple[int, ...]` reveal in a program that also has a recursive alias loses its probe comparison.
+mypy prints `...` for the recursive occurrence inside a recursive alias (`tuple[str, ...]` for `tuple[str, Left]`). `rules.attach_runtime_evidence` compared the runtime value with that text and gave strong evidence against mypy. Now, when the program defines a recursive alias (`recursive_aliases`: PEP 695 `type`, `TypeAlias`, direct or through other aliases, names in string forward references count) and mypy's reveal contains `...`, the evidence is neutral with a note. Baseline code on [run output]: `RUNTIME/strong/bug` on D1; after: weak/neutral on all three rows (`results/baseline-day7-code-run.txt`, `results/fresh-judge-run.txt`). Limit: a real `tuple[int, ...]` reveal in a program that also has a recursive alias loses its probe comparison.
 
 ### 3.3 `runtime_miss` on the wrong frame
 
@@ -90,5 +92,5 @@ Day-7 no-hit-area items that are NOT display noise and stay live: recursive-alia
 * No playground (ty, mypy, pyright) was used; ty 0.0.98 was not run on the new shapes.
 * `CALLABLE-SELF-RECEIVER` is broad on purpose (the statement touches a class with a `Callable`-annotated receiver). A ty bug inside such a class, for example a crash, is not hidden (crash findings are separate and `TY-4899` is untouched), but a wrong ty answer at a call site would be. A CPython type error at the statement keeps the finding in review (`runtime_override=True`, tested).
 * The mypy/ty/pyright disagreement about unhashable set and dict displays (`{item}`, `{key: 1}`) is not in the KB; I did not search the trackers for it in this phase (the Day-4 log names ty#3781).
-* Parents: `d3p_paramspec_self_annotated_dunder_call` now yields only dismissed findings except for the ty#4899 crash; the three hash parents (`d4v_eq_no_hash_hashable`, `d4p_inheritance_hash_none_from_eq`, `d3p_inheritance_mro_hash_none_from_eq`) are partly closed. Retiring them is a phase-2 decision (Day 7 retired parents whose mutants gave no live finding); `runs/hits` was not touched.
-* `campaign/day7-report.md` has an uncommitted edit that is not mine (`se=0-9rches` inside the word "searches" in section 7). I left it and did not commit it.
+* Parents: `d3p_paramspec_self_annotated_dunder_call` now yields only dismissed findings except for the ty#4899 crash; the three hash parents (`d4v_eq_no_hash_hashable`, `d4p_inheritance_hash_none_from_eq`, `d3p_inheritance_mro_hash_none_from_eq`) are partly closed. Retiring them is a phase-2 decision (Day 7 retired parents whose mutants gave no live finding); [run output] was not touched.
+* `results/days/day7-report.md` has an uncommitted edit that is not mine (`se=0-9rches` inside the word "searches" in section 7). I left it and did not commit it.

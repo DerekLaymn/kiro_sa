@@ -1,6 +1,6 @@
 # area: self_classmethods
 # hypothesis: A Self-typed __call__ method returns the subclass instance at runtime, while a None-valued __call__ attribute raises TypeError.
-# origin: runs/hits/d3p_self_classmethods_self_call_union.py
+# origin: generated program of the campaign (not kept)
 # area: self_classmethods
 # hypothesis: a Self-typed __call__ method returns the subclass instance at runtime, and a None-valued __call__ attribute raises TypeError.
 from typing import Self

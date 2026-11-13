@@ -1,4 +1,4 @@
-"""Day 9 phase 1: pipeline changes (campaign/day9-run-log.md).
+"""Day 9 phase 1: pipeline changes (results/days/day9-report.md).
 
 * W1  a quoted ``'Self'`` annotation is read as ``Self`` (`selfparam.mentions_self`), so TY-SELF-UPPER-BOUND and its
       spec-desugar probe cover ``def add(self, c: 'Self')`` (Day-8 weakness: 2 live findings of ``3a63c673``, a ty#4656

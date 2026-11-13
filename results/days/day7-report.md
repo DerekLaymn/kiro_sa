@@ -1,6 +1,8 @@
 # Day 7 report (Parts A to D: KB policy, pyright-only kind, generation, judge, verification)
 
-Branch `campaign/day7-p2`, local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh search`, `gh issue view`, `gh pr view`, `gh pr diff`, `gh release list`, and two web searches). Every number below was read from `campaign/day7-run-log.md`, `campaign/day7-verification.md`, `campaign/day7-stats.txt`, `campaign/day7-triage.txt` or `campaign/day7/partC/group_yield.out`. Rates and the per-group discrepancy column were computed here from those counts; where a figure was not captured I say so.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file], local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh search`, `gh issue view`, `gh pr view`, `gh pr diff`, `gh release list`, and two web searches). Every number below was read from [campaign working file], [campaign working file], [campaign working file], [campaign working file] or [campaign working file]. Rates and the per-group discrepancy column were computed here from those counts; where a figure was not captured I say so.
 
 Pins: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Same pins as Day 6. ty 0.0.98 (released 2026-11-05) was installed beside the pin for verification only.
 
@@ -79,7 +81,7 @@ Crash-yield check from the morning plan: of the 29 `A_ty_4148` / `A_ty_paramspec
 
 The Day-6 report left about 19 known-duplicate findings live because two calibration programs were pinned as "must stay live". Part A turned that rule into narrow entries with tests.
 
-* Replay of the 250 Day-6 reports (`kbloop_replay.py runs/day6/out ... --verify-sample 30`, 30/30 identical): 321 findings compared, **19 changed**, all `review/gate` to `dismissed/DUPLICATE` except one `LITERAL-WIDENING` to `UPSTREAM-TY-2171`. By entry: TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3.
+* Replay of the 250 Day-6 reports (`kbloop_replay.py [run output] ... --verify-sample 30`, 30/30 identical): 321 findings compared, **19 changed**, all `review/gate` to `dismissed/DUPLICATE` except one `LITERAL-WIDENING` to `UPSTREAM-TY-2171`. By entry: TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3.
 * Live 212 to 194, dismissed 109 to 127, programs with a live finding 122 to 110.
 * Controls: all 19 programs were read in full and every one is a member of the family. Eleven findings in the same families stay live on purpose (module-level helper changes the receiver; narrowing on a different attribute; other bugs). Replays of Day 3, 4 and 5 (`ctrl-day3|4|5`) closed 36 rows (TY-2792 17, TY-2171 11, TY-2171-ASSERT 6, TY-2792-READONLY 2); every row was read and belongs to the two families. Draft 2 (alias, then a store at the end of the loop) is not closed.
 * Effect on Day 7 itself: only one finding was closed by these entries (UPSTREAM-TY-2792-READONLY 1). The 19 were Day-6 shapes; the Day-7 mix has few of them.
@@ -98,7 +100,7 @@ The `only_pyright` kind found one real new bug in Day 7 (draft 7, pyright `Range
 
 ## 6. Yield in the new no-hit areas
 
-Areas with no parent in `runs/hits` before Day 7: typeddict, overloads, match_statement, dataclasses, final_classvar, abstract_classes, tuples_unpacking. Figures per area directory (fresh and seed mutants together) from `group_yield.out`; live and dismissed are findings, not programs.
+Areas with no parent in [run output] before Day 7: typeddict, overloads, match_statement, dataclasses, final_classvar, abstract_classes, tuples_unpacking. Figures per area directory (fresh and seed mutants together) from `group_yield.out`; live and dismissed are findings, not programs.
 
 | Area | Programs | Live | Dismissed | Live per program | Strong |
 |---|---|---|---|---|---|
@@ -115,7 +117,7 @@ Of the 107 live findings, 57 come from these areas. Only tuples_unpacking produc
 
 ## 7. Candidates from Part D and verdicts
 
-All run with the pins plus ty 0.0.98, mypy 2.4.1 and master, pyright 1.1.414 (latest). Details and searches: `campaign/day7-verification.md`.
+All run with the pins plus ty 0.0.98, mypy 2.4.1 and master, pyright 1.1.414 (latest). Details and searches: [campaign working file].
 
 | Id | Candidate | Verdict |
 |---|---|---|
@@ -126,7 +128,7 @@ All run with the pins plus ty 0.0.98, mypy 2.4.1 and master, pyright 1.1.414 (la
 | D7-5 | ty `object + object` after `case (a, b)` with a non-final class in the subject | NOT-A-BUG (ty#1578 closed not planned; `@final` removes it) |
 | H1 | mypy accepts a class with `__eq__` and no `__hash__` as `Hashable` (Day-6 candidate 1) | DUPLICATE python/mypy#2455 and #18622; open PR #19168 is the fix. This replaces the Day-6 "no duplicate found" |
 
-Day 6 candidates 2 to 5 (ty recursive alias solution, mypy memory blow-up, pyright `RangeError`, new shapes for draft 1) were not re-examined except the pyright `RangeError`, which is now D7-2 with a reduction. Drafts 6 and 7 were appended to `campaign/day3-issue-drafts.md` with `<PLAYGROUND LINK>` placeholders. Nothing is filed.
+Day 6 candidates 2 to 5 (ty recursive alias solution, mypy memory blow-up, pyright `RangeError`, new shapes for draft 1) were not re-examined except the pyright `RangeError`, which is now D7-2 with a reduction. Drafts 6 and 7 were appended to `results/bugs.md` with `<PLAYGROUND LINK>` placeholders. Nothing is filed.
 
 Parents: promoted 1 (`d7p_tuples_unpacking_partial_unpack_except_ty.py`, highest similarity to any hit 0.43), retired 4 (TY-4148 trio and the TY-4882 protocol parent, all their findings dismissed). Hits: 45 before Part C, **42** after (`check_hits.py 0.80`: 42 files, 0 problems). Not promoted: the pyright `RangeError` mutant (same root cause as the two `d5p_*` parents) and the `readonly_prop_never` mutant.
 

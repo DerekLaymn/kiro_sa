@@ -1,5 +1,5 @@
 """Calibration: measure whether the pipeline ever DISMISSES a real bug (recall) and how much
-documented-divergence noise it closes on its own (DESIGN.md §7).
+documented-divergence noise it closes on its own (docs/design.md §7).
 
 Positives are open, maintainer-labelled bug reports from astral-sh/ty and python/mypy with a
 stdlib-only repro (fetched from the GitHub REST API). Negatives are documented divergences

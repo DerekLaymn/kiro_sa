@@ -1,4 +1,4 @@
-"""Harvest seed programs from upstream test suites (Phase 1 of FUZZING_PLAN.md).
+"""Harvest seed programs from upstream test suites (network access needed).
 
     python scripts/harvest_seeds.py [--out seeds/harvested] [--sources conformance,ty,mypy,pyright,typeshed]
 

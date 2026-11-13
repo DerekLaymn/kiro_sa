@@ -1,8 +1,10 @@
 # Day 3 report (Plan §3 "REPORT")
 
-Branch `campaign/day3-p2`. Every number below is copied from a command output kept in the repo
-(`campaign/day3-run-log.md`, `day3-morning.md`, `day3-stats.txt`, `day3-triage.txt`, `campaign/day3m/*`, and the
-report-time counts in `campaign/day3m/report-*.txt`). Nothing here is a confirmed bug. Every candidate is UNVERIFIED and
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file]. Every number below is copied from a command output kept in the repo
+([campaign working file], `day3-morning.md`, `day3-stats.txt`, `day3-triage.txt`, [campaign working file], and the
+report-time counts in [campaign working file]). Nothing here is a confirmed bug. Every candidate is UNVERIFIED and
 needs the Plan §6 checklist by a human before anything is filed. Issues filed: **0**.
 
 Tool versions (from the reports): mypy 2.4.0 (compiled), ty 0.0.84, pyright 1.1.414, CPython 3.13.16, target Python 3.13.
@@ -14,18 +16,18 @@ anywhere (see section 7); only their outcome counts were logged.
 
 | Plan label | What happened | Exact command (as recorded) | Result |
 |---|---|---|---|
-| setup | checkout, dirs, remove stale gate files | `git checkout campaign/day3-p2`; `mkdir -p runs/day3/{inbox,gen,out,replay} .agents/tasks`; `rm -f` of `day3-morning-review.json`, `day3-gen-status.json` | ok |
+| setup | checkout, dirs, remove stale gate files | `git checkout [campaign working file]`; `mkdir -p [run output] [agent working file]`; `rm -f` of `day3-morning-review.json`, `day3-gen-status.json` | ok |
 | §6 step 8 / record upstream | 11 crash entries (new `kind="crash"`) + 9 discrepancy entries + 2 priors in `known_upstream.json`; 2 issues not representable (pyright#11851, #11859) | commits `ce63f5c`, `ca5f30b`, `97c7bd8`, `603a895`, `ee5e6ac`, `4c3f4cc` | pytest 355 passed, kb-selftest 20 PASS (at that point); reviewer approved iteration 2 |
 | off-plan fix 1 | `generate --n 3` produced 1 distinct prompt | fix `dc51a60` (seed=k passed to `complete_json`, filename `sha1(src)[:8]`); test `tests/test_generate_variants.py` | 3 distinct prompts after the fix; pytest 357 passed |
-| §3 morning: replay | re-judge Day-2 `out3` under the new KB | `.venv/bin/python scripts/kbloop_replay.py runs/day2/out3 runs/day3/replay --jobs 14 --verify-sample 50` (`campaign/day3m/day3m-replay.sh`) | 5086 reports, verify-sample 50/50 identical, exit 0 |
-| §3 morning: stats/triage | | `.venv/bin/python scripts/kbloop_stats.py runs/day3/replay`; `.venv/bin/typediff --out runs/day3/replay triage runs/day3/replay --top 30 --details` and `--top 60` (`post_replay.sh`) | live 7277 -> 7273 |
-| §3 morning: promote parents | 32 files in `runs/hits` (30 new `d3p_*.py` + 2 existing `s3r1_*`) | `campaign/day3m/mk_parents_a.py`, `mk_parents_b.py`; checks `check_hits.py`, `python -m py_compile`; no-LLM run: `typediff --out runs/day3/hitscheck --python-version 3.13 seeds runs/hits` with `TYPEDIFF_LLM=null` (`run_hits.sh`) | header/AREAS/compile/preflight 32/32 ok; each parent reproduces its signal |
-| off-plan fix 2 | orphaned pyright node processes after checker timeouts | `campaign/day3m/reap_orphans.py` (16 killed); fix `032bf3d` (`Popen(start_new_session=True)` + `os.killpg(SIGKILL)`); `tests/test_runner_timeout_kills_group.py` (3 tests) | pytest 360 passed |
+| §3 morning: replay | re-judge Day-2 `out3` under the new KB | `.venv/bin/python scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 50` ([campaign working file]) | 5086 reports, verify-sample 50/50 identical, exit 0 |
+| §3 morning: stats/triage | | `.venv/bin/python scripts/kbloop_stats.py [run output]`; `.venv/bin/typediff --out [run output] triage [run output] --top 30 --details` and `--top 60` (`post_replay.sh`) | live 7277 -> 7273 |
+| §3 morning: promote parents | 32 files in [run output] (30 new `d3p_*.py` + 2 existing `s3r1_*`) | [campaign working file], `mk_parents_b.py`; checks `check_hits.py`, `python -m py_compile`; no-LLM run: `typediff --out [run output] --python-version 3.13 seeds [run output]` with `TYPEDIFF_LLM=null` (`run_hits.sh`) | header/AREAS/compile/preflight 32/32 ok; each parent reproduces its signal |
+| off-plan fix 2 | orphaned pyright node processes after checker timeouts | [campaign working file] (16 killed); fix `032bf3d` (`Popen(start_new_session=True)` + `os.killpg(SIGKILL)`); `tests/test_runner_timeout_kills_group.py` (3 tests) | pytest 360 passed |
 | §3 morning: retire | verdicts for the 13 biggest live patterns | none (analysis in `day3-morning.md` §3) | 0 new KB/upstream entries |
 | §3 gen pass (prompts, file bridge) | 160 variants written from the parents | exact `typediff generate ... --llm file:...` lines not recorded | pass 0 pending=160 written=0; pass 1 pending=1 written=159; pass 2 pending=0 written=160 |
-| §3 judge | | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py runs/day3/out runs/day3/gen --jobs 14 --progress runs/day3/out-progress.log` (`campaign/day3m/judge.sh`) | `DONE ... total=160 {'ok': 160} elapsed=43s`; 160 report files |
-| §3 stats | | `.venv/bin/python scripts/kbloop_stats.py runs/day3/out > campaign/day3-stats.txt` | see section 2 |
-| §3 triage | | `.venv/bin/typediff --out runs/day3/out triage runs/day3/out --top 30 --details > campaign/day3-triage.txt` | 48 findings in 19 patterns |
+| §3 judge | | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py [run output] [run output] --jobs 14 --progress [run output]` ([campaign working file]) | `DONE ... total=160 {'ok': 160} elapsed=43s`; 160 report files |
+| §3 stats | | `.venv/bin/python scripts/kbloop_stats.py [run output] > [campaign working file]` | see section 2 |
+| §3 triage | | `.venv/bin/typediff --out [run output] triage [run output] --top 30 --details > [campaign working file]` | 48 findings in 19 patterns |
 | report-time checks | | `.venv/bin/python -m pytest tests -q`; `.venv/bin/typediff --python-version 3.13 kb-selftest` | 360 passed in 63.84 s; 20 PASS, 0 FAIL |
 
 ## 2. Funnel, Day 3 vs Day 2
@@ -36,9 +38,9 @@ reports differs it is shown in brackets.
 
 | Stage | Day 2 | Day 3 |
 |---|---|---|
-| parents promoted into `runs/hits` | n/a (2 candidates copied: the two `s3r1_*`) | 32 (30 new + the 2 existing). The 160 programs come from 40 parent files x 4 each: 30 `d3p_*`, 2 `s3r1_*`, plus 8 `gen0..gen7` files (their origin is not recorded, section 7) |
-| prompts written | n/a | 161 `*.prompt.md` and 161 `*.answer.json` in `runs/day3/inbox` (one more than programs, cause not verified) |
-| programs written | 5129 harvested programs in the set | 160 (`find runs/day3/gen -name '*.py'`: 17 area directories; 120 `d3p_*`, 32 `gen0..gen7`, 8 `s3r1_*`) |
+| parents promoted into [run output] | n/a (2 candidates copied: the two `s3r1_*`) | 32 (30 new + the 2 existing). The 160 programs come from 40 parent files x 4 each: 30 `d3p_*`, 2 `s3r1_*`, plus 8 `gen0..gen7` files (their origin is not recorded, section 7) |
+| prompts written | n/a | 161 `*.prompt.md` and 161 `*.answer.json` in [run output] (one more than programs, cause not verified) |
+| programs written | 5129 harvested programs in the set | 160 (`find [run output] -name '*.py'`: 17 area directories; 120 `d3p_*`, 32 `gen0..gen7`, 8 `s3r1_*`) |
 | preflight-rejected | 43 of 5129 (non-stdlib import or non-determinism) | 0 at judge time (`rejected/failed: {}`); rejections at the generation step were not logged |
 | programs run | 5086 | 160 (`{'ok': 160}`, 43 s, `--jobs 14`) |
 | discrepancies | 10597 | 50 |
@@ -55,7 +57,7 @@ reports differs it is shown in brackets.
 
 Findings check: 50 discrepancies + 18 crashes = 68 = 48 live + 20 dismissed. Dismissed by category: DUPLICATE 17, DESIGN_DIVERGENCE 2, SPEC_AMBIGUITY 1.
 
-Area counts of the 160 programs (from `runs/day3/gen`): generics_variance 16, narrowing_user 16, paramspec_concatenate 16, callables 12,
+Area counts of the 160 programs (from [run output]): generics_variance 16, narrowing_user 16, paramspec_concatenate 16, callables 12,
 constructors_metaclasses 12, descriptors_properties 12, enums_literals 12, self_classmethods 12, typeddict 12, inheritance_mro 8,
 recursive_aliases 8, async_generators 4, gradual_any 4, narrowing_builtin 4, protocols 4, tuples_unpacking 4, typevartuple_unpack 4.
 
@@ -92,24 +94,24 @@ attached CPython runtime/stack-trace evidence "supports bug". Every row is marke
 | 18 | reveal_unpaired (1, 0 strong; 1 medium evidence) | mypy prints nothing at a reachable `reveal_type(Keyed().__hash__())`; ty reveals `Never` |
 | 19 | only_ty / invalid-assignment (1, 0 strong) | `partial(f, 10)` not assignable to a `Callable` alias; hint GRADUAL-OPERAND |
 
-(The triage prints at most 3 examples per pattern, so patterns 1 and 2 show fewer examples than findings. `campaign/day3-triage.txt` is
+(The triage prints at most 3 examples per pattern, so patterns 1 and 2 show fewer examples than findings. [campaign working file] is
 the authoritative list. Some strong-evidence counts in the right-hand cells come from the triage header lines.)
 
 ## 4. Candidates with strong evidence (all UNVERIFIED)
 
 Important limit: none of these is a "CPython crash + silent checkers" case. In every generated program CPython ran to success
 (`runtime: success` in each report). The crash candidates are checker crashes. The discrepancy candidates are cases where the
-runtime value contradicts one checker's revealed type. Full reports: `runs/day3/out/seed-<id>.md` (the `runs/` tree is not tracked; the
+runtime value contradicts one checker's revealed type. Full reports: `[run output]<id>.md` (the `runs/` tree is not tracked; the
 paths below are the generated programs).
 
 ### 4.1 Checker crashes, not matched by any upstream entry or by an earlier same-signature finding in the run
 
 | Program | Result |
 |---|---|
-| `runs/day3/gen/callables/d3p_callables_self_call_attr__mut0_2e173b54.py` (seed-0032056ba741); `.../d3p_callables_self_call_attr__mut0_eae572b3.py` (seed-6cb04c1e6fbc) | ty 0.0.84 SIGABRT, "thread '<unknown>' has overflowed its stack"; mypy SIGSEGV (dismissed as same-signature duplicate). Variants of the team repro A1 |
-| `runs/day3/gen/self_classmethods/d3p_self_classmethods_self_call_union__mut0_99c51718.py` (seed-3e7d6fb5688c); `.../d3p_self_classmethods_self_call_union__mut0_a5207109.py` (seed-887c42f07fb0) | same ty stack overflow, same mypy SIGSEGV. Variants of A5 |
-| `runs/day3/gen/async_generators/d3p_crash_ty_stack_overflow_protocol_flatten__mut0_7646fc90.py` (seed-d8c0c3a3b3ad) | ty stack overflow only |
-| `runs/day3/gen/callables/d3p_crash_ty_panic_partial_or_none_in_loop__mut1_82a9fbe2.py` (seed-c47eb01468dc) | ty panic at `salsa-0.28.5/src/function/execute.rs:751:9`: ``infer_definition_types(Id(40a)): execute: too many cycle iterations`` |
+| [run output] (seed-0032056ba741); `.../d3p_callables_self_call_attr__mut0_eae572b3.py` (seed-6cb04c1e6fbc) | ty 0.0.84 SIGABRT, "thread '<unknown>' has overflowed its stack"; mypy SIGSEGV (dismissed as same-signature duplicate). Variants of the team repro A1 |
+| [run output] (seed-3e7d6fb5688c); `.../d3p_self_classmethods_self_call_union__mut0_a5207109.py` (seed-887c42f07fb0) | same ty stack overflow, same mypy SIGSEGV. Variants of A5 |
+| [run output] (seed-d8c0c3a3b3ad) | ty stack overflow only |
+| [run output] (seed-c47eb01468dc) | ty panic at `salsa-0.28.5/src/function/execute.rs:751:9`: ``infer_definition_types(Id(40a)): execute: too many cycle iterations`` |
 
 Each report carries the pipeline hint RERUN-BEFORE-REPORTING: re-run on the newest ty before reporting (in kb-loop round 2, 5 of 11 ty
 crash rows were fixed one release after the pin). Duplicate-check hints (not run; `gh search issues` rejects `--state all`, use no
@@ -118,7 +120,7 @@ state flag): `gh search issues --repo astral-sh/ty "overflowed its stack"`, `gh 
 
 ### 4.2 Runtime value contradicts a checker's revealed type
 
-| Program (all under `runs/day3/gen/`) | mypy / ty / pyright / runtime |
+| Program (all under [run output]) | mypy / ty / pyright / runtime |
 |---|---|
 | `enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut1_2f2cf71e.py` L21 `reveal_type(Integer.TRUE)` (seed-0de4710c02b5) | mypy `Literal[Integer.TRUE]`, ty `Literal[Integer.ONE]`, pyright like mypy; runtime `<Integer.ONE: 1>` |
 | `constructors_metaclasses/d3p_constructors_metaclasses_reflected_operator_on_metaclass__mut0_848753c0.py` L25 `A * B` (seed-229f1d38c10b) | mypy `Literal['left']`, ty `Literal["right"]`, pyright like mypy; runtime `'right'` |
@@ -134,21 +136,21 @@ Cheap duplicate-check hints (read-only, not run): ty `Never` operand inference: 
 metaclass reflected operator: `gh search issues --repo python/mypy "metaclass __ror__"`; IntEnum alias: `gh search issues --repo python/mypy "enum alias member"`;
 stale condition alias is MYPY-13807 on the mypy side, here ty is the side that disagrees with runtime, so it is not covered by that entry.
 
-## 5. Proposed `runs/hits` additions for Day 4
+## 5. Proposed [run output] additions for Day 4
 
-Copy these generated programs into `runs/hits/` with the 3 header lines (`# area:`, `# hypothesis:`, `# origin:`). Proposed because they
+Copy these generated programs into [run output] with the 3 header lines (`# area:`, `# hypothesis:`, `# origin:`). Proposed because they
 carry strong evidence and differ from their parents:
 
-1. `runs/day3/gen/descriptors_properties/gen7_14eb1842.py` (ty infers `Never` on a read-only property receiver)
-2. `runs/day3/gen/enums_literals/d3p_enums_flag_or_literal_union__mut0_41da72aa.py` (ty `Never`; E3 shows the strict-equality explanation does not apply)
-3. `runs/day3/gen/narrowing_builtin/d3p_narrowing_builtin_stale_alias_condition__mut1_71417fc0.py` (ty `int` where runtime is `None`)
-4. `runs/day3/gen/constructors_metaclasses/d3p_constructors_metaclasses_reflected_operator_on_metaclass__mut1_714d2273.py` (adds `|` operator)
-5. `runs/day3/gen/enums_literals/d3p_enums_literals_intenum_true_aliases_one__mut1_2f2cf71e.py`
-6. `runs/day3/gen/tuples_unpacking/d3p_tuples_unpacking_constant_fold_subclass__mut0_fef00a03.py` (ty `Never` instead of `Literal[False]`)
-7. `runs/day3/gen/callables/d3p_crash_ty_panic_partial_or_none_in_loop__mut1_82a9fbe2.py` (still panics; shortest salsa cycle repro)
-8. `runs/day3/gen/inheritance_mro/d3p_inheritance_mro_hash_none_from_eq__mut1_fdf751d0.py`
+1. [run output] (ty infers `Never` on a read-only property receiver)
+2. [run output] (ty `Never`; E3 shows the strict-equality explanation does not apply)
+3. [run output] (ty `int` where runtime is `None`)
+4. [run output] (adds `|` operator)
+5. [run output]
+6. [run output] (ty `Never` instead of `Literal[False]`)
+7. [run output] (still panics; shortest salsa cycle repro)
+8. [run output]
 
-Not proposed: the SIGABRT/SIGSEGV variants (same shape as parents A1/A5/protocol_flatten, already in `runs/hits`), and all programs whose
+Not proposed: the SIGABRT/SIGSEGV variants (same shape as parents A1/A5/protocol_flatten, already in [run output]), and all programs whose
 only evidence is stub-skew or gradual differences (patterns 10 to 19 above).
 
 ## 6. Pipeline findings

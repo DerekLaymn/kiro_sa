@@ -1,5 +1,7 @@
 # kb-loop candidates
 
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
 Nothing here is a verified tool bug. Evidence rule (DESIGN.md section 1): a runtime crash, a verbatim spec quote, or call-versus-call
 self-contradiction; never a printed revealed signature alone.
 
@@ -8,7 +10,7 @@ self-contradiction; never a printed revealed signature alone.
 | id | what | minimal repro | evidence so far |
 |---|---|---|---|
 | C-1 | ty reveals `Unknown` where mypy's own suite blessed a concrete type (imprecision, no unsoundness proven); ORIGIN-ORACLE-REVEAL is hint-only since iteration 2 (it no longer dismisses), so these stay live with an explanatory note; a human should sample them | `seeds/harvested/gradual_any/mypy__check_classes__testAttributeDefOrder2.py` (mypy `int`, ty `Unknown`) | suite expectation only |
-| C-2 | pre-existing KB entries dismiss the repros of real ty bug reports (found by calibration, also with the baseline code): ty#4872 (rule:undefined-name), #4835 (BOTH-GRADUAL), #4817 and #4713 (MYPY-OPTIONAL-CHECK), #4786 (LITERAL-WIDENING) | `calibration/positives.json` ids above | calibration run, `runs/tmp/base.txt` |
+| C-2 | pre-existing KB entries dismiss the repros of real ty bug reports (found by calibration, also with the baseline code): ty#4872 (rule:undefined-name), #4835 (BOTH-GRADUAL), #4817 and #4713 (MYPY-OPTIONAL-CHECK), #4786 (LITERAL-WIDENING) | `calibration/positives.json` ids above | calibration run, [run output] |
 | C-3 | runtime_miss: 73 programs where CPython raised a type error at a statement and both tools are silent (e.g. `del c.x` on a missing attribute, `Message[str, str]` subscript on a non-generic class) | `seeds/harvested/gradual_any/ty__del__4.py`, `typeshed__email__check_parser.py` | runtime exception (strong), still needs a check that the exception is the intended `# error` of the test |
 | C-4 | tool timeouts: 4 ty (match/tuple comparison programs) and 3 mypy (pep695 aliases) hit the 120 s limit | `seeds/harvested/match_statement/pyright__matchSequence2.py`, `recursive_aliases/ty__pep695_type_aliases__70.py` | timeout; see round 2 crash work |
 
@@ -24,7 +26,7 @@ self-contradiction; never a printed revealed signature alone.
 | 6 | pyright `expected_text=` kwarg (59) | 58 | harness noise candidate: pyright-only API | small |
 | 7 | harvester: honour `# flags:` of mypy tests and mdtest python-version; record upstream SHAs and tool-version skew | ~300 ORIGIN-MISMATCH | harvester change + re-run of affected programs | medium |
 
-## Crashes (from `.agents/tasks/crash25-check.md`, re-adjudicated in round 2)
+## Crashes (from [agent working file], re-adjudicated in round 2)
 
 All reproduce 3/3 on the pinned tools. Report only after re-running on the newest release (flag `RERUN-BEFORE-REPORTING`).
 

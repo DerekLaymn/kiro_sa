@@ -1,6 +1,8 @@
 # Day 8 report (pipeline changes, generation, judge, morning decisions, verification)
 
-Branch `campaign/day8-p2`, local only. Nothing was pushed; no issue, PR or comment was written on GitHub (the run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh pr view`, `gh release list`, and a web fetch of the typing spec). No pin was changed. Every number below was read from `campaign/day8-run-log.md`, `campaign/day8-stats.txt`, `campaign/day8-triage.txt`, `campaign/day8-verification.md` or `campaign/day8/phase4/group_yield.out` (Day 7 figures from `campaign/day7-report.md` and `campaign/day7-stats.txt`). Rates and the per-group discrepancy column were computed here from those counts; where a figure was not captured I say so. The final test run in section 9 was executed for this report.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file], local only. Nothing was pushed; no issue, PR or comment was written on GitHub (the run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh pr view`, `gh release list`, and a web fetch of the typing spec). No pin was changed. Every number below was read from [campaign working file], [campaign working file], [campaign working file], [campaign working file] or [campaign working file] (Day 7 figures from `results/days/day7-report.md` and [campaign working file]). Rates and the per-group discrepancy column were computed here from those counts; where a figure was not captured I say so. The final test run in section 9 was executed for this report.
 
 Pins: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Same as Day 7. ty 0.0.98 (2026-11-05) and mypy 2.4.1 / master were used for verification only.
 
@@ -11,7 +13,7 @@ Day 7 vs Day 8 is not like for like. The KB and the harness changed before the D
 | Phase | What | Result |
 |---|---|---|
 | 1 | Pipeline: ParamSpec `self_annotated_dunder_call` family triaged, 4 reductions e1 to e4; KB entries and matchers; harness records caught exceptions; display-noise canonicaliser; 82 new tests, then 24 more after review (iteration 2) | 604 passed, 20 PASS / 0 FAIL, `check_hits.py 0.80` 42 files / 0 problems |
-| 2 | Morning plan `day8-morning.md`, crash-parent probe, reserve of 26 programs, scripts `campaign/day8/*.sh`, dry run | `pending=250 written=0` on the dry run; no generation |
+| 2 | Morning plan `day8-morning.md`, crash-parent probe, reserve of 26 programs, scripts [campaign working file], dry run | `pending=250 written=0` on the dry run; no generation |
 | 3 | `gen_pass.sh` 0 / 1 / 2, 51 headless worker sessions (`claude-haiku-5.5`, effort `medium`) | `pending=0 written=250`; `inbox_check.py` exit 0 (`prompts=251 (retry prompts=1) answers=251 answered=251 pending=0 orphan_answers=0 malformed_keys=0`) |
 | 4 | Judge `kbloop_run.py ... --jobs 14 --pyright-only`, `TYPEDIFF_LLM=null` | `250/250 ok`, 72 s, exit 0 |
 | 5 | Morning decisions on parents and KB | 0 promoted, 2 retired, 0 KB entries, `check_hits.py 0.80` 40 files / 0 problems |
@@ -64,7 +66,7 @@ Strong runtime evidence on a live finding: 13 findings in 11 programs (Day 7: 5 
 
 ## 3. Per group
 
-Day 8 groups are the subdirectories of `runs/day8/parents` that hold a mutant's parent (`phase4/group_yield.py`); they differ from the Day-7 groups, so there is no row-by-row comparison. Planned mix (run log item 29): 40 crash, 26 reserve, 18 pyright descriptors, 8 promoted parent, 120 fresh, 38 seed mutants. The discrepancy column is live + dismissed - crash events (derived here; the column sums to 208). "Live" and "strong" are findings, not programs. Per-group discrepancies were not captured by `group_yield.py`.
+Day 8 groups are the subdirectories of [run output] that hold a mutant's parent (`phase4/group_yield.py`); they differ from the Day-7 groups, so there is no row-by-row comparison. Planned mix (run log item 29): 40 crash, 26 reserve, 18 pyright descriptors, 8 promoted parent, 120 fresh, 38 seed mutants. The discrepancy column is live + dismissed - crash events (derived here; the column sums to 208). "Live" and "strong" are findings, not programs. Per-group discrepancies were not captured by `group_yield.py`.
 
 | Group | Programs | Programs with a live finding | Discrepancies (derived) | Crash events | Live | Strong | Dismissed | Live per program |
 |---|---|---|---|---|---|---|---|---|
@@ -114,13 +116,13 @@ Phase 1 (code and KB, run log items 3 to 19):
 * Tests 498 to 604 (82 + 24 new). kb-selftest stays at 20 entries (no `example` field added).
 * Phase-1 replays: Day 7 live 107 to 75; Day 6 (`--pyright-only`) 31 of 358 findings changed, live 231 to 199; Day 3, 4, 5 controls changed 2, 1 and 9 findings, each row read.
 
-Phase 2 and 3: new scripts `campaign/day8/*.sh`, 9 parent groups, 250 programs including the 26-program reserve (Day 7 left its reserve ungenerated), 40 crash-family programs.
+Phase 2 and 3: new scripts [campaign working file], 9 parent groups, 250 programs including the 26-program reserve (Day 7 left its reserve ungenerated), 40 crash-family programs.
 
-Phase 5: promoted 0 (every strong program is a rediscovery of an existing parent or issue; the 11 candidates were re-run alone and all reproduce). Retired 2 (`d3p_paramspec_identity_applied_to_itself`: 0 live in 8 programs; `d3p_paramspec_self_annotated_dunder_call`: 0 live and 17 dismissed in its 7 Day-7 mutants under the final KB). `runs/hits` 42 to 40; `check_hits.py 0.80`: 40 files, 0 problems. The retirement is reversible (`mv runs/hits-dropped/<name>.py runs/hits/`).
+Phase 5: promoted 0 (every strong program is a rediscovery of an existing parent or issue; the 11 candidates were re-run alone and all reproduce). Retired 2 (`d3p_paramspec_identity_applied_to_itself`: 0 live in 8 programs; `d3p_paramspec_self_annotated_dunder_call`: 0 live and 17 dismissed in its 7 Day-7 mutants under the final KB). [run output] 42 to 40; `check_hits.py 0.80`: 40 files, 0 problems. The retirement is reversible (`mv [run output]<name>.py [run output]`).
 
 KB entries added in Phases 2 to 6: none. Three entries were queued but not implemented (section 7).
 
-## 5. Candidates and verdicts (`campaign/day8-verification.md`)
+## 5. Candidates and verdicts ([campaign working file])
 
 All run with the pins plus ty 0.0.98, mypy 2.4.1 and master, pyright 1.1.414 (latest). CPython 3.13.16.
 
@@ -138,13 +140,13 @@ All run with the pins plus ty 0.0.98, mypy 2.4.1 and master, pyright 1.1.414 (la
 
 Also read: an annotation-only `__call__: Callable[[], int]` (`d3p_callables_self_call_attr__mut0_5445453a`): CPython raises `TypeError`, ty and pyright accept `C()()`, mypy rejects with a different cause. Not drafted, confidence 0.4, not strong; candidate for a Day-9 look.
 
-Net: 11 strong programs gave 1 new draft (draft 8, from the class-F lead, not from a strong finding), 2 extensions of unfiled drafts 6 and 7, 2 duplicates of open or closed upstream issues, 3 not-a-bug verdicts. Draft 8 was appended to `campaign/day3-issue-drafts.md` with a `<PLAYGROUND LINK>` placeholder; drafts 6, 7 and 8 are not filed (the author listing of the filing account shows ty#4656, #4884, #4899, #4933, #4934, #4941 and mypy#22339, #22360, #22375, #22377 only). Day 7 yielded two new drafts (6, 7).
+Net: 11 strong programs gave 1 new draft (draft 8, from the class-F lead, not from a strong finding), 2 extensions of unfiled drafts 6 and 7, 2 duplicates of open or closed upstream issues, 3 not-a-bug verdicts. Draft 8 was appended to `results/bugs.md` with a `<PLAYGROUND LINK>` placeholder; drafts 6, 7 and 8 are not filed (the author listing of the filing account shows ty#4656, #4884, #4899, #4933, #4934, #4941 and mypy#22339, #22360, #22375, #22377 only). Day 7 yielded two new drafts (6, 7).
 
 Verification effort: 113 one-to-three-word `gh search` queries (ty 44, mypy 28, pyright 20, ruff 2 issue and 8 PR, mypy 5 PR, pyright 5 PR, python/typing 1), after a first batch of 62 longer queries was discarded because GitHub ANDs all words; 21 issue/PR views (one wrong number, mypy#4380) and 3 release lists.
 
 ## 6. Parents and hits
 
-Promoted 0, retired 2, hits 42 to 40, `check_hits.py 0.80` 40 files / 0 problems with no near-duplicate pair (run log items 40 to 45, verification section 6). Highest similarity of a strong candidate to an existing hit: 0.86 (`d7p_..._mut0_d873ebcb`, to its parent) and 0.81 (`d4p_..readonly_prop_never__mut0_f116e46b`, to its parent), both above the 0.80 limit; the other nine are 0.27 to 0.74 and were not promoted for root-cause reasons (rule: same root cause and no new shape). No program was copied to `runs/hits`.
+Promoted 0, retired 2, hits 42 to 40, `check_hits.py 0.80` 40 files / 0 problems with no near-duplicate pair (run log items 40 to 45, verification section 6). Highest similarity of a strong candidate to an existing hit: 0.86 (`d7p_..._mut0_d873ebcb`, to its parent) and 0.81 (`d4p_..readonly_prop_never__mut0_f116e46b`, to its parent), both above the 0.80 limit; the other nine are 0.27 to 0.74 and were not promoted for root-cause reasons (rule: same root cause and no new shape). No program was copied to [run output].
 
 ## 7. Weaknesses
 
@@ -172,10 +174,10 @@ Promoted 0, retired 2, hits 42 to 40, `check_hits.py 0.80` 40 files / 0 problems
 
 ## 9. Final checks at the end of Day 8
 
-Run for this report on branch `campaign/day8-p2` at commit `ddf8dc5` (no code or KB change since Phase 1; outputs in `campaign/day8/phase7/results/`):
+Run for this report on branch [campaign working file] at commit `ddf8dc5` (no code or KB change since Phase 1; outputs in [campaign working file]):
 
 * `.venv/bin/python -m pytest tests -q` -> **604 passed** in 109.19 s, exit 0 (`pytest.out`). Phase 6 recorded 604 passed in 77.06 s; the run time differs, the count does not.
 * `.venv/bin/typediff --python-version 3.13 kb-selftest` -> **20 PASS, 0 FAIL**, exit 0 (`kb.out`, `kb-counts.out`).
-* `.venv/bin/python campaign/day4m/check_hits.py 0.80` -> **40 files; 0 with problems**, no near-duplicate pair, exit 0 (`hits.out`).
+* `.venv/bin/python [campaign working file] 0.80` -> **40 files; 0 with problems**, no near-duplicate pair, exit 0 (`hits.out`).
 
-Working tree notes: `campaign/day7-report.md` carries an uncommitted edit that is not mine (noted in run log items 1 and 52) and `campaign/day8/phase6/results/commit.out` shows as modified; neither is committed here. Untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` are left alone. Nothing was pushed.
+Working tree notes: `results/days/day7-report.md` carries an uncommitted edit that is not mine (noted in run log items 1 and 52) and [campaign working file] shows as modified; neither is committed here. Untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` are left alone. Nothing was pushed.

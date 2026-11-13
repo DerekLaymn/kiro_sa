@@ -1,6 +1,8 @@
 # Day 6 report (Part B: generation, judge, decisions)
 
-Branch `campaign/day6-p2`, local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh issue view`, `gh search issues`). Every number below was read from a command output kept in `campaign/day6/partB/evidence/` or from the committed files named in the text; rates were computed here from those counts. Candidates are **UNVERIFIED** unless a full verification is stated: no Plan §6 checklist was run in Part B.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file], local only. Nothing was pushed; no issue, PR or comment was written on GitHub (only read-only `gh issue view`, `gh search issues`). Every number below was read from a command output kept in [campaign working file] or from the committed files named in the text; rates were computed here from those counts. Candidates are **UNVERIFIED** unless a full verification is stated: no Plan §6 checklist was run in Part B.
 
 Pins: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Checkers ran through the memguard shims in `.venv/bin` (untouched).
 Day 5 ran on ty 0.0.84, so Day 5 vs Day 6 is not like for like: the ty bump itself changed which crashes and divergences appear.
@@ -9,18 +11,18 @@ Day 5 ran on ty 0.0.84, so Day 5 vs Day 6 is not like for like: the ty bump itse
 
 | Step | Command (abridged) | Result |
 |---|---|---|
-| Review gate | `.agents/tasks/day6-review.json` | did not exist: first iteration |
-| Groups | `bash campaign/day6/mk_groups.sh` | `A_ty_crash 9, C_callback 2, M_mypy_crash 4, P_pyright 5, R_rest 29, hits 49` |
-| Prompts | `bash campaign/day6/gen_pass.sh 0` (file bridge, `--llm file:runs/day6/inbox`) | `pending=250 written=0` |
-| Generator stand-in | `bash campaign/day6/answer_pending.sh` (`campaign/day6/gen_worker.sh`): 50 headless `kiro-cli chat --agent-engine v3 --model claude-haiku-5.5 --effort medium` sessions of 5 prompts, 4 at a time | 51 worker logs, 0 without `rc=0` (`evidence/worker-log-count.txt`) |
-| Programs | `bash campaign/day6/gen_pass.sh 1` | `pending=0 written=250`, no preflight retry prompts (retry prompts=0) |
-| Inbox check | `scripts/inbox_check.py runs/day6/inbox` | `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0`, exit 0 |
-| Judge | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py runs/day6/out runs/day6/gen --jobs 14 --progress runs/day6/out-progress.log` | `DONE total=250 {'ok': 250} elapsed=71s`, rc 0 |
-| Stats / triage | `scripts/kbloop_stats.py runs/day6/out` ; `typediff --out runs/day6/out triage runs/day6/out --top 30 --details` | `campaign/day6-stats.txt`, `campaign/day6-triage.txt` (427 lines) |
-| Replay after KB change | `scripts/kbloop_replay.py runs/day6/out runs/day6/replay --jobs 14 --verify-sample 30` | `verify-sample: 30/30 identical to a full re-run (mismatches: 0)`, rc 0; `campaign/day6-stats-after-replay.txt` |
+| Review gate | [agent working file] | did not exist: first iteration |
+| Groups | `bash [campaign working file]` | `A_ty_crash 9, C_callback 2, M_mypy_crash 4, P_pyright 5, R_rest 29, hits 49` |
+| Prompts | `bash [campaign working file] 0` (file bridge, `--llm file:[run output]`) | `pending=250 written=0` |
+| Generator stand-in | `bash [campaign working file]` ([campaign working file]): 50 headless `kiro-cli chat --agent-engine v3 --model claude-haiku-5.5 --effort medium` sessions of 5 prompts, 4 at a time | 51 worker logs, 0 without `rc=0` (`evidence/worker-log-count.txt`) |
+| Programs | `bash [campaign working file] 1` | `pending=0 written=250`, no preflight retry prompts (retry prompts=0) |
+| Inbox check | `scripts/inbox_check.py [run output]` | `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0`, exit 0 |
+| Judge | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py [run output] [run output] --jobs 14 --progress [run output]` | `DONE total=250 {'ok': 250} elapsed=71s`, rc 0 |
+| Stats / triage | `scripts/kbloop_stats.py [run output]` ; `typediff --out [run output] triage [run output] --top 30 --details` | [campaign working file], [campaign working file] (427 lines) |
+| Replay after KB change | `scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 30` | `verify-sample: 30/30 identical to a full re-run (mismatches: 0)`, rc 0; [campaign working file] |
 | Tests | `.venv/bin/python -m pytest tests -q` | **426 passed in 55.25s** (baseline 422 + 4 new in `tests/test_upstream_day6.py`) |
 | KB self-test | `.venv/bin/typediff --python-version 3.13 kb-selftest` | **20 PASS, 0 FAIL**, rc 0 |
-| Hits check | `.venv/bin/python campaign/day4m/check_hits.py 0.80` | `49 files; 0 with problems`, no near-duplicate pair |
+| Hits check | `.venv/bin/python [campaign working file] 0.80` | `49 files; 0 with problems`, no near-duplicate pair |
 
 Generator model: every `GenerateAssistantResponse` line in the log directories written by the worker sessions has `modelId=claude-haiku-5.5` (30 lines, no other model id; `evidence/evid.out`). The effort flag `medium` was passed on the command line; I did not find a log line that echoes it. The default `kiro-cli` engine could not set the model (`failed to set model 'claude-haiku-5.5': Method not found`, global default `minimax-2.1` unavailable), so the workers use `--agent-engine v3`.
 
@@ -92,13 +94,13 @@ The 50 fresh programs found no strong-evidence finding. Their live findings are 
 | Change | Why | Evidence |
 |---|---|---|
 | New entry `TY-4756` in `typediff/data/known_upstream.json` (only_mypy, code `misc`, message `"self" parameter missing for a non-static method`, DUPLICATE) | open ty#4756 "no error when instance method has no `self` parameter" (lint label); pyright reports it too; ty does not. 6 live findings were all class-body decorator helpers in `d3p_descriptors_decorated_get` mutants | `gh issue view 4756 -R astral-sh/ty` (body and comments read, state open, updated 2026-10-23); the maintainer comment doubts it should be an error, which the note says. Replay: `UPSTREAM-TY-4756` closes 6 findings (live 218 -> 212) |
-| New prior stance `TY-2171` (prior_stances, signature: tuple/NamedTuple subclass with a comparison dunder and a `Literal[True/False]` from ty) | open ty#2171 asks for a diagnostic on exactly that override; design in closed ty#2140 (`campaign/day4/verify-v2.md` §2). A prior stance only caps drafting at REVIEW and attaches the link; it dismisses nothing | issue body read; 4 tests in `tests/test_upstream_day6.py` |
+| New prior stance `TY-2171` (prior_stances, signature: tuple/NamedTuple subclass with a comparison dunder and a `Literal[True/False]` from ty) | open ty#2171 asks for a diagnostic on exactly that override; design in closed ty#2140 ([campaign working file] §2). A prior stance only caps drafting at REVIEW and attaches the link; it dismisses nothing | issue body read; 4 tests in `tests/test_upstream_day6.py` |
 
 ### Entries I tried and removed (policy conflict, not a bug in the matcher)
 
-I first wrote dismissals for ty#2171 (tuple fold) and ty#2792 (attribute narrowing kept after a method call, plus the read-only-property `Never` row of the same cause), with narrow AST predicates, controls and a hand-check of all 23 changed findings. A replay closed 17 more findings (19 after widening the tuple predicate to `NamedTuple`: TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3). Then pytest failed 3 tests: `calibration/must_stay_live/ty_constant_fold_tuple_subclass.py` and `mypy_stale_alias.py` are pinned as "real discrepancies no dismissal may touch" (`tests/test_stage3_round2.py`, `test_stage3_round3.py`), and a broad `stance` on the new entry made a `find_priors` test see an extra prior. Closing those shapes contradicts that standing rule, so I reverted the predicates, entries and tests (no change left in `typediff/kb.py`) and kept the rule. Effect: 19 known-duplicate findings of this run stay live. The diff of the first replay (23 changed rows: 17 from these predicates and the 6 TY-4756 rows, each hand-checked) is `campaign/day6/partB/evidence/removed-entries-replay-diff.txt`; the 19 is the stats line of the second replay after I widened the tuple predicate to `NamedTuple` (TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3). ty#2792 shapes are in mutants of `d3p_narrowing_*`, `d4p_narrowing_stale_alias_loop`, `d4p_descriptors_readonly_prop_never`, `d4v_ty_attr_eq_narrow_unreachable`. If you want them closed anyway, the change is to add entries and move the two calibration programs out of `must_stay_live`; that is a decision about what the triage shows you, so I left it.
+I first wrote dismissals for ty#2171 (tuple fold) and ty#2792 (attribute narrowing kept after a method call, plus the read-only-property `Never` row of the same cause), with narrow AST predicates, controls and a hand-check of all 23 changed findings. A replay closed 17 more findings (19 after widening the tuple predicate to `NamedTuple`: TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3). Then pytest failed 3 tests: `calibration/must_stay_live/ty_constant_fold_tuple_subclass.py` and `mypy_stale_alias.py` are pinned as "real discrepancies no dismissal may touch" (`tests/test_stage3_round2.py`, `test_stage3_round3.py`), and a broad `stance` on the new entry made a `find_priors` test see an extra prior. Closing those shapes contradicts that standing rule, so I reverted the predicates, entries and tests (no change left in `typediff/kb.py`) and kept the rule. Effect: 19 known-duplicate findings of this run stay live. The diff of the first replay (23 changed rows: 17 from these predicates and the 6 TY-4756 rows, each hand-checked) is [campaign working file]; the 19 is the stats line of the second replay after I widened the tuple predicate to `NamedTuple` (TY-2792 8, TY-2792-READONLY 4, TY-2171 4, TY-2171-ASSERT 3). ty#2792 shapes are in mutants of `d3p_narrowing_*`, `d4p_narrowing_stale_alias_loop`, `d4p_descriptors_readonly_prop_never`, `d4v_ty_attr_eq_narrow_unreachable`. If you want them closed anyway, the change is to add entries and move the two calibration programs out of `must_stay_live`; that is a decision about what the triage shows you, so I left it.
 
-### Parents (`runs/hits`, 49 before, 49 after)
+### Parents ([run output], 49 before, 49 after)
 
 Promoted (2, force-added to git; each one still crashes ty 0.0.97 when run alone, `ty check` rc 134 `stack overflow`):
 
@@ -109,7 +111,7 @@ Promoted (2, force-added to git; each one still crashes ty 0.0.97 when run alone
 
 Not promoted: other expanding-receiver mutants (0.72 to 0.99 similar to existing hits); `mypy:signal-SIGKILL` mutant `d3p_crash_mypy_segv_recursive_tvt_default_alias__mut0_460fd06e` (it ran into the 4 GB cap; promoting it would add a process that eats the cap at `--jobs 14`); the Callback mutants (the CPython `TypeError` is python/typing#2211, the mypy part is draft 5); `seed-d38ecc92765c` (strong runtime evidence but no crash); the metaclass and tuple mutants (families already represented). Similarity list: `evidence/promo.out`.
 
-Retired to `runs/hits-dropped` (reversible with `mv`): `d4p_tuples_fold_subclass_eq`, `d4v_ty_tuple_subclass_dunder_fold` (all their Day-6 findings are ty#2171; `d3p_tuples_unpacking_constant_fold_subclass` and the calibration program keep the shape). I moved two more parents out and put them back (`d3p_narrowing_user_attr_narrowing_kept_after_method_call`, `d3p_narrowing_builtin_stale_alias_condition`) because their entry was removed. Hits: 49 files, `check_hits.py 0.80`: 0 with problems, no near-duplicate pair.
+Retired to [run output] (reversible with `mv`): `d4p_tuples_fold_subclass_eq`, `d4v_ty_tuple_subclass_dunder_fold` (all their Day-6 findings are ty#2171; `d3p_tuples_unpacking_constant_fold_subclass` and the calibration program keep the shape). I moved two more parents out and put them back (`d3p_narrowing_user_attr_narrowing_kept_after_method_call`, `d3p_narrowing_builtin_stale_alias_condition`) because their entry was removed. Hits: 49 files, `check_hits.py 0.80`: 0 with problems, no near-duplicate pair.
 
 ### Live families classified by hand (not closed)
 
@@ -119,8 +121,8 @@ Retired to `runs/hits-dropped` (reversible with `mv`): `d4p_tuples_fold_subclass
 | mypy `Foo[int, str]` on `class Foo[*Ts, **P = [bool]]` and variants | 65 findings (group C) | draft 5 (mypy); CPython `TypeError` is python/typing#2211 | `day6-verification.md` |
 | mypy reflected operator on class objects with related metaclasses (`A * B`) | 6 (`d4v_metaclass_reflected_op`) + 2 (`d4p_metaclass_or_reflected_ror`, ty/mypy disagree on `left*`/`right*`, runtime `right*`) | draft 3 (mypy) | `day6-verification.md` §4 |
 | ty `__eq__`-only class accepted as `Hashable` and the `__hash__` reveals | 5 + 2 + 1 | draft 4 (ty); see candidate 1 for mypy | `day6-verification.md` §3 |
-| ty stale alias / attribute narrowing after a method call; read-only property `Never` | 12 matched by the removed predicates, 3 more variants they did not match | ty#2792 (open); alias-in-loop back edge is draft 2 | `campaign/day4/verify-v2.md` |
-| ty tuple-subclass fold | 6 live before the replay (7 matched by the removed predicates; one of the 7 was already closed as LITERAL-WIDENING) | ty#2171 (open) | `campaign/day4/verify-v2.md` |
+| ty stale alias / attribute narrowing after a method call; read-only property `Never` | 12 matched by the removed predicates, 3 more variants they did not match | ty#2792 (open); alias-in-loop back edge is draft 2 | [campaign working file] |
+| ty tuple-subclass fold | 6 live before the replay (7 matched by the removed predicates; one of the 7 was already closed as LITERAL-WIDENING) | ty#2171 (open) | [campaign working file] |
 | `d3p_generics_callable_attr_contravariant__mut0_0bac40f6`: `runtime_miss` with all three checkers silent at `h.add(lambda v: print(v.bit_length()))` | 1 | **harness artefact, not a bug**: all three checkers reject the expected-error line 34 (`use(hf)`), the AttributeError comes from that line's consequence; the finding anchors on the lambda frame | program read in full |
 | mypy `Attribute function "__call__" ... does not accept self argument` | 3 | mypy treats a callable class attribute as a method (long-standing, e.g. closed mypy#9489, #6910); ty is silent. Not searched for an exact issue | UNVERIFIED |
 | `d3p_paramspec_self_annotated_dunder_call` mutants: ty `unresolved-attribute` on `self.args = args` with `self: Callable[P, T]`, mypy silent | 13 | not analysed beyond the triage text; neighbourhood of TY-4899 | UNVERIFIED |

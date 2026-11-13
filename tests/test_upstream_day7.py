@@ -123,7 +123,7 @@ def test_attribute_narrowing_on_self():
     ("call is not a program method", "a.x = 3\na.append(1)\nreveal_type(a.x)"),
     ("never narrowed", "a.clear()\nreveal_type(a.x)"),
     ("other attribute is revealed", "a.x = 3\na.clear()\nreveal_type(a.y)"),
-    # draft 2 of campaign/day3-issue-drafts.md: the reassignment reaches the use over the loop back edge
+    # draft 2 of results/bugs.md: the reassignment reaches the use over the loop back edge
     ("loop back edge, no call", "is_none = a.x is None\nfor _ in range(2):\n    if not is_none:\n        reveal_type(a.x)\n    a.x = None"),
     ("loop back edge with a call", "is_none = a.x is None\nfor _ in range(2):\n    a.clear()\n    if not is_none:\n"
                                    "        reveal_type(a.x)\n    a.x = None"),

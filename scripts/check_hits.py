@@ -9,7 +9,10 @@ from pathlib import Path
 from typediff.generator import blocking, preflight
 from typediff.strategy import AREAS
 
-HITS = Path("/home/derek/Projects/5th_sem/Software_analysis/project/kiro_sa/runs/hits")
+ROOT = Path(__file__).resolve().parent.parent
+# Usage: python scripts/check_hits.py [THRESHOLD] [HITS_DIR]; the default directory is runs/hits (the local parent pool) if it
+# exists, else the curated examples/hits.
+HITS = Path(sys.argv[2]) if len(sys.argv) > 2 else (ROOT / "runs" / "hits" if (ROOT / "runs" / "hits").is_dir() else ROOT / "examples" / "hits")
 THRESH = float(sys.argv[1]) if len(sys.argv) > 1 else 0.80
 
 

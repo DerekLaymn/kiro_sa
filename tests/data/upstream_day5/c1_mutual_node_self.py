@@ -1,6 +1,6 @@
 # area: callables
 # hypothesis: Classes whose __call__ attributes are annotated with each other, or with a Self-typed chain, form a call cycle for checkers; the runtime call raises TypeError since no callable is stored.
-# origin: runs/hits/d4v_callables_mutual_call_attr.py
+# origin: generated program of the campaign (not kept)
 # area: callables
 # hypothesis: Classes whose __call__ attributes are annotated with each other, or with a Self-typed chain, form a call cycle for checkers; the runtime call raises TypeError since no callable is stored.
 from typing import ClassVar, Self

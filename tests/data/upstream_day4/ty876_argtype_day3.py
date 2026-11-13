@@ -1,6 +1,6 @@
 # area: enums_literals
 # hypothesis: F.R | F.W on a Flag is a combined pseudo-member equal to neither F.R nor F.W, so identity checks against either member are False at runtime.
-# origin: runs/hits/d3p_enums_flag_or_literal_union.py
+# origin: generated program of the campaign (not kept)
 # area: enums_literals
 # hypothesis: F.R | F.W on a Flag is a combined pseudo-member equal to neither F.R nor F.W, so identity checks against either member are False at runtime.
 import enum

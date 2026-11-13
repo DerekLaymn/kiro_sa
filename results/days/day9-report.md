@@ -1,6 +1,8 @@
 # Day 9 report (pipeline changes, new operators and areas, generation, judge, morning decisions, verification)
 
-Branch `campaign/day9-p2`, local only. Nothing was pushed; no issue, PR or comment was written on GitHub. The run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh release list`, and web fetches (Python data model, ty rules page, mypy test data). No pin was changed. Every number below was read from `campaign/day9-run-log.md`, `campaign/day9-stats.txt`, `campaign/day9-triage.txt`, `campaign/day9-only-pyright-relations.txt`, `campaign/day9-live-by-area.txt`, `campaign/day9-verification.md`, `campaign/day9-morning.md`, `campaign/day9/phase5/parent_yield.out` or `campaign/day9/phase7/results/` (Day 8 figures from `campaign/day8-report.md` and `campaign/day8-stats.txt`). Rates, the per-group "discrepancies" column and the per-area "live per program" column were computed here from those counts; where a figure was not captured I say so. The per-group yield (`phase7/results/group_yield.out`) and the final checks (section 9) were produced for this report by reading the saved `runs/day9/out` JSON and running the test commands; the generation and the judge were not re-run.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file], local only. Nothing was pushed; no issue, PR or comment was written on GitHub. The run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh release list`, and web fetches (Python data model, ty rules page, mypy test data). No pin was changed. Every number below was read from [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file] or [campaign working file] (Day 8 figures from `results/days/day8-report.md` and [campaign working file]). Rates, the per-group "discrepancies" column and the per-area "live per program" column were computed here from those counts; where a figure was not captured I say so. The per-group yield (`phase7/results/group_yield.out`) and the final checks (section 9) were produced for this report by reading the saved [run output] JSON and running the test commands; the generation and the judge were not re-run.
 
 Pins: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Same as Day 8. ty 0.0.99 (released 2026-11-06), mypy 2.4.1 and mypy master 2.5.0+dev.879da562 were used for verification only (`day9-verification.md` section 1).
 
@@ -11,7 +13,7 @@ Day 8 vs Day 9 is not like for like. Both runs have 250 programs and both judge 
 | Phase | What | Result |
 |---|---|---|
 | 1 | Pipeline: two Day-8 matcher weaknesses fixed (quoted `'Self'`, `TY-2792-READONLY` in a nested `def`); new `typediff/operators.py` with `dunder_instance_shadow` and `exit_swallow_flip`; new areas `dunder_dispatch` and `context_managers` | 655 passed (604 + 51), 20 PASS / 0 FAIL, `check_hits.py 0.80` 40 files / 0 problems |
-| 2 | Morning plan `day9-morning.md`: crash probe of 59 ty targets, 1 parent promoted, plan for 250 programs, scripts `campaign/day9/*.sh`, dry run | `pending=250 written=0`; 250 distinct prompt keys, 0 shared with Days 3 to 8 |
+| 2 | Morning plan `day9-morning.md`: crash probe of 59 ty targets, 1 parent promoted, plan for 250 programs, scripts [campaign working file], dry run | `pending=250 written=0`; 250 distinct prompt keys, 0 shared with Days 3 to 8 |
 | 3 | `gen_pass.sh` 0 / 1, 50 headless worker sessions (`claude-haiku-5.5`, effort `medium`) | `pending=0 written=250`; `inbox_check.py`: `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0` |
 | 4 | Judge `kbloop_run.py ... --jobs 14 --pyright-only`, `TYPEDIFF_LLM=null` | `250/250 ok`, 79 s, rc 0 |
 | 5 | Morning decisions on parents and KB | 0 promoted, 1 retired, 0 KB entries, `check_hits.py 0.80` 40 files / 0 problems |
@@ -37,7 +39,7 @@ Memory: lowest `MemAvailable` during the judge run 8,017,944 kB (7.65 GiB), star
 | programs with a live finding | 104 (92 without) | not recorded | 129 (103 without) |
 | live crash findings | 1 | not recorded | 0 |
 
-Sources: Day 8 column `day8-stats.txt` and `day8-report.md` section 2. Middle column: Phase-1 replay (`kbloop_replay.py runs/day8/out ... --pyright-only --rerun-runtime --verify-sample 30`, 30/30 identical to a full re-run): 224 findings compared, 3 changed, all `review/gate` to dismissed (`seed-9193b5cc679d` D1 and D2 by `kb:TY-SELF-UPPER-BOUND`, `seed-78dcbe5d81b6` D1 by `kb:UPSTREAM-TY-2792-READONLY`), live 155 to 152 (run log, Phase 1). Day 9: `day9-stats.txt`. The 339 is 224 + 115 and the 72 is 69 + 3, both computed here. The discrepancy figure 335 is also 224 + 115 - 4 (computed here), which agrees with the stats line.
+Sources: Day 8 column `day8-stats.txt` and `day8-report.md` section 2. Middle column: Phase-1 replay (`kbloop_replay.py [run output] ... --pyright-only --rerun-runtime --verify-sample 30`, 30/30 identical to a full re-run): 224 findings compared, 3 changed, all `review/gate` to dismissed (`seed-9193b5cc679d` D1 and D2 by `kb:TY-SELF-UPPER-BOUND`, `seed-78dcbe5d81b6` D1 by `kb:UPSTREAM-TY-2792-READONLY`), live 155 to 152 (run log, Phase 1). Day 9: `day9-stats.txt`. The 339 is 224 + 115 and the 72 is 69 + 3, both computed here. The discrepancy figure 335 is also 224 + 115 - 4 (computed here), which agrees with the stats line.
 
 Rates (computed here):
 
@@ -66,7 +68,7 @@ Strong runtime evidence on a live finding: 10 findings in 8 programs (`phase5/st
 
 ## 3. Per group and per area
 
-Day 9 groups are the subdirectories of `runs/day9/parents` that hold a mutant's parent (`campaign/day9/mk_groups.sh`), plus `fresh` for programs without `__mut` in the name. They differ from the Day-8 groups, so there is no row-by-row comparison. The columns are `phase7/results/group_yield.out` (script `campaign/day9/phase7/group_yield.py`, adapted from the Day-8 one; totals 250 / 129 / 224 / 10 / 115 / 4 equal `day9-stats.txt`). "Live" and "strong" are findings, not programs. Discrepancies were not captured per group; the column is live + dismissed - crash events (derived here, sums to 335). Live per program is computed here.
+Day 9 groups are the subdirectories of [run output] that hold a mutant's parent ([campaign working file]), plus `fresh` for programs without `__mut` in the name. They differ from the Day-8 groups, so there is no row-by-row comparison. The columns are `phase7/results/group_yield.out` (script [campaign working file], adapted from the Day-8 one; totals 250 / 129 / 224 / 10 / 115 / 4 equal `day9-stats.txt`). "Live" and "strong" are findings, not programs. Discrepancies were not captured per group; the column is live + dismissed - crash events (derived here, sums to 335). Live per program is computed here.
 
 | Group (operator, parents) | Programs | Programs with a live finding | Discrepancies (derived) | Crash events | Live | Strong | Dismissed | Live per program |
 |---|---|---|---|---|---|---|---|---|
@@ -142,11 +144,11 @@ Day-8 weaknesses (`day8-report.md` section 7) and their state:
 | `runtime_supports` for `only_pyright` untested on a true positive | fired 22 of 44; none of the 20 dunder rows is a bug, the 2 `with` rows are a mypy gap (section 5) |
 | drafts 6, 7, 8 unfiled, no playground link | unchanged; drafts 9 and 10 added, also unfiled |
 
-Phase 2: promoted `d8p_dunder_dispatch_annotation_only_call` (Day-8 mutant `d3p_callables_self_call_attr__mut0_5445453a`, the annotation-only `__call__` lead) to `runs/hits`, 40 to 41. Crash probe (`phase2/results/crash-parents-probe.tsv`): ty rc 134 on 11 of 59 files, rc 101 on 1; `d3p_generics_contravariant_recursive_generic_base` (TY-4900) was not in the Day-8 probe list and still crashes. The four Day-8 escape-watch parents were not mutated again; `C_pyright_range` was cut from 12 to 6 programs. 250 programs planned: 109 fresh (44 in the new areas, 65 in nine areas with no program on Days 7 and 8), 48 with the new operators (+4 inside the crash groups), 47 with the six operators no earlier day used (+10 inside the crash groups), 22 crash-family, 24 reserve. Of the 141 operator prompts, 109 (77 %) use an operator no earlier day used (`day9-morning.md` section 3).
+Phase 2: promoted `d8p_dunder_dispatch_annotation_only_call` (Day-8 mutant `d3p_callables_self_call_attr__mut0_5445453a`, the annotation-only `__call__` lead) to [run output], 40 to 41. Crash probe (`phase2/results/crash-parents-probe.tsv`): ty rc 134 on 11 of 59 files, rc 101 on 1; `d3p_generics_contravariant_recursive_generic_base` (TY-4900) was not in the Day-8 probe list and still crashes. The four Day-8 escape-watch parents were not mutated again; `C_pyright_range` was cut from 12 to 6 programs. 250 programs planned: 109 fresh (44 in the new areas, 65 in nine areas with no program on Days 7 and 8), 48 with the new operators (+4 inside the crash groups), 47 with the six operators no earlier day used (+10 inside the crash groups), 22 crash-family, 24 reserve. Of the 141 operator prompts, 109 (77 %) use an operator no earlier day used (`day9-morning.md` section 3).
 
 Phase 5: promoted 0, retired 1 (section 6). KB entries added: none. One queued, not implemented: `MYPY-8595` (KNOWN_LIMITATION; needs a named matcher in `typediff/kb.py`).
 
-## 5. Candidates and verdicts (`campaign/day9-verification.md`)
+## 5. Candidates and verdicts ([campaign working file])
 
 Run with the pins plus ty 0.0.99, mypy 2.4.1 and master, pyright 1.1.414 (latest). ty 0.0.97 and 0.0.99 gave identical output on all 30 reduction programs (`results/ty_diff.txt`). All 8 strong programs reproduce when run alone (`phase5/alone.out`).
 
@@ -169,16 +171,16 @@ Counts: the 8 strong candidates (10 findings): STILL-BUG-NEW 1, DUPLICATE 5, NOT
 What produced what:
 
 * Draft 9 is the `total_ordering` parent's own finding, found again by a mutant (`..mut0_73c4aa3f`, similarity 0.70 to its parent); the new operators did not create it. Draft 10 came from two fresh programs in the new area `context_managers`, not from an `exit_swallow_flip` program. The operator `dunder_instance_shadow` produced 20 `runtime_supports` rows; all 20 are the documented trade-off, so the operator found no bug of its own on Day 9. `exit_swallow_flip` found none (`D_exit`: 0 strong, no draft).
-* Net new bugs: 2 drafts (Day 8: 1, Day 7: 2). Drafts 9 and 10 were appended to `campaign/day3-issue-drafts.md` with `<PLAYGROUND LINK>` placeholders. Drafts 1 to 5 are filed (ty#4933, ty#4934 closed, mypy#22377, ty#4941, mypy#22375, per the author listing of 2026-11-06, `phase6/search/author.out`); drafts 6 to 10 are not.
+* Net new bugs: 2 drafts (Day 8: 1, Day 7: 2). Drafts 9 and 10 were appended to `results/bugs.md` with `<PLAYGROUND LINK>` placeholders. Drafts 1 to 5 are filed (ty#4933, ty#4934 closed, mypy#22377, ty#4941, mypy#22375, per the author listing of 2026-11-06, `phase6/search/author.out`); drafts 6 to 10 are not.
 * Verification effort (`day9-verification.md` section 4): 133 `gh search` queries of one to three words (issues 104, PRs 29), 12 `gh issue view`, 3 `gh release list`, one author listing. A first `gh_view.sh` run failed because `--comments` and `--json` cannot be combined and was redone.
 
 ## 6. Parents and hits
 
 Phase 5 (run log Phase 5, `phase5/parent_yield.out`, `phase5/check_hits-*.out`):
 
-* Candidates: 10 strong findings in 8 programs. Highest similarity to any file of `runs/hits`: 0.70 (`d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f` to its parent), then 0.56, 0.53, 0.48, 0.43, 0.40, 0.36, 0.33; none at or above 0.80. **Promoted 0** (D9-1 duplicate of #8595, D9-2 invalid program, D9-8 gradual guarantee, the others rediscoveries of existing parents).
-* **Retired 1**: `d3p_generics_contravariant_recursive_base` to `runs/hits-dropped` (4 programs, 0 live, 1 closed crash; the `C_generic_rec` group had 0 escapes). Reversible with `mv`. Kept although mutated: `d3p_generics_callable_attr_contravariant` (3 programs, 0 live, 2 dismissed; "revisit if Day 10 gives 0 again"), `d3p_typevartuple_unpack_paramspec_default_after_tvt`, `d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript`, `d4v_ty_attr_eq_narrow_unreachable`, both `d5p_*_rangeerror`, `d8p_dunder_dispatch_annotation_only_call`.
-* `runs/hits`: 40 at the start, 41 after the Phase-2 promotion, 40 after the retirement. `check_hits.py 0.80` after: 40 files, 0 with problems, no near-duplicate pair (section 9).
+* Candidates: 10 strong findings in 8 programs. Highest similarity to any file of [run output]: 0.70 (`d3p_inheritance_mro_total_ordering_inherited_lt__mut0_73c4aa3f` to its parent), then 0.56, 0.53, 0.48, 0.43, 0.40, 0.36, 0.33; none at or above 0.80. **Promoted 0** (D9-1 duplicate of #8595, D9-2 invalid program, D9-8 gradual guarantee, the others rediscoveries of existing parents).
+* **Retired 1**: `d3p_generics_contravariant_recursive_base` to [run output] (4 programs, 0 live, 1 closed crash; the `C_generic_rec` group had 0 escapes). Reversible with `mv`. Kept although mutated: `d3p_generics_callable_attr_contravariant` (3 programs, 0 live, 2 dismissed; "revisit if Day 10 gives 0 again"), `d3p_typevartuple_unpack_paramspec_default_after_tvt`, `d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript`, `d4v_ty_attr_eq_narrow_unreachable`, both `d5p_*_rangeerror`, `d8p_dunder_dispatch_annotation_only_call`.
+* [run output]: 40 at the start, 41 after the Phase-2 promotion, 40 after the retirement. `check_hits.py 0.80` after: 40 files, 0 with problems, no near-duplicate pair (section 9).
 
 ## 7. Weaknesses
 
@@ -209,10 +211,10 @@ Phase 5 (run log Phase 5, `phase5/parent_yield.out`, `phase5/check_hits-*.out`):
 
 ## 9. Final checks at the end of Day 9
 
-Run for this report on branch `campaign/day9-p2` at commit `02d533f` (no code or KB change since Phase 1; outputs in `campaign/day9/phase7/results/`, script `campaign/day9/phase7/final_checks.sh`):
+Run for this report on branch [campaign working file] at commit `02d533f` (no code or KB change since Phase 1; outputs in [campaign working file], script [campaign working file]):
 
 * `.venv/bin/python -m pytest tests -q` -> **655 passed** in 83.08 s, rc 0 (`pytest.out`). Phase 1 and Phase 6 recorded 655 passed (84.10 s and 84.91 s). Day 8 ended at 604; the 51 new tests are in `tests/test_day9_pipeline.py`.
 * `.venv/bin/typediff --python-version 3.13 kb-selftest` -> **20 PASS lines, 0 FAIL lines**, rc 0 (`kb.out`, `kb-pass-count.out`, `kb-fail-count.out`).
-* `.venv/bin/python campaign/day4m/check_hits.py 0.80` -> **40 files; 0 with problems**, no near-duplicate pair, rc 0 (`hits.out`). `hits-count.out` shows 41 because `ls runs/hits` also lists the `__pycache__` directory; there are 40 `.py` files.
+* `.venv/bin/python [campaign working file] 0.80` -> **40 files; 0 with problems**, no near-duplicate pair, rc 0 (`hits.out`). `hits-count.out` shows 41 because `ls [run output]` also lists the `__pycache__` directory; there are 40 `.py` files.
 
-Working tree notes: `campaign/day7-report.md` carries an uncommitted edit that is not mine (noted in the run log header and the Day-9 cleanup note: stray garbled text "se=0-9rches" in one line) and `campaign/day8/phase6/results/commit.out` shows as modified; neither is committed here. Untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` are left alone. `runs/` is git-ignored, so `runs/day9/{gen,inbox,out}` stay on disk only. Nothing was pushed, and no GitHub write of any kind (issue, PR, comment) was made in Day 9.
+Working tree notes: `results/days/day7-report.md` carries an uncommitted edit that is not mine (noted in the run log header and the Day-9 cleanup note: stray garbled text "se=0-9rches" in one line) and [campaign working file] shows as modified; neither is committed here. Untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` are left alone. `runs/` is git-ignored, so [run output] stay on disk only. Nothing was pushed, and no GitHub write of any kind (issue, PR, comment) was made in Day 9.

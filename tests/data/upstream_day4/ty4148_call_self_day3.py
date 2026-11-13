@@ -1,6 +1,6 @@
 # area: callables
 # hypothesis: A __call__ that is only an annotation leaves the instance uncallable, so calling it raises TypeError; the call is wrapped so the witness is recorded.
-# origin: runs/hits/d3p_callables_self_call_attr.py
+# origin: generated program of the campaign (not kept)
 # area: callables
 # hypothesis: a class whose __call__ is only an annotation has no callable at runtime, so calling its instance raises TypeError.
 class C:

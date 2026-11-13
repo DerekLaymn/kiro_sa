@@ -4,7 +4,7 @@
                        (+ optional pyright JSON). Works offline; experiments only if tools are installed.
     run_source(...)  - runs every tool itself with pinned, isolated settings, then judges (full power).
 
-Stage order (see DESIGN.md §3):
+Stage order (see docs/design.md §3):
   S0 crash detection -> S1 validity -> S2 normalise + anchor -> S3 discrepancy extraction ->
   S4 deterministic evidence + auto-probes + KB -> S5 LLM adjudication with experiments ->
   S6 adversarial review + asymmetric gate -> S7 dedup + reduction -> S8 dataset + strategy

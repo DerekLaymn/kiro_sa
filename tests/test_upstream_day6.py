@@ -1,4 +1,4 @@
-"""Day 6 morning: upstream entries added after reading the Day-6 reports (campaign/day6-report.md).
+"""Day 6 morning: upstream entries added after reading the Day-6 reports (results/days/day6-report.md).
 
 * TY-4756  mypy reports a method without ``self``; ty is silent (open lint request). A dismissal (DUPLICATE).
 * TY-2171  ty folds comparisons of a tuple subclass that overrides a comparison dunder. A PRIOR STANCE (Day 6); since

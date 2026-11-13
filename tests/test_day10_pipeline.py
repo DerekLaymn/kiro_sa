@@ -1,4 +1,4 @@
-"""Day 10 phase 1: pipeline fix for the first weakness of campaign/day9-report.md section 7.
+"""Day 10 phase 1: pipeline fix for the first weakness of results/days/day9-report.md section 7.
 
 * W1  ty's ``warning[deprecated]`` on ``@contextmanager`` with ``-> Iterator[..]`` (and ``@asynccontextmanager`` with
       ``-> AsyncIterator[..]``) was 25 of the 224 live Day-9 findings. The stub marks the Iterator overload deprecated; the

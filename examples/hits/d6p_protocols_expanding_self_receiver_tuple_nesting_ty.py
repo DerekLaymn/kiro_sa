@@ -1,6 +1,6 @@
 # area: protocols
 # hypothesis: ty overflows its stack when a plain class is assigned to a protocol whose method annotates self as Stream[tuple[Stream[T]]], because each receiver check needs a deeper receiver type, while mypy and pyright accept it.
-# origin: runs/day6/parents/A_ty_crash/d4v_protocols_expanding_self_receiver.py
+# origin: generated program of the campaign (not kept)
 # area: protocols
 # hypothesis: ty overflows its stack when a plain class is assigned to a protocol whose method annotates self as Stream[tuple[Stream[T]]], because each receiver check needs a deeper receiver type; mypy and pyright accept it.
 # features: protocol, self_annotation, recursive_receiver, tuple_nesting, generic_impl

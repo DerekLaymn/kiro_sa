@@ -1,8 +1,10 @@
 # Day 10 report (pipeline fix, least-used operators and areas, generation, judge, morning decisions, verification)
 
-Branch `campaign/day10-p2`, local only. Nothing was pushed; no issue, PR or comment was written on GitHub. The run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh release list`, an author listing, and web fetches (mypy docs, a ty test file). This report step added read-only `gh issue view` (24 issues), `gh pr view` (ruff#30074), one `gh api .../timeline` read and one author listing (`campaign/day10/phase7/results/gh_status.out`, `gh_pr_30074.out`, `gh_events_4934.out`, `author.out`). No pin was changed (`phase7/results/pins.out`: Python 3.13.16, ty 0.0.97, mypy 2.4.0, pyright 1.1.414).
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
 
-Every number below was read from `campaign/day10-run-log.md`, `campaign/day10-stats.txt`, `campaign/day10-triage.txt`, `campaign/day10-only-pyright-relations.txt`, `campaign/day10-live-by-area.txt`, `campaign/day10-verification.md`, `campaign/day10-morning.md` or from `campaign/day10/phase7/results/` (produced for this report from the saved `runs/day10/out` JSON and the replays saved by phase 5 in `runs/day10/replay2`; the generation and the judge were not re-run). Day 9 figures come from `campaign/day9-report.md` and `campaign/day9-stats.txt`. Rates were computed here from those counts (`campaign/day10/phase7/calc.py`, output `phase7/results/calc.out`); where a figure was not captured I say so.
+Branch [campaign working file], local only. Nothing was pushed; no issue, PR or comment was written on GitHub. The run log and verification file record only read-only `gh search issues|prs`, `gh issue view`, `gh release list`, an author listing, and web fetches (mypy docs, a ty test file). This report step added read-only `gh issue view` (24 issues), `gh pr view` (ruff#30074), one `gh api .../timeline` read and one author listing ([campaign working file], `gh_pr_30074.out`, `gh_events_4934.out`, `author.out`). No pin was changed (`phase7/results/pins.out`: Python 3.13.16, ty 0.0.97, mypy 2.4.0, pyright 1.1.414).
+
+Every number below was read from [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file], [campaign working file] or from [campaign working file] (produced for this report from the saved [run output] JSON and the replays saved by phase 5 in [run output]; the generation and the judge were not re-run). Day 9 figures come from `results/days/day9-report.md` and [campaign working file]. Rates were computed here from those counts ([campaign working file], output `phase7/results/calc.out`); where a figure was not captured I say so.
 
 Pins: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Same as Day 9. ty 0.0.99 (still the newest release on 2026-11-06 per `gh release list`), mypy 2.4.1 and mypy master 2.5.0+dev.879da562 were used for verification only (`day10-verification.md` section 1).
 
@@ -13,10 +15,10 @@ Day 9 vs Day 10 is not like for like. Both runs have 250 programs and both judge
 | Phase | What | Result |
 |---|---|---|
 | 1 (`63cd5b2`) | Pipeline: KB entry `TY-CONTEXTMANAGER-ITERATOR-DEPRECATED` (ty `deprecated` on `@contextmanager` / `@asynccontextmanager` with an `Iterator` return) | 688 passed (655 + 33), 20 PASS / 0 FAIL, `check_hits.py 0.80` 40 files / 0 problems; replay of Day 9: 25 findings changed, live 224 to 199 |
-| 2 (`e00125d`) | Morning plan `day10-morning.md`: crash probe of 60 ty targets, 1 parent promoted, 2 retired, plan for 250 programs, scripts `campaign/day10/*.sh`, dry run | `pending=250 written=0`; 250 distinct prompt keys, 0 shared with Days 3 to 9; `runs/hits` 40 to 39 |
+| 2 (`e00125d`) | Morning plan `day10-morning.md`: crash probe of 60 ty targets, 1 parent promoted, 2 retired, plan for 250 programs, scripts [campaign working file], dry run | `pending=250 written=0`; 250 distinct prompt keys, 0 shared with Days 3 to 9; [run output] 40 to 39 |
 | 3 (`c0e6f01`) | `gen_pass.sh` 0 / 1, 50 headless worker sessions (`claude-haiku-5.5`) | `pending=0 written=250`; `inbox_check.py`: `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0` |
 | 4 (`550c478`) | Judge `kbloop_run.py ... --jobs 14 --pyright-only`, `TYPEDIFF_LLM=null` | `250/250 ok`, 75 s, rc 0 |
-| 5 (`334ff8c`) | Morning decisions on parents and KB | 0 promoted, 3 retired (`runs/hits` 39 to 36), 1 KB entry `MYPY-8595-METACLASS-CALL`, 42 tests, 730 passed |
+| 5 (`334ff8c`) | Morning decisions on parents and KB | 0 promoted, 3 retired ([run output] 39 to 36), 1 KB entry `MYPY-8595-METACLASS-CALL`, 42 tests, 730 passed |
 | 6 (`c6c5a9a`) | Verification: 10 strong programs plus 3 extra groups (13 rows) | STILL-BUG-NEW 2 (drafts 11 and 12), DUPLICATE 6, NOT-A-BUG 5 |
 | 7 | This report and `FINAL-SUMMARY.md` | section 9 |
 
@@ -42,7 +44,7 @@ Memory: lowest `MemAvailable` during the judge run 7,017,424 kB (6.69 GiB; Day 9
 | live crash findings | 0 | 0 | 0 | 0 |
 | strong-evidence live findings | 10 (8 programs) | n/r | 11 (10 programs) | 8 (`group_yield_replayed.out`) |
 
-Sources: Day 9 judge column `day9-stats.txt` and `day9-report.md` section 2. Day 9 on the final KB: `phase7/results/stats_replayed_day9.out` (the Day-9 reports replayed by phase 5: 25 changed by `TY-CONTEXTMANAGER-ITERATOR-DEPRECATED` in phase 1, 1 more by `MYPY-8595-METACLASS-CALL` in phase 5, live 224 to 199 to 198; the stats file shows 25 `CONFIG_ARTIFACT` and 1 `MYPY-8595` dismissal). Day 10 judge column `campaign/day10-stats.txt`. Day 10 final KB: `phase7/results/stats_replayed.out` (phase 5 replay: 4 changed, all by `MYPY-8595-METACLASS-CALL`, live 172 to 168). The `[all]` and `[tuning]` blocks of the stats files are identical; `[holdout]` has 0 programs. n/r = not recorded (the per-program count of strong evidence was not computed for the replays).
+Sources: Day 9 judge column `day9-stats.txt` and `day9-report.md` section 2. Day 9 on the final KB: `phase7/results/stats_replayed_day9.out` (the Day-9 reports replayed by phase 5: 25 changed by `TY-CONTEXTMANAGER-ITERATOR-DEPRECATED` in phase 1, 1 more by `MYPY-8595-METACLASS-CALL` in phase 5, live 224 to 199 to 198; the stats file shows 25 `CONFIG_ARTIFACT` and 1 `MYPY-8595` dismissal). Day 10 judge column [campaign working file]. Day 10 final KB: `phase7/results/stats_replayed.out` (phase 5 replay: 4 changed, all by `MYPY-8595-METACLASS-CALL`, live 172 to 168). The `[all]` and `[tuning]` blocks of the stats files are identical; `[holdout]` has 0 programs. n/r = not recorded (the per-program count of strong evidence was not computed for the replays).
 
 Rates (computed here):
 
@@ -68,7 +70,7 @@ Strong runtime evidence on a live finding (judge run): 11 findings in 10 program
 
 ## 3. Per group and per area
 
-Day 10 groups are the subdirectories of `runs/day10/parents` that hold a mutant's parent (`campaign/day10/mk_groups.sh`), plus `fresh` for programs without `__mut` in the name. They differ from the Day-9 groups, so there is no row-by-row comparison. The columns are `phase7/results/group_yield.out` (script `campaign/day10/phase7/group_yield.py`, adapted from the Day-9 one; the totals 250 / 101 / 247 / 172 / 11 / 75 / 0 equal `day10-stats.txt`). Unlike Day 9, the discrepancy column is read from each report's `discrepancies` list, not derived. "Live" and "strong" are findings, not programs. These are judge-run figures (before `MYPY-8595-METACLASS-CALL`); the replay changes only `N_class` (live 9 to 7, strong 2 to 0) and `fresh` (live 43 to 41, strong 2 to 1). Live per program is computed here.
+Day 10 groups are the subdirectories of [run output] that hold a mutant's parent ([campaign working file]), plus `fresh` for programs without `__mut` in the name. They differ from the Day-9 groups, so there is no row-by-row comparison. The columns are `phase7/results/group_yield.out` (script [campaign working file], adapted from the Day-9 one; the totals 250 / 101 / 247 / 172 / 11 / 75 / 0 equal `day10-stats.txt`). Unlike Day 9, the discrepancy column is read from each report's `discrepancies` list, not derived. "Live" and "strong" are findings, not programs. These are judge-run figures (before `MYPY-8595-METACLASS-CALL`); the replay changes only `N_class` (live 9 to 7, strong 2 to 0) and `fresh` (live 43 to 41, strong 2 to 1). Live per program is computed here.
 
 | Group (operators, parents) | Programs | Programs with a live finding | Discrepancies | Crash events | Live | Strong | Dismissed | Live per program |
 |---|---|---|---|---|---|---|---|---|
@@ -140,7 +142,7 @@ Day-9 weaknesses (`day9-report.md` section 7) and their state:
 | duplicates the KB does not close reappear live | partly: mypy#8595 closed (5 rows); mypy#21937 Flag narrowing, mypy#948, python/typing#2211 and the "Can only replace ParamSpec" rows still reappear |
 | drafts 6 to 10 unfiled, no playground link | drafts 6 to 9 are now filed (section 5); draft 10 and the new drafts 11 and 12 are not, and have no playground link |
 
-## 5. Candidates and verdicts (`campaign/day10-verification.md`)
+## 5. Candidates and verdicts ([campaign working file])
 
 Run with the pins plus ty 0.0.99, mypy 2.4.1 and master, pyright 1.1.414 (latest). ty 0.0.97 and 0.0.99 gave the same diagnostics in 30 of 30 reduction results, with two exceptions (the display of one `invalid-assignment` message, and one diagnostic that 0.0.99 no longer gives). The interrupted earlier run of phase 6 was re-run from scratch for all 30 programs: 30 of 30 identical to the saved summaries.
 
@@ -176,7 +178,7 @@ Totals over D10-1 to D10-13: **STILL-BUG-NEW 2** (draft 11 mypy, draft 12 pyrigh
 What produced what:
 
 * Neither new draft came from a strong-evidence row alone. Draft 12 came from a strong row (D10-10, `N_types`, a mutant of a harvested pyright test), but the strong discrepancy was ty's; the bug is the pyright half. Draft 11 came from a live family of `only_ty` rows in the `R_reserve` group, not from the strong set. Both have confidence below 0.6 (0.5 and 0.35).
-* Net new bugs: 2 drafts (Day 9: 2, Day 8: 1, Day 7: 2). Both were appended to `campaign/day3-issue-drafts.md` with `<PLAYGROUND LINK>` placeholders. Nothing is filed by this campaign's agents.
+* Net new bugs: 2 drafts (Day 9: 2, Day 8: 1, Day 7: 2). Both were appended to `results/bugs.md` with `<PLAYGROUND LINK>` placeholders. Nothing is filed by this campaign's agents.
 * Filing state (author listing of the drafting account `DerekLaymn`, re-run for this report; matches the 2026-11-06 listing in the drafts file): drafts 1 to 9 are filed (ty#4933, ty#4934, mypy#22377, ty#4941, mypy#22375, ty#4958, pyright#11984, mypy#22385, mypy#22386). Draft 10 and drafts 11 and 12 are not.
 * Verification effort (`day10-verification.md` section 4): 204 `gh search` queries (python/mypy 108, astral-sh/ty 53, microsoft/pyright 26, astral-sh/ruff 13, python/typeshed 2, python/typing 2), 23 `gh issue view` reads, 0 NOT VERIFIED after 3 retries each.
 
@@ -186,7 +188,7 @@ Phase 2 and phase 5 (run log, `phase2/results/`, `phase5/`):
 
 * Phase 2: **promoted 1**, `d9p_context_managers_swallowed_name_possibly_unbound` (from `gen0_b82d2e9e`, draft 10; first parent of `context_managers`, highest similarity to any hit 0.33). **Retired 2**: `d6p_typevartuple_unpack_pep695_paramspec_default_mypy_subscript` (4 mutants, 19 live, 0 strong, 0 dismissed, rediscovery of draft 5) and `d5p_descriptors_one_decorator_dunders_pyright_rangeerror` (3 mutants, 1 live row, 0 pyright crashes).
 * Phase 5: 11 strong findings in 10 programs reproduced alone (10 of 10) with highest similarity to any hit 0.62, 0.52, 0.46, 0.41, 0.39, 0.38, 0.32, 0.31, 0.31, 0.27 (none at or above 0.80). **Promoted 0**. **Retired 3**: `d3p_generics_callable_attr_contravariant` (the revisit test: 3 programs, 0 live, 4 dismissed, also 0 live on Day 9), `d4v_ty_alias_loop_backedge` (3 programs, 7 live, all the parent's own mypy `[operator]` row) and `d3p_typevartuple_unpack_paramspec_default_after_tvt` (4 programs, 15 live, 2 strong, second day of rediscovery only).
-* `runs/hits`: 40 at the start of Day 10, 39 after phase 2, 36 after phase 5 (`ls runs/hits/*.py` gives 36; `ls runs/hits` also lists `__pycache__`, 37 entries). `runs/hits-dropped`: 25. `check_hits.py 0.80` for this report: 36 files, 0 with problems, no near-duplicate pair (`phase7/results/hits.out`).
+* [run output]: 40 at the start of Day 10, 39 after phase 2, 36 after phase 5 (`ls [run output]` gives 36; `ls [run output]` also lists `__pycache__`, 37 entries). [run output]: 25. `check_hits.py 0.80` for this report: 36 files, 0 with problems, no near-duplicate pair (`phase7/results/hits.out`).
 
 ## 7. Weaknesses
 
@@ -219,5 +221,5 @@ Phase 2 and phase 5 (run log, `phase2/results/`, `phase5/`):
 
 * `.venv/bin/python -m pytest tests -q` -> **730 passed** in 87.69 s, rc 0 (`phase7/results/pytest.out`).
 * `.venv/bin/typediff --python-version 3.13 kb-selftest` -> **20 PASS, 0 FAIL**, rc 0 (`phase7/results/kb.out`, `kb-pass-count.out` 20, `kb-fail-count.out` 0).
-* `campaign/day4m/check_hits.py 0.80` -> 36 files; 0 with problems (`phase7/results/hits.out`).
-* Files added by this step: `campaign/day10-report.md`, `campaign/FINAL-SUMMARY.md`, `campaign/day10/phase7/` (scripts `step1.sh`, `step2.sh`, `group_yield.py`, `gv_rows.py`, results). Edited: `campaign/day3-issue-drafts.md` (the count in draft 11, three places) and `campaign/day10-verification.md` (one correction paragraph). `campaign/day7-report.md` and `campaign/day8/phase6/results/commit.out` carry uncommitted edits from earlier failed runs and were left alone; untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` were not touched.
+* `[campaign working file] 0.80` -> 36 files; 0 with problems (`phase7/results/hits.out`).
+* Files added by this step: `results/days/day10-report.md`, `results/FINAL-SUMMARY.md`, [campaign working file] (scripts `step1.sh`, `step2.sh`, `group_yield.py`, `gv_rows.py`, results). Edited: `results/bugs.md` (the count in draft 11, three places) and [campaign working file] (one correction paragraph). `results/days/day7-report.md` and [campaign working file] carry uncommitted edits from earlier failed runs and were left alone; untracked `-l`, `.kiro/` and `findings/2026-10-27-llm-run/` were not touched.

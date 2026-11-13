@@ -1,18 +1,20 @@
 # typediff fuzzing campaign, final summary (Days 1 to 10)
 
-Branch `campaign/day10-p2`, local only. The agent never pushed, filed, commented or opened a PR; the filing steps below are for the user. Every number was read from a file in `campaign/` (the per-day `dayN-report.md`, `dayN-stats.txt`, `dayN-verification.md`, `day3-issue-drafts.md`), from `git log` and `git show` of the tracked files, or from read-only `gh` calls made while writing this file (`campaign/day10/phase7/results/gh_status.out`, `gh_events_4934.out`, `gh_pr_30074.out`, `author.out`, all under `campaign/day10/phase7/results/`, 2026-11-06). Rates were computed here. Anything I could not read is listed in section 11.
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+The campaign did not file, comment on or open a PR for any issue by itself; the filing steps below were done by the authors. Every number comes from the per-day reports in [`days/`](days/), the issue drafts in [`bugs.md`](bugs.md), the git history of this repository, or read-only `gh` calls made on 2026-11-06 (issue states). Rates were computed while writing this file. Anything that could not be read is listed in section 11.
 
 Pins since Day 6 (Day 5 for ty): mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16, target Python 3.13. Days 1 to 4 ran ty 0.0.84 (bumped in `ff8bd5e`).
 
 ## 1. What the campaign did
 
-Days 1 and 2 improved the deterministic judge on a harvested corpus (5129 programs) with no LLM and no bug hunting. From Day 3 on, each day mutated or freshly generated about 250 small Python programs with a model (a `claude-haiku-5.5` stand-in at effort `medium`, through a file bridge), ran mypy, ty and pyright plus CPython on each, let the knowledge base (KB) and rules close the discrepancies that are known duplicates, design differences or noise, and read the remaining ones by hand. A read candidate became a draft only after a reduction, a run on the pinned and the newest versions of each tool, a duplicate search on the trackers, and a verdict. Programs that showed a new pattern became parents for the next day's mutation (`runs/hits`); parents that only reproduced known findings were retired.
+Days 1 and 2 improved the deterministic judge on a harvested corpus (5129 programs) with no LLM and no bug hunting. From Day 3 on, each day mutated or freshly generated about 250 small Python programs with a model (a `claude-haiku-5.5` stand-in at effort `medium`, through a file bridge), ran mypy, ty and pyright plus CPython on each, let the knowledge base (KB) and rules close the discrepancies that are known duplicates, design differences or noise, and read the remaining ones by hand. A read candidate became a draft only after a reduction, a run on the pinned and the newest versions of each tool, a duplicate search on the trackers, and a verdict. Programs that showed a new pattern became parents for the next day's mutation (examples of such parents are in [`examples/hits/`](../examples/hits/)); parents that only reproduced known findings were retired.
 
 Result: 12 drafts with verdict STILL-BUG-NEW (section 5). Drafts 1 to 9 are filed by the user's drafting account, draft 2 is already fixed upstream, drafts 10 to 12 are not filed. Confidence runs from 0.35 to 0.9; only draft 2 is at 0.9.
 
 ## 2. Pipeline improvements, with commits
 
-All commits are on the campaign branches and in `git log` of this branch.
+All commits are in the `git log` of this repository.
 
 | Day | Change | Commit |
 |---|---|---|
@@ -43,7 +45,7 @@ Tests and self-test: 144 passed at the start of Day 2 (`day2-run-report.md`), 36
 
 ## 3. KB growth
 
-`known_upstream.json` counts and the number of `KBEntry(` occurrences in `typediff/kb.py`, read with `git show` at the last commit of each day as chosen here (`campaign/day10/phase7/kbcounts.sh`, output `phase7/results/kbcounts.out`). The day-to-commit mapping is mine, from `git log` order; Days 1 and 2 share one JSON state.
+`known_upstream.json` counts and the number of `KBEntry(` occurrences in `typediff/kb.py`, read with `git show` at the last commit of each day as chosen here. The day-to-commit mapping is mine, from `git log` order; Days 1 and 2 share one JSON state.
 
 | Day | Commit | `known_upstream.json` entries | of which `kind=crash` | prior stances | `KBEntry(` in `kb.py` |
 |---|---|---|---|---|---|
@@ -94,7 +96,7 @@ Reading the trend: the live rate per program did not fall steadily, because the 
 
 ## 5. Verified bugs (drafts 1 to 12)
 
-"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `campaign/day3-issue-drafts.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the user on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the user's account; whether the user ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the author listing and `gh issue view` of 2026-11-06 (read-only).
+"Verified" here means: reduced, run on CPython 3.13.16 and on the pinned and newest versions of each tool, and searched on the trackers, with verdict STILL-BUG-NEW in `results/bugs.md`. It does not mean a maintainer confirmed it. **Only drafts 1 and 2 were verified by the user on a playground;** drafts 3 to 12 have a `<PLAYGROUND LINK>` placeholder (drafts 3 to 9 were filed anyway by the user's account; whether the user ran them on a playground first is not recorded). Confidence is the draft's own number. Filing state is from the author listing and `gh issue view` of 2026-11-06 (read-only).
 
 | # | Tool | One-line description | Verdict | Conf. | User playground | Filed / state |
 |---|---|---|---|---|---|---|
@@ -205,6 +207,6 @@ Order logic: evidence strength first (an inconsistency within one tool, then a g
 
 * `.venv/bin/python -m pytest tests -q`: 730 passed.
 * `.venv/bin/typediff --python-version 3.13 kb-selftest`: 20 PASS, 0 FAIL.
-* `campaign/day4m/check_hits.py 0.80`: 36 files, 0 with problems.
+* `python scripts/check_hits.py 0.80`: 36 files, 0 with problems.
 * Pins unchanged: mypy 2.4.0, ty 0.0.97, pyright 1.1.414, CPython 3.13.16.
-* Report files: `campaign/day10-report.md` (Day 10 vs Day 9) and this file.
+* Report files: `results/days/day10-report.md` (Day 10 vs Day 9) and this file.

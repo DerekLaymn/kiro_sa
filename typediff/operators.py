@@ -1,6 +1,6 @@
 """Mutation operators that carry their own instruction text.
 
-The operators of DESIGN.md section 6 (``variance_flip``, ``feature_crossover``, ...) are bare names: the generator model
+The operators of docs/design.md section 6 (``variance_flip``, ``feature_crossover``, ...) are bare names: the generator model
 reads the name and guesses. They stay bare, so every prompt that used them is unchanged byte for byte (and the file-bridge
 prompt keys with it). Operators added here are described to the generator: ``mutation_spec`` returns
 ``{"operator": name, "instruction": text}`` for them and ``{"operator": name}`` for everything else.

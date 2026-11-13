@@ -12,7 +12,7 @@ Data: ``data/known_upstream.json``. Entries in ``entries`` that carry an optiona
            signature: message (regex over diagnostic message / revealed type), codes, statement, source (regexes), OR
            tags: all listed feature tags present in the statement or program.
 
-No network access here: searching the tracker / discuss.python.org stays a manual step (FUZZING_PLAN.md §6).
+No network access here: searching the tracker / discuss.python.org stays a manual step.
 """
 
 from __future__ import annotations

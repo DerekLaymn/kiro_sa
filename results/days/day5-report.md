@@ -1,14 +1,16 @@
 # Day 5 report
 
-Branch `campaign/day5-p2` (from `campaign/day4-p2`). Every number below is copied from a committed file or a command run by the step
-that wrote this report: `campaign/day5-stats.txt`, `day5-triage.txt`, `day5-run-log.md`, `day5-morning.md`, `day5/pipeline-review.md`,
-`day5/judge.done`, `campaign/day4-report.md`, `inbox_check.py runs/day5/inbox`, and the reports in `runs/day5/out/`. Rates are computed here
+> Paths written as `[campaign working file]`, `[run output]` or `[agent working file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file] (from [campaign working file]). Every number below is copied from a committed file or a command run by the step
+that wrote this report: [campaign working file], `day5-triage.txt`, `day5-run-log.md`, `day5-morning.md`, `day5/pipeline-review.md`,
+`day5/judge.done`, `results/days/day4-report.md`, `inbox_check.py [run output]`, and the reports in [run output]. Rates are computed here
 from those counts. All candidates are UNVERIFIED unless stated; no Plan §6 checklist was run in Day 5. Issues filed: **0**. Nothing was pushed.
 
 Tool versions (unchanged): mypy 2.4.0, ty 0.0.84, pyright 1.1.414, CPython 3.13.16, target Python 3.13.
 
-Two sets of Day-5 numbers exist and both are shown. `day5-stats.txt` and `day5-triage.txt` come from the judge run (`runs/day5/out`, KB as of the
-end of step 1). After the morning decisions the same 250 reports were replayed under the final KB (`runs/day5/replay`, figures from `day5-morning.md` §3).
+Two sets of Day-5 numbers exist and both are shown. `day5-stats.txt` and `day5-triage.txt` come from the judge run ([run output], KB as of the
+end of step 1). After the morning decisions the same 250 reports were replayed under the final KB ([run output], figures from `day5-morning.md` §3).
 
 ## 1. Funnel, Day 5 vs Day 4
 
@@ -43,14 +45,14 @@ The judge-run closure share is lower than Day 4 because the new entries were add
 The Day-4 data replayed under the Day-5 step-1 matcher already gave live 136 and dismissed 79 (run log, step 1), so the like-for-like Day-4 baseline for the
 pipeline fixes is 136 live, and for the morning entries is 110 live on the Day-5 data.
 
-Parents: 51 files in `runs/hits` at the end (`check_hits.py 0.80`: 0 with problems, 0 near-duplicates). Each of the 8 `d4p_*` parents produced 4 Day-5 mutants.
+Parents: 51 files in [run output] at the end (`check_hits.py 0.80`: 0 with problems, 0 near-duplicates). Each of the 8 `d4p_*` parents produced 4 Day-5 mutants.
 
 ## 2. What the four pipeline fixes changed
 
 | Fix | Change | Effect in the numbers |
 |---|---|---|
 | 1a crash-closure audit | `Finding.closed_by` records entry id, url, signature, `requires` predicate; the same-signature dataset shortcut no longer closes crashes (it leaves a `SAME-SIGNATURE-AS` note); `kbloop_stats` prints `crash closures by closing reference` | Day 5 judge run: 22 `rule:crash:signal` closures, every one with a reference: MYPY-22361 6, TY-4148 6, TY-4898 4, MYPY-22360 3, TY-4882 2, MYPY-22344 1 (22 = 6+6+4+3+2+1). No `NO-REFERENCE` closure. Day 4 had 24 with the reference only in free text. Re-reading the Day-4 reports showed all 24 were entry-backed, so the Day-4 claims "14 unexplained closures" and "TY-4148 / MYPY-22361 closed none" were wrong: those two entries closed 8 findings in Day 4 (4 programs x 2 tools) |
-| 1b variant k of n | `generate --n N` (N > 1) appends "Variant k of n" to the user prompt | Day 4: 246 prompts, 152 unique bodies (94 duplicates). Day 5: `inbox_check` on `runs/day5/inbox` reports 250 prompts, and my hash count of the prompt files gave 250 distinct bodies. Note: Day 5 used `--n 1` for most groups, so the count shows the fix did not break anything, but it is not a controlled before/after of the `--n 2` case. `seeds --mutate K` still sends identical prompts (review issue 1, not fixed) |
+| 1b variant k of n | `generate --n N` (N > 1) appends "Variant k of n" to the user prompt | Day 4: 246 prompts, 152 unique bodies (94 duplicates). Day 5: `inbox_check` on [run output] reports 250 prompts, and my hash count of the prompt files gave 250 distinct bodies. Note: Day 5 used `--n 1` for most groups, so the count shows the fix did not break anything, but it is not a controlled before/after of the `--n 2` case. `seeds --mutate K` still sends identical prompts (review issue 1, not fixed) |
 | 1c C1 entry gap | `call_attr_own_type` follows `__call__` attribute cycles (mutual pairs, chains, ClassVar, unions, subclasses); morning step also follows `c = C(); c()` | Day-4 replay: live 142 -> 136, dismissed 73 -> 79, 6 findings changed (3 programs x ty/mypy), all now closed by TY-4148 / MYPY-22361; no C1 shape stays live. Day 5: TY-4148 6 and MYPY-22361 6 closures in the judge run, 7 and 7 after the morning widening (one more program, seed-0bc328316b4c) |
 | 1d inbox accounting | `inbox_status` + `scripts/inbox_check.py` report orphan answers and malformed keys. Cause of Day-4's 270/271: 246 first-pass + 24 retry prompts, and one answer written under a key with a dropped character | Day-4 inbox: `prompts=270 answers=271 orphan_answers=1 malformed_keys=1`, exit 1. Day-5 inbox: `prompts=250 (retry prompts=0) answers=250 answered=250 pending=0 orphan_answers=0 malformed_keys=0`, exit 0. Day-4 preflight rejections corrected from 25 to 24 (9.8 %). Day 5 had 0 retry prompts |
 
@@ -67,7 +69,7 @@ Entries added or widened (all with the issue body read via read-only `gh`): `MYP
 
 | Candidate | Evidence | Status |
 |---|---|---|
-| pyright `RangeError: Maximum call stack size exceeded` (typeUtils.ts) on a descriptor with class-body decorators on `__get__`/`__set__` | 2 live findings in Day 5; smaller reproducer `runs/hits/d5p_descriptors_one_decorator_dunders_pyright_rangeerror.py` crashes pyright 1.1.414, re-run by hand (step 2/5); mypy and ty give ordinary arg-type errors; CPython runs. Promoted to `runs/hits` (step-2 hit + this one) | UNVERIFIED, no Plan §6 checklist; duplicate search incomplete (PYRIGHT-11961 is a different trigger; old closed RangeError issue bodies not read). pyright on PyPI is still 1.1.414, so no newer release to retest |
+| pyright `RangeError: Maximum call stack size exceeded` (typeUtils.ts) on a descriptor with class-body decorators on `__get__`/`__set__` | 2 live findings in Day 5; smaller reproducer [run output] crashes pyright 1.1.414, re-run by hand (step 2/5); mypy and ty give ordinary arg-type errors; CPython runs. Promoted to [run output] (step-2 hit + this one) | UNVERIFIED, no Plan §6 checklist; duplicate search incomplete (PYRIGHT-11961 is a different trigger; old closed RangeError issue bodies not read). pyright on PyPI is still 1.1.414, so no newer release to retest |
 | ty protocol-flatten stack overflow (C2) | 9 findings in the `ty:signal-SIGABRT` pattern, 8 of them C2 per the morning grouping | Stage-A verified Day 4, draft exists (`day3-issue-drafts.md`), not filed |
 | mypy reflected operator on metaclasses (`A * B`, `A + B`, `A @ B`) | 8 live findings, runtime evidence strong | Stage-A draft, not filed |
 | ty alias narrowing across a loop back edge | part of the 22 stale-alias findings | Stage-A draft, not filed |
@@ -98,7 +100,7 @@ Reclassified in Day 5 (not bugs, or not new):
 
 - `.venv/bin/python -m pytest tests -q`: **422 passed in 63.60s**, exit 0. The expected 373 is the Day-4 figure; Day 5 added 35 tests in step 1 (408) and 14 in the morning step (422).
 - `.venv/bin/typediff --python-version 3.13 kb-selftest`: **21 PASS, 0 FAIL**, exit 0.
-- `scripts/inbox_check.py runs/day5/inbox`: `prompts=250 answers=250 pending=0 orphan_answers=0 malformed_keys=0`, exit 0.
+- `scripts/inbox_check.py [run output]`: `prompts=250 answers=250 pending=0 orphan_answers=0 malformed_keys=0`, exit 0.
 - systemd-oomd `Marked` lines in the last 6 h: 0 (judge run and replay used `--jobs 14`).
 
 ## 7. Not verified

@@ -1,4 +1,4 @@
-"""Day 5 morning: upstream entries added or widened after reading the Day-5 reports (campaign/day5-morning.md).
+"""Day 5 morning: upstream entries added or widened after reading the Day-5 reports (results/days/day5-report.md).
 
 * TY-4148 / MYPY-22361  the issue program with a local: ``c = C(); c()``.
 * MYPY-21937-REVEAL     reveal_unpaired: mypy prints nothing in the final else of an ``is`` chain over a Flag.

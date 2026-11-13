@@ -1,6 +1,6 @@
 # area: async_generators
 # hypothesis: A covariant protocol with a Stream[Stream[T_co]] self annotation, consumed by an async generator, should type-check, but ty overflows its stack.
-# origin: runs/hits/d3p_crash_ty_stack_overflow_protocol_flatten.py
+# origin: generated program of the campaign (not kept)
 # hypothesis: a covariant generic protocol whose method takes self: Stream[Stream[T]], used through an async generator; ty overflows its stack resolving the protocol.
 import asyncio
 from collections.abc import AsyncGenerator

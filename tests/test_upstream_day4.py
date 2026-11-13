@@ -1,4 +1,4 @@
-"""Day 4 morning: two entries added to known_upstream.json after the Day-3 verification (campaign/day3-verification.md).
+"""Day 4 morning: two entries added to known_upstream.json after the Day-3 verification (results/bugs.md).
 
 * TY-4148 (crash)      astral-sh/ty#4148, ty stack overflow on ``__call__`` declared as an attribute of its own type.
 * TY-876-ARGTYPE       astral-sh/ty#876 Flag item, the mypy-only [arg-type] row.

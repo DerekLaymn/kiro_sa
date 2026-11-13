@@ -1,8 +1,10 @@
 # Day 4 report (Plan §3 "REPORT")
 
-Branch `campaign/day4-p2`. Every number below is copied from a file or command output in the repo (`campaign/day4-stats.txt`,
+> Paths written as `[campaign working file]`, `[run output]`, `[agent working file]` or `[temp file]` point to scratch files of the original campaign that are not part of this repository.
+
+Branch [campaign working file]. Every number below is copied from a file or command output in the repo ([campaign working file],
 `day4-triage.txt`, `day4-run-log.md`, `day4/judge.done`, `day4/gen_pass.sh`, `day4/judge.sh`, `day3-verification.md`, `day4-morning.md`)
-or from a small script run over the 246 JSON reports in `runs/day4/out/` (`/tmp/d4c.py`, `/tmp/d4e.py`, not committed; the counts they
+or from a small script run over the 246 JSON reports in [run output] ([temp file], [temp file], not committed; the counts they
 produced are quoted). Rates are computed here from those counts. Nothing in sections 3 to 5 is a confirmed bug. Every candidate is
 UNVERIFIED and needs the Plan §6 checklist by a human. Issues filed: **0**. Nothing was pushed.
 
@@ -11,8 +13,8 @@ Latest releases used during verification: mypy 2.4.1, ty 0.0.97, mypy master 2.5
 
 ## Stage A summary (verification of the Day-3 candidates)
 
-Copied from `campaign/day3-verification.md` and compared row by row (14 rows). Full text and evidence: that file, `campaign/day4/verify-v1.md`
-to `verify-v3.md` (reviewer approved: `verify-review.md`), drafts in `campaign/day3-issue-drafts.md`.
+Copied from [campaign working file] and compared row by row (14 rows). Full text and evidence: that file, [campaign working file]
+to `verify-v3.md` (reviewer approved: `verify-review.md`), drafts in `results/bugs.md`.
 
 | Candidate | Verdict | Duplicate / status | Draft |
 |---|---|---|---|
@@ -37,7 +39,7 @@ Result: 4 new-bug drafts (C2, 1b, 6a, 8b), none filed. Day-3 "strong" evidence f
 **ty#4656** (Self parameter not enforced on inherited methods, reported by the user): closed "not planned" 2026-10-05; ty#4673 closed as
 duplicate 2026-10-05; ty#4849 closed as duplicate 2026-10-28 (carljm: intentional). Outcome: design difference, not a bug. The pipeline
 already dismisses these as DESIGN_DIVERGENCE (`kb:TY-SELF-UPPER-BOUND`); only wording and data changed (`known_upstream.json`,
-`kb.py`, README, seeds/README, DESIGN §8, FUZZING_PLAN §1). Commits 074ceb4, adead10; `campaign/day4/fix-4656.md`.
+`kb.py`, README, seeds/README, DESIGN §8, the internal plan §1). Commits 074ceb4, adead10; [campaign working file].
 
 **Flaky test** `test_timeout_kills_grandchild`: not reproduced before the fix (30/30 with 4 burners, 30/30 with 72 burners on 24 cores).
 After a first rewrite 1/30 failed under load because `_alive()` raised ProcessLookupError reading `/proc/<pid>/stat`. Test-only fix
@@ -46,37 +48,37 @@ After the fix: 30/30 under 4 burners, 3/3 full suites at 360 passed. Commit 1c3c
 
 ## 1. Per-step table
 
-Commands are copied from `campaign/day4/gen_pass.sh`, `campaign/day4/judge.sh`, `campaign/day4m/*` and `campaign/day4-run-log.md`.
+Commands are copied from [campaign working file], [campaign working file], [campaign working file] and [campaign working file].
 Unlike Day 3, the generate / file-bridge commands are saved (`gen_pass.sh`).
 
 | Plan label | What happened | Exact command (as recorded) | Result |
 |---|---|---|---|
-| setup | branch from `campaign/day3-p2` (7d4488d); dirs; latest tool installs; ty issue tracker snapshot | `mkdir runs/day4/{inbox,gen,out}`, `campaign/day4`; latest tools in `/tmp/d3v-latest` (mypy 2.4.1, ty 0.0.97), mypy master in `/tmp/d3v-master`; `/tmp/d3v-trk/ty.json` refreshed | ty.json: 4060 issues (first `gh` attempt: network unreachable, retry ok) |
+| setup | branch from [campaign working file] (7d4488d); dirs; latest tool installs; ty issue tracker snapshot | `mkdir [run output]`, [campaign working file]; latest tools in [temp file] (mypy 2.4.1, ty 0.0.97), mypy master in [temp file]; [temp file] refreshed | ty.json: 4060 issues (first `gh` attempt: network unreachable, retry ok) |
 | §6 verify ty#4656 | re-check the user's earliest bug | read-only `gh`; `TYPEDIFF_LLM=null` pipeline on `seeds/self_classmethods/*.py` and `examples/self_param_unsound.py` | design difference; wording-only change (see Stage A) |
 | flaky-test fix | `tests/test_runner_timeout_kills_group.py` | burner loops of 30 runs (see log) | 30/30, 3/3 full suites at 360 passed |
-| §6 verify C1..8b (3 verifier branches) | 14 candidate rows | per-file command templates in `campaign/day4/verify-v1.md`, `-v2.md`, `-v3.md` | 4 new-bug drafts |
-| §6 consolidate | rewrite `day3-verification.md`, create `day3-issue-drafts.md` | `/tmp/cons/build.py` (concatenates the three draft files, asserts 4 drafts) | done, committed 3383e2f. An earlier consolidate step died with a TLS error (section 7) |
-| §3 morning: promote | 8 `day3-report` §5 programs into `runs/hits` as `d4p_*.py` | `campaign/day4m/mk_parents.py`; `check_hits.py` (header, AREAS key, py_compile, preflight, CPython run, near-duplicates >= 0.80) | 51 files, 0 problems; 2 near-duplicates moved to `runs/hits-dropped/`; `runs/hits` = 49 `.py` files |
+| §6 verify C1..8b (3 verifier branches) | 14 candidate rows | per-file command templates in [campaign working file], `-v2.md`, `-v3.md` | 4 new-bug drafts |
+| §6 consolidate | rewrite `day3-verification.md`, create `day3-issue-drafts.md` | [temp file] (concatenates the three draft files, asserts 4 drafts) | done, committed 3383e2f. An earlier consolidate step died with a TLS error (section 7) |
+| §3 morning: promote | 8 `day3-report` §5 programs into [run output] as `d4p_*.py` | [campaign working file]; `check_hits.py` (header, AREAS key, py_compile, preflight, CPython run, near-duplicates >= 0.80) | 51 files, 0 problems; 2 near-duplicates moved to [run output]; [run output] = 49 `.py` files |
 | §3 morning: retire | 2 new `known_upstream.json` entries | edit + `tests/test_upstream_day4.py` (13 new tests) | TY-4148 (crash), TY-876-ARGTYPE; others rejected (`day4-morning.md` §2); commit 78a6546 |
-| §3 morning: replay | re-judge Day-3 `out` under the final KB | `.venv/bin/python scripts/kbloop_replay.py runs/day3/out runs/day4/replay-d3 --jobs 14 --verify-sample 30` (`campaign/day4m/replay.sh`) | live 48 -> 43, dismissed 20 -> 25, verify-sample 30/30 identical |
+| §3 morning: replay | re-judge Day-3 `out` under the final KB | `.venv/bin/python scripts/kbloop_replay.py [run output] [run output] --jobs 14 --verify-sample 30` ([campaign working file]) | live 48 -> 43, dismissed 20 -> 25, verify-sample 30/30 identical |
 | §3 morning: checks | | pytest, kb-selftest | 373 passed; 21 PASS, 0 FAIL (at that point) |
-| §3 gen pass 0 (prompts, file bridge) | P2 mutation of `runs/hits` + P3 fresh areas | `campaign/day4/gen_pass.sh 0`: three `$TD --llm file:$INBOX --python-version 3.13 generate` groups: `--from-seeds runs/hits --n 1 --ops narrowing_construct_swap` and `--ops runtime_witness`; `--from-seeds runs/hits --n 2 --ops feature_crossover`; `--area A --n 10` for A in overloads, protocols, dataclasses, typevartuple_unpack, enums_literals; all `--out-dir runs/day4/gen`, `PYTHONHASHSEED=0`, 3 retries each | pass 0: pending=246 written=0 |
+| §3 gen pass 0 (prompts, file bridge) | P2 mutation of [run output] + P3 fresh areas | `[campaign working file] 0`: three `$TD --llm file:$INBOX --python-version 3.13 generate` groups: `--from-seeds [run output] --n 1 --ops narrowing_construct_swap` and `--ops runtime_witness`; `--from-seeds [run output] --n 2 --ops feature_crossover`; `--area A --n 10` for A in overloads, protocols, dataclasses, typevartuple_unpack, enums_literals; all `--out-dir [run output]`, `PYTHONHASHSEED=0`, 3 retries each | pass 0: pending=246 written=0 |
 | answers (3 Haiku branches) | 246 answers written into the inbox | file bridge `<key>.answer.json` | 246 answered |
-| gen pass 1 | | `campaign/day4/gen_pass.sh 1` | pending=25 written=221 (25 answers rejected by the generator preflight lint; 25 retry prompts) |
+| gen pass 1 | | `[campaign working file] 1` | pending=25 written=221 (25 answers rejected by the generator preflight lint; 25 retry prompts) |
 | answers (retry, 1 Haiku step) | 25 retry answers | file bridge | answered |
-| gen pass 2 | | `campaign/day4/gen_pass.sh 2` | pending=0 written=246 (gate file `.agents/tasks/day4-gen-status.json`) |
-| §3 judge | | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py runs/day4/out runs/day4/gen --jobs 14 --progress runs/day4/out-progress.log` (`campaign/day4/judge.sh`) | `kbloop_run exit=0 secs=77`; `{'ok': 246}`; 246 reports, runtime `success` in all 246 |
-| §3 stats | | `.venv/bin/python scripts/kbloop_stats.py runs/day4/out > campaign/day4-stats.txt` | see section 2 |
-| §3 triage | | `.venv/bin/typediff --out runs/day4/out triage runs/day4/out --top 30 --details > campaign/day4-triage.txt` | 142 findings in 29 patterns (`stats+triage exit=0 total_secs=77`) |
+| gen pass 2 | | `[campaign working file] 2` | pending=0 written=246 (gate file [agent working file]) |
+| §3 judge | | `TYPEDIFF_LLM=null .venv/bin/python scripts/kbloop_run.py [run output] [run output] --jobs 14 --progress [run output]` ([campaign working file]) | `kbloop_run exit=0 secs=77`; `{'ok': 246}`; 246 reports, runtime `success` in all 246 |
+| §3 stats | | `.venv/bin/python scripts/kbloop_stats.py [run output] > [campaign working file]` | see section 2 |
+| §3 triage | | `.venv/bin/typediff --out [run output] triage [run output] --top 30 --details > [campaign working file]` | 142 findings in 29 patterns (`stats+triage exit=0 total_secs=77`) |
 | report-time checks | | `.venv/bin/python -m pytest tests -q`; `.venv/bin/typediff --python-version 3.13 kb-selftest` | section 6 |
 
 ## 2. Funnel, Day 3 vs Day 4
 
-Day-3 figures are from `campaign/day3-report.md` section 2. Day-4 figures are from `campaign/day4-stats.txt`, `day4-run-log.md` and the reports.
+Day-3 figures are from `results/days/day3-report.md` section 2. Day-4 figures are from [campaign working file], `day4-run-log.md` and the reports.
 
 | Stage | Day 3 | Day 4 |
 |---|---|---|
-| parents in `runs/hits` | 32 (40 distinct parent files used) | 49 `.py` files after promotion (+8) and 2 dropped as near-duplicates; 49 distinct mutated parents used; 50 fresh programs (P3) |
+| parents in [run output] | 32 (40 distinct parent files used) | 49 `.py` files after promotion (+8) and 2 dropped as near-duplicates; 49 distinct mutated parents used; 50 fresh programs (P3) |
 | prompts (pass 0) | 161 `*.prompt.md` | 246 at pass 0. The inbox now holds 270 `*.prompt.md` and 271 `*.answer.json` (24 and 25 more than 246; cause not traced, section 7) |
 | programs written | 160 | 246 (196 mutated, 50 fresh; 19 area dirs, counts below) |
 | preflight rejections at generation | not logged | 25 (pass 1 `pending=25`; 25 retry prompts), all resolved in pass 2 |
@@ -92,7 +94,7 @@ Day-3 figures are from `campaign/day3-report.md` section 2. Day-4 figures are fr
 | programs with a live finding | 41 | 83 |
 
 Check: 175 discrepancies + 40 crashes = 215 findings = 142 live + 73 dismissed. Dismissals by entry type, from `dismissed by entry` in
-`campaign/day4-stats.txt`: crash rules 24 + upstream entries 35 + other KB entries 14 = 73.
+[campaign working file]: crash rules 24 + upstream entries 35 + other KB entries 14 = 73.
 
 Day 4's live count is higher mainly because the run is larger and its parents include crash and bug reproducers promoted on Day-4
 morning (many programs are variants of the Stage-A candidates). Per-program rates are the fair comparison (computed here):
@@ -111,7 +113,7 @@ Per program the Day-4 run produced about twice as many live findings (0.58 vs 0.
 Day 3 and Day 4 that were chosen because they disagree or crash, and 50 fresh programs in 5 areas. The closure share rose only from 29.4 % to 34.0 %,
 so the review queue grew almost in proportion to the program count times 2.
 
-Programs per area dir (from `ls runs/day4/gen/*`): enums_literals 38, callables 24, narrowing_user 20, protocols 18, constructors_metaclasses 16,
+Programs per area dir (from `ls [run output]`): enums_literals 38, callables 24, narrowing_user 20, protocols 18, constructors_metaclasses 16,
 inheritance_mro 16, typevartuple_unpack 14, generics_variance 12, narrowing_builtin 12, tuples_unpacking 12, dataclasses 10, overloads 10,
 descriptors_properties 8, paramspec_concatenate 8, async_generators 4, gradual_any 4, self_classmethods 4, typeddict 4, recursive_aliases 12
 (sum 246). Live findings split by Stage-A family (assigned by parent file name, so this is a first grouping):
@@ -177,8 +179,8 @@ None of these is a "CPython crash + silent checkers" case: CPython ran to succes
 
 | Candidate | Evidence | Report |
 |---|---|---|
-| pyright RangeError "Maximum call stack size exceeded" in `typeUtils.ts` (pyright 1.1.414) on a descriptor whose `__get__` and `__set__` are decorated with a plain function defined in the class body | crash signature `pyright:internal:RangeError`, `rule:crash:internal_error`, live; matches no entry, no Stage-A candidate | seed-947242212886; `runs/day4/gen/descriptors_properties/d3p_descriptors_decorated_get__mut1_17c68570.py`; `runs/day4/out/seed-947242212886.md` |
-| mypy TypeVarTuple concatenation `join(a: tuple[*Ts], b: tuple[*Us]) -> tuple[*Ts, *Us]` with `return (*a, *b)` | mypy reveals `tuple[int, str]` for `join((1, "x"), (2.5,))`, runtime value `(1, 'x', 2.5)`; mypy also reports `[return-value] got tuple[object, ...], expected tuple[*Ts]`; ty reveals `tuple[object, ...]` | seed-7448e0c4c99f; `runs/day4/gen/typevartuple_unpack/gen7_a8725dda.py`; related: seed-8176b83d0a7d (`gen3_504999f8.py`, `tuple[*Left]`) |
+| pyright RangeError "Maximum call stack size exceeded" in `typeUtils.ts` (pyright 1.1.414) on a descriptor whose `__get__` and `__set__` are decorated with a plain function defined in the class body | crash signature `pyright:internal:RangeError`, `rule:crash:internal_error`, live; matches no entry, no Stage-A candidate | seed-947242212886; [run output]; [run output] |
+| mypy TypeVarTuple concatenation `join(a: tuple[*Ts], b: tuple[*Us]) -> tuple[*Ts, *Us]` with `return (*a, *b)` | mypy reveals `tuple[int, str]` for `join((1, "x"), (2.5,))`, runtime value `(1, 'x', 2.5)`; mypy also reports `[return-value] got tuple[object, ...], expected tuple[*Ts]`; ty reveals `tuple[object, ...]` | seed-7448e0c4c99f; [run output]; related: seed-8176b83d0a7d (`gen3_504999f8.py`, `tuple[*Left]`) |
 | ty salsa panic (`execute.rs:751:9`, same signature as C3) in two programs that are not C3 variants by parent | dismissed by `rule:crash:panic` only | seed-81b29558828f (`enums_literals/d4p_enums_intenum_true_alias_one__mut0_21c70781.py`); seed-32e61dbea91a (`paramspec_concatenate/d3p_paramspec_self_annotated_dunder_call__mut0_d0a5f4ba.py`). Whether they contain a `partial \| None` loop or are a different trigger is not checked |
 | mypy missing a check that ty makes: `type("Mixed", (IntBase, StrBase), {})` with `Container[int]` and `Container[str]` bases | ty `invalid-generic-class`, mypy silent; CPython runs fine | seed-2d4bcd20aac0; `constructors_metaclasses/*type_call_generic_base__mut0_1ff6bc79.py`. Possibly a known mypy gap; no search made |
 | C1-family programs that stay live although `TY-4148` and `MYPY-22361` exist | `d4v_callables_mutual_call_attr` (seeds 6e1aafbae77b, bf0eb5293b88) and `d3p_self_classmethods_self_call_union__mut1_e3936d2f` (seed-13ae8bc04894) crash ty and mypy, but none of the three was closed by `kb:UPSTREAM-TY-4148` or `kb:UPSTREAM-MYPY-22361` (neither appears in `dismissed by entry`) | not a new bug; an entry gap: the entry conditions (e.g. TY-4148 `requires call_attr_own_type`) do not match these shapes. Why is not checked |
@@ -186,24 +188,24 @@ None of these is a "CPython crash + silent checkers" case: CPython ran to succes
 The 5 C2 programs (seeds 828f18e26dd0, 9772b1db20b6, 4550a3778719, 6af4a0e947c7, 7e0097f1eb45) are variants of the verified new bug C2 and are not listed
 as new candidates. The 4 live ty panics (seeds 00550e0697ae, 97094f3481d4, 2b3d96603864, c11c643b4f80) are C3 and are fixed in ty 0.0.85.
 
-## 5. Proposed `runs/hits` additions for Day 5
+## 5. Proposed [run output] additions for Day 5
 
-Copy with the 3 header lines (`# area:`, `# hypothesis:`, `# origin:`); run `campaign/day4m/check_hits.py` before use.
+Copy with the 3 header lines (`# area:`, `# hypothesis:`, `# origin:`); run [campaign working file] before use.
 
-1. `runs/day4/gen/descriptors_properties/d3p_descriptors_decorated_get__mut1_17c68570.py`: only program with the pyright RangeError signature.
-2. `runs/day4/gen/typevartuple_unpack/gen7_a8725dda.py`: mypy reveal drops the second operand of a TypeVarTuple concatenation (runtime 3 elements). Also `gen3_504999f8.py` as a variant only if it differs after reading.
-3. `runs/day4/gen/enums_literals/d4p_enums_intenum_true_alias_one__mut0_21c70781.py`: ty salsa panic on an enum-parent mutant; check whether the trigger is new.
-4. `runs/day4/gen/self_classmethods/d3p_self_classmethods_self_call_union__mut1_e3936d2f.py`: crashes ty and mypy and survives the C1 entries; useful as a regression test for the entry gap rather than as a mutation parent.
-5. `runs/day4/gen/constructors_metaclasses/` program with seed 2d4bcd20aac0 (`type_call_generic_base__mut0_1ff6bc79`): mypy gap on conflicting generic bases built with `type()`.
+1. [run output]: only program with the pyright RangeError signature.
+2. [run output]: mypy reveal drops the second operand of a TypeVarTuple concatenation (runtime 3 elements). Also `gen3_504999f8.py` as a variant only if it differs after reading.
+3. [run output]: ty salsa panic on an enum-parent mutant; check whether the trigger is new.
+4. [run output]: crashes ty and mypy and survives the C1 entries; useful as a regression test for the entry gap rather than as a mutation parent.
+5. [run output] program with seed 2d4bcd20aac0 (`type_call_generic_base__mut0_1ff6bc79`): mypy gap on conflicting generic bases built with `type()`.
 
-Not proposed: variants of C2, 1b, 6a, 8b (their `d4v_*` parents are already in `runs/hits`), C1 and C3 variants, IntEnum alias and recursive alias programs
+Not proposed: variants of C2, 1b, 6a, 8b (their `d4v_*` parents are already in [run output]), C1 and C3 variants, IntEnum alias and recursive alias programs
 (not bugs), and programs whose only evidence is stub-skew or gradual display.
 
 ## 6. Pipeline findings
 
 Worked:
 - Variants fix: `generate --n 2` gives distinct filenames and cache keys (fix `dc51a60`). For `feature_crossover` the prompt bodies are still identical (see Broke).
-- Saved script: `campaign/day4/gen_pass.sh` ran in about 1 s (earlier agent verified), idempotent, appends the pass line to `day4-run-log.md` and writes the gate file. Three passes took the inbox from pending=246 to 25 to 0.
+- Saved script: [campaign working file] ran in about 1 s (earlier agent verified), idempotent, appends the pass line to `day4-run-log.md` and writes the gate file. Three passes took the inbox from pending=246 to 25 to 0.
 - Judge: 246 programs in 77 s with `--jobs 14`, `{'ok': 246}`, no runner errors. Day 3 needed 43 s for 160 programs (0.27 s vs 0.31 s per program).
 - Memory guard and process-group kill: `journalctl -u systemd-oomd --since -10h --no-pager | grep -c Marked` returned **0** (oomd kills in the last 10 h). No orphan `pyright` processes at report time (`ps aux | grep -c '[p]yright'` returned 0). The generation and judge phases ran without a recorded Kiro exit in the run log.
 - Preflight lint at generation caught 25 of 246 answers before they were written (10.2 %), and all were replaced in one retry round.
@@ -223,7 +225,7 @@ Recommendations:
 2. Make `rule:crash:signal` require either a named entry or a first-seen record, and log the closing reference, so same-signature closures can be audited. Quantified need: 22 closures per run, 14 with no Stage-A explanation.
 3. Re-check why the C1 shapes `mutual_call_attr` and `self_call_union__mut1` do not match `TY-4148` and `MYPY-22361` (loosen the `requires` condition or add a rule on the `__call__` self-reference).
 4. Bump the ty pin (0.0.84 -> 0.0.97) before Day 5: C3 disappears, which removes 4 live crash findings and 2 `rule:crash:panic` closures.
-5. Keep the saved-script protocol (`campaign/day4/*.sh`) and write step scripts with the file tool, not shell heredocs.
+5. Keep the saved-script protocol ([campaign working file]) and write step scripts with the file tool, not shell heredocs.
 
 Final checks at report time (real results, run by this step):
 
@@ -241,6 +243,6 @@ Final checks at report time (real results, run by this step):
 - The 25 preflight rejections: their reasons were not collected; only the retry count is logged.
 - The three Haiku answer branches and the retry step were not reviewed for answer quality beyond the preflight.
 - The pyright RangeError and the TypeVarTuple concatenation were read from the report and the program only; not reduced, not rerun on newer releases.
-- The counts of live findings per family come from `/tmp/d4e.py` (not committed); the script reads `runs/day4/out/seed-*.json`, which is git-ignored.
+- The counts of live findings per family come from [temp file] (not committed); the script reads [run output], which is git-ignored.
 - oomd count covers the last 10 h only and does not prove that no memory-pressure event happened earlier.
 - Day-3 per-program rates use the Day-3 report figures (e.g. 18 tool crashes in 14 programs) without recomputation.
