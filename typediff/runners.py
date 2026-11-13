@@ -37,28 +37,26 @@ def _default_cmd(env_var: str, exe: str) -> list[str]:
 
 
 MEM_ENV = "TYPEDIFF_TOOL_MEM_MB"
-# Runs `cmd` with an address-space limit; a missing binary still reports "NOT INSTALLED" and exit code 127.
-_LIMIT_LAUNCHER = (
-    "import os, resource, sys\n"
-    "limit = int(sys.argv[1]) << 20\n"
-    "try:\n"
-    "    resource.setrlimit(resource.RLIMIT_AS, (limit, limit))\n"
-    "except (ValueError, OSError):\n"
-    "    pass\n"
-    "try:\n"
-    "    os.execvp(sys.argv[2], sys.argv[2:])\n"
-    "except OSError as exc:\n"
-    "    sys.stderr.write(f'NOT INSTALLED: {exc}')\n"
-    "    sys.exit(127)\n"
-)
 
 
 def _memory_limit_mb() -> int:
-    """Per-process memory limit for mypy and ty from TYPEDIFF_TOOL_MEM_MB (0 = unlimited, the default)."""
+    """Memory limit for one mypy or ty process from TYPEDIFF_TOOL_MEM_MB (0 = unlimited, the default)."""
     try:
         return max(0, int(os.environ.get(MEM_ENV, "0")))
     except ValueError:
         return 0
+
+
+def _rss_mb(pid: int) -> int:
+    """Resident memory of a process in MB, read from /proc (Linux); 0 when unavailable."""
+    try:
+        with open(f"/proc/{pid}/status") as f:
+            for line in f:
+                if line.startswith("VmRSS:"):
+                    return int(line.split()[1]) // 1024
+    except (OSError, ValueError, IndexError):
+        pass
+    return 0
 
 
 @dataclass
@@ -117,7 +115,30 @@ class Runners:
         env["NO_COLOR"] = "1"
         return env
 
-    def _exec(self, cmd: list[str], workdir: str, timeout: int) -> tuple[str, str, int | None, float]:
+    @staticmethod
+    def _killpg(p: subprocess.Popen) -> None:
+        try:
+            os.killpg(p.pid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            p.kill()
+
+    def _communicate_capped(self, p: subprocess.Popen, timeout: int, mem_mb: int) -> tuple[str, str]:
+        """communicate() that SIGKILLs the process group once the process uses more than ``mem_mb`` MB of resident memory.
+
+        The exit code is then -9, which the parsers report as a ``signal-SIGKILL`` crash of that checker."""
+        end = time.monotonic() + timeout
+        while True:
+            left = end - time.monotonic()
+            try:
+                return p.communicate(timeout=max(0.0, min(0.1, left)))
+            except subprocess.TimeoutExpired:
+                if _rss_mb(p.pid) > mem_mb:
+                    self._killpg(p)
+                    return p.communicate(timeout=10)
+                if left <= 0.1:
+                    raise
+
+    def _exec(self, cmd: list[str], workdir: str, timeout: int, mem_mb: int = 0) -> tuple[str, str, int | None, float]:
         t0 = time.monotonic()
         try:
             # Own session so a timeout can kill the whole process group: `pyright` is a launcher that spawns a node child, and
@@ -127,13 +148,10 @@ class Runners:
         except FileNotFoundError as exc:
             return "", f"NOT INSTALLED: {exc}", 127, 0.0
         try:
-            out, err = p.communicate(timeout=timeout)
+            out, err = self._communicate_capped(p, timeout, mem_mb) if mem_mb else p.communicate(timeout=timeout)
             return out, err, p.returncode, time.monotonic() - t0
         except subprocess.TimeoutExpired:
-            try:
-                os.killpg(p.pid, signal.SIGKILL)
-            except (ProcessLookupError, PermissionError):
-                p.kill()
+            self._killpg(p)
             try:
                 out, _ = p.communicate(timeout=10)
             except subprocess.TimeoutExpired:
@@ -166,11 +184,8 @@ class Runners:
             Path(wd, FILENAME).write_text(source, encoding="utf-8")
             if tool == Tool.MYPY:
                 flags = [*flags, "--cache-dir", os.path.join(wd, ".mypy_cache")]
-            cmd = [*base, *flags, FILENAME]
-            limit = _memory_limit_mb()
-            if limit and tool in (Tool.MYPY, Tool.TY):  # pyright's Node.js reserves a large address space; not limited
-                cmd = [sys.executable, "-c", _LIMIT_LAUNCHER, str(limit), *cmd]
-            out, err, code, dur = self._exec(cmd, wd, self.cfg.timeout_s)
+            limit = _memory_limit_mb() if tool in (Tool.MYPY, Tool.TY) else 0  # pyright is a launcher plus a Node.js child
+            out, err, code, dur = self._exec([*base, *flags, FILENAME], wd, self.cfg.timeout_s, limit)
         run = ToolRun(tool, out, err, code, self.version(tool), flags, dur)
         parser = {Tool.MYPY: parse_mypy, Tool.TY: parse_ty, Tool.PYRIGHT: parse_pyright}[tool]
         diags, crashes = parser(out, err, code, FILENAME)

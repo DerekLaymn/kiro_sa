@@ -1,7 +1,7 @@
 # Tests
 
 ```bash
-pytest -q                       # 760 passed in about 2 minutes (pinned tools installed)
+pytest -q                       # 762 passed in about 3 minutes (pinned tools installed)
 pytest -q tests/test_reproducibility.py
 ```
 

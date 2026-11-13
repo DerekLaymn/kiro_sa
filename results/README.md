@@ -15,7 +15,7 @@ reduced programs, [`../examples/bugs/`](../examples/bugs/README.md).
 | Verified new bugs | 12: ty 4, mypy 6, pyright 2 |
 | Filed upstream | 9 (ty 4, mypy 4, pyright 1); 3 not filed |
 | Fixed upstream | 1 ([ty#4934](https://github.com/astral-sh/ty/issues/4934)) |
-| Tests / KB self-test at the end | 760 passed (730 when the last report was written; later work added reproducibility and memory-limit tests) / 20 PASS |
+| Tests / KB self-test at the end | 762 passed (730 when the last report was written; later work added reproducibility and memory-limit tests) / 20 PASS |
 
 Issue states were read on 2026-11-06 and may have changed.
 

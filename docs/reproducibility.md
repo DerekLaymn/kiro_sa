@@ -51,12 +51,12 @@ the installed versions differ from the pins.
 ## 2. Check the installation
 
 ```bash
-pytest -q                                      # expected: 760 passed in about 2 minutes
+pytest -q                                      # expected: 762 passed in about 3 minutes
 typediff --python-version 3.13 kb-selftest     # expected: 20 PASS, 0 FAIL (exit code 0)
 python scripts/check_hits.py 0.80              # expected: the 36 parent programs, 0 with problems
 ```
 
-A test count above 760 means tests were added after this document was written. Failures with other tool versions are
+A test count above 762 means tests were added after this document was written. Failures with other tool versions are
 expected and are not a defect of the checkout.
 
 ## 3. Judge the seeds (no LLM, no API key)
@@ -67,9 +67,9 @@ TYPEDIFF_TOOL_MEM_MB=4096 TYPEDIFF_LLM=null typediff --python-version 3.13 --no-
 
 **Memory.** `seeds/parents/d3p_crash_mypy_segv_recursive_tvt_default_alias.py` is a mypy crash reproducer. Without a limit,
 mypy grows past 8 GB on it (until the 120 s checker timeout or the SIGSEGV), which can take a machine with 16 GB down.
-`TYPEDIFF_TOOL_MEM_MB` sets an address-space limit for each mypy and ty process (Linux; pyright is not limited because
-Node.js reserves a lot of address space). At 4096 mypy reaches about 3.5 GB and then crashes with SIGSEGV after about 20 s,
-which is recorded as the `mypy:signal-SIGSEGV` crash finding that the reference numbers contain. The default is unlimited;
+`TYPEDIFF_TOOL_MEM_MB` makes typediff watch the resident memory of each mypy and ty process (Linux only, read from
+`/proc`; pyright is not watched) and SIGKILL it above the limit. That is recorded as a `mypy:signal-SIGKILL` crash finding,
+which the reference numbers contain for this program. The default is unlimited;
 `reproduce.sh` and `replay_day10.sh` use 4096 unless you set the variable. Use 4096 or more for your own corpora and keep
 `--jobs` at 6 or fewer: the limit is per process, not for the whole run.
 
@@ -194,7 +194,7 @@ KB entry.) Changing `typediff/prompts.py` or a parent file changes the keys, so 
 | Check | Command | Expected (pinned versions) |
 |---|---|---|
 | Versions | `typediff --python-version 3.13 doctor --strict` | all `ok`, exit 0 |
-| Tests | `pytest -q` | 760 passed |
+| Tests | `pytest -q` | 762 passed |
 | KB self-test | `typediff --python-version 3.13 kb-selftest` | 20 `PASS`, 0 `FAIL` |
 | Parent programs | `python scripts/check_hits.py 0.80` | 36 files, 0 with problems |
 | Judge on seeds | `scripts/reproduce.sh`, step 4 | programs=65, discrepancies=88, confirmed=8, dismissed=30, review=60 |
